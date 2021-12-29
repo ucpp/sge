@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.10)
+project(ogl_render VERSION 0.1)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+option(BUILD_DEMO "Build demo project" ON)
+
+add_subdirectory(externals/glad)
+add_subdirectory(externals/glfw)
+# add_subdirectory(engine)
+
+if(BUILD_DEMO)
+    add_subdirectory(demo)
+endif()

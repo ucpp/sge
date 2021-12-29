@@ -1,3 +1,4 @@
+# cmake
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -9,3 +10,26 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+
+[Bb]uild/
+# VS Code specific
+.vscode
+# Prerequisites
+*.d
+# Compiled Object files
+*.o
+*.obj
+# Precompiled Headers
+*.gch
+*.pch
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+# Compiled Static libraries
+*.a
+*.lib
+# Executables
+*.exe
+*.out
+*.app
