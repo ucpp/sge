@@ -11,18 +11,40 @@ Stream #001 First triangle:
     ✔ Create shader class @done (30.12.2021, 01:42:45)
     ✔ Add resource manager @done (30.12.2021, 01:42:48)
 
-Other streams:
+Stream #002 Refactoring and textures:
     ☐ Add checks to shaders class
     ☐ Add set functions to shader
     ☐ Add application class (refactor main)
+    ☐ Add stb lib
     ☐ Add texture class
----
+
+Other streams:
+    ☐ Add Imgui
     ☐ Read math
     ☐ Add glm
     ☐ Add camera
----
+    ---
     ☐ Base of lighting Phong
     ☐ Materials
----
+    ---
+    ☐ Lighting maps (diffuse, specular)
+    ☐ Directonal, point light etc.
+    ---
     ☐ Add assimp
     ☐ Load benchmark scene
+    ---
+    ☐ Anti Aliasing (MSAA)
+    ☐ Blinn-Phong
+    ---
+    ☐ Shadows
+    ---
+    ☐ Normal mapping
+    ☐ Paralax mapping
+    ---
+    ☐ HDR, tone mapping
+    ---
+    ☐ Bloom
+    ---
+    ☐ SSAO
+    ---
+    ☐ PBR
