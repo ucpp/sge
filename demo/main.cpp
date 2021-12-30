@@ -92,6 +92,8 @@ int main()
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     
+    ResourceManager::Clear();
+    
     glfwTerminate();
     return EXIT_SUCCESS;
 }
