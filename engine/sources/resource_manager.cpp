@@ -4,9 +4,13 @@
 #include <fstream>
 #include <sstream>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 namespace Engine
 {
     std::map<std::string, Shader> ResourceManager::shaders_;
+    std::map<std::string, Texture> ResourceManager::textures_;
 
     Shader& ResourceManager::LoadShader(const char* vertex_file_name, const char* fragment_file_name, std::string name)
     {
@@ -23,9 +27,36 @@ namespace Engine
         return shaders_[name];
     }
 
+    Texture& ResourceManager::LoadTexture(const char* file_name, std::string name, bool alpha)
+    {
+        Texture texture;
+
+        if(alpha)
+        {
+            texture.image_format = GL_RGBA;
+            texture.internal_format = GL_RGBA;
+        }
+        
+        stbi_set_flip_vertically_on_load(true);
+
+        int w, h, nr_channels;
+        unsigned char* data = stbi_load(file_name, &w, &h, &nr_channels, 0);
+
+        texture.Generate(data, w, h);
+        stbi_image_free(data);
+        textures_[name] = texture;
+
+        return textures_[name];
+    }
+
     Shader& ResourceManager::GetShader(std::string name)
     {
         return shaders_[name];
+    }
+
+    Texture& ResourceManager::GetTexture(std::string name)
+    {
+        return textures_[name];
     }
 
     void ResourceManager::Clear()
@@ -36,6 +67,13 @@ namespace Engine
         }
 
         shaders_.clear();
+
+        for(auto texture : textures_)
+        {
+            glDeleteTextures(1, &texture.second.Id);
+        }
+
+        textures_.clear();
     }
 
     std::string ResourceManager::LoadShaderSource(const std::string& file_name)
@@ -57,4 +95,4 @@ namespace Engine
         
         return file_source;
     }
-    }
+}
