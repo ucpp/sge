@@ -33,8 +33,7 @@ namespace Engine
 
         if(alpha)
         {
-            texture.image_format = GL_RGBA;
-            texture.internal_format = GL_RGBA;
+            texture.EnableAlpha();
         }
         
         stbi_set_flip_vertically_on_load(true);
@@ -70,7 +69,7 @@ namespace Engine
 
         for(auto texture : textures_)
         {
-            glDeleteTextures(1, &texture.second.Id);
+            glDeleteTextures(1, &texture.second.id);
         }
 
         textures_.clear();
