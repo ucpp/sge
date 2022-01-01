@@ -10,16 +10,17 @@ namespace Engine
         void Generate(unsigned char* data, unsigned int width, unsigned int height);
         void Bind() const;
 
-        unsigned int Id;
-        unsigned int internal_format;
-        unsigned int image_format;
-        
+        void EnableAlpha();
         unsigned int GetWidth() const;
         unsigned int GetHeight() const;
+    public:
+        unsigned int id;
 
     private:
         unsigned int width_;
         unsigned int height_;
+        unsigned int internal_format_;
+        unsigned int image_format_;
     };
 }
 

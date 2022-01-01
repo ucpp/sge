@@ -224,7 +224,6 @@ void Application::Update()
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
         
-
         DrawGui();
 
         glfwSwapBuffers(window_);
