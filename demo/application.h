@@ -13,8 +13,11 @@ public:
 private:
     void Init();
     void InitRender();
+    void InitGui();
     void Update();
+    void DrawGui();
     void Shutdown();
+    void ShutdownGui();
 
     void ProcessInput(GLFWwindow* window);
     static void ResizeCallback(GLFWwindow* window, int width, int height);

@@ -17,18 +17,20 @@ Stream #002 Refactoring and textures:
     ✔ Add glm @done (31.12.2021, 17:04:54)
     ✔ Add application class (refactor main) @done (31.12.2021, 18:06:59)
     ✔ Add stb lib @done (31.12.2021, 18:26:57)
-    ☐ Add texture class
+
+Stream #003 Math and transformations:
+    ✔ Move to OpenGL 4.6 @done (01.01.2022, 19:27:35)
+    ✔ Move loading textures to res. manager @done (01.01.2022, 20:10:13)
+    ✔ Add texture class @done (01.01.2022, 20:10:19)
+    ✔ Add Imgui @done (01.01.2022, 21:22:36)
+    ✔ Read math @done (01.01.2022, 23:23:11)
+    
+Stream #004 Camera and lighting:
+    ☐ Add camera and input
+    ☐ Base of lighting Phong
 
 Other streams:
-    ☐ Move to OpenGL 4.6
-    ☐ Add Imgui
-    ☐ Read math
-
-    ☐ Add camera
-    ---
-    ☐ Base of lighting Phong
     ☐ Materials
-    ---
     ☐ Lighting maps (diffuse, specular)
     ☐ Directonal, point light etc.
     ---
@@ -50,3 +52,36 @@ Other streams:
     ☐ SSAO
     ---
     ☐ PBR
+
+Roadmap:
+    books:
+    ☐ E. Lengyel, “Mathematics for 3D Game Programming and Computer Graphics”
+    ☐ F. Luna, “Introduction to 3D Game Programming with DirectX 12”
+    ☐ Real-Time Rendering (4th edition)
+    ☐ Physically Based Rendering: From Theory to Implementation (3rd edition)
+    ☐ J. Birn, “Digital Lighting and Rendering”
+
+    ☐ T. Cormen "Introduction to Algorithms, 3rd Edition"
+    ☐ J. Gregory, “Game Engine Architecture”
+    ☐ B. Stroustrup The C++ Programming Language, 4th edition
+
+    code:
+    ☐ Initialize D3D12, Vulkan context
+    ☐ Process input and camera control
+    ☐ Load simple model without animation
+    ☐ Load mip-mapped textures (diffuse, normal, specular, gloss)
+    ☐ Calculate Phong lighting from direct and point lights in the pixel shader
+    ☐ Particle System (10000+ particles)
+    ☐ Make soft shadows (SM+PCF, VSM or ESM)
+    ☐ Make dynamic environment reflections via render to cube map
+    ☐ Add fog effect (pixel shader or post-process)
+    ☐ Add bloom post-process effect
+    ☐ Load skinned mesh (GPU) animated model
+    ☐ Animation blending between states and merging (shooting while running for example)
+    ☐ GPU compressed textures
+    ☐ Deferred lighting approach (direct, capsule, point and spot lights)
+    ☐ Cook-Torrance BRDF model and Image Based Lighting (static)
+    ☐ HDR pipeline (auto exposure, tone mapping)
+    ☐ MSAA
+    ☐ SSAO
+    ☐ SSLR
