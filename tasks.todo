@@ -26,6 +26,10 @@ Stream #003 Math and transformations:
     ✔ Read math @done (01.01.2022, 23:23:11)
     
 Stream #004 Camera and lighting:
+    ✔ Create mesh class @done (02.01.2022, 18:18:09)
+    ✔ Add assimp lib @done (02.01.2022, 20:01:15)
+    ✔ Create model class @done (02.01.2022, 20:01:18)
+    ✔ Load backpack model @done (02.01.2022, 20:41:08)
     ☐ Add camera and input
     ☐ Base of lighting Phong
 
