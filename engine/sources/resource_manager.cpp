@@ -27,9 +27,15 @@ namespace Engine
         return shaders_[name];
     }
 
-    Texture& ResourceManager::LoadTexture(const char* file_name, std::string name, bool alpha)
+    Texture& ResourceManager::LoadTexture(const char* file_name, std::string name, std::string type, bool alpha)
     {
+        if(textures_.count(name) == 1)
+        {
+            return GetTexture(name);
+        }
+
         Texture texture;
+        texture.type = type;
 
         if(alpha)
         {

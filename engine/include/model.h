@@ -1,0 +1,32 @@
+#ifndef MODEL_H
+#define MODEL_h
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+#include <vector>
+#include "mesh.h"
+
+namespace Engine
+{
+    class Model
+    {
+    public:
+        void Load(const std::string& path);
+        void Draw(Shader& shader);
+    public:
+        std::vector<Mesh> meshes;
+    
+    private:
+        void LoadNode(aiNode* node, const aiScene* scene);
+        Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        Texture LoadTexture(aiMaterial* material, aiTextureType type, std::string type_name);
+
+    private:
+        std::string directory_;
+
+    };
+}
+
+#endif

@@ -1,5 +1,7 @@
 #ifndef TEXTURE_H
-#define TEXTURE_h
+#define TEXTURE_H
+
+#include <string>
 
 namespace Engine
 {
@@ -15,6 +17,7 @@ namespace Engine
         unsigned int GetHeight() const;
     public:
         unsigned int id;
+        std::string type;
 
     private:
         unsigned int width_;
