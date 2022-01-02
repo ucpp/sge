@@ -3,6 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "model.h"
 
 class Application
 {
@@ -15,7 +16,7 @@ private:
     void InitRender();
     void InitGui();
     void Update();
-    void DrawGui();
+    void DrawGui(float delta_time);
     void Shutdown();
     void ShutdownGui();
 
@@ -33,6 +34,7 @@ private:
     unsigned int EBO_;
     unsigned int texture_;
 
+    Engine::Model backpack_;
     const char* kTitleWindow;
 };
 

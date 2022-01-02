@@ -17,7 +17,7 @@ namespace Engine
         static Shader& LoadShader(const char* vertex_file_name, const char* fragment_file_name, std::string name);
         static Shader& GetShader(std::string shader);
 
-        static Texture& LoadTexture(const char* file_name, std::string name, bool alpha = false);
+        static Texture& LoadTexture(const char* file_name, std::string name, std::string type = "diffuse", bool alpha = false);
         static Texture& GetTexture(std::string name);
 
         static void Clear();

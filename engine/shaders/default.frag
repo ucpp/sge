@@ -3,10 +3,11 @@ out vec4 FragColor;
 
 in vec2 texCoord;
 
-uniform sampler2D firstTexture;
-uniform sampler2D secondTexture;
+uniform sampler2D diffuse;
+uniform sampler2D normal;
+uniform sampler2D specular;
 
 void main()
 {
-    FragColor = mix(texture(firstTexture, texCoord), texture(secondTexture, texCoord), 0.2);
+    FragColor = texture(diffuse, texCoord);
 }
