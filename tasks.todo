@@ -25,11 +25,14 @@ Stream #003 Math and transformations:
     ✔ Add Imgui @done (01.01.2022, 21:22:36)
     ✔ Read math @done (01.01.2022, 23:23:11)
     
-Stream #004 Camera and lighting:
+Stream #004 Model loading:
     ✔ Create mesh class @done (02.01.2022, 18:18:09)
     ✔ Add assimp lib @done (02.01.2022, 20:01:15)
     ✔ Create model class @done (02.01.2022, 20:01:18)
     ✔ Load backpack model @done (02.01.2022, 20:41:08)
+
+Stream #005 Camera and base of lighting:
+    ☐ Make recursive copy resources
     ☐ Add camera and input
     ☐ Base of lighting Phong
 
