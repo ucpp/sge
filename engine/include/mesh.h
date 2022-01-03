@@ -21,6 +21,7 @@ namespace Engine
         public:
             void Init(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
             void Draw(Shader& shader);
+            void Clear();
 
         public:
             std::vector<Vertex> vertices;

@@ -49,8 +49,11 @@ void Application::Init()
         throw std::runtime_error("Falied create window");
     }
 
+    glfwSetWindowUserPointer(window_, reinterpret_cast<void*>(this));
     glfwMakeContextCurrent(window_);
     glfwSetFramebufferSizeCallback(window_, &Application::ResizeCallback);
+    glfwSetKeyCallback(window_, &Application::KeyCallback);
+    glfwSetCursorPosCallback(window_, &Application::MouseCallback);
 
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -81,38 +84,37 @@ void Application::InitGui()
 //TODO: move to render
 void Application::InitRender()
 {
-    Engine::ResourceManager::LoadShader("shaders/default.vert", "shaders/default.frag", "default");
-
     glEnable(GL_DEPTH_TEST);
 
-    backpack_.Load("resources/backpack.obj");
+    Engine::ResourceManager::LoadShader("shaders/default.vert", "shaders/default.frag", "default");
+    scene_.Load("resources/backpack/backpack.obj");
+    camera_.Init(glm::vec3(0.0f, 0.0f, -3.0f));
 }
 
 void Application::Update()
 {
     auto shader = Engine:: ResourceManager::GetShader("default");
 
-    double delta_time = 0.0f;
+    delta_time_ = 0.0f;
     double last_frame_time = 0.0f;
 
     while (!glfwWindowShouldClose(window_))
     {
         double current_time = glfwGetTime();
-        delta_time = current_time - last_frame_time;
+        delta_time_ = current_time - last_frame_time;
         last_frame_time = current_time;
         glfwPollEvents();
 
-        ProcessInput(window_);
+        ProcessInput(window_, delta_time_);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); 
+        glm::mat4 view = camera_.GetViewMatrix();
 
         glm::mat4 projection = glm::mat4(1.0f);
         float aspect = static_cast<float>(width_)/static_cast<float>(height_);
-        projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 1000.0f);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -124,9 +126,9 @@ void Application::Update()
         shader.SetMatrix4("projection", projection);
         shader.SetMatrix4("model", model);
 
-        backpack_.Draw(shader);
+        scene_.Draw(shader);
 
-        DrawGui(delta_time);
+        DrawGui(delta_time_);
 
         glfwSwapBuffers(window_);
     }
@@ -151,12 +153,9 @@ void Application::DrawGui(float delta_time)
 
 void Application::Shutdown()
 {
-    glDeleteVertexArrays(1, &VAO_);
-    glDeleteBuffers(1, &VBO_);
-    glDeleteBuffers(1, &EBO_);
-    
     ShutdownGui();
 
+    scene_.Clear();
     Engine::ResourceManager::Clear();
     
     glfwDestroyWindow(window_);
@@ -172,7 +171,41 @@ void Application::ShutdownGui()
     ImGui::DestroyContext();
 }
 
-void Application::ProcessInput(GLFWwindow* window)
+int i = 0;
+
+void Application::KeyCallback(GLFWwindow* window, int key, int scan_code, int action, int mods)
+{
+    Application* application = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
+    assert(application != nullptr);
+
+    //if(action == GLFW_PRESS)
+    {
+        application->camera_.ProcessInput(key, application->delta_time_);
+    }
+}
+
+void Application::MouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    Application* application = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
+    assert(application != nullptr);
+
+	if (application->first_mouse)
+	{
+		application->last_x = xpos;
+		application->last_y = ypos;
+		application->first_mouse = false;
+	}
+
+	float x = xpos - application->last_x;
+	float y = application->last_y - ypos;
+
+	application->last_x = xpos;
+	application->last_y = ypos;
+
+	application->camera_.ProcessMouseMovement(x, y);
+}
+
+void Application::ProcessInput(GLFWwindow* window, float delta_time)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -182,6 +215,9 @@ void Application::ProcessInput(GLFWwindow* window)
 
 void Application::ResizeCallback(GLFWwindow* window, int width, int height)
 {
+    Application* application = reinterpret_cast<Application*>(glfwGetWindowUserPointer(window));
+    assert(application != nullptr);
+
     glViewport(0, 0, width, height);
 }
 

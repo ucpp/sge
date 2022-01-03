@@ -15,6 +15,8 @@ namespace Engine
     public:
         void Load(const std::string& path);
         void Draw(Shader& shader);
+        void Clear();
+        
     public:
         std::vector<Mesh> meshes;
     

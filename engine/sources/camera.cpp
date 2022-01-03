@@ -1,0 +1,67 @@
+#include "camera.h"
+
+#include <GLFW/glfw3.h>
+#include <math.h>
+
+namespace Engine
+{
+    void Camera::Init(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+    {
+        this->position = position;
+        front = glm::vec3(0.0f, 0.0f, -1.0f);
+        this->up = up;
+        this->yaw = yaw;
+        this->pitch = pitch;
+        speed = 100.0f;
+        this->world_up = up;
+        this->mouse_speed = 0.1f;
+        Update();
+    }
+
+    glm::mat4 Camera::GetViewMatrix()
+    {
+        return glm::lookAt(position, position - front, up);
+    }
+
+    void Camera::ProcessInput(int key_code, float delta_time)
+    {
+        float velocity = speed * delta_time;
+
+        if(key_code == GLFW_KEY_W)
+        {
+            position -= front * velocity;
+        }
+        else if(key_code == GLFW_KEY_S)
+        {
+            position += front * velocity;
+        }
+        else if(key_code == GLFW_KEY_A)
+        {
+            yaw -= velocity * 6;
+        }
+        else if(key_code == GLFW_KEY_D)
+        {
+            yaw += velocity * 6;
+        }
+        Update();
+    }
+
+    void Camera::ProcessMouseMovement(float x, float y)
+    {
+        pitch += (y * mouse_speed);
+        pitch = std::min(std::max(pitch, -89.0f), 89.0f);
+        Update();
+    }
+
+    void Camera::Update()
+    {
+        glm::vec3 f;
+        f.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        f.y = sin(glm::radians(pitch));
+        f.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(f);
+
+        right = glm::normalize(glm::cross(front, world_up));
+        up = glm::normalize(glm::cross(right, front));
+    }
+}

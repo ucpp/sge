@@ -32,8 +32,8 @@ Stream #004 Model loading:
     ✔ Load backpack model @done (02.01.2022, 20:41:08)
 
 Stream #005 Camera and base of lighting:
-    ☐ Make recursive copy resources
-    ☐ Add camera and input
+    ✔ Make recursive copy resources @done (03.01.2022, 16:39:36)
+    ✔ Add camera and input @done (03.01.2022, 20:13:07)
     ☐ Base of lighting Phong
 
 Other streams:

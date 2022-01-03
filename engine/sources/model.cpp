@@ -112,4 +112,14 @@ namespace Engine
             mesh.Draw(shader);
         }
     }
+
+    void Model::Clear()
+    {
+        for(auto mesh : meshes)
+        {
+            mesh.Clear();
+        }
+
+        meshes.clear();
+    }
 }
