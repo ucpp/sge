@@ -54,4 +54,11 @@ namespace Engine
 
         glActiveTexture(GL_TEXTURE0);
     }
+
+    void Mesh::Clear()
+    {
+        glDeleteVertexArrays(1, &VAO_);
+        glDeleteBuffers(1, &VBO_);
+        glDeleteBuffers(1, &EBO_);
+    }
 }
