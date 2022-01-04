@@ -61,6 +61,11 @@ namespace Engine
         glUniform3f(glGetUniformLocation(id_, name), x, y, z);
     }
 
+    void Shader::SetVec3(const char* name, glm::vec3 v3)
+    {
+        glUniform3f(glGetUniformLocation(id_, name), v3.x, v3.y, v3.z);
+    }
+
     void Shader::SetVec4(const char* name, float x, float y, float z, float w)
     {
         glUniform4f(glGetUniformLocation(id_, name), x, y, z, w);

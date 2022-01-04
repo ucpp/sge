@@ -37,18 +37,18 @@ namespace Engine
         }
         else if(key_code == GLFW_KEY_A)
         {
-            yaw -= velocity * 6;
+            position -= right * velocity;
         }
         else if(key_code == GLFW_KEY_D)
         {
-            yaw += velocity * 6;
+            position += right * velocity;
         }
-        Update();
     }
 
     void Camera::ProcessMouseMovement(float x, float y)
     {
-        pitch += (y * mouse_speed);
+        yaw += (x * mouse_speed);
+        pitch -= (y * mouse_speed);
         pitch = std::min(std::max(pitch, -89.0f), 89.0f);
         Update();
     }

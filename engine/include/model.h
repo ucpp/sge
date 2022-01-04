@@ -23,7 +23,7 @@ namespace Engine
     private:
         void LoadNode(aiNode* node, const aiScene* scene);
         Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
-        Texture LoadTexture(aiMaterial* material, aiTextureType type, std::string type_name);
+        Texture LoadTexture(aiMaterial* material, aiTextureType type, std::string type_name, std::string force_path = "");
 
     private:
         std::string directory_;

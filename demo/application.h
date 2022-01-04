@@ -32,7 +32,8 @@ private:
     unsigned int height_;
     unsigned int texture_;
 
-    Engine::Model scene_;
+    Engine::Model box_;
+    Engine::Model light_;
     Engine::Camera camera_;
     float delta_time_;
 
