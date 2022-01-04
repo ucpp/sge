@@ -31,17 +31,22 @@ Stream #004 Model loading:
     ✔ Create model class @done (02.01.2022, 20:01:18)
     ✔ Load backpack model @done (02.01.2022, 20:41:08)
 
-Stream #005 Camera and base of lighting:
+Stream #005 Camera:
     ✔ Make recursive copy resources @done (03.01.2022, 16:39:36)
     ✔ Add camera and input @done (03.01.2022, 20:13:07)
-    ☐ Base of lighting Phong
+    
+Stream #006 Base of lighting:
+    ✔ Base of lighting Phong @done (05.01.2022, 00:36:51)
+
+Stream #007 Refactoring:
+    ☐ Fix model loader
+    ☐ Add models to resource manager
 
 Other streams:
     ☐ Materials
     ☐ Lighting maps (diffuse, specular)
     ☐ Directonal, point light etc.
     ---
-    ☐ Add assimp
     ☐ Load benchmark scene
     ---
     ☐ Anti Aliasing (MSAA)

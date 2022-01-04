@@ -15,11 +15,12 @@ set(ENGINE_HEADERS
     include/camera.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
-target_link_libraries(engine PUBLIC glad glfw glm imgui assimp ${OPENGL_LIBRARIES})
-target_include_directories(engine PUBLIC include ../externals/stb/)
 
 add_custom_command(
     TARGET engine PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
             ${CMAKE_CURRENT_SOURCE_DIR}/shaders/
-            ${CMAKE_BINARY_DIR}/Demo/shaders/)
+            ${CMAKE_BINARY_DIR}/demo/shaders/)
+
+target_link_libraries(engine PUBLIC glad glfw glm imgui assimp ${OPENGL_LIBRARIES})
+target_include_directories(engine PUBLIC include ../externals/stb/)

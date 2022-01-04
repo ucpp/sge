@@ -83,10 +83,10 @@ namespace Engine
         }
 
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
         textures.push_back(LoadTexture(material, aiTextureType_DIFFUSE, "diffuse"));
-        //textures.push_back(LoadTexture(material, aiTextureType_NORMALS, "normal"));
-        //textures.push_back(LoadTexture(material, aiTextureType_SPECULAR, "specular"));
+        textures.push_back(LoadTexture(material, aiTextureType_HEIGHT, "normalMap", "normal.png"));
+        textures.push_back(LoadTexture(material, aiTextureType_SHININESS, "specular", "specular.jpg"));
+        //textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "height"));
 
         Mesh result_mesh;
         result_mesh.Init(vertices, indices, textures);
@@ -94,13 +94,36 @@ namespace Engine
         return result_mesh;
     }
 
-    Texture Model::LoadTexture(aiMaterial* material, aiTextureType type, std::string type_name)
+    Texture Model::LoadTexture(aiMaterial* material, aiTextureType type, std::string type_name, std::string force_path)
     {
-        aiString path;
-        material->GetTexture(type, 0, &path);
-        std::string filename = std::string(path.C_Str());
-        filename = this->directory_ + "/" + filename;
-        Texture texture = Engine::ResourceManager::LoadTexture(filename.c_str(), path.C_Str(), type_name);
+        Texture texture;
+        //TODO: remove temporary hack
+        if(force_path != "")
+        {
+            texture = Engine::ResourceManager::LoadTexture((this->directory_ + "/" + force_path).c_str(),  
+            force_path.substr(0, force_path.find_last_of('.')), type_name);
+
+            return texture;
+        }
+        
+        if(material->GetTextureCount(type) > 0)
+        {
+            aiString path;
+            if (material->GetTexture(type, 0, &path) == AI_SUCCESS)
+            {
+                std::string filename = std::string(path.C_Str());
+                filename = this->directory_ + "/" + filename;
+                if(force_path != "")
+                {
+                    filename = this->directory_ + "/" + force_path;
+                }
+                texture = Engine::ResourceManager::LoadTexture(filename.c_str(), path.C_Str(), type_name);
+            }
+        }
+        else
+        {
+            std::cout << "error loading texture with type " << type  << std::endl;
+        }
 
         return texture;
     }

@@ -14,6 +14,8 @@ Application::Application(const unsigned int width, const unsigned int height, co
 {
     width_ = width;
     height_ = height;
+    last_x = width_/2;
+    last_y = height_/2;
 
     kTitleWindow = title;
 }
@@ -87,13 +89,20 @@ void Application::InitRender()
     glEnable(GL_DEPTH_TEST);
 
     Engine::ResourceManager::LoadShader("shaders/default.vert", "shaders/default.frag", "default");
-    scene_.Load("resources/backpack/backpack.obj");
+    Engine::ResourceManager::LoadShader("shaders/lamp.vert", "shaders/lamp.frag", "lamp");
+    Engine::ResourceManager::LoadShader("shaders/basic_lighting.vert", "shaders/basic_lighting.frag", "lighting");
+    
+    //box_.Load("resources/box/box.obj");
+    light_.Load("resources/box/box.obj");
+
+    box_.Load("resources/backpack/backpack.obj");
     camera_.Init(glm::vec3(0.0f, 0.0f, -3.0f));
 }
 
 void Application::Update()
 {
-    auto shader = Engine:: ResourceManager::GetShader("default");
+    auto lighting_shader = Engine:: ResourceManager::GetShader("lighting");
+    auto lamp_shader = Engine:: ResourceManager::GetShader("lamp");
 
     delta_time_ = 0.0f;
     double last_frame_time = 0.0f;
@@ -112,21 +121,44 @@ void Application::Update()
 
         glm::mat4 view = camera_.GetViewMatrix();
 
+        // TODO: move to init and resize
         glm::mat4 projection = glm::mat4(1.0f);
         float aspect = static_cast<float>(width_)/static_cast<float>(height_);
         projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 1000.0f);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 
-        shader.Use();
-        shader.SetMatrix4("view", view);
-        shader.SetMatrix4("projection", projection);
-        shader.SetMatrix4("model", model);
 
-        scene_.Draw(shader);
+        const float radius = 2.0f;
+        float dx = sin(current_time) * radius;
+        float dy = cos(current_time) * radius;
+
+        glm::vec3 lamp_pos = glm::vec3(dx, 0.0f, dy);
+        glm::mat4 lamp_model = glm::mat4(1.0f);
+        lamp_model = glm::translate(lamp_model, lamp_pos);
+        lamp_model = glm::scale(lamp_model, glm::vec3(0.1f, 0.1f, 0.1f));
+
+        lighting_shader.Use();
+        lighting_shader.SetFloat("shininess", 128.0f);
+        lighting_shader.SetVec3("viewPosition", camera_.position);
+        lighting_shader.SetVec3("lightColor", 1.0f, 1.0f, 1.0f);
+        lighting_shader.SetVec3("lightPosition", lamp_pos);
+
+        lighting_shader.SetMatrix4("view", view);
+        lighting_shader.SetMatrix4("projection", projection);
+        lighting_shader.SetMatrix4("model", model);
+
+        box_.Draw(lighting_shader);
+
+        lamp_shader.Use();
+        lamp_shader.SetMatrix4("view", view);
+        lamp_shader.SetMatrix4("projection", projection);
+        lamp_shader.SetMatrix4("model", lamp_model);
+
+        light_.Draw(lamp_shader);
 
         DrawGui(delta_time_);
 
@@ -155,7 +187,8 @@ void Application::Shutdown()
 {
     ShutdownGui();
 
-    scene_.Clear();
+    light_.Clear();
+    box_.Clear();
     Engine::ResourceManager::Clear();
     
     glfwDestroyWindow(window_);
@@ -170,8 +203,6 @@ void Application::ShutdownGui()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
-
-int i = 0;
 
 void Application::KeyCallback(GLFWwindow* window, int key, int scan_code, int action, int mods)
 {
@@ -202,7 +233,7 @@ void Application::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	application->last_x = xpos;
 	application->last_y = ypos;
 
-	application->camera_.ProcessMouseMovement(x, y);
+	//application->camera_.ProcessMouseMovement(x, y);
 }
 
 void Application::ProcessInput(GLFWwindow* window, float delta_time)

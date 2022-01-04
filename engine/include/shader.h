@@ -27,6 +27,7 @@ namespace Engine
         void SetVec4(const char* name, float x, float y, float z, float w);
 
         void SetMatrix4(const char* name, const glm::mat4& matrix);
+        void SetVec3(const char* name, glm::vec3 v3);
     private:
         unsigned int id_;
 
