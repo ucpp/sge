@@ -5,14 +5,14 @@
 
 namespace Engine
 {
-    void Camera::Init(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+    void Camera::Init(glm::vec3 position, float speed, glm::vec3 up, float yaw, float pitch)
     {
         this->position = position;
         front = glm::vec3(0.0f, 0.0f, -1.0f);
         this->up = up;
         this->yaw = yaw;
         this->pitch = pitch;
-        speed = 100.0f;
+        this->speed = speed;
         this->world_up = up;
         this->mouse_speed = 0.1f;
         Update();
@@ -27,21 +27,21 @@ namespace Engine
     {
         float velocity = speed * delta_time;
 
-        if(key_code == GLFW_KEY_W)
+        if (key_code == GLFW_KEY_W)
         {
             position -= front * velocity;
         }
-        else if(key_code == GLFW_KEY_S)
+        else if (key_code == GLFW_KEY_S)
         {
             position += front * velocity;
         }
-        else if(key_code == GLFW_KEY_A)
-        {
-            position -= right * velocity;
-        }
-        else if(key_code == GLFW_KEY_D)
+        else if (key_code == GLFW_KEY_A)
         {
             position += right * velocity;
+        }
+        else if (key_code == GLFW_KEY_D)
+        {
+            position -= right * velocity;
         }
     }
 

@@ -12,10 +12,11 @@ namespace Engine
     public:
         void Init(
             glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
+            float spped = 100,
             glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
             float yaw = -90.0f,
             float pitch = 0.0f);
-        
+
         glm::mat4 GetViewMatrix();
         void ProcessInput(int key_code, float delta_time);
         void ProcessMouseMovement(float x, float y);

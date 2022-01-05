@@ -27,21 +27,21 @@ namespace Engine
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, normal)));
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(offsetof(Vertex, normal)));
         glEnableVertexAttribArray(1);
 
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, uv)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)(offsetof(Vertex, uv)));
         glEnableVertexAttribArray(2);
 
         glBindVertexArray(0);
     }
 
-    void Mesh::Draw(Shader& shader)
+    void Mesh::Draw(Shader &shader)
     {
-        for(unsigned int i = 0; i < textures.size(); ++i)
+        for (unsigned int i = 0; i < textures.size(); ++i)
         {
             glActiveTexture(GL_TEXTURE0 + i);
             shader.SetInt(textures[i].type.c_str(), i);

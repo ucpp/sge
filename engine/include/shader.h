@@ -16,18 +16,19 @@ namespace Engine
         };
 
     public:
-        void Compile(const char* vertex_source, const char* fragment_source);
+        void Compile(const char *vertex_source, const char *fragment_source);
         void Use();
         unsigned int GetId();
 
-        void SetInt(const char* name, int value);
-        void SetFloat(const char* name, float value);
-        void SetVec2(const char* name, float x, float y);
-        void SetVec3(const char* name, float x, float y, float z);
-        void SetVec4(const char* name, float x, float y, float z, float w);
+        void SetInt(const char *name, int value);
+        void SetFloat(const char *name, float value);
+        void SetVec2(const char *name, float x, float y);
+        void SetVec3(const char *name, float x, float y, float z);
+        void SetVec4(const char *name, float x, float y, float z, float w);
 
-        void SetMatrix4(const char* name, const glm::mat4& matrix);
-        void SetVec3(const char* name, glm::vec3 v3);
+        void SetMatrix4(const char *name, const glm::mat4 &matrix);
+        void SetVec3(const char *name, glm::vec3 v3);
+
     private:
         unsigned int id_;
 

@@ -14,7 +14,7 @@ namespace Engine
         glGenTextures(1, &id);
     }
 
-    void Texture::Generate(unsigned char* data, unsigned int width, unsigned int height)
+    void Texture::Generate(unsigned char *data, unsigned int width, unsigned int height)
     {
         width_ = width;
         height_ = height;
@@ -34,6 +34,43 @@ namespace Engine
     void Texture::Bind() const
     {
         glBindTexture(GL_TEXTURE_2D, id);
+    }
+
+    void Texture::SetFormat(int channels, size_t pixel_size)
+    {
+        unsigned int format = GL_RGB;
+        /*
+        if(pixel_size == sizeof(float))
+        {
+            switch (channels)
+            {
+            case 1: format = GL_R32F; break;
+            case 2: format = GL_RG32F; break;
+            case 3: format = GL_RGB32F; break;
+            case 4: format = GL_RGBA32F; break;
+            }
+        }
+        else
+        {
+            switch (channels)
+            {
+            case 1: format = GL_R8; break;
+            case 2: format = GL_RG8; break;
+            case 3: format = GL_RGB8; break;
+            case 4: format = GL_RGBA8; break;
+            }
+        }
+        */
+        if(channels == 1)
+        {
+            format = GL_R;
+        }
+        if(channels == 4)
+        {
+            format = GL_RGBA;
+        }
+        internal_format_ = format;
+        image_format_ = format;
     }
 
     unsigned int Texture::GetWidth() const
