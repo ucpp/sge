@@ -39,19 +39,17 @@ Stream #006 Base of lighting:
     ✔ Base of lighting Phong @done (05.01.2022, 00:36:51)
 
 Stream #007 Refactoring:
-    ☐ Fix model loader
-    ☐ Add models to resource manager
+    ✔ fix camera input @done (05.01.2022, 16:50:06)
+    ✔ Fix model loader @done (05.01.2022, 18:11:45)
+    ✔ Enable auto multisamling @done (05.01.2022, 18:24:50)
+    ✔ Load benchmark scene @done (05.01.2022, 19:13:30)
+    ✔ Lighting maps (diffuse, specular) @done (05.01.2022, 19:13:33)
+    ✔ Directonal, point light etc. @done (05.01.2022, 20:07:00)
 
 Other streams:
+    ☐ Add models to resource manager
     ☐ Materials
-    ☐ Lighting maps (diffuse, specular)
-    ☐ Directonal, point light etc.
-    ---
-    ☐ Load benchmark scene
-    ---
-    ☐ Anti Aliasing (MSAA)
     ☐ Blinn-Phong
-    ---
     ☐ Shadows
     ---
     ☐ Normal mapping

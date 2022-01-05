@@ -83,10 +83,10 @@ namespace Engine
         }
 
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        textures.push_back(LoadTexture(material, aiTextureType_DIFFUSE, "diffuse"));
-        textures.push_back(LoadTexture(material, aiTextureType_HEIGHT, "normalMap", "normal.png"));
-        textures.push_back(LoadTexture(material, aiTextureType_SHININESS, "specular", "specular.jpg"));
-        //textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "height"));
+        textures.push_back(LoadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
+        textures.push_back(LoadTexture(material, aiTextureType_HEIGHT, "material.normal"));
+        textures.push_back(LoadTexture(material, aiTextureType_SHININESS, "material.specular"));
+        textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
 
         Mesh result_mesh;
         result_mesh.Init(vertices, indices, textures);
@@ -113,11 +113,12 @@ namespace Engine
             {
                 std::string filename = std::string(path.C_Str());
                 filename = this->directory_ + "/" + filename;
-                if(force_path != "")
-                {
-                    filename = this->directory_ + "/" + force_path;
-                }
-                texture = Engine::ResourceManager::LoadTexture(filename.c_str(), path.C_Str(), type_name);
+                //std::cout << filename.c_str() << std::endl;
+
+                std::string tex_name(path.C_Str());
+                tex_name = tex_name.substr(0, tex_name.find_last_of('.'));
+                tex_name += "_" + type_name;
+                texture = Engine::ResourceManager::LoadTexture(filename.c_str(), tex_name.c_str(), type_name);
             }
         }
         else

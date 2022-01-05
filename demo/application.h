@@ -26,6 +26,7 @@ private:
     static void ResizeCallback(GLFWwindow* window, int width, int height);
     static void ErrorCallback(int error_code, const char* description);
     static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+    static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 private:
     GLFWwindow* window_ {nullptr};
     unsigned int width_;
@@ -36,13 +37,12 @@ private:
     Engine::Model light_;
     Engine::Camera camera_;
     float delta_time_;
+    bool mouse_pressed_;
 
     const char* kTitleWindow;
 
     float last_x = 0.0f;
     float last_y = 0.0f;
-
-    bool first_mouse = true;
 };
 
 #endif

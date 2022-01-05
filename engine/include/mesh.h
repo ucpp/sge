@@ -18,23 +18,23 @@ namespace Engine
 
     class Mesh
     {
-        public:
-            void Init(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-            void Draw(Shader& shader);
-            void Clear();
+    public:
+        void Init(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+        void Draw(Shader &shader);
+        void Clear();
 
-        public:
-            std::vector<Vertex> vertices;
-            std::vector<unsigned int> indices;
-            std::vector<Texture> textures;
+    public:
+        std::vector<Vertex> vertices;
+        std::vector<unsigned int> indices;
+        std::vector<Texture> textures;
 
-        private:
-            void Setup();
+    private:
+        void Setup();
 
-        private:
-            unsigned int VBO_;
-            unsigned int VAO_;
-            unsigned int EBO_;
+    private:
+        unsigned int VBO_;
+        unsigned int VAO_;
+        unsigned int EBO_;
     };
 }
 

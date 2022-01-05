@@ -15,7 +15,7 @@ namespace Engine
         return id_;
     }
 
-    void Shader::Compile(const char* vertex_source, const char* fragment_source)
+    void Shader::Compile(const char *vertex_source, const char *fragment_source)
     {
         unsigned int vertex;
         unsigned int fragment;
@@ -41,37 +41,37 @@ namespace Engine
         glDeleteShader(fragment);
     }
 
-    void Shader::SetInt(const char* name, int value)
+    void Shader::SetInt(const char *name, int value)
     {
         glUniform1i(glGetUniformLocation(id_, name), value);
     }
 
-    void Shader::SetFloat(const char* name, float value)
+    void Shader::SetFloat(const char *name, float value)
     {
         glUniform1f(glGetUniformLocation(id_, name), value);
     }
 
-    void Shader::SetVec2(const char* name, float x, float y)
+    void Shader::SetVec2(const char *name, float x, float y)
     {
         glUniform2f(glGetUniformLocation(id_, name), x, y);
     }
 
-    void Shader::SetVec3(const char* name, float x, float y, float z)
+    void Shader::SetVec3(const char *name, float x, float y, float z)
     {
         glUniform3f(glGetUniformLocation(id_, name), x, y, z);
     }
 
-    void Shader::SetVec3(const char* name, glm::vec3 v3)
+    void Shader::SetVec3(const char *name, glm::vec3 v3)
     {
         glUniform3f(glGetUniformLocation(id_, name), v3.x, v3.y, v3.z);
     }
 
-    void Shader::SetVec4(const char* name, float x, float y, float z, float w)
+    void Shader::SetVec4(const char *name, float x, float y, float z, float w)
     {
         glUniform4f(glGetUniformLocation(id_, name), x, y, z, w);
     }
 
-    void Shader::SetMatrix4(const char* name, const glm::mat4& matrix)
+    void Shader::SetMatrix4(const char *name, const glm::mat4 &matrix)
     {
         glUniformMatrix4fv(glGetUniformLocation(id_, name), 1, false, glm::value_ptr(matrix));
     }
@@ -82,10 +82,10 @@ namespace Engine
         const int buff_size = 512;
         char info[buff_size];
 
-        if(type == Type::Program)
+        if (type == Type::Program)
         {
             glGetShaderiv(id, GL_LINK_STATUS, &success);
-            if(!success)
+            if (!success)
             {
                 glGetProgramInfoLog(id, buff_size, nullptr, info);
                 std::cout << "Shader link time error:" << info << std::endl;
@@ -94,7 +94,7 @@ namespace Engine
         else
         {
             glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-            if(!success)
+            if (!success)
             {
                 glGetShaderInfoLog(id, buff_size, nullptr, info);
                 std::cout << "Shader compile error:" << info << std::endl;
