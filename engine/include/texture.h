@@ -26,6 +26,7 @@ namespace Engine
         unsigned int height_;
         unsigned int internal_format_;
         unsigned int image_format_;
+        unsigned int wrap_format_;
     };
 }
 

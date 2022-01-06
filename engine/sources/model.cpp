@@ -9,7 +9,8 @@ namespace Engine
     void Model::Load(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(path, 
+        aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
         if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -69,6 +70,14 @@ namespace Engine
             {
                 vertex.uv = glm::vec2(0.0f, 0.0f);
             }
+
+            glm::vec3 tg;
+            tg.x = mesh->mTangents[i].x;
+            tg.x = mesh->mTangents[i].x;
+            tg.x = mesh->mTangents[i].x;
+            
+            vertex.tangent = tg;
+
             vertices.push_back(vertex);
         }
 

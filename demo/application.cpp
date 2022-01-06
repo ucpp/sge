@@ -91,10 +91,9 @@ void Application::InitRender()
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
 
-    Engine::ResourceManager::LoadShader("shaders/default.vert", "shaders/default.frag", "default");
     Engine::ResourceManager::LoadShader("shaders/lamp.vert", "shaders/lamp.frag", "lamp");
-    Engine::ResourceManager::LoadShader("shaders/basic_lighting.vert", "shaders/basic_lighting.frag", "lighting");
-
+    Engine::ResourceManager::LoadShader("shaders/lighting.vert", "shaders/lighting.frag", "lighting");
+    Engine::ResourceManager::LoadShader("shaders/basic_lighting.vert", "shaders/basic_lighting.frag", "basic");
     light_.Load("resources/box/box.obj");
     box_.Load("resources/pbr_sponza/sponza.obj");
     camera_.Init(glm::vec3(0.0f, 2.0f, -3.0f), 150.0f);
@@ -102,7 +101,7 @@ void Application::InitRender()
 
 void Application::Update()
 {
-    auto lighting_shader = Engine::ResourceManager::GetShader("lighting");
+    active_shader_ = Engine::ResourceManager::GetShader("lighting");
     auto lamp_shader = Engine::ResourceManager::GetShader("lamp");
 
     delta_time_ = 0.0f;
@@ -141,30 +140,30 @@ void Application::Update()
         lamp_model = glm::translate(lamp_model, lamp_pos);
         lamp_model = glm::scale(lamp_model, glm::vec3(0.1f, 0.1f, 0.1f));
 
-        lighting_shader.Use();
-        lighting_shader.SetFloat("material.shininess", 32.0f);
-        lighting_shader.SetVec3("viewPosition", camera_.position);
+        active_shader_.Use();
+        active_shader_.SetFloat("material.shininess", 128.0f);
+        active_shader_.SetVec3("viewPosition", camera_.position);
+        
+        active_shader_.SetVec3("pointLights[0].color", 1.0f, 1.0f, 1.0f);
+        active_shader_.SetVec3("pointLights[0].position", lamp_pos);
 
-        lighting_shader.SetVec3("pointLights[0].color", 1.0f, 1.0f, 1.0f);
-        lighting_shader.SetVec3("pointLights[0].position", lamp_pos);
+        active_shader_.SetFloat("pointLights[0].linear", 0.09f);
+        active_shader_.SetFloat("pointLights[0].quadratic", 0.032f);
 
-        lighting_shader.SetFloat("pointLights[0].linear", 0.09f);
-        lighting_shader.SetFloat("pointLights[0].quadratic", 0.032f);
+        active_shader_.SetFloat("pointLights[0].ambient", 0.5f);
+        active_shader_.SetFloat("pointLights[0].diffuse", 0.7f);
+        active_shader_.SetFloat("pointLights[0].specular", 1.0f);
 
-        lighting_shader.SetFloat("pointLights[0].ambient", 0.05f);
-        lighting_shader.SetFloat("pointLights[0].diffuse", 0.7f);
-        lighting_shader.SetFloat("pointLights[0].specular", 1.0f);
+        active_shader_.SetVec3("directionalLight.direction", -1.0f, -5.0f, -1.5f);
+        active_shader_.SetFloat("directionalLight.ambient", 0.3f);
+        active_shader_.SetFloat("directionalLight.diffuse", 0.8f);
+        active_shader_.SetFloat("directionalLight.specular", 0.7f);
 
-        lighting_shader.SetVec3("directionalLight.direction", -1.0f, -5.0f, -1.5f);
-        lighting_shader.SetFloat("directionalLight.ambient", 0.1f);
-        lighting_shader.SetFloat("directionalLight.diffuse", 0.5f);
-        lighting_shader.SetFloat("directionalLight.specular", 0.6f);
+        active_shader_.SetMatrix4("view", view);
+        active_shader_.SetMatrix4("projection", projection);
+        active_shader_.SetMatrix4("model", model);
 
-        lighting_shader.SetMatrix4("view", view);
-        lighting_shader.SetMatrix4("projection", projection);
-        lighting_shader.SetMatrix4("model", model);
-
-        box_.Draw(lighting_shader);
+        box_.Draw(active_shader_);
 
         lamp_shader.Use();
         lamp_shader.SetMatrix4("view", view);
@@ -187,8 +186,26 @@ void Application::DrawGui(float delta_time)
 
     ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
     ImGui::Begin("Info", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+    
     ImGui::TextColored(ImColor(255, 255, 255, 255), "OpenGL render version 0.1");
+    
     ImGui::TextColored(ImColor(255, 255, 255, 255), (std::to_string((int)(1.0f / delta_time)) + " fps").c_str());
+    
+    std::string button_name = polygon_mode_enabled_ ? "Disable poligons" : "Enable polygins";
+    if(ImGui::Button(button_name.c_str()))
+    {
+        polygon_mode_enabled_ = !polygon_mode_enabled_;
+        glPolygonMode(GL_FRONT_AND_BACK, polygon_mode_enabled_ ? GL_FILL : GL_LINE);
+    }
+
+    button_name = normal_maps_enabled_ ? "Disable normal maps" : "Enable normal maps";
+    if(ImGui::Button(button_name.c_str()))
+    {
+        normal_maps_enabled_ = !normal_maps_enabled_;
+        active_shader_ = normal_maps_enabled_ ? 
+        Engine::ResourceManager::GetShader("lighting") :
+        Engine::ResourceManager::GetShader("basic");
+    }
 
     ImGui::End();
     ImGui::Render();

@@ -36,6 +36,7 @@ private:
     Engine::Model box_;
     Engine::Model light_;
     Engine::Camera camera_;
+    Engine::Shader active_shader_;
     float delta_time_;
     bool mouse_pressed_;
 
@@ -43,6 +44,9 @@ private:
 
     float last_x = 0.0f;
     float last_y = 0.0f;
+
+    bool polygon_mode_enabled_ = true;
+    bool normal_maps_enabled_ = true;
 };
 
 #endif

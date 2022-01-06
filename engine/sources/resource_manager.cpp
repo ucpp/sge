@@ -60,7 +60,7 @@ namespace Engine
         return textures_[name];
     }
 
-    Shader &ResourceManager::GetShader(std::string name)
+    Shader ResourceManager::GetShader(std::string name)
     {
         return shaders_[name];
     }
