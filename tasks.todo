@@ -46,9 +46,14 @@ Stream #007 Refactoring:
     ✔ Lighting maps (diffuse, specular) @done (05.01.2022, 19:13:33)
     ✔ Directonal, point light etc. @done (05.01.2022, 20:07:00)
 
-Other streams:
+Stream #008 Normal mapping:
+    ✔ Add normal mapping @done (07.01.2022, 00:10:15)
     ☐ Add models to resource manager
     ☐ Materials
+
+Spream #009 Cubemap and shadows:
+
+Other streams:
     ☐ Blinn-Phong
     ☐ Shadows
     ---

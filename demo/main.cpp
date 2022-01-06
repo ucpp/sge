@@ -8,7 +8,7 @@ int main()
 
     try
     {
-        Application application(1024, 768, "Demo");
+        Application application(1268, 768, "Demo");
         application.Run();
     }
     catch (const std::exception &e)
