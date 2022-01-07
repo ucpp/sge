@@ -20,8 +20,6 @@ Application::Application(const unsigned int width, const unsigned int height, co
     width_ = width;
     height_ = height;
 
-    main_camera_ = new Engine::Camera();
-    main_camera_->SetInputSystem(input_);
     kTitleWindow = title;
 }
 
@@ -90,7 +88,8 @@ void Application::InitRender()
     Engine::ResourceManager::LoadModel("resources/box/box.obj", "light");
     Engine::ResourceManager::LoadModel("resources/pbr_sponza/sponza.obj", "sponza");
 
-    main_camera_->Init(glm::vec3(0.0f, 2.0f, -3.0f), 30.0f);
+    //init camera
+    main_camera_ = new Engine::Camera(input_, glm::vec3(0.0, 2.0, -3.0), 30.0);
 }
 
 void Application::Update()
@@ -166,7 +165,7 @@ void Application::Update()
 
         state_.active_shader->Use();
         state_.active_shader->SetFloat("material.shininess", 128.0f);
-        state_.active_shader->SetVec3("viewPosition", main_camera_->position);
+        state_.active_shader->SetVec3("viewPosition", main_camera_->GetPosition());
         
         state_.active_shader->SetVec3("pointLights[0].color", 1.0f, 1.0f, 1.0f);
         state_.active_shader->SetVec3("pointLights[0].position", lamp_pos);

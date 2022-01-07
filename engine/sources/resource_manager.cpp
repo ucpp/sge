@@ -32,7 +32,6 @@ namespace Engine
 
     Texture &ResourceManager::LoadTexture(const char *file_name, std::string name, std::string type, bool alpha)
     {
-        //std::cout <<"tex: " << name << std::endl;
         if (textures_.count(name) == 1)
         {
             return GetTexture(name);
@@ -41,28 +40,23 @@ namespace Engine
         Texture texture;
         texture.type = type;
 
-        if (alpha)
-        {
-            texture.EnableAlpha();
-        }
-
-        //stbi_set_flip_vertically_on_load(true);
+        // stbi_set_flip_vertically_on_load(true);
 
         int width = 0;
         int height = 0;
         int channels = 0;
-        //size_t pixel_size = sizeof(float);
-        size_t pixel_size = sizeof(stbi_uc);
+
         unsigned char *data = stbi_load(file_name, &width, &height, &channels, 0);
-        uint32_t mip_levels = static_cast<int>(std::floor(std::log2(std::max(width, height))) + 1);
-        texture.SetFormat(channels, pixel_size);
+
+        texture.SetFormat(channels, sizeof(stbi_uc));
         texture.Generate(data, width, height);
+
         stbi_image_free(data);
         textures_[name] = texture;
 
         return textures_[name];
     }
-    
+
     Model &ResourceManager::LoadModel(const char *file_name, std::string name)
     {
         if (models_.count(name) == 1)
@@ -107,7 +101,7 @@ namespace Engine
 
         textures_.clear();
 
-        for(auto model : models_)
+        for (auto model : models_)
         {
             model.second.Clear();
         }
