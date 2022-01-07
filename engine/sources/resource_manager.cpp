@@ -7,10 +7,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#include "model.h"
+
 namespace Engine
 {
     std::map<std::string, Shader> ResourceManager::shaders_;
     std::map<std::string, Texture> ResourceManager::textures_;
+    std::map<std::string, Model> ResourceManager::models_;
 
     Shader &ResourceManager::LoadShader(const char *vertex_file_name, const char *fragment_file_name, std::string name)
     {
@@ -59,8 +62,26 @@ namespace Engine
 
         return textures_[name];
     }
+    
+    Model &ResourceManager::LoadModel(const char *file_name, std::string name)
+    {
+        if (models_.count(name) == 1)
+        {
+            return GetModel(name);
+        }
+        Model model;
+        model.Load(file_name);
+        models_[name] = model;
 
-    Shader ResourceManager::GetShader(std::string name)
+        return models_[name];
+    }
+
+    Model &ResourceManager::GetModel(std::string name)
+    {
+        return models_[name];
+    }
+
+    Shader &ResourceManager::GetShader(std::string name)
     {
         return shaders_[name];
     }
@@ -85,6 +106,13 @@ namespace Engine
         }
 
         textures_.clear();
+
+        for(auto model : models_)
+        {
+            model.second.Clear();
+        }
+
+        models_.clear();
     }
 
     std::string ResourceManager::LoadShaderSource(const std::string &file_name)
