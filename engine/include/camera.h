@@ -7,9 +7,14 @@
 
 namespace Engine
 {
+    class InputSystem;
+
     class Camera
     {
     public:
+        void SetInputSystem(InputSystem& input);
+        void Update(float delta_time);
+
         void Init(
             glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
             float spped = 100,
@@ -18,8 +23,6 @@ namespace Engine
             float pitch = 0.0f);
 
         glm::mat4 GetViewMatrix();
-        void ProcessInput(int key_code, float delta_time);
-        void ProcessMouseMovement(float x, float y);
 
     public:
         glm::vec3 position;
@@ -33,7 +36,14 @@ namespace Engine
         float pitch;
 
     private:
-        void Update();
+        void Refresh();
+        void UpdateMouseMovement();
+        void ProcessInput(float delta_time);
+    
+    private:
+        InputSystem* input_ {nullptr};
+        double last_x_ = 0;
+        double last_y_ = 0;
     };
 }
 

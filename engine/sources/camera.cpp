@@ -3,8 +3,15 @@
 #include <GLFW/glfw3.h>
 #include <math.h>
 
+#include "input_system.h"
+
 namespace Engine
 {
+    void Camera::SetInputSystem(InputSystem& input)
+    {
+        input_ = &input;
+    }
+
     void Camera::Init(glm::vec3 position, float speed, glm::vec3 up, float yaw, float pitch)
     {
         this->position = position;
@@ -15,7 +22,13 @@ namespace Engine
         this->speed = speed;
         this->world_up = up;
         this->mouse_speed = 0.1f;
-        Update();
+        Refresh();
+    }
+
+    void Camera::Update(float delta_time)
+    {
+        UpdateMouseMovement();
+        ProcessInput(delta_time);
     }
 
     glm::mat4 Camera::GetViewMatrix()
@@ -23,37 +36,56 @@ namespace Engine
         return glm::lookAt(position, position - front, up);
     }
 
-    void Camera::ProcessInput(int key_code, float delta_time)
+    void Camera::UpdateMouseMovement()
+    {
+        if(input_ == nullptr)
+        {
+            return;
+        }
+
+        if(!input_->IsPressedMouseRight())
+        {
+            last_x_ = input_->GetX();
+            last_y_ = input_->GetY();
+            return;
+        }
+
+        double x = input_->GetX() - last_x_;
+        double y = last_y_ - input_->GetY();
+
+        last_x_ = input_->GetX();
+        last_y_ = input_->GetY();
+
+        yaw += (x * mouse_speed);
+        pitch -= (y * mouse_speed);
+        pitch = std::min(std::max(pitch, -89.0f), 89.0f);
+
+        Refresh();
+    }
+
+    void Camera::ProcessInput(float delta_time)
     {
         float velocity = speed * delta_time;
 
-        if (key_code == GLFW_KEY_W)
+        if (input_->IsKeyPressed(GLFW_KEY_W))
         {
             position -= front * velocity;
         }
-        else if (key_code == GLFW_KEY_S)
+        else if (input_->IsKeyPressed(GLFW_KEY_S))
         {
             position += front * velocity;
         }
-        else if (key_code == GLFW_KEY_A)
+        else if (input_->IsKeyPressed(GLFW_KEY_A))
         {
             position += right * velocity;
         }
-        else if (key_code == GLFW_KEY_D)
+        else if (input_->IsKeyPressed(GLFW_KEY_D))
         {
             position -= right * velocity;
         }
     }
 
-    void Camera::ProcessMouseMovement(float x, float y)
-    {
-        yaw += (x * mouse_speed);
-        pitch -= (y * mouse_speed);
-        pitch = std::min(std::max(pitch, -89.0f), 89.0f);
-        Update();
-    }
-
-    void Camera::Update()
+    void Camera::Refresh()
     {
         glm::vec3 f;
         f.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
