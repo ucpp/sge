@@ -11,20 +11,26 @@
 
 namespace Engine
 {
+    class Model;
+    
     class ResourceManager
     {
     public:
         static Shader &LoadShader(const char *vertex_file_name, const char *fragment_file_name, std::string name);
-        static Shader GetShader(std::string shader);
+        static Shader &GetShader(std::string shader);
 
         static Texture &LoadTexture(const char *file_name, std::string name, std::string type = "diffuse", bool alpha = false);
         static Texture &GetTexture(std::string name);
+
+        static Model &LoadModel(const char *file_name, std::string name);
+        static Model &GetModel(std::string name);
 
         static void Clear();
 
     private:
         static std::map<std::string, Shader> shaders_;
         static std::map<std::string, Texture> textures_;
+        static std::map<std::string, Model> models_;
 
     private:
         static std::string LoadShaderSource(const std::string &file_name);

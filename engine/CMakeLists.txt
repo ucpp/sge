@@ -6,7 +6,11 @@ set(ENGINE_SOURCES
     sources/texture.cpp 
     sources/mesh.cpp 
     sources/model.cpp 
-    sources/camera.cpp)
+    sources/camera.cpp 
+    sources/renderer.cpp 
+    sources/material.cpp 
+    sources/input_system.cpp 
+    sources/imgui_renderer.cpp)
 
 set(ENGINE_HEADERS 
     include/shader.h 
@@ -14,7 +18,11 @@ set(ENGINE_HEADERS
     include/texture.h 
     include/mesh.h 
     include/model.h 
-    include/camera.h)
+    include/camera.h 
+    include/renderer.h 
+    include/material.h 
+    include/input_system.h 
+    include/imgui_renderer.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
