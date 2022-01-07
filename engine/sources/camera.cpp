@@ -5,35 +5,54 @@
 
 #include "input_system.h"
 
+#include <iostream>
+
 namespace Engine
 {
-    void Camera::SetInputSystem(InputSystem& input)
+    Camera::Camera(InputSystem& input, glm::vec3 position, float speed) : position_(position), speed_(speed)
     {
         input_ = &input;
+        
+        front_ = glm::vec3(0.0f, 0.0f, -1.0f);
+        up_ = glm::vec3(0.0f, 1.0f, 0.0f);
+        world_up_ = up_;
+        
+        mouse_speed_ = 0.1f;
+        
+        pitch_ = 0.0f;
+        yaw_ = -90.0f;
+
+        last_x_ = 0.0;
+        last_y_ = 0.0;
+        std::cout << position_.x << " " << position_.y << " " << position_.z << std::endl;
+
+        Refresh();
     }
 
-    void Camera::Init(glm::vec3 position, float speed, glm::vec3 up, float yaw, float pitch)
+    void Camera::SetPosition(double x, double y, double z)
     {
-        this->position = position;
-        front = glm::vec3(0.0f, 0.0f, -1.0f);
-        this->up = up;
-        this->yaw = yaw;
-        this->pitch = pitch;
-        this->speed = speed;
-        this->world_up = up;
-        this->mouse_speed = 0.1f;
-        Refresh();
+        position_ = glm::vec3(x, y, z);
+    }
+
+    void Camera::SetSpeed(double speed)
+    {
+        speed_ = speed;
+    }
+
+    glm::vec3 Camera::GetPosition() const
+    {
+        return position_;
+    }
+
+    glm::mat4 Camera::GetViewMatrix() const
+    {
+        return glm::lookAt(position_, position_ - front_, up_);
     }
 
     void Camera::Update(float delta_time)
     {
         UpdateMouseMovement();
         ProcessInput(delta_time);
-    }
-
-    glm::mat4 Camera::GetViewMatrix()
-    {
-        return glm::lookAt(position, position - front, up);
     }
 
     void Camera::UpdateMouseMovement()
@@ -56,44 +75,44 @@ namespace Engine
         last_x_ = input_->GetX();
         last_y_ = input_->GetY();
 
-        yaw += (x * mouse_speed);
-        pitch -= (y * mouse_speed);
-        pitch = std::min(std::max(pitch, -89.0f), 89.0f);
+        yaw_ += (x * mouse_speed_);
+        pitch_ -= (y * mouse_speed_);
+        pitch_ = std::min(std::max(pitch_, -kClampPitchAngle), kClampPitchAngle);
 
         Refresh();
     }
 
     void Camera::ProcessInput(float delta_time)
     {
-        float velocity = speed * delta_time;
+        float velocity = speed_ * delta_time;
 
         if (input_->IsKeyPressed(GLFW_KEY_W))
         {
-            position -= front * velocity;
+            position_ -= front_ * velocity;
         }
         else if (input_->IsKeyPressed(GLFW_KEY_S))
         {
-            position += front * velocity;
+            position_ += front_ * velocity;
         }
         else if (input_->IsKeyPressed(GLFW_KEY_A))
         {
-            position += right * velocity;
+            position_ += right_ * velocity;
         }
         else if (input_->IsKeyPressed(GLFW_KEY_D))
         {
-            position -= right * velocity;
+            position_ -= right_ * velocity;
         }
     }
 
     void Camera::Refresh()
     {
-        glm::vec3 f;
-        f.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        f.y = sin(glm::radians(pitch));
-        f.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        front = glm::normalize(f);
+        glm::vec3 front_direction;
+        front_direction.x = cos(glm::radians(yaw_)) * cos(glm::radians(pitch_));
+        front_direction.y = sin(glm::radians(pitch_));
+        front_direction.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
+        front_ = glm::normalize(front_direction);
 
-        right = glm::normalize(glm::cross(front, world_up));
-        up = glm::normalize(glm::cross(right, front));
+        right_ = glm::normalize(glm::cross(front_, world_up_));
+        up_ = glm::normalize(glm::cross(right_, front_));
     }
 }
