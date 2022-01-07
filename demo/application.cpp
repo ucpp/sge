@@ -1,10 +1,15 @@
 #include "application.h"
 
-#include "resource_manager.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include <stdexcept>
 #include <iostream>
 #include <math.h>
+
+#include "resource_manager.h"
+#include "camera.h"
+#include "model.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -14,9 +19,9 @@ Application::Application(const unsigned int width, const unsigned int height, co
 {
     width_ = width;
     height_ = height;
-    last_x = width_ / 2;
-    last_y = height_ / 2;
 
+    main_camera_ = new Engine::Camera();
+    main_camera_->SetInputSystem(input_);
     kTitleWindow = title;
 }
 
@@ -66,23 +71,8 @@ void Application::Init()
 
     glfwSwapInterval(0);
 
-    InitGui();
+    imgui_renderer_.Init(window_, &state_);
     InitRender();
-}
-
-void Application::InitGui()
-{
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGui_ImplGlfw_InitForOpenGL(window_, true);
-
-#ifdef __APPLE__
-    ImGui_ImplOpenGL3_Init("#version 150");
-#else
-    ImGui_ImplOpenGL3_Init("#version 130");
-#endif
-
-    ImGui::StyleColorsDark();
 }
 
 // TODO: move to render
@@ -91,21 +81,54 @@ void Application::InitRender()
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
 
+    // load shaders
     Engine::ResourceManager::LoadShader("shaders/lamp.vert", "shaders/lamp.frag", "lamp");
     Engine::ResourceManager::LoadShader("shaders/lighting.vert", "shaders/lighting.frag", "lighting");
     Engine::ResourceManager::LoadShader("shaders/basic_lighting.vert", "shaders/basic_lighting.frag", "basic");
-    light_.Load("resources/box/box.obj");
-    box_.Load("resources/pbr_sponza/sponza.obj");
-    camera_.Init(glm::vec3(0.0f, 2.0f, -3.0f), 150.0f);
+
+    // load models
+    Engine::ResourceManager::LoadModel("resources/box/box.obj", "light");
+    Engine::ResourceManager::LoadModel("resources/pbr_sponza/sponza.obj", "sponza");
+
+    main_camera_->Init(glm::vec3(0.0f, 2.0f, -3.0f), 30.0f);
 }
 
 void Application::Update()
 {
-    active_shader_ = Engine::ResourceManager::GetShader("lighting");
+    state_.active_shader = &Engine::ResourceManager::GetShader("lighting");
     auto lamp_shader = Engine::ResourceManager::GetShader("lamp");
+    auto sponza_model = Engine::ResourceManager::GetModel("sponza");
+    auto light_model = Engine::ResourceManager::GetModel("light");
 
     delta_time_ = 0.0f;
     double last_frame_time = 0.0f;
+
+
+    //Test shadows
+    /*
+    const unsigned int shadow_map_width = 1024;
+    const unsigned int shadow_map_height = 1024;
+    unsigned int depth_map_FBO;
+    glGenFramebuffers(1, &depth_map_FBO);
+
+    unsigned int depth_map;
+    glGenTextures(1, &depth_map);
+    glBindTexture(GL_TEXTURE_2D, depth_map);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadow_map_width, shadow_map_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, depth_map_FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_map, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    */
+
 
     while (!glfwWindowShouldClose(window_))
     {
@@ -114,12 +137,13 @@ void Application::Update()
         last_frame_time = current_time;
         glfwPollEvents();
 
+        main_camera_->Update(delta_time_);
         ProcessInput(window_, delta_time_);
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 view = camera_.GetViewMatrix();
+        glm::mat4 view = main_camera_->GetViewMatrix();
 
         // TODO: move to init and resize
         glm::mat4 projection = glm::mat4(1.0f);
@@ -140,85 +164,51 @@ void Application::Update()
         lamp_model = glm::translate(lamp_model, lamp_pos);
         lamp_model = glm::scale(lamp_model, glm::vec3(0.1f, 0.1f, 0.1f));
 
-        active_shader_.Use();
-        active_shader_.SetFloat("material.shininess", 128.0f);
-        active_shader_.SetVec3("viewPosition", camera_.position);
+        state_.active_shader->Use();
+        state_.active_shader->SetFloat("material.shininess", 128.0f);
+        state_.active_shader->SetVec3("viewPosition", main_camera_->position);
         
-        active_shader_.SetVec3("pointLights[0].color", 1.0f, 1.0f, 1.0f);
-        active_shader_.SetVec3("pointLights[0].position", lamp_pos);
+        state_.active_shader->SetVec3("pointLights[0].color", 1.0f, 1.0f, 1.0f);
+        state_.active_shader->SetVec3("pointLights[0].position", lamp_pos);
 
-        active_shader_.SetFloat("pointLights[0].linear", 0.09f);
-        active_shader_.SetFloat("pointLights[0].quadratic", 0.032f);
+        state_.active_shader->SetFloat("pointLights[0].linear", 0.09f);
+        state_.active_shader->SetFloat("pointLights[0].quadratic", 0.032f);
 
-        active_shader_.SetFloat("pointLights[0].ambient", 0.5f);
-        active_shader_.SetFloat("pointLights[0].diffuse", 0.7f);
-        active_shader_.SetFloat("pointLights[0].specular", 1.0f);
+        state_.active_shader->SetFloat("pointLights[0].ambient", 0.5f);
+        state_.active_shader->SetFloat("pointLights[0].diffuse", 0.7f);
+        state_.active_shader->SetFloat("pointLights[0].specular", 1.0f);
 
-        active_shader_.SetVec3("directionalLight.direction", -1.0f, -5.0f, -1.5f);
-        active_shader_.SetFloat("directionalLight.ambient", 0.3f);
-        active_shader_.SetFloat("directionalLight.diffuse", 0.8f);
-        active_shader_.SetFloat("directionalLight.specular", 0.7f);
+        state_.active_shader->SetVec3("directionalLight.direction", -1.0f, -5.0f, -1.5f);
+        state_.active_shader->SetFloat("directionalLight.ambient", 0.3f);
+        state_.active_shader->SetFloat("directionalLight.diffuse", 0.8f);
+        state_.active_shader->SetFloat("directionalLight.specular", 0.7f);
 
-        active_shader_.SetMatrix4("view", view);
-        active_shader_.SetMatrix4("projection", projection);
-        active_shader_.SetMatrix4("model", model);
+        state_.active_shader->SetMatrix4("view", view);
+        state_.active_shader->SetMatrix4("projection", projection);
+        state_.active_shader->SetMatrix4("model", model);
 
-        box_.Draw(active_shader_);
+        sponza_model.Draw(*state_.active_shader);
 
         lamp_shader.Use();
         lamp_shader.SetMatrix4("view", view);
         lamp_shader.SetMatrix4("projection", projection);
         lamp_shader.SetMatrix4("model", lamp_model);
 
-        light_.Draw(lamp_shader);
+        light_model.Draw(lamp_shader);
 
-        DrawGui(delta_time_);
+        imgui_renderer_.Update(delta_time_);
 
         glfwSwapBuffers(window_);
     }
 }
 
-void Application::DrawGui(float delta_time)
-{
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-
-    ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
-    ImGui::Begin("Info", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
-    
-    ImGui::TextColored(ImColor(255, 255, 255, 255), "OpenGL render version 0.1");
-    
-    ImGui::TextColored(ImColor(255, 255, 255, 255), (std::to_string((int)(1.0f / delta_time)) + " fps").c_str());
-    
-    std::string button_name = polygon_mode_enabled_ ? "Disable poligons" : "Enable polygins";
-    if(ImGui::Button(button_name.c_str()))
-    {
-        polygon_mode_enabled_ = !polygon_mode_enabled_;
-        glPolygonMode(GL_FRONT_AND_BACK, polygon_mode_enabled_ ? GL_FILL : GL_LINE);
-    }
-
-    button_name = normal_maps_enabled_ ? "Disable normal maps" : "Enable normal maps";
-    if(ImGui::Button(button_name.c_str()))
-    {
-        normal_maps_enabled_ = !normal_maps_enabled_;
-        active_shader_ = normal_maps_enabled_ ? 
-        Engine::ResourceManager::GetShader("lighting") :
-        Engine::ResourceManager::GetShader("basic");
-    }
-
-    ImGui::End();
-    ImGui::Render();
-
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
 void Application::Shutdown()
 {
-    ShutdownGui();
+    imgui_renderer_.Shutdown();
+    
+    delete main_camera_;
+    main_camera_ = nullptr;
 
-    light_.Clear();
-    box_.Clear();
     Engine::ResourceManager::Clear();
 
     glfwDestroyWindow(window_);
@@ -239,31 +229,15 @@ void Application::KeyCallback(GLFWwindow *window, int key, int scan_code, int ac
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
-    // if(action == GLFW_PRESS)
-    {
-        application->camera_.ProcessInput(key, application->delta_time_);
-    }
+    application->input_.ProcessInput(key, action);
 }
 
-void Application::MouseCallback(GLFWwindow *window, double xpos, double ypos)
+void Application::MouseCallback(GLFWwindow *window, double x, double y)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
-    if(!application->mouse_pressed_)
-    {
-        application->last_x = xpos;
-        application->last_y = ypos;
-        return;
-    }
-
-    float x = xpos - application->last_x;
-    float y = application->last_y - ypos;
-
-    application->last_x = xpos;
-    application->last_y = ypos;
-
-    application->camera_.ProcessMouseMovement(x, y);
+    application->input_.ProcessMouseMovement(x, y);
 }
 
 void Application::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -273,7 +247,7 @@ void Application::MouseButtonCallback(GLFWwindow* window, int button, int action
 
     if (button == GLFW_MOUSE_BUTTON_RIGHT)
     {
-        application->mouse_pressed_ = (action == GLFW_PRESS);
+        application->input_.SetPressedRightMouse(action == GLFW_PRESS);
     }
 }
 

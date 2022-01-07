@@ -48,25 +48,28 @@ Stream #007 Refactoring:
 
 Stream #008 Normal mapping:
     ✔ Add normal mapping @done (07.01.2022, 00:10:15)
-    ☐ Add models to resource manager
-    ☐ Materials
 
-Spream #009 Cubemap and shadows:
+Stream #009 Shadows part 1:
+    ✔ Extract imgui render @done (07.01.2022, 19:58:26)
+    ✔ Add models to resource manager @done (07.01.2022, 20:12:21)
+    ✔ Input manager @done (07.01.2022, 19:15:58)
+
+Stream #010 Shadows part 2:
+    ☐ Camera zoom
+    ☐ Materials
+    ☐ Shadows
 
 Other streams:
-    ☐ Blinn-Phong
-    ☐ Shadows
-    ---
-    ☐ Normal mapping
-    ☐ Paralax mapping
-    ---
+    ☐ Cube maps
     ☐ HDR, tone mapping
-    ---
     ☐ Bloom
-    ---
     ☐ SSAO
-    ---
     ☐ PBR
+    ☐ Skeletal animation
+    ☐ Particle system
+
+Dx12 stream #001 intialize context:
+Dx12 stream #002 first triangle:
 
 Roadmap:
     books:
