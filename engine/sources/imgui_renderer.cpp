@@ -35,11 +35,11 @@ namespace Engine
         ImGui::NewFrame();
 
         ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
-        ImGui::Begin("Info", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+        ImGui::Begin("OpenGL render version 0.1", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
 
-        DrawTitle();
         DrawFPS(delta_time);
         DrawPolygonModeSettings();
+        ImGui::SameLine();
         DrawNormalMapsSettings();
 
         ImGui::End();
@@ -50,23 +50,22 @@ namespace Engine
 
     void ImGuiRenderer::DrawTitle()
     {
-        ImGui::TextColored(ImColor(255, 255, 255, 255), "OpenGL render version 0.1");
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL render version 0.1");
     }
 
     void ImGuiRenderer::DrawFPS(float delta_time)
     {
-        ImGui::TextColored(ImColor(255, 255, 255, 255), (std::to_string((int)(1.0f / delta_time)) + " fps").c_str());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), (std::to_string((int)(1.0f / delta_time)) + " fps").c_str());
     }
 
     void ImGuiRenderer::DrawPolygonModeSettings()
     {
         if(state_ != nullptr)
         {
-            std::string button_name = state_->polygon_mode_enabled ? "Disable poligons" : "Enable polygins";
-            if(ImGui::Button(button_name.c_str()))
+            std::string label_text = "Wireframe";
+            if(ImGui::Checkbox(label_text.c_str(), &state_->polygon_mode_enabled))
             {
-                state_->polygon_mode_enabled = !state_->polygon_mode_enabled;
-                glPolygonMode(GL_FRONT_AND_BACK, state_->polygon_mode_enabled ? GL_FILL : GL_LINE);
+                glPolygonMode(GL_FRONT_AND_BACK, state_->polygon_mode_enabled ? GL_LINE : GL_FILL);
             }
         }
     }
@@ -75,10 +74,9 @@ namespace Engine
     {
         if(state_ != nullptr)
         {
-            std::string button_name = state_->normal_maps_enabled ? "Disable normal maps" : "Enable normal maps";
-            if(ImGui::Button(button_name.c_str()))
+            std::string label_text = "Normal maps";
+            if(ImGui::Checkbox(label_text.c_str(), &state_->normal_maps_enabled))
             {
-                state_->normal_maps_enabled = !state_->normal_maps_enabled;
                 state_->active_shader = state_->normal_maps_enabled ? 
                 &Engine::ResourceManager::GetShader("lighting") :
                 &Engine::ResourceManager::GetShader("basic");

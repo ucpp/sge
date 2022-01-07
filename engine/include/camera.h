@@ -12,28 +12,14 @@ namespace Engine
     class Camera
     {
     public:
-        void SetInputSystem(InputSystem& input);
+        Camera(InputSystem& input, glm::vec3 position, float speed);
+
+        void SetPosition(double x, double y, double z);
+        void SetSpeed(double speed);
         void Update(float delta_time);
 
-        void Init(
-            glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
-            float spped = 100,
-            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
-            float yaw = -90.0f,
-            float pitch = 0.0f);
-
-        glm::mat4 GetViewMatrix();
-
-    public:
-        glm::vec3 position;
-        glm::vec3 up;
-        glm::vec3 world_up;
-        glm::vec3 front;
-        glm::vec3 right;
-        float speed;
-        float mouse_speed;
-        float yaw;
-        float pitch;
+        glm::mat4 GetViewMatrix() const;
+        glm::vec3 GetPosition() const;
 
     private:
         void Refresh();
@@ -41,9 +27,24 @@ namespace Engine
         void ProcessInput(float delta_time);
     
     private:
+        const float kClampPitchAngle = 89.0f;
+
         InputSystem* input_ {nullptr};
-        double last_x_ = 0;
-        double last_y_ = 0;
+
+        double last_x_;
+        double last_y_;
+
+        float pitch_;
+        float yaw_;
+
+        float mouse_speed_;
+        float speed_;
+
+        glm::vec3 position_;
+        glm::vec3 up_;
+        glm::vec3 world_up_;
+        glm::vec3 front_;
+        glm::vec3 right_;
     };
 }
 
