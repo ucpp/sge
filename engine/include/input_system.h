@@ -1,7 +1,7 @@
 #ifndef INPUT_SYSTEM_H
 #define INPUT_SYSTEM_H
 
-#include "engine_event.h"
+#include "event.h"
 
 namespace Engine
 {
