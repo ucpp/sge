@@ -1,12 +1,18 @@
 #include "input_system.h"
 #include <glfw/glfw3.h>
 
+
 namespace Engine
 {
     void InputSystem::ProcessMouseMovement(double x, double y)
     {
         last_mouse_x_ = x;
         last_mouse_y_ = y;
+    }
+
+    void InputSystem::ProcessMouseScroll(float offset)
+    {
+        on_mouse_scroll.Invoke(offset);
     }
 
     void InputSystem::SetPressedRightMouse(bool pressed)
@@ -45,5 +51,10 @@ namespace Engine
         }
         
         return key_state_[key_code] == GLFW_PRESS;
+    }
+
+    InputSystem::~InputSystem()
+    {
+        on_mouse_scroll.Clear();
     }
 }

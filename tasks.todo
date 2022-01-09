@@ -54,12 +54,12 @@ Stream #009 Shadows part 1:
     ✔ Add models to resource manager @done (07.01.2022, 20:12:21)
     ✔ Input manager @done (07.01.2022, 19:15:58)
 
-Stream #010 Shadows part 2:
-    ☐ Camera zoom
+Stream #010 Event system:
+    ✔ Camera zoom @done (09.01.2022, 14:15:38)
     ☐ Materials
-    ☐ Shadows
 
 Other streams:
+    ☐ Shadows
     ☐ Cube maps
     ☐ HDR, tone mapping
     ☐ Bloom

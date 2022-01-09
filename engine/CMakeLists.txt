@@ -22,7 +22,8 @@ set(ENGINE_HEADERS
     include/renderer.h 
     include/material.h 
     include/input_system.h 
-    include/imgui_renderer.h)
+    include/imgui_renderer.h 
+    include/event.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
