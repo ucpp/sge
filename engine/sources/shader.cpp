@@ -15,18 +15,20 @@ namespace Engine
         return id_;
     }
 
-    void Shader::Compile(const char *vertex_source, const char *fragment_source)
+    void Shader::Compile(const std::string& vertex_source, const std::string& fragment_source)
     {
         unsigned int vertex;
         unsigned int fragment;
 
         vertex = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertex, 1, &vertex_source, nullptr);
+        const char* v_source = vertex_source.c_str();
+        glShaderSource(vertex, 1, &v_source, nullptr);
         glCompileShader(vertex);
         CheckCompile(vertex, Type::Vertex);
 
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragment, 1, &fragment_source, nullptr);
+        const char* f_source = fragment_source.c_str();
+        glShaderSource(fragment, 1, &f_source, nullptr);
         glCompileShader(fragment);
         CheckCompile(fragment, Type::Fragment);
 

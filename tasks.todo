@@ -56,7 +56,15 @@ Stream #009 Shadows part 1:
 
 Stream #010 Event system:
     ✔ Camera zoom @done (09.01.2022, 14:15:38)
-    ☐ Materials
+    
+Stream #011 Config:
+    ✔ Add json lib @done (10.01.2022, 00:30:14)
+    ✔ Add config file @done (10.01.2022, 00:30:33)
+    ✔ Set application settings from config @done (10.01.2022, 00:31:28)
+    ✔ Resource loading from config @done (10.01.2022, 00:31:25)
+
+Stream #012 Config:
+    
 
 Other streams:
     ☐ Shadows

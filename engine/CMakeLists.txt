@@ -10,7 +10,8 @@ set(ENGINE_SOURCES
     sources/renderer.cpp 
     sources/material.cpp 
     sources/input_system.cpp 
-    sources/imgui_renderer.cpp)
+    sources/imgui_renderer.cpp 
+    sources/config.cpp)
 
 set(ENGINE_HEADERS 
     include/shader.h 
@@ -23,7 +24,8 @@ set(ENGINE_HEADERS
     include/material.h 
     include/input_system.h 
     include/imgui_renderer.h 
-    include/event.h)
+    include/event.h 
+    include/config.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
@@ -32,4 +34,4 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/demo/shaders/)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/shaders/ DESTINATION ${CMAKE_BINARY_DIR}/demo/shaders/)
 
 target_link_libraries(engine PUBLIC glad glfw glm imgui assimp ${OPENGL_LIBRARIES})
-target_include_directories(engine PUBLIC include ../externals/stb/)
+target_include_directories(engine PUBLIC include ../externals/stb/ ../externals/json/)

@@ -15,12 +15,14 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-Application::Application(const unsigned int width, const unsigned int height, const char *title)
+Application::Application(std::string path_to_config)
 {
-    width_ = width;
-    height_ = height;
-
-    kTitleWindow = title;
+    if(config_.Load(path_to_config))
+    {
+        width_ = config_.data.settings.window_width;
+        height_ = config_.data.settings.window_height;
+        kTitleWindow = config_.data.settings.application_name.c_str();
+    }
 }
 
 void Application::Run()
@@ -57,8 +59,10 @@ void Application::Init()
 
     glfwSetWindowUserPointer(window_, reinterpret_cast<void *>(this));
     glfwMakeContextCurrent(window_);
+
     glfwSetFramebufferSizeCallback(window_, &Application::ResizeCallback);
     glfwSetKeyCallback(window_, &Application::KeyCallback);
+
     glfwSetCursorPosCallback(window_, &Application::MouseCallback);
     glfwSetMouseButtonCallback(window_, &Application::MouseButtonCallback);
     glfwSetScrollCallback(window_, &Application::MouseScrollCallback);
@@ -68,7 +72,7 @@ void Application::Init()
         throw std::runtime_error("Failed to initialize glad");
     }
 
-    glfwSwapInterval(0);
+    glfwSwapInterval(config_.data.settings.vsync_enabled ? 1 : 0);
 
     imgui_renderer_.Init(window_, &state_);
     InitRender();
@@ -81,16 +85,23 @@ void Application::InitRender()
     glEnable(GL_DEPTH_TEST);
 
     // load shaders
-    Engine::ResourceManager::LoadShader("shaders/lamp.vert", "shaders/lamp.frag", "lamp");
-    Engine::ResourceManager::LoadShader("shaders/lighting.vert", "shaders/lighting.frag", "lighting");
-    Engine::ResourceManager::LoadShader("shaders/basic_lighting.vert", "shaders/basic_lighting.frag", "basic");
+    auto shaders_data = config_.data.resources.shaders;
+    for(auto data : shaders_data)
+    {
+        Engine::ResourceManager::LoadShader(data.path_to_vertex, data.path_to_fragment, data.name);
+    }
 
     // load models
-    Engine::ResourceManager::LoadModel("resources/box/box.obj", "light");
-    Engine::ResourceManager::LoadModel("resources/pbr_sponza/sponza.obj", "sponza");
+    auto models_data = config_.data.resources.models;
+    for(auto data : models_data)
+    {
+        Engine::ResourceManager::LoadModel(data.path, data.name);
+    }
 
     //init camera
-    main_camera_ = new Engine::Camera(input_, glm::vec3(0.0, 2.0, -3.0), 30.0);
+    auto scene_data = config_.data.GetStartScene();
+    auto camera = scene_data.camera;
+    main_camera_ = new Engine::Camera(input_, glm::vec3(camera.x, camera.y, camera.z), camera.speed);
 }
 
 void Application::Update()
@@ -98,7 +109,7 @@ void Application::Update()
     state_.active_shader = &Engine::ResourceManager::GetShader("lighting");
     auto lamp_shader = Engine::ResourceManager::GetShader("lamp");
     auto sponza_model = Engine::ResourceManager::GetModel("sponza");
-    auto light_model = Engine::ResourceManager::GetModel("light");
+    auto light_model = Engine::ResourceManager::GetModel("box");
 
     delta_time_ = 0.0f;
     double last_frame_time = 0.0f;
@@ -169,7 +180,10 @@ void Application::Update()
 
         light_model.Draw(lamp_shader);
 
-        imgui_renderer_.Update(delta_time_);
+        if(config_.data.settings.imgui_enabled)
+        {
+            imgui_renderer_.Update(delta_time_);
+        }
 
         glfwSwapBuffers(window_);
     }

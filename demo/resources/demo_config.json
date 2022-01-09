@@ -1,0 +1,66 @@
+{
+    "settings" : {
+        "application_name" : "Game",
+        "window_width" : 800,
+        "window_height" : 600,
+        "vsync_enabled": true,
+        "imgui_enabled" : true,
+        "start_scene" : "default"
+    },
+    "resources" : {
+        "shaders": [
+            {
+                "name" : "lighting",
+                "path_to_fragment" : "shaders/lighting.frag",
+                "path_to_vertex" : "shaders/lighting.vert"
+            },
+            {
+                "name" : "lamp",
+                "path_to_fragment" : "shaders/lamp.frag",
+                "path_to_vertex" : "shaders/lamp.vert"
+            },
+            {
+                "name" : "basic",
+                "path_to_fragment" : "shaders/basic_lighting.frag",
+                "path_to_vertex" : "shaders/basic_lighting.vert"
+            }
+        ],
+        "models": [
+            {
+                "name" : "sponza",
+                "path" :  "resources/pbr_sponza/sponza.obj"
+            },
+            {
+                "name" : "box",
+                "path" :  "resources/box/box.obj"
+            }
+        ]
+    },
+    "scenes" : [
+        {
+            "name" : "default",
+            "objects" : [
+                {
+                    "name" : "sponza",
+                    "model" : "sponza",
+                    "x" : 0.0,
+                    "y" : 0.0,
+                    "z" : 0.0,
+                    "material" : {
+                        "shader" : "lighting"
+                    }
+                }
+            ],
+            "camera" : {
+                "name": "",
+                "x" : 0.0,
+                "y" : 4.0,
+                "z" : -3.0,
+                "speed" : 30
+            },
+            "cubemap" : {
+                "name": ""
+            }
+        }
+    ]
+}
