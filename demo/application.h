@@ -4,6 +4,7 @@
 #include "input_system.h"
 #include "renderer.h"
 #include "imgui_renderer.h"
+#include "config.h"
 
 namespace Engine
 {
@@ -15,7 +16,7 @@ class GLFWwindow;
 class Application
 {
 public:
-    Application(const unsigned int width, const unsigned int height, const char *title);
+    Application(std::string path_to_config);
     void Run();
 
 private:
@@ -42,6 +43,7 @@ private:
     Engine::InputSystem input_;
     Engine::RenderState state_;
     Engine::ImGuiRenderer imgui_renderer_;
+    Engine::Config config_;
 
     unsigned int width_;
     unsigned int height_;

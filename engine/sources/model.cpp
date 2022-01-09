@@ -108,8 +108,8 @@ namespace Engine
         //TODO: remove temporary hack
         if(force_path != "")
         {
-            texture = Engine::ResourceManager::LoadTexture((this->directory_ + "/" + force_path).c_str(),  
-            force_path.substr(0, force_path.find_last_of('.')), type_name);
+            std::string file_name(this->directory_ + "/" + force_path);
+            texture = Engine::ResourceManager::LoadTexture(file_name, force_path.substr(0, force_path.find_last_of('.')), type_name);
 
             return texture;
         }
@@ -126,7 +126,7 @@ namespace Engine
                 std::string tex_name(path.C_Str());
                 tex_name = tex_name.substr(0, tex_name.find_last_of('.'));
                 tex_name += "_" + type_name;
-                texture = Engine::ResourceManager::LoadTexture(filename.c_str(), tex_name.c_str(), type_name);
+                texture = Engine::ResourceManager::LoadTexture(filename, tex_name, type_name);
             }
         }
         else

@@ -8,7 +8,7 @@ int main()
 
     try
     {
-        Application application(1268, 768, "Demo");
+        Application application("resources/demo_config.json");
         application.Run();
     }
     catch (const std::exception &e)

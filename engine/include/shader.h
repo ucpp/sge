@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <string>
 
 namespace Engine
 {
@@ -16,7 +17,7 @@ namespace Engine
         };
 
     public:
-        void Compile(const char *vertex_source, const char *fragment_source);
+        void Compile(const std::string& vertex_source, const std::string& fragment_source);
         void Use();
         unsigned int GetId();
 
