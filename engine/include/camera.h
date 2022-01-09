@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <vector>
+#include "engine_event.h"
+
 namespace Engine
 {
     class InputSystem;
@@ -13,6 +16,7 @@ namespace Engine
     {
     public:
         Camera(InputSystem& input, glm::vec3 position, float speed);
+        ~Camera();
 
         void SetPosition(double x, double y, double z);
         void SetSpeed(double speed);
@@ -20,14 +24,18 @@ namespace Engine
 
         glm::mat4 GetViewMatrix() const;
         glm::vec3 GetPosition() const;
+        float GetZoom() const;
 
     private:
         void Refresh();
         void UpdateMouseMovement();
+        void ProcessMouseScroll(float offset);
         void ProcessInput(float delta_time);
     
     private:
         const float kClampPitchAngle = 89.0f;
+        const float kZoomMax = 45.0f;
+        const float kZoomMin = 1.0f;
 
         InputSystem* input_ {nullptr};
 
@@ -36,6 +44,7 @@ namespace Engine
 
         float pitch_;
         float yaw_;
+        float zoom_;
 
         float mouse_speed_;
         float speed_;
@@ -45,6 +54,8 @@ namespace Engine
         glm::vec3 world_up_;
         glm::vec3 front_;
         glm::vec3 right_;
+
+        std::shared_ptr<void> scroll_callback_;
     };
 }
 

@@ -33,6 +33,7 @@ private:
     static void ErrorCallback(int error_code, const char *description);
     static void MouseCallback(GLFWwindow *window, double xpos, double ypos);
     static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
+    static void MouseScrollCallback(GLFWwindow *window, double x, double y);
 
 private:
     GLFWwindow *window_{nullptr};

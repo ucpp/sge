@@ -61,6 +61,7 @@ void Application::Init()
     glfwSetKeyCallback(window_, &Application::KeyCallback);
     glfwSetCursorPosCallback(window_, &Application::MouseCallback);
     glfwSetMouseButtonCallback(window_, &Application::MouseButtonCallback);
+    glfwSetScrollCallback(window_, &Application::MouseScrollCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -102,33 +103,6 @@ void Application::Update()
     delta_time_ = 0.0f;
     double last_frame_time = 0.0f;
 
-
-    //Test shadows
-    /*
-    const unsigned int shadow_map_width = 1024;
-    const unsigned int shadow_map_height = 1024;
-    unsigned int depth_map_FBO;
-    glGenFramebuffers(1, &depth_map_FBO);
-
-    unsigned int depth_map;
-    glGenTextures(1, &depth_map);
-    glBindTexture(GL_TEXTURE_2D, depth_map);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, shadow_map_width, shadow_map_height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, depth_map_FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depth_map, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    */
-
-
     while (!glfwWindowShouldClose(window_))
     {
         double current_time = glfwGetTime();
@@ -147,7 +121,7 @@ void Application::Update()
         // TODO: move to init and resize
         glm::mat4 projection = glm::mat4(1.0f);
         float aspect = static_cast<float>(width_) / static_cast<float>(height_);
-        projection = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 1000.0f);
+        projection = glm::perspective(glm::radians(main_camera_->GetZoom()), aspect, 0.1f, 1000.0f);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -177,7 +151,7 @@ void Application::Update()
         state_.active_shader->SetFloat("pointLights[0].diffuse", 0.7f);
         state_.active_shader->SetFloat("pointLights[0].specular", 1.0f);
 
-        state_.active_shader->SetVec3("directionalLight.direction", -1.0f, -5.0f, -1.5f);
+        state_.active_shader->SetVec3("directionalLight.direction", -5.0f, -20.0f, 0.0f);
         state_.active_shader->SetFloat("directionalLight.ambient", 0.3f);
         state_.active_shader->SetFloat("directionalLight.diffuse", 0.8f);
         state_.active_shader->SetFloat("directionalLight.specular", 0.7f);
@@ -248,6 +222,14 @@ void Application::MouseButtonCallback(GLFWwindow* window, int button, int action
     {
         application->input_.SetPressedRightMouse(action == GLFW_PRESS);
     }
+}
+
+void Application::MouseScrollCallback(GLFWwindow* window, double x, double y)
+{
+    Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
+    assert(application != nullptr);
+
+    application->input_.ProcessMouseScroll(y);
 }
 
 void Application::ProcessInput(GLFWwindow *window, float delta_time)

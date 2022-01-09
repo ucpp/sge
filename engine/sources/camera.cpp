@@ -6,13 +6,15 @@
 #include "input_system.h"
 
 #include <iostream>
+#include <memory>
 
 namespace Engine
 {
     Camera::Camera(InputSystem& input, glm::vec3 position, float speed) : position_(position), speed_(speed)
     {
         input_ = &input;
-        
+        scroll_callback_ = input_->on_mouse_scroll.AddListener(std::bind(&Camera::ProcessMouseScroll, this, std::placeholders::_1));
+
         front_ = glm::vec3(0.0f, 0.0f, -1.0f);
         up_ = glm::vec3(0.0f, 1.0f, 0.0f);
         world_up_ = up_;
@@ -21,12 +23,23 @@ namespace Engine
         
         pitch_ = 0.0f;
         yaw_ = -90.0f;
+        zoom_ = 45.0f;
 
         last_x_ = 0.0;
         last_y_ = 0.0;
         std::cout << position_.x << " " << position_.y << " " << position_.z << std::endl;
 
         Refresh();
+    }
+
+    Camera::~Camera()
+    {
+        if(input_ == nullptr)
+        {
+            return;
+        }
+
+        input_->on_mouse_scroll.RemoveListener(scroll_callback_);
     }
 
     void Camera::SetPosition(double x, double y, double z)
@@ -42,6 +55,11 @@ namespace Engine
     glm::vec3 Camera::GetPosition() const
     {
         return position_;
+    }
+
+    float Camera::GetZoom() const
+    {
+        return zoom_;
     }
 
     glm::mat4 Camera::GetViewMatrix() const
@@ -102,6 +120,12 @@ namespace Engine
         {
             position_ -= right_ * velocity;
         }
+    }
+
+    void Camera::ProcessMouseScroll(float offset)
+    {
+        zoom_ -= offset * 2;
+        zoom_ = std::min(std::max(zoom_, kZoomMin), kZoomMax);
     }
 
     void Camera::Refresh()
