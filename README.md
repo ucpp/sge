@@ -6,3 +6,4 @@
 - point lights
 - directional light
 - normal maps
+- loading from configuration file
