@@ -60,7 +60,9 @@ void main()
 
     vec3 norm = CalcBumpedNormal();
     vec3 viewDirection = normalize(viewPosition - fs_in.Position);
-
+    //norm = (norm + vec3(1))/2;
+    //FragColor = vec4(norm.r, norm.g, norm.b, 1.0);
+    
     vec3 resultColor = CalculateDirectionLight(norm, viewDirection);
 
     for(int i = 0; i < COUNT_POINT_LIGHTS; ++i)
@@ -110,10 +112,16 @@ vec3 CalcBumpedNormal()
 {
     vec3 Normal = normalize(fs_in.Normal);
     vec3 Tangent = normalize(fs_in.Tangent);
+
     Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
-    vec3 Bitangent = cross(Tangent, Normal);
+
+    vec3 Bitangent = cross(Normal, Tangent);
     vec3 BumpMapNormal = texture(material.normal, fs_in.TexCoords).xyz;
     BumpMapNormal = 2.0 * BumpMapNormal - vec3(1.0, 1.0, 1.0);
+
+    // z = sqrt(1 - x^2 - y^2)
+    BumpMapNormal.z = sqrt(1.0 - dot(BumpMapNormal.xy, BumpMapNormal.xy));
+
     vec3 NewNormal;
     mat3 TBN = mat3(Tangent, Bitangent, Normal);
     NewNormal = TBN * BumpMapNormal;
