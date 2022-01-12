@@ -32,6 +32,8 @@ namespace Engine
 
     public:
         bool is_lit;
+        std::string vertex_source;
+        std::string fragment_source;
 
     private:
         unsigned int id_;

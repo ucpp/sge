@@ -105,7 +105,7 @@ void Application::Update()
         glfwPollEvents();
 
         ProcessInput(window_, delta_time_);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         float aspect = static_cast<float>(width_) / static_cast<float>(height_);
@@ -191,6 +191,8 @@ void Application::ResizeCallback(GLFWwindow *window, int width, int height)
     assert(application != nullptr);
 
     glViewport(0, 0, width, height);
+    application->width_ = width;
+    application->height_ = height;
 }
 
 void Application::ErrorCallback(int error_code, const char *description)

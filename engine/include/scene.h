@@ -7,6 +7,7 @@
 #include "model.h"
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
 namespace Engine
@@ -23,9 +24,16 @@ namespace Engine
     {
     public:
         glm::vec3 position;
+        glm::vec3 rotation;
         Model model;
         Material material;
         double scale;
+    };
+
+    class DirectionalLight
+    {
+    public:
+        DirectionalLightData data;
     };
 
     class PointLight
@@ -50,7 +58,7 @@ namespace Engine
         Camera* camera_;
         std::vector<Object*> objects_;
         std::vector<PointLight> point_lights_;
-
+        DirectionalLight directional_light_;
         bool inited_;
     };
 }

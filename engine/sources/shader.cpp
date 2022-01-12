@@ -19,6 +19,8 @@ namespace Engine
     {
         unsigned int vertex;
         unsigned int fragment;
+        this->vertex_source = vertex_source;
+        this->fragment_source = fragment_source;
 
         vertex = glCreateShader(GL_VERTEX_SHADER);
         const char* v_source = vertex_source.c_str();

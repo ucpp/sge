@@ -30,7 +30,7 @@ namespace Engine
         }
     }
 
-    Shader &ResourceManager::LoadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit)
+    Shader ResourceManager::LoadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit)
     {
         std::string vertex_shader_source = LoadShaderSource(vertex_file_name);
         std::string fragment_shader_source = LoadShaderSource(fragment_file_name);
@@ -43,7 +43,7 @@ namespace Engine
         return shaders_[name];
     }
 
-    Texture &ResourceManager::LoadTexture(const std::string& file_name, const std::string& name, const std::string& type, bool alpha)
+    Texture ResourceManager::LoadTexture(const std::string& file_name, const std::string& name, const std::string& type, bool alpha)
     {
         if (textures_.count(name) == 1)
         {
@@ -61,6 +61,19 @@ namespace Engine
         const char* path = file_name.c_str();
         unsigned char *data = stbi_load(path, &width, &height, &channels, 0);
 
+        if(data == nullptr)
+        {
+            width = 4;
+            height = 4;
+
+            data = new unsigned char[64];
+
+            for(int i = 0; i < 64; ++i)
+            {
+                data[i] = 255;
+            }
+        }
+
         texture.SetFormat(channels, sizeof(stbi_uc));
         texture.Generate(data, width, height);
 
@@ -70,7 +83,7 @@ namespace Engine
         return textures_[name];
     }
 
-    Model &ResourceManager::LoadModel(const std::string& file_name, const std::string& name)
+    Model ResourceManager::LoadModel(const std::string& file_name, const std::string& name)
     {
         if (models_.count(name) == 1)
         {
@@ -83,17 +96,17 @@ namespace Engine
         return models_[name];
     }
 
-    Model &ResourceManager::GetModel(const std::string& name)
+    Model ResourceManager::GetModel(const std::string& name)
     {
         return models_[name];
     }
 
-    Shader &ResourceManager::GetShader(const std::string& name)
+    Shader ResourceManager::GetShader(const std::string& name)
     {
         return shaders_[name];
     }
 
-    Texture &ResourceManager::GetTexture(const std::string& name)
+    Texture ResourceManager::GetTexture(const std::string& name)
     {
         return textures_[name];
     }
