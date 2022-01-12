@@ -123,7 +123,10 @@ namespace Engine
         SceneData GetStartScene()
         {
             auto find_iter = std::find_if(scenes.begin(), scenes.end(), 
-            [&](SceneData data){ return settings.start_scene.compare(data.name);});
+            [&](SceneData data)
+            {
+                return settings.start_scene == data.name;
+            });
             if(find_iter != scenes.end())
             {
                 return *find_iter;
