@@ -61,6 +61,19 @@ namespace Engine
         const char* path = file_name.c_str();
         unsigned char *data = stbi_load(path, &width, &height, &channels, 0);
 
+        if(data == nullptr)
+        {
+            width = 4;
+            height = 4;
+
+            data = new unsigned char[64];
+
+            for(int i = 0; i < 64; ++i)
+            {
+                data[i] = 255;
+            }
+        }
+
         texture.SetFormat(channels, sizeof(stbi_uc));
         texture.Generate(data, width, height);
 
