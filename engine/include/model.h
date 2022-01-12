@@ -7,7 +7,6 @@
 
 #include <vector>
 #include "mesh.h"
-#include "resource_manager.h"
 
 namespace Engine
 {

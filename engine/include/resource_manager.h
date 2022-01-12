@@ -8,6 +8,7 @@
 
 #include "shader.h"
 #include "texture.h"
+#include "config.h"
 
 namespace Engine
 {
@@ -16,7 +17,9 @@ namespace Engine
     class ResourceManager
     {
     public:
-        static Shader &LoadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name);
+        static void LoadResources(const ResourcesData& config);
+
+        static Shader &LoadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name, bool lit = false);
         static Shader &GetShader(const std::string &shader);
 
         static Texture &LoadTexture(const std::string &file_name, const std::string &name, const std::string &type = "diffuse", bool alpha = false);

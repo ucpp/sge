@@ -30,6 +30,9 @@ namespace Engine
         void SetMatrix4(const char *name, const glm::mat4 &matrix);
         void SetVec3(const char *name, glm::vec3 v3);
 
+    public:
+        bool is_lit;
+
     private:
         unsigned int id_;
 

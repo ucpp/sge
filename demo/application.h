@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "imgui_renderer.h"
 #include "config.h"
+#include "scene.h"
 
 namespace Engine
 {
@@ -38,7 +39,7 @@ private:
 
 private:
     GLFWwindow *window_{nullptr};
-    Engine::Camera *main_camera_{nullptr};
+    Engine::Scene* scene_{nullptr};
 
     Engine::InputSystem input_;
     Engine::RenderState state_;

@@ -39,6 +39,8 @@ uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[COUNT_POINT_LIGHTS];
 uniform vec3 viewPosition;
 
+uniform bool normals_enabled;
+
 in VS_OUT 
 {
     vec3 Position;
@@ -58,7 +60,12 @@ void main()
         discard;
     }
 
-    vec3 norm = CalcBumpedNormal();
+    vec3 norm = normalize(fs_in.Normal);
+    if(normals_enabled)
+    {
+        norm = CalcBumpedNormal();
+    }
+
     vec3 viewDirection = normalize(viewPosition - fs_in.Position);
     //norm = (norm + vec3(1))/2;
     //FragColor = vec4(norm.r, norm.g, norm.b, 1.0);

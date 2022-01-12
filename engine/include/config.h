@@ -25,6 +25,7 @@ namespace Engine
         std::string name;
         std::string path_to_fragment;
         std::string path_to_vertex;
+        bool lit;
     };
 
     struct ModelData
@@ -32,7 +33,7 @@ namespace Engine
         std::string name;
         std::string path;
     };
-    
+
     struct ResourcesData
     {
         std::vector<ShaderData> shaders;
@@ -51,9 +52,10 @@ namespace Engine
         double x;
         double y;
         double z;
+        float scale;
         MaterialData material;
     };
-
+    
     struct CameraData
     {
         std::string name;
@@ -68,12 +70,48 @@ namespace Engine
         std::string name;
     };
 
+    struct DirectionalLightData
+    {
+        std::string gizmo;
+        std::string gizmo_shader;
+        double x;
+        double y;
+        double z;
+        double ambient;
+        double diffuse;
+        double specular;
+    };
+
+    struct ColorData
+    {
+        double r;
+        double g;
+        double b;
+    };
+
+    struct PointLightData
+    {
+        std::string gizmo;
+        std::string gizmo_shader;
+        double x;
+        double y;
+        double z;
+        double ambient;
+        double diffuse;
+        double specular;
+        double linear;
+        double quadratic;
+        ColorData color;
+    };
+
     struct SceneData
     {
         std::string name;
         std::vector<ObjectData> objects;
         CameraData camera;
         CubemapData cubemap;
+        DirectionalLightData directional_light;
+        std::vector<PointLightData> point_lights;
     };
 
     struct Data
@@ -98,20 +136,20 @@ namespace Engine
         }
     };
 
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SettingsData, application_name, window_width, window_height, vsync_enabled, imgui_enabled, start_scene)
-    
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ShaderData, name, path_to_fragment, path_to_vertex)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ModelData, name, path)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ResourcesData, shaders, models)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SettingsData, application_name, window_width, window_height, vsync_enabled, imgui_enabled, start_scene);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ShaderData, name, path_to_fragment, path_to_vertex, lit);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ModelData, name, path);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ResourcesData, shaders, models);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MaterialData, shader);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObjectData, name, model, x, y, z, scale, material);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CameraData, name, x, y, z, speed);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CubemapData, name);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DirectionalLightData, gizmo, gizmo_shader, x, y, z, ambient, diffuse, specular);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ColorData, r, g, b);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, gizmo, gizmo_shader, x, y, z, ambient, diffuse, specular,linear, quadratic, color);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SceneData, name, objects, camera, cubemap, directional_light, point_lights);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Data, settings, resources, scenes);
 
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MaterialData, shader)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObjectData, name, model, x, y, z, material)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CameraData, name, x, y, z, speed)
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CubemapData, name)
-
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SceneData, name, objects, camera, cubemap)
-
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Data, settings, resources, scenes)
 
     class Config
     {
