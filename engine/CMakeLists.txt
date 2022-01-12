@@ -11,7 +11,8 @@ set(ENGINE_SOURCES
     sources/material.cpp 
     sources/input_system.cpp 
     sources/imgui_renderer.cpp 
-    sources/config.cpp)
+    sources/config.cpp 
+    sources/scene.cpp)
 
 set(ENGINE_HEADERS 
     include/shader.h 
@@ -25,7 +26,8 @@ set(ENGINE_HEADERS
     include/input_system.h 
     include/imgui_renderer.h 
     include/event.h 
-    include/config.h)
+    include/config.h 
+    include/scene.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 

@@ -11,9 +11,10 @@
 
 namespace Engine
 {
-    void ImGuiRenderer::Init(GLFWwindow* window, RenderState* state)
+    void ImGuiRenderer::Init(GLFWwindow* window, RenderState* state, Scene* scene)
     {
         state_ = state;
+        scene_ = scene;
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -77,9 +78,7 @@ namespace Engine
             std::string label_text = "Normal maps";
             if(ImGui::Checkbox(label_text.c_str(), &state_->normal_maps_enabled))
             {
-                state_->active_shader = state_->normal_maps_enabled ? 
-                &Engine::ResourceManager::GetShader("lighting") :
-                &Engine::ResourceManager::GetShader("basic");
+                scene_->EnableNormalMaps(state_->normal_maps_enabled);
             }
         }
     }

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "mesh.h"
+#include "resource_manager.h"
 
 namespace Engine
 {
@@ -93,8 +94,8 @@ namespace Engine
         aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
         textures.push_back(LoadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
         textures.push_back(LoadTexture(material, aiTextureType_HEIGHT, "material.normal"));
-        textures.push_back(LoadTexture(material, aiTextureType_SHININESS, "material.specular"));
-        textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
+        //textures.push_back(LoadTexture(material, aiTextureType_SPECULAR, "material.specular"));
+        //textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
 
         Mesh result_mesh;
         result_mesh.Init(vertices, indices, textures);

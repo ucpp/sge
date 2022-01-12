@@ -3,7 +3,7 @@
         "application_name" : "Game",
         "window_width" : 800,
         "window_height" : 600,
-        "vsync_enabled": true,
+        "vsync_enabled": false,
         "imgui_enabled" : true,
         "start_scene" : "default"
     },
@@ -12,17 +12,20 @@
             {
                 "name" : "lighting",
                 "path_to_fragment" : "shaders/lighting.frag",
-                "path_to_vertex" : "shaders/lighting.vert"
+                "path_to_vertex" : "shaders/lighting.vert",
+                "lit": true
             },
             {
                 "name" : "lamp",
                 "path_to_fragment" : "shaders/lamp.frag",
-                "path_to_vertex" : "shaders/lamp.vert"
+                "path_to_vertex" : "shaders/lamp.vert",
+                "lit": false
             },
             {
                 "name" : "basic",
                 "path_to_fragment" : "shaders/basic_lighting.frag",
-                "path_to_vertex" : "shaders/basic_lighting.vert"
+                "path_to_vertex" : "shaders/basic_lighting.vert",
+                "lit": true
             }
         ],
         "models": [
@@ -33,6 +36,10 @@
             {
                 "name" : "box",
                 "path" :  "resources/box/box.obj"
+            },
+            {
+                "name" : "backpack",
+                "path" :"resources/backpack/backpack.obj"
             }
         ]
     },
@@ -46,6 +53,7 @@
                     "x" : 0.0,
                     "y" : 0.0,
                     "z" : 0.0,
+                    "scale" : 0.05,
                     "material" : {
                         "shader" : "lighting"
                     }
@@ -60,7 +68,38 @@
             },
             "cubemap" : {
                 "name": ""
-            }
+            },
+            "directional_light": {
+                "type" : "directional",
+                "gizmo" : "box",
+                "gizmo_shader": "lamp",
+                "x": 0.0,
+                "y": -20.0,
+                "z": 0.0,
+                "ambient": 0.3,
+                "diffuse": 0.8,
+                "specular": 0.7
+            },
+            "point_lights" : [
+                {
+                    "type" : "point",
+                    "gizmo" : "box",
+                    "gizmo_shader": "lamp",
+                    "x": -5.0,
+                    "y": -20.0,
+                    "z": 0.0,
+                    "ambient": 0.3,
+                    "diffuse": 0.8,
+                    "specular": 0.7,
+                    "linear": 0.09,
+                    "quadratic": 0.032,
+                    "color": {
+                        "r": 1.0,
+                        "g": 1.0,
+                        "b": 1.0
+                    }
+                }
+            ]
         }
     ]
 }

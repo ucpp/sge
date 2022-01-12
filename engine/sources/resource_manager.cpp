@@ -15,12 +15,28 @@ namespace Engine
     std::map<std::string, Texture> ResourceManager::textures_;
     std::map<std::string, Model> ResourceManager::models_;
 
-    Shader &ResourceManager::LoadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name)
+    void ResourceManager::LoadResources(const ResourcesData& config)
+    {
+        auto shaders_data = config.shaders;
+        for(auto data : shaders_data)
+        {
+            LoadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
+        }
+
+        auto models_data = config.models;
+        for(auto data : models_data)
+        {
+            LoadModel(data.path, data.name);
+        }
+    }
+
+    Shader &ResourceManager::LoadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit)
     {
         std::string vertex_shader_source = LoadShaderSource(vertex_file_name);
         std::string fragment_shader_source = LoadShaderSource(fragment_file_name);
 
         Shader shader;
+        shader.is_lit = lit;
         shader.Compile(vertex_shader_source, fragment_shader_source);
         shaders_[name] = shader;
 

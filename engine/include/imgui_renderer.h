@@ -1,6 +1,8 @@
 #ifndef IMGUI_RENDERER_H
 #define IMGUI_RENDERER_H
 
+#include "scene.h"
+
 class GLFWwindow;
 
 namespace Engine
@@ -10,7 +12,7 @@ namespace Engine
     class ImGuiRenderer
     {
     public:
-        void Init(GLFWwindow* window, RenderState* state);
+        void Init(GLFWwindow* window, RenderState* state, Scene* scene);
         void Update(float delta_time);
         void Shutdown();
 
@@ -22,6 +24,7 @@ namespace Engine
 
     private:
         RenderState* state_ {nullptr};
+        Scene* scene_ {nullptr};
     };
 }
 

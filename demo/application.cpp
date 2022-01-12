@@ -9,7 +9,6 @@
 
 #include "resource_manager.h"
 #include "camera.h"
-#include "model.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -22,6 +21,7 @@ Application::Application(std::string path_to_config)
         width_ = config_.data.settings.window_width;
         height_ = config_.data.settings.window_height;
         kTitleWindow = config_.data.settings.application_name.c_str();
+        scene_ = new Engine::Scene(config_.data.GetStartScene());
     }
 }
 
@@ -74,7 +74,7 @@ void Application::Init()
 
     glfwSwapInterval(config_.data.settings.vsync_enabled ? 1 : 0);
 
-    imgui_renderer_.Init(window_, &state_);
+    imgui_renderer_.Init(window_, &state_, scene_);
     InitRender();
 }
 
@@ -84,33 +84,16 @@ void Application::InitRender()
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_DEPTH_TEST);
 
-    // load shaders
-    auto shaders_data = config_.data.resources.shaders;
-    for(auto data : shaders_data)
-    {
-        Engine::ResourceManager::LoadShader(data.path_to_vertex, data.path_to_fragment, data.name);
-    }
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
-    // load models
-    auto models_data = config_.data.resources.models;
-    for(auto data : models_data)
-    {
-        Engine::ResourceManager::LoadModel(data.path, data.name);
-    }
+    Engine::ResourceManager::LoadResources(config_.data.resources);
 
-    //init camera
-    auto scene_data = config_.data.GetStartScene();
-    auto camera = scene_data.camera;
-    main_camera_ = new Engine::Camera(input_, glm::vec3(camera.x, camera.y, camera.z), camera.speed);
+    scene_->Init(input_);
 }
 
 void Application::Update()
 {
-    state_.active_shader = &Engine::ResourceManager::GetShader("lighting");
-    auto lamp_shader = Engine::ResourceManager::GetShader("lamp");
-    auto sponza_model = Engine::ResourceManager::GetModel("sponza");
-    auto light_model = Engine::ResourceManager::GetModel("box");
-
     delta_time_ = 0.0f;
     double last_frame_time = 0.0f;
 
@@ -121,64 +104,12 @@ void Application::Update()
         last_frame_time = current_time;
         glfwPollEvents();
 
-        main_camera_->Update(delta_time_);
         ProcessInput(window_, delta_time_);
-
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 view = main_camera_->GetViewMatrix();
-
-        // TODO: move to init and resize
-        glm::mat4 projection = glm::mat4(1.0f);
         float aspect = static_cast<float>(width_) / static_cast<float>(height_);
-        projection = glm::perspective(glm::radians(main_camera_->GetZoom()), aspect, 0.1f, 1000.0f);
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        // model = glm::rotate(model, (float)glfwGetTime() * glm::radians(5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
-
-        const float radius = 6.0f;
-        float dx = sin(current_time * 2) * radius;
-        float dy = cos(current_time * 2) * radius;
-
-        glm::vec3 lamp_pos = glm::vec3(dx, 5.0f, dy);
-        glm::mat4 lamp_model = glm::mat4(1.0f);
-        lamp_model = glm::translate(lamp_model, lamp_pos);
-        lamp_model = glm::scale(lamp_model, glm::vec3(0.1f, 0.1f, 0.1f));
-
-        state_.active_shader->Use();
-        state_.active_shader->SetFloat("material.shininess", 128.0f);
-        state_.active_shader->SetVec3("viewPosition", main_camera_->GetPosition());
-        
-        state_.active_shader->SetVec3("pointLights[0].color", 1.0f, 1.0f, 1.0f);
-        state_.active_shader->SetVec3("pointLights[0].position", lamp_pos);
-
-        state_.active_shader->SetFloat("pointLights[0].linear", 0.09f);
-        state_.active_shader->SetFloat("pointLights[0].quadratic", 0.032f);
-
-        state_.active_shader->SetFloat("pointLights[0].ambient", 0.5f);
-        state_.active_shader->SetFloat("pointLights[0].diffuse", 0.7f);
-        state_.active_shader->SetFloat("pointLights[0].specular", 1.0f);
-
-        state_.active_shader->SetVec3("directionalLight.direction", -5.0f, -20.0f, 0.0f);
-        state_.active_shader->SetFloat("directionalLight.ambient", 0.3f);
-        state_.active_shader->SetFloat("directionalLight.diffuse", 0.8f);
-        state_.active_shader->SetFloat("directionalLight.specular", 0.7f);
-
-        state_.active_shader->SetMatrix4("view", view);
-        state_.active_shader->SetMatrix4("projection", projection);
-        state_.active_shader->SetMatrix4("model", model);
-
-        sponza_model.Draw(*state_.active_shader);
-
-        lamp_shader.Use();
-        lamp_shader.SetMatrix4("view", view);
-        lamp_shader.SetMatrix4("projection", projection);
-        lamp_shader.SetMatrix4("model", lamp_model);
-
-        light_model.Draw(lamp_shader);
+        scene_->Update(delta_time_, aspect);
 
         if(config_.data.settings.imgui_enabled)
         {
@@ -192,9 +123,9 @@ void Application::Update()
 void Application::Shutdown()
 {
     imgui_renderer_.Shutdown();
-    
-    delete main_camera_;
-    main_camera_ = nullptr;
+
+    delete scene_;
+    scene_ = nullptr;
 
     Engine::ResourceManager::Clear();
 
