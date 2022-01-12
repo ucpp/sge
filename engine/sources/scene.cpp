@@ -8,14 +8,15 @@ namespace Engine
     void Scene::Init(InputSystem &input)
     {
         CameraData cam = data_.camera;
-        camera_ = new Camera(input, glm::vec3(cam.x, cam.y, cam.z), cam.speed);
+        camera_ = new Camera(input, glm::vec3(cam.position.x, cam.position.y, cam.position.z), cam.speed);
 
         for(const ObjectData& object_data : data_.objects)
         {
             Object* object = new Object();
             object->model = ResourceManager::GetModel(object_data.model);
             object->material.shader = ResourceManager::GetShader(object_data.material.shader);
-            object->position = glm::vec3(object_data.x, object_data.y, object_data.z);
+            object->position = glm::vec3(object_data.position.x, object_data.position.y, object_data.position.z);
+            object->rotation = glm::vec3(object_data.rotation.x, object_data.rotation.y, object_data.rotation.z);
             object->scale = static_cast<float>(object_data.scale);
             objects_.push_back(object);
         }
@@ -28,6 +29,7 @@ namespace Engine
         }
 
         // add directional light
+        directional_light_.data = data_.directional_light;
 
         inited_ = true;
     }
@@ -46,7 +48,12 @@ namespace Engine
             {
                 //TODO: fix it (change to real data)
                 glm::mat4 model = glm::mat4(1.0f);
-                model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+                model = glm::translate(model, glm::vec3(obj->position.x, obj->position.y, obj->position.z));
+                
+                model = glm::rotate(model, static_cast<float>(glm::radians(obj->rotation.x)), glm::vec3(1.0f, 0.0f, 0.0f));
+                model = glm::rotate(model, static_cast<float>(glm::radians(obj->rotation.y)), glm::vec3(0.0f, 1.0f, 0.0f));
+                model = glm::rotate(model, static_cast<float>(glm::radians(obj->rotation.z)), glm::vec3(0.0f, 0.0f, 1.0f));
+                
                 model = glm::scale(model, glm::vec3(obj->scale));
 
                 auto shader = obj->material.shader;
@@ -68,7 +75,7 @@ namespace Engine
                         std::string light_name = "pointLights[" + std::to_string(i) + "]";
                         auto lit = light.data;
                         shader.SetVec3((light_name + ".color").c_str(), lit.color.r, lit.color.g, lit.color.b);
-                        shader.SetVec3((light_name + ".position").c_str(), lit.x, lit.y, lit.z);
+                        shader.SetVec3((light_name + ".position").c_str(), lit.position.x, lit.position.y, lit.position.z);
 
                         shader.SetFloat((light_name + ".linear").c_str(), lit.linear);
                         shader.SetFloat((light_name + ".quadratic").c_str(), lit.quadratic);
@@ -79,11 +86,11 @@ namespace Engine
                         i++;
                     }
 
-                    //TODO:
-                    shader.SetVec3("directionalLight.direction", -20.0f, -20.0f, 0.0f);
-                    shader.SetFloat("directionalLight.ambient", 0.05f);
-                    shader.SetFloat("directionalLight.diffuse", 0.4f);
-                    shader.SetFloat("directionalLight.specular", 0.6f);
+                    auto d_light = directional_light_.data;
+                    shader.SetVec3("directionalLight.direction", d_light.position.x, d_light.position.y, d_light.position.z);
+                    shader.SetFloat("directionalLight.ambient", d_light.ambient);
+                    shader.SetFloat("directionalLight.diffuse", d_light.diffuse);
+                    shader.SetFloat("directionalLight.specular", d_light.specular);
                 }
                 obj->model.Draw(shader);
             }

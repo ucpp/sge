@@ -26,20 +26,22 @@
                 "path_to_fragment" : "shaders/basic_lighting.frag",
                 "path_to_vertex" : "shaders/basic_lighting.vert",
                 "lit": true
+            },
+            {
+                "name" : "outline",
+                "path_to_fragment" : "shaders/outline.frag",
+                "path_to_vertex" : "shaders/outline.vert",
+                "lit": false
             }
         ],
         "models": [
             {
-                "name" : "sponza",
-                "path" :  "resources/pbr_sponza/sponza.obj"
+                "name" : "barrel",
+                "path" :  "resources/barrel/barrel.obj"
             },
             {
-                "name" : "box",
-                "path" :  "resources/box/box.obj"
-            },
-            {
-                "name" : "backpack",
-                "path" :"resources/backpack/backpack.obj"
+                "name" : "floor",
+                "path" :  "resources/floor/floor.obj"
             }
         ]
     },
@@ -48,12 +50,55 @@
             "name" : "default",
             "objects" : [
                 {
-                    "name" : "sponza",
-                    "model" : "sponza",
-                    "x" : 0.0,
-                    "y" : 0.0,
-                    "z" : 0.0,
-                    "scale" : 0.05,
+                    "name" : "barrel",
+                    "model" : "barrel",
+                    "position": {
+                        "x" : 0.0,
+                        "y" : 0.0,
+                        "z" : 0.0
+                    },
+                    "rotation": {
+                        "x" : 0.0,
+                        "y" : 0.0,
+                        "z" : 0.0
+                    },
+                    "scale" : 1.0,
+                    "material" : {
+                        "shader" : "lighting"
+                    }
+                },
+                {
+                    "name" : "barrel",
+                    "model" : "barrel",
+                    "position": {
+                        "x" : 2.0,
+                        "y" : 0.25,
+                        "z" : 0.0
+                    },
+                    "rotation": {
+                        "x" : 90.0,
+                        "y" : 45.0,
+                        "z" : 0.0
+                    },
+                    "scale" : 1.0,
+                    "material" : {
+                        "shader" : "lighting"
+                    }
+                },
+                {
+                    "name" : "floor",
+                    "model" : "floor",
+                    "position": {
+                        "x" : 0.0,
+                        "y" : 0.0,
+                        "z" : 0.0
+                    },
+                    "rotation": {
+                        "x" : 0.0,
+                        "y" : 0.0,
+                        "z" : 0.0
+                    },
+                    "scale" : 1.0,
                     "material" : {
                         "shader" : "lighting"
                     }
@@ -61,10 +106,12 @@
             ],
             "camera" : {
                 "name": "",
-                "x" : 0.0,
-                "y" : 4.0,
-                "z" : -3.0,
-                "speed" : 30
+                "position": {
+                    "x" : 0.0,
+                    "y" : 2.0,
+                    "z" : -3.0
+                },
+                "speed" : 10
             },
             "cubemap" : {
                 "name": ""
@@ -73,9 +120,11 @@
                 "type" : "directional",
                 "gizmo" : "box",
                 "gizmo_shader": "lamp",
-                "x": 0.0,
-                "y": -20.0,
-                "z": 0.0,
+                "position": {
+                    "x" : -10.0,
+                    "y" : -10.0,
+                    "z" : 0.0
+                },
                 "ambient": 0.3,
                 "diffuse": 0.8,
                 "specular": 0.7
@@ -85,9 +134,11 @@
                     "type" : "point",
                     "gizmo" : "box",
                     "gizmo_shader": "lamp",
-                    "x": -5.0,
-                    "y": -20.0,
-                    "z": 0.0,
+                    "position": {
+                        "x" : 0.0,
+                        "y" : 4.0,
+                        "z" : 0.0
+                    },
                     "ambient": 0.3,
                     "diffuse": 0.8,
                     "specular": 0.7,
