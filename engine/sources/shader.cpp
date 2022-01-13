@@ -45,6 +45,11 @@ namespace Engine
         glDeleteShader(fragment);
     }
 
+    void Shader::SetBool(const char *name, bool value)
+    {
+        glUniform1i(glGetUniformLocation(id_, name), (int)value);
+    }
+
     void Shader::SetInt(const char *name, int value)
     {
         glUniform1i(glGetUniformLocation(id_, name), value);
