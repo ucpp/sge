@@ -62,7 +62,6 @@ void Application::Init()
 
     glfwSetFramebufferSizeCallback(window_, &Application::ResizeCallback);
     glfwSetKeyCallback(window_, &Application::KeyCallback);
-
     glfwSetCursorPosCallback(window_, &Application::MouseCallback);
     glfwSetMouseButtonCallback(window_, &Application::MouseButtonCallback);
     glfwSetScrollCallback(window_, &Application::MouseScrollCallback);
@@ -75,21 +74,9 @@ void Application::Init()
     glfwSwapInterval(config_.data.settings.vsync_enabled ? 1 : 0);
 
     imgui_renderer_.Init(window_, &state_, scene_);
-    InitRender();
-}
-
-// TODO: move to render
-void Application::InitRender()
-{
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
     Engine::ResourceManager::LoadResources(config_.data.resources);
-
     scene_->Init(input_);
+    renderer_.Init();
 }
 
 void Application::Update()
@@ -104,12 +91,9 @@ void Application::Update()
         last_frame_time = current_time;
         glfwPollEvents();
 
-        ProcessInput(window_, delta_time_);
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        renderer_.Render();
 
-        float aspect = static_cast<float>(width_) / static_cast<float>(height_);
-        scene_->Update(delta_time_, aspect);
+        scene_->Update(delta_time_, width_, height_);
 
         if(config_.data.settings.imgui_enabled)
         {
@@ -147,6 +131,11 @@ void Application::KeyCallback(GLFWwindow *window, int key, int scan_code, int ac
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+
     application->input_.ProcessInput(key, action);
 }
 
@@ -175,14 +164,6 @@ void Application::MouseScrollCallback(GLFWwindow* window, double x, double y)
     assert(application != nullptr);
 
     application->input_.ProcessMouseScroll(y);
-}
-
-void Application::ProcessInput(GLFWwindow *window, float delta_time)
-{
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
-        glfwSetWindowShouldClose(window, GL_TRUE);
-    }
 }
 
 void Application::ResizeCallback(GLFWwindow *window, int width, int height)
