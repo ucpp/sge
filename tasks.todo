@@ -68,9 +68,21 @@ Stream #012 Config:
     ✔ Configurate lights @done (12.01.2022, 12:29:37)
     ✔ Load objects from config @done (12.01.2022, 12:29:40)
 
+Stream #013 Editor:
+    ✔ Add default texture if not loaded @done (13.01.2022, 23:04:45)
+    ✔ Learn model prepare with blender @done (13.01.2022, 23:04:48)
+    ✔ fix config @done (13.01.2022, 23:04:52)
+
+Stream #014 Shadow maps + PCF:
+    ✔ Create render texture @done (14.01.2022, 02:22:11)
+    ☐ Move rendering to renderer
+    ✔ Calculate light space matrix @done (14.01.2022, 02:22:01)
+    ✔ Implement shadows in lighting shader @done (14.01.2022, 02:22:04)
+    ✔ Fix artifacts @done (14.01.2022, 02:22:07)
+
 Other streams:
     ogl:
-    ☐ Make shadow maps for directional light
+    ✔ Make shadow maps for directional light @done (14.01.2022, 02:31:21)
     ☐ Reflections cube maps
     dx12:
     ☐ Initialize D3D12

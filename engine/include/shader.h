@@ -21,6 +21,7 @@ namespace Engine
         void Use();
         unsigned int GetId();
 
+        void SetBool(const char *name, bool value);
         void SetInt(const char *name, int value);
         void SetFloat(const char *name, float value);
         void SetVec2(const char *name, float x, float y);

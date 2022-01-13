@@ -12,11 +12,13 @@ out VS_OUT
     vec2 TexCoords;
     vec3 Normal;
     vec3 Tangent;
+    vec4 LightSpacePosition;
 } vs_out;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpace;
 
 void main()
 {
@@ -25,6 +27,6 @@ void main()
 
     vs_out.Normal = (model * vec4(aNormal, 0.0)).xyz;
     vs_out.Tangent = (model * vec4(aTangent, 0.0)).xyz;
-
+    vs_out.LightSpacePosition = lightSpace * vec4(vs_out.Position, 1.0);
     gl_Position = projection * view * vec4(vs_out.Position, 1.0);
 }

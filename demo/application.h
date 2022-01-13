@@ -22,14 +22,12 @@ public:
 
 private:
     void Init();
-    void InitRender();
     void InitGui();
     void Update();
     void DrawGui(float delta_time);
     void Shutdown();
     void ShutdownGui();
 
-    void ProcessInput(GLFWwindow *window, float delta_time);
     static void KeyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods);
     static void ResizeCallback(GLFWwindow *window, int width, int height);
     static void ErrorCallback(int error_code, const char *description);
@@ -41,16 +39,16 @@ private:
     GLFWwindow *window_{nullptr};
     Engine::Scene* scene_{nullptr};
 
+    Engine::Renderer renderer_;
     Engine::InputSystem input_;
     Engine::RenderState state_;
     Engine::ImGuiRenderer imgui_renderer_;
     Engine::Config config_;
 
+    float delta_time_;
+
     unsigned int width_;
     unsigned int height_;
-    unsigned int texture_;
-
-    float delta_time_;
 
     const char *kTitleWindow;
 };

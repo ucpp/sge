@@ -7,14 +7,17 @@ namespace Engine
 
     struct RenderState
     {
-        Engine::Shader* active_shader;
         bool polygon_mode_enabled = false;
         bool normal_maps_enabled = true;
     };
 
     class Renderer
     {
+    public:
+        void Init();
+        void Render();
 
+        void SetViewport(int width, int height);
     };
 }
 
