@@ -28,9 +28,9 @@
                 "lit": true
             },
             {
-                "name" : "outline",
-                "path_to_fragment" : "shaders/outline.frag",
-                "path_to_vertex" : "shaders/outline.vert",
+                "name" : "depth",
+                "path_to_fragment" : "shaders/depth.frag",
+                "path_to_vertex" : "shaders/depth.vert",
                 "lit": false
             }
         ],
@@ -42,6 +42,10 @@
             {
                 "name" : "floor",
                 "path" :  "resources/floor/floor.obj"
+            },
+            {
+                "name" : "trash",
+                "path" :  "resources/trash/trash.obj"
             }
         ]
     },
@@ -49,6 +53,24 @@
         {
             "name" : "default",
             "objects" : [
+                {
+                    "name" : "trash",
+                    "model" : "trash",
+                    "position": {
+                        "x" : 0.5,
+                        "y" : 0.0,
+                        "z" : -0.7
+                    },
+                    "rotation": {
+                        "x" : 0.0,
+                        "y" : 45.0,
+                        "z" : 0.0
+                    },
+                    "scale" : 2.0,
+                    "material" : {
+                        "shader" : "lighting"
+                    }
+                },
                 {
                     "name" : "barrel",
                     "model" : "barrel",
@@ -71,9 +93,9 @@
                     "name" : "barrel",
                     "model" : "barrel",
                     "position": {
-                        "x" : 2.0,
-                        "y" : 0.25,
-                        "z" : 0.0
+                        "x" : 0.7,
+                        "y" : 0.34,
+                        "z" : -0.4
                     },
                     "rotation": {
                         "x" : 90.0,
@@ -98,7 +120,7 @@
                         "y" : 0.0,
                         "z" : 0.0
                     },
-                    "scale" : 1.0,
+                    "scale" : 1.00,
                     "material" : {
                         "shader" : "lighting"
                     }
@@ -121,9 +143,9 @@
                 "gizmo" : "box",
                 "gizmo_shader": "lamp",
                 "position": {
-                    "x" : -10.0,
-                    "y" : -10.0,
-                    "z" : 0.0
+                    "x" : -5.0,
+                    "y" : -5.0,
+                    "z" : -2.0
                 },
                 "ambient": 0.3,
                 "diffuse": 0.8,
