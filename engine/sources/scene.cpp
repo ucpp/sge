@@ -5,7 +5,6 @@ namespace Engine
 {
     Scene::Scene(SceneData data) : data_(data), inited_(false) {}
 
-
     Shader depth_shader_;
 
     void Scene::Init(InputSystem &input)

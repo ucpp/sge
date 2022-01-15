@@ -27,7 +27,6 @@ namespace Engine
 
         last_x_ = 0.0;
         last_y_ = 0.0;
-        std::cout << position_.x << " " << position_.y << " " << position_.z << std::endl;
 
         Refresh();
     }

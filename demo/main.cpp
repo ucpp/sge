@@ -2,7 +2,7 @@
 
 #include "application.h"
 
-int main()
+int main(int argc, char **argv)
 {
     std::cout << "Staring demo..." << std::endl;
 
