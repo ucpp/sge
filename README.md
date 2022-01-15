@@ -1,5 +1,8 @@
 # OpenGL render training platform
 
+### Build status:
+[![Build Status](https://app.travis-ci.com/ucpp/ogl_render.svg?branch=release)](https://app.travis-ci.com/ucpp/ogl_render)
+
 ### Done the following things:
 - model loading
 - phong lighting with forward rendering
