@@ -7,3 +7,5 @@
 - normal maps
 - shadow maps + pcf
 - loading resources and scene from configuration file
+
+![alt text](https://github.com/ucpp/ogl_render/blob/master/demo/promo/demo.png)
