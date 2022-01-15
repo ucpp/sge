@@ -1,13 +1,9 @@
 language: cpp
-
 compiler: gcc
-
 branches:
   only:
     - release
-
 os: osx
-
 script:
     - mkdir build
     - cd build
