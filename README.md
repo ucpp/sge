@@ -8,4 +8,14 @@
 - shadow maps + pcf
 - loading resources and scene from configuration file
 
+---
+### Third party libs:
+- [glfw](https://github.com/glfw/glfw)
+- [glad](https://github.com/Dav1dde/glad)
+- [glm](https://github.com/g-truc/glm)
+- [assimp](https://github.com/assimp/assimp)
+- [stb](https://github.com/nothings/stb)
+- [imgui](https://github.com/ocornut/imgui)
+- [json parser](https://github.com/nlohmann)
+
 ![alt text](https://github.com/ucpp/ogl_render/blob/master/demo/promo/demo.png)
