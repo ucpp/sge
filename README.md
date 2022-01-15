@@ -1,10 +1,9 @@
-# OGLRender
+# OpenGL render training platform
 
-### Education OpenGL render:
-- forward rendering
+### Done the following things:
 - model loading
-- point lights
-- directional light
+- phong lighting with forward rendering
+- point lights and directional light
 - normal maps
 - shadow maps + pcf
-- loading from configuration file
+- loading resources and scene from configuration file
