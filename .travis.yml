@@ -1,0 +1,15 @@
+language: cpp
+
+compiler: gcc
+
+branches:
+  only:
+    - master
+
+os: osx
+
+script:
+    - mkdir build
+    - cd build
+    - cmake ..
+    - cmake --build .
