@@ -19,3 +19,8 @@
 - [json parser](https://github.com/nlohmann)
 
 ![alt text](https://github.com/ucpp/ogl_render/blob/master/demo/promo/demo.png)
+
+### License:
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/ucpp/ogl_render/blob/master/LICENSE)  
+
+ogl_renderer is developed by Maryan Yaroma, and uses the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
