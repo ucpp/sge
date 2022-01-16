@@ -1,4 +1,6 @@
-# OpenGL render training platform
+# SGE - Simple Graphics Engine.  
+
+This project is a training sandbox for learning graphic techniques. 
 
 ### Build status: 
 [![Build Status](https://app.travis-ci.com/ucpp/ogl_render.svg?branch=release)](https://app.travis-ci.com/ucpp/ogl_render)
