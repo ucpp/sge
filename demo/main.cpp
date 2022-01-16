@@ -1,22 +1,22 @@
-#include <iostream>
-
 #include "application.h"
+#include "log.h"
 
 int main(int argc, char **argv)
 {
-    std::cout << "Staring demo..." << std::endl;
-
     try
     {
-        Application application("resources/demo_config.json");
+        std::string path = "resources/demo_config.json";
+        sge::Log::info("Start demo with config: %s\n", path.c_str());
+        Application application(path);
         application.run();
     }
     catch (const std::exception &e)
     {
-        std::cerr << e.what() << std::endl;
+        sge::Log::error(e.what());
         return EXIT_FAILURE;
     }
 
-    std::cout << "Quit demo" << std::endl;
+    sge::Log::info("Success quit demo.\n");
+
     return EXIT_SUCCESS;
 }
