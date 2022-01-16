@@ -75,10 +75,25 @@ Stream #013 Editor:
 
 Stream #014 Shadow maps + PCF:
     ✔ Create render texture @done (14.01.2022, 02:22:11)
-    ☐ Move rendering to renderer
     ✔ Calculate light space matrix @done (14.01.2022, 02:22:01)
     ✔ Implement shadows in lighting shader @done (14.01.2022, 02:22:04)
     ✔ Fix artifacts @done (14.01.2022, 02:22:07)
+
+Stream #015 DirectX12 intro:
+    ✔ Prepare project and dependencies @done (16.01.2022, 15:40:54)
+
+Stream #016 DirectX12 initialize context:
+    ☐ Register the window class
+    ☐ Create the window
+    ☐ Query the GPU adapters
+    ☐ Create a DirectX 12 device
+    ☐ Create a command queue
+    ☐ Create a swap chain
+    ☐ Create command allocator & command list
+    ☐ Handle GPU synchronization
+    ☐ Update & Render
+    ☐ Handle resizing
+    ☐ Handle full-screen toggling
 
 Other streams:
     ogl:
@@ -90,6 +105,7 @@ Other streams:
     ☐ Load simple model without animation dx12
     --- before 25.01 ---
 
+    ☐ Move rendering to renderer
     ☐ HDR, tone mapping
     ☐ Bloom
     ☐ SSAO

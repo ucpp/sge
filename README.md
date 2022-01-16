@@ -1,4 +1,9 @@
-# OpenGL render training platform
+# SGE - Simple Graphics Engine.  
+
+This project is a training sandbox for learning graphic techniques. 
+
+### Build status: 
+[![Build Status](https://app.travis-ci.com/ucpp/sge.svg?branch=release)](https://app.travis-ci.com/ucpp/sge)
 
 ### Done the following things:
 - model loading
@@ -18,4 +23,9 @@
 - [imgui](https://github.com/ocornut/imgui)
 - [json parser](https://github.com/nlohmann)
 
-![alt text](https://github.com/ucpp/ogl_render/blob/master/demo/promo/demo.png)
+![alt text](https://github.com/ucpp/sge/blob/master/demo/promo/demo.png)
+
+### License:
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/ucpp/sge/blob/master/LICENSE)  
+
+SGE is developed by Maryan Yaroma, and uses the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
