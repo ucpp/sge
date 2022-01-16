@@ -1,11 +1,10 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 
-namespace Engine
+namespace sge
 {
     class Shader
     {
@@ -17,19 +16,19 @@ namespace Engine
         };
 
     public:
-        void Compile(const std::string& vertex_source, const std::string& fragment_source);
-        void Use();
-        unsigned int GetId();
+        void compile(const std::string &vertex_source, const std::string &fragment_source);
+        void use();
+        uint32_t getId();
 
-        void SetBool(const char *name, bool value);
-        void SetInt(const char *name, int value);
-        void SetFloat(const char *name, float value);
-        void SetVec2(const char *name, float x, float y);
-        void SetVec3(const char *name, float x, float y, float z);
-        void SetVec4(const char *name, float x, float y, float z, float w);
+        void setBool(const char *name, bool value);
+        void setInt(const char *name, int value);
+        void setFloat(const char *name, float value);
+        void setVec2(const char *name, float x, float y);
+        void setVec3(const char *name, float x, float y, float z);
+        void setVec4(const char *name, float x, float y, float z, float w);
 
-        void SetMatrix4(const char *name, const glm::mat4 &matrix);
-        void SetVec3(const char *name, glm::vec3 v3);
+        void setMatrix4(const char *name, const glm::mat4 &matrix);
+        void setVec3(const char *name, glm::vec3 v3);
 
     public:
         bool is_lit;
@@ -37,10 +36,9 @@ namespace Engine
         std::string fragment_source;
 
     private:
-        unsigned int id_;
+        uint32_t id;
 
     private:
-        void CheckCompile(unsigned int id, Type type);
+        void checkCompile(uint32_t id, Type type);
     };
 }
-#endif

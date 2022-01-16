@@ -1,5 +1,4 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
 
 #include "json.hpp"
 #include <vector>
@@ -8,7 +7,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace Engine
+namespace sge
 {
     struct Vector3
     {
@@ -61,7 +60,7 @@ namespace Engine
         float scale;
         MaterialData material;
     };
-    
+
     struct CameraData
     {
         std::string name;
@@ -120,14 +119,14 @@ namespace Engine
         ResourcesData resources;
         std::vector<SceneData> scenes;
 
-        SceneData GetStartScene()
+        SceneData getStartScene()
         {
-            auto find_iter = std::find_if(scenes.begin(), scenes.end(), 
-            [&](SceneData data)
-            {
-                return settings.start_scene == data.name;
-            });
-            if(find_iter != scenes.end())
+            auto find_iter = std::find_if(scenes.begin(), scenes.end(),
+                                          [&](SceneData data)
+                                          {
+                                              return settings.start_scene == data.name;
+                                          });
+            if (find_iter != scenes.end())
             {
                 return *find_iter;
             }
@@ -150,19 +149,16 @@ namespace Engine
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CubemapData, name);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DirectionalLightData, gizmo, gizmo_shader, position, ambient, diffuse, specular);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ColorData, r, g, b);
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, gizmo, gizmo_shader, position, ambient, diffuse, specular,linear, quadratic, color);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, gizmo, gizmo_shader, position, ambient, diffuse, specular, linear, quadratic, color);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SceneData, name, objects, camera, cubemap, directional_light, point_lights);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Data, settings, resources, scenes);
-
 
     class Config
     {
     public:
-        bool Load(const std::string& path);
-    
+        bool load(const std::string &path);
+
     public:
         Data data;
     };
 }
-
-#endif

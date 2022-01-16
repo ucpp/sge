@@ -4,46 +4,45 @@
 #include "mesh.h"
 #include "resource_manager.h"
 
-namespace Engine
+namespace sge
 {
-    void Model::Load(const std::string& path)
+    void Model::load(const std::string &path)
     {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, 
-        aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
-        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+        if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
             std::cout << "Assimp error load scene: " << importer.GetErrorString() << std::endl;
             return;
         }
 
-        directory_ = path.substr(0, path.find_last_of('/'));
+        directory = path.substr(0, path.find_last_of('/'));
 
-        LoadNode(scene->mRootNode, scene);
+        loadNode(scene->mRootNode, scene);
     }
 
-    void Model::LoadNode(aiNode* node, const aiScene* scene)
+    void Model::loadNode(aiNode *node, const aiScene *scene)
     {
-        for(unsigned int i = 0; i < node->mNumMeshes; ++i)
+        for (uint32_t i = 0; i < node->mNumMeshes; ++i)
         {
-            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(ProcessMesh(mesh, scene));
+            aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
+            meshes.push_back(processMesh(mesh, scene));
         }
 
-        for(unsigned int i = 0; i < node->mNumChildren; ++i)
+        for (uint32_t i = 0; i < node->mNumChildren; ++i)
         {
-            LoadNode(node->mChildren[i], scene);
+            loadNode(node->mChildren[i], scene);
         }
     }
 
-    Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+    Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     {
         std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
+        std::vector<uint32_t> indices;
         std::vector<Texture> textures;
 
-        for(unsigned int i = 0; i < mesh->mNumVertices; ++i)
+        for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
         {
             Vertex vertex;
             glm::vec3 v3;
@@ -58,7 +57,7 @@ namespace Engine
             v3.z = mesh->mNormals[i].z;
             vertex.normal = v3;
 
-            if(mesh->mTextureCoords[0])
+            if (mesh->mTextureCoords[0])
             {
                 glm::vec2 v2;
 
@@ -75,82 +74,82 @@ namespace Engine
             tg.x = mesh->mTangents[i].x;
             tg.x = mesh->mTangents[i].x;
             tg.x = mesh->mTangents[i].x;
-            
+
             vertex.tangent = tg;
 
             vertices.push_back(vertex);
         }
 
-        for(unsigned int i = 0; i < mesh->mNumFaces; ++i)
+        for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
         {
             aiFace face = mesh->mFaces[i];
 
-            for(unsigned int j = 0; j < face.mNumIndices; ++j)
+            for (uint32_t j = 0; j < face.mNumIndices; ++j)
             {
                 indices.push_back(face.mIndices[j]);
             }
         }
 
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-        textures.push_back(LoadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
-        textures.push_back(LoadTexture(material, aiTextureType_HEIGHT, "material.normal"));
-        textures.push_back(LoadTexture(material, aiTextureType_SPECULAR, "material.specular"));
-        //textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
+        aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+        textures.push_back(loadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
+        textures.push_back(loadTexture(material, aiTextureType_HEIGHT, "material.normal"));
+        textures.push_back(loadTexture(material, aiTextureType_SPECULAR, "material.specular"));
+        // textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
 
         Mesh result_mesh;
-        result_mesh.Init(vertices, indices, textures);
+        result_mesh.initialize(vertices, indices, textures);
 
         return result_mesh;
     }
 
-    Texture Model::LoadTexture(aiMaterial* material, aiTextureType type, std::string type_name, std::string force_path)
+    Texture Model::loadTexture(aiMaterial *material, aiTextureType type, std::string type_name, std::string force_path)
     {
         Texture texture;
-        //TODO: remove temporary hack
-        if(force_path != "")
+        // TODO: remove temporary hack
+        if (force_path != "")
         {
-            std::string file_name(this->directory_ + "/" + force_path);
-            texture = Engine::ResourceManager::LoadTexture(file_name, force_path.substr(0, force_path.find_last_of('.')), type_name);
+            std::string file_name(this->directory + "/" + force_path);
+            texture = sge::ResourceManager::loadTexture(file_name, force_path.substr(0, force_path.find_last_of('.')), type_name);
 
             return texture;
         }
-        
-        if(material->GetTextureCount(type) > 0)
+
+        if (material->GetTextureCount(type) > 0)
         {
             aiString path;
             if (material->GetTexture(type, 0, &path) == AI_SUCCESS)
             {
                 std::string filename = std::string(path.C_Str());
-                filename = this->directory_ + "/" + filename;
-                //std::cout << filename.c_str() << std::endl;
+                filename = this->directory + "/" + filename;
+                // std::cout << filename.c_str() << std::endl;
 
                 std::string tex_name(path.C_Str());
                 tex_name = tex_name.substr(0, tex_name.find_last_of('.'));
                 tex_name += "_" + type_name;
-                texture = Engine::ResourceManager::LoadTexture(filename, tex_name, type_name);
+                texture = sge::ResourceManager::loadTexture(filename, tex_name, type_name);
             }
         }
         else
         {
-            //std::cout << "error loading texture with type " << type  << std::endl;
+            // std::cout << "error loading texture with type " << type  << std::endl;
         }
 
         return texture;
     }
 
-    void Model::Draw(Shader& shader)
+    void Model::draw(Shader &shader)
     {
-        for(auto mesh : meshes)
+        for (auto mesh : meshes)
         {
-            mesh.Draw(shader);
+            mesh.draw(shader);
         }
     }
 
-    void Model::Clear()
+    void Model::clear()
     {
-        for(auto mesh : meshes)
+        for (auto mesh : meshes)
         {
-            mesh.Clear();
+            mesh.clear();
         }
 
         meshes.clear();

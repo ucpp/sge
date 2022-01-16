@@ -6,9 +6,9 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-namespace Engine
+namespace sge
 {
-    void Renderer::Init()
+    void Renderer::initialize()
     {
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
@@ -17,12 +17,12 @@ namespace Engine
         glCullFace(GL_BACK);
     }
 
-    void Renderer::Render()
+    void Renderer::render()
     {
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     }
 
-    void Renderer::SetViewport(int width, int height)
+    void Renderer::setViewport(int width, int height)
     {
         glViewport(0, 0, width, height);
     }

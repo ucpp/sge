@@ -1,33 +1,30 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#pragma once
 
 #include <string>
 
-namespace Engine
+namespace sge
 {
     class Texture
     {
     public:
         Texture();
-        void Generate(unsigned char *data, unsigned int width, unsigned int height);
-        void Bind() const;
+        void generate(unsigned char *data, uint32_t width, uint32_t height);
+        void bind() const;
 
-        void EnableAlpha();
-        void SetFormat(int channels, size_t pixel_size);
-        unsigned int GetWidth() const;
-        unsigned int GetHeight() const;
+        void enableAlpha();
+        void setFormat(int channels, size_t pixel_size);
+        uint32_t getWidth() const;
+        uint32_t getHeight() const;
 
     public:
-        unsigned int id;
+        uint32_t id;
         std::string type;
 
     private:
-        unsigned int width_;
-        unsigned int height_;
-        unsigned int internal_format_;
-        unsigned int image_format_;
-        unsigned int wrap_format_;
+        uint32_t width;
+        uint32_t height;
+        uint32_t internal_format;
+        uint32_t image_format;
+        uint32_t wrap_format;
     };
 }
-
-#endif

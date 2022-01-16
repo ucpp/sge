@@ -1,7 +1,6 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
-namespace Engine
+namespace sge
 {
     class Shader;
 
@@ -14,11 +13,9 @@ namespace Engine
     class Renderer
     {
     public:
-        void Init();
-        void Render();
+        void initialize();
+        void render();
 
-        void SetViewport(int width, int height);
+        void setViewport(int width, int height);
     };
 }
-
-#endif

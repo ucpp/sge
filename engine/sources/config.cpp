@@ -3,13 +3,13 @@
 #include <sstream>
 #include <iostream>
 
-namespace Engine
+namespace sge
 {
-    //TODO safe read and load
-    bool Config::Load(const std::string& path)
+    // TODO safe read and load
+    bool Config::load(const std::string &path)
     {
         std::ifstream file_stream(path);
-        nlohmann::json j; 
+        nlohmann::json j;
         file_stream >> j;
         data = j.get<Data>();
 

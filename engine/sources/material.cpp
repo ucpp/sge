@@ -1,6 +1,6 @@
 #include "material.h"
 
-namespace Engine
+namespace sge
 {
-    
+
 }
