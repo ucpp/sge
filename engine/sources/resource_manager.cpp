@@ -9,7 +9,7 @@
 
 #include "model.h"
 
-namespace Engine
+namespace sge
 {
     std::map<std::string, Shader> ResourceManager::shaders_;
     std::map<std::string, Texture> ResourceManager::textures_;

@@ -1,7 +1,7 @@
 #include "input_system.h"
 #include <glfw/glfw3.h>
 
-namespace Engine
+namespace sge
 {
     void InputSystem::ProcessMouseMovement(double x, double y)
     {

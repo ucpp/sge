@@ -3,7 +3,7 @@
 #include <glad/glad.h>
 #include <iostream>
 
-namespace Engine
+namespace sge
 {
     void Shader::Use()
     {

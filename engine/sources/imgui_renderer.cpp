@@ -9,7 +9,7 @@
 #include "resource_manager.h"
 #include "renderer.h"
 
-namespace Engine
+namespace sge
 {
     void ImGuiRenderer::Init(GLFWwindow *window, RenderState *state, Scene *scene)
     {

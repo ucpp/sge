@@ -21,7 +21,7 @@ Application::Application(std::string path_to_config)
         width_ = config_.data.settings.window_width;
         height_ = config_.data.settings.window_height;
         kTitleWindow = config_.data.settings.application_name.c_str();
-        scene_ = new Engine::Scene(config_.data.GetStartScene());
+        scene_ = new sge::Scene(config_.data.GetStartScene());
     }
 }
 
@@ -74,7 +74,7 @@ void Application::Init()
     glfwSwapInterval(config_.data.settings.vsync_enabled ? 1 : 0);
 
     imgui_renderer_.Init(window_, &state_, scene_);
-    Engine::ResourceManager::LoadResources(config_.data.resources);
+    sge::ResourceManager::LoadResources(config_.data.resources);
     scene_->Init(input_);
     renderer_.Init();
 }
@@ -111,7 +111,7 @@ void Application::Shutdown()
     delete scene_;
     scene_ = nullptr;
 
-    Engine::ResourceManager::Clear();
+    sge::ResourceManager::Clear();
 
     glfwDestroyWindow(window_);
     window_ = nullptr;

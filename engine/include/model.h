@@ -7,7 +7,7 @@
 #include <vector>
 #include "mesh.h"
 
-namespace Engine
+namespace sge
 {
     class Model
     {

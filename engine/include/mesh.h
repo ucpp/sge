@@ -6,7 +6,7 @@
 #include "texture.h"
 #include "shader.h"
 
-namespace Engine
+namespace sge
 {
     struct Vertex
     {

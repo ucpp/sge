@@ -7,7 +7,7 @@
 #include <vector>
 #include <functional>
 
-namespace Engine
+namespace sge
 {
     template <class... Args>
     class Event

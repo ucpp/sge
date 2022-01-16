@@ -6,7 +6,7 @@
 #include "config.h"
 #include "scene.h"
 
-namespace Engine
+namespace sge
 {
     class Camera;
 }
@@ -36,13 +36,13 @@ private:
 
 private:
     GLFWwindow *window_{nullptr};
-    Engine::Scene *scene_{nullptr};
+    sge::Scene *scene_{nullptr};
 
-    Engine::Renderer renderer_;
-    Engine::InputSystem input_;
-    Engine::RenderState state_;
-    Engine::ImGuiRenderer imgui_renderer_;
-    Engine::Config config_;
+    sge::Renderer renderer_;
+    sge::InputSystem input_;
+    sge::RenderState state_;
+    sge::ImGuiRenderer imgui_renderer_;
+    sge::Config config_;
 
     float delta_time_;
 

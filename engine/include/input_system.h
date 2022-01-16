@@ -2,7 +2,7 @@
 
 #include "event.h"
 
-namespace Engine
+namespace sge
 {
     class InputSystem
     {

@@ -2,7 +2,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace sge
 {
     void Mesh::Init(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
     {

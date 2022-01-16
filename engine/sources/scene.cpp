@@ -1,7 +1,7 @@
 #include "scene.h"
 #include "resource_manager.h"
 
-namespace Engine
+namespace sge
 {
     Scene::Scene(SceneData data) : data_(data), inited_(false) {}
 

@@ -4,7 +4,7 @@
 
 class GLFWwindow;
 
-namespace Engine
+namespace sge
 {
     class RenderState;
 

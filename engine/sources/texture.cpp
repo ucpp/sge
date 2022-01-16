@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 
-namespace Engine
+namespace sge
 {
     Texture::Texture()
     {

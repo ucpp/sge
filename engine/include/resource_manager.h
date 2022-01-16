@@ -9,7 +9,7 @@
 #include "texture.h"
 #include "config.h"
 
-namespace Engine
+namespace sge
 {
     class Model;
 

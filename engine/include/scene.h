@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
-namespace Engine
+namespace sge
 {
     class Material
     {

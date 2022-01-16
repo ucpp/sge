@@ -8,7 +8,7 @@
 #include <iostream>
 #include <memory>
 
-namespace Engine
+namespace sge
 {
     Camera::Camera(InputSystem &input, glm::vec3 position, float speed) : position_(position), speed_(speed)
     {

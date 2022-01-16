@@ -7,7 +7,7 @@
 #include <cassert>
 #include <iostream>
 
-namespace Engine
+namespace sge
 {
     struct Vector3
     {

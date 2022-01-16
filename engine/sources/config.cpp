@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-namespace Engine
+namespace sge
 {
     // TODO safe read and load
     bool Config::Load(const std::string &path)

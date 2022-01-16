@@ -4,7 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
 
-namespace Engine
+namespace sge
 {
     class Shader
     {
