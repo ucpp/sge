@@ -19,21 +19,21 @@ namespace sge
     class Mesh
     {
     public:
-        void Init(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
-        void Draw(Shader &shader);
-        void Clear();
+        void initialize(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures);
+        void draw(Shader &shader);
+        void clear();
 
     public:
         std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
+        std::vector<uint32_t> indices;
         std::vector<Texture> textures;
 
     private:
-        void Setup();
+        void setup();
 
     private:
-        unsigned int VBO_;
-        unsigned int VAO_;
-        unsigned int EBO_;
+        uint32_t VBO;
+        uint32_t VAO;
+        uint32_t EBO;
     };
 }

@@ -11,18 +11,18 @@ namespace sge
     class ImGuiRenderer
     {
     public:
-        void Init(GLFWwindow *window, RenderState *state, Scene *scene);
-        void Update(float delta_time);
-        void Shutdown();
+        void initialize(GLFWwindow *window, RenderState *state, Scene *scene);
+        void update(float delta_time);
+        void shutdown();
 
     private:
-        void DrawTitle();
-        void DrawFPS(float delta_time);
-        void DrawPolygonModeSettings();
-        void DrawNormalMapsSettings();
+        void drawTitle();
+        void drawFPS(float delta_time);
+        void drawPolygonModeSettings();
+        void drawNormalMapsSettings();
 
     private:
-        RenderState *state_{nullptr};
-        Scene *scene_{nullptr};
+        RenderState *state{nullptr};
+        Scene *scene{nullptr};
     };
 }

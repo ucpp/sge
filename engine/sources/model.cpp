@@ -6,7 +6,7 @@
 
 namespace sge
 {
-    void Model::Load(const std::string &path)
+    void Model::load(const std::string &path)
     {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -17,32 +17,32 @@ namespace sge
             return;
         }
 
-        directory_ = path.substr(0, path.find_last_of('/'));
+        directory = path.substr(0, path.find_last_of('/'));
 
-        LoadNode(scene->mRootNode, scene);
+        loadNode(scene->mRootNode, scene);
     }
 
-    void Model::LoadNode(aiNode *node, const aiScene *scene)
+    void Model::loadNode(aiNode *node, const aiScene *scene)
     {
-        for (unsigned int i = 0; i < node->mNumMeshes; ++i)
+        for (uint32_t i = 0; i < node->mNumMeshes; ++i)
         {
             aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(ProcessMesh(mesh, scene));
+            meshes.push_back(processMesh(mesh, scene));
         }
 
-        for (unsigned int i = 0; i < node->mNumChildren; ++i)
+        for (uint32_t i = 0; i < node->mNumChildren; ++i)
         {
-            LoadNode(node->mChildren[i], scene);
+            loadNode(node->mChildren[i], scene);
         }
     }
 
-    Mesh Model::ProcessMesh(aiMesh *mesh, const aiScene *scene)
+    Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
     {
         std::vector<Vertex> vertices;
-        std::vector<unsigned int> indices;
+        std::vector<uint32_t> indices;
         std::vector<Texture> textures;
 
-        for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
+        for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
         {
             Vertex vertex;
             glm::vec3 v3;
@@ -80,36 +80,36 @@ namespace sge
             vertices.push_back(vertex);
         }
 
-        for (unsigned int i = 0; i < mesh->mNumFaces; ++i)
+        for (uint32_t i = 0; i < mesh->mNumFaces; ++i)
         {
             aiFace face = mesh->mFaces[i];
 
-            for (unsigned int j = 0; j < face.mNumIndices; ++j)
+            for (uint32_t j = 0; j < face.mNumIndices; ++j)
             {
                 indices.push_back(face.mIndices[j]);
             }
         }
 
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
-        textures.push_back(LoadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
-        textures.push_back(LoadTexture(material, aiTextureType_HEIGHT, "material.normal"));
-        textures.push_back(LoadTexture(material, aiTextureType_SPECULAR, "material.specular"));
+        textures.push_back(loadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
+        textures.push_back(loadTexture(material, aiTextureType_HEIGHT, "material.normal"));
+        textures.push_back(loadTexture(material, aiTextureType_SPECULAR, "material.specular"));
         // textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
 
         Mesh result_mesh;
-        result_mesh.Init(vertices, indices, textures);
+        result_mesh.initialize(vertices, indices, textures);
 
         return result_mesh;
     }
 
-    Texture Model::LoadTexture(aiMaterial *material, aiTextureType type, std::string type_name, std::string force_path)
+    Texture Model::loadTexture(aiMaterial *material, aiTextureType type, std::string type_name, std::string force_path)
     {
         Texture texture;
         // TODO: remove temporary hack
         if (force_path != "")
         {
-            std::string file_name(this->directory_ + "/" + force_path);
-            texture = sge::ResourceManager::LoadTexture(file_name, force_path.substr(0, force_path.find_last_of('.')), type_name);
+            std::string file_name(this->directory + "/" + force_path);
+            texture = sge::ResourceManager::loadTexture(file_name, force_path.substr(0, force_path.find_last_of('.')), type_name);
 
             return texture;
         }
@@ -120,13 +120,13 @@ namespace sge
             if (material->GetTexture(type, 0, &path) == AI_SUCCESS)
             {
                 std::string filename = std::string(path.C_Str());
-                filename = this->directory_ + "/" + filename;
+                filename = this->directory + "/" + filename;
                 // std::cout << filename.c_str() << std::endl;
 
                 std::string tex_name(path.C_Str());
                 tex_name = tex_name.substr(0, tex_name.find_last_of('.'));
                 tex_name += "_" + type_name;
-                texture = sge::ResourceManager::LoadTexture(filename, tex_name, type_name);
+                texture = sge::ResourceManager::loadTexture(filename, tex_name, type_name);
             }
         }
         else
@@ -137,19 +137,19 @@ namespace sge
         return texture;
     }
 
-    void Model::Draw(Shader &shader)
+    void Model::draw(Shader &shader)
     {
         for (auto mesh : meshes)
         {
-            mesh.Draw(shader);
+            mesh.draw(shader);
         }
     }
 
-    void Model::Clear()
+    void Model::clear()
     {
         for (auto mesh : meshes)
         {
-            mesh.Clear();
+            mesh.clear();
         }
 
         meshes.clear();

@@ -7,24 +7,24 @@ namespace sge
 {
     Texture::Texture()
     {
-        width_ = 0;
-        height_ = 0;
-        internal_format_ = GL_RGB;
-        image_format_ = GL_RGB;
-        wrap_format_ = GL_REPEAT;
+        width = 0;
+        height = 0;
+        internal_format = GL_RGB;
+        image_format = GL_RGB;
+        wrap_format = GL_REPEAT;
         glGenTextures(1, &id);
     }
 
-    void Texture::Generate(unsigned char *data, unsigned int width, unsigned int height)
+    void Texture::generate(unsigned char *data, uint32_t width, uint32_t height)
     {
-        width_ = width;
-        height_ = height;
+        width = width;
+        height = height;
 
         glBindTexture(GL_TEXTURE_2D, id);
-        glTexImage2D(GL_TEXTURE_2D, 0, internal_format_, width_, height_, 0, image_format_, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, internal_format, width, height, 0, image_format, GL_UNSIGNED_BYTE, data);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_format_);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_format_);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_format);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_format);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -32,14 +32,14 @@ namespace sge
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    void Texture::Bind() const
+    void Texture::bind() const
     {
         glBindTexture(GL_TEXTURE_2D, id);
     }
 
-    void Texture::SetFormat(int channels, size_t pixel_size)
+    void Texture::setFormat(int channels, size_t pixel_size)
     {
-        unsigned int format = GL_RGB;
+        uint32_t format = GL_RGB;
 
         if (channels == 1)
         {
@@ -50,17 +50,17 @@ namespace sge
             format = GL_RGBA;
         }
 
-        internal_format_ = format;
-        image_format_ = format;
+        internal_format = format;
+        image_format = format;
     }
 
-    unsigned int Texture::GetWidth() const
+    uint32_t Texture::getWidth() const
     {
-        return width_;
+        return width;
     }
 
-    unsigned int Texture::GetHeight() const
+    uint32_t Texture::getHeight() const
     {
-        return height_;
+        return height;
     }
 }

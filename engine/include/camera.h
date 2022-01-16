@@ -17,43 +17,43 @@ namespace sge
         Camera(InputSystem &input, glm::vec3 position, float speed);
         ~Camera();
 
-        void SetPosition(double x, double y, double z);
-        void SetSpeed(double speed);
-        void Update(float delta_time);
+        void setPosition(double x, double y, double z);
+        void setSpeed(double speed);
+        void update(float delta_time);
 
-        glm::mat4 GetViewMatrix() const;
-        glm::vec3 GetPosition() const;
-        float GetZoom() const;
-
-    private:
-        void Refresh();
-        void UpdateMouseMovement();
-        void ProcessMouseScroll(float offset);
-        void ProcessInput(float delta_time);
+        glm::mat4 getViewMatrix() const;
+        glm::vec3 getPosition() const;
+        float getZoom() const;
 
     private:
-        const float kClampPitchAngle = 89.0f;
-        const float kZoomMax = 45.0f;
-        const float kZoomMin = 1.0f;
+        void refresh();
+        void updateMouseMovement();
+        void processMouseScroll(float offset);
+        void processInput(float delta_time);
 
-        InputSystem *input_{nullptr};
+    private:
+        const float clamp_pitch_angle = 89.0f;
+        const float zoom_max = 45.0f;
+        const float zoom_min = 1.0f;
 
-        double last_x_;
-        double last_y_;
+        InputSystem *input{nullptr};
 
-        float pitch_;
-        float yaw_;
-        float zoom_;
+        double last_x;
+        double last_y;
 
-        float mouse_speed_;
-        float speed_;
+        float pitch;
+        float yaw;
+        float zoom;
 
-        glm::vec3 position_;
-        glm::vec3 up_;
-        glm::vec3 world_up_;
-        glm::vec3 front_;
-        glm::vec3 right_;
+        float mouse_speed;
+        float speed;
 
-        std::shared_ptr<void> scroll_callback_;
+        glm::vec3 position;
+        glm::vec3 up;
+        glm::vec3 world_up;
+        glm::vec3 front;
+        glm::vec3 right;
+
+        std::shared_ptr<void> scroll_callback;
     };
 }

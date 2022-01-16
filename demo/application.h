@@ -17,37 +17,39 @@ class Application
 {
 public:
     Application(std::string path_to_config);
-    void Run();
+    void run();
 
 private:
-    void Init();
-    void InitGui();
-    void Update();
-    void DrawGui(float delta_time);
-    void Shutdown();
-    void ShutdownGui();
+    void initialize();
+    void initializeGui();
 
-    static void KeyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods);
-    static void ResizeCallback(GLFWwindow *window, int width, int height);
-    static void ErrorCallback(int error_code, const char *description);
-    static void MouseCallback(GLFWwindow *window, double xpos, double ypos);
-    static void MouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
-    static void MouseScrollCallback(GLFWwindow *window, double x, double y);
+    void update();
+    void drawGui(float delta_time);
+
+    void shutdown();
+    void shutdownGui();
+
+    static void keyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods);
+    static void resizeCallback(GLFWwindow *window, int width, int height);
+    static void errorCallback(int error_code, const char *description);
+    static void mouseCallback(GLFWwindow *window, double x, double y);
+    static void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
+    static void mouseScrollCallback(GLFWwindow *window, double x, double y);
 
 private:
-    GLFWwindow *window_{nullptr};
-    sge::Scene *scene_{nullptr};
+    GLFWwindow *window{nullptr};
+    
+    sge::Scene *scene{nullptr};
+    sge::Renderer renderer;
+    sge::InputSystem input;
+    sge::RenderState state;
+    sge::ImGuiRenderer imgui_renderer;
+    sge::Config config;
 
-    sge::Renderer renderer_;
-    sge::InputSystem input_;
-    sge::RenderState state_;
-    sge::ImGuiRenderer imgui_renderer_;
-    sge::Config config_;
+    float delta_time;
 
-    float delta_time_;
+    uint32_t window_width;
+    uint32_t window_height;
 
-    unsigned int width_;
-    unsigned int height_;
-
-    const char *kTitleWindow;
+    const char *title_window;
 };

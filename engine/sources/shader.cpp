@@ -5,87 +5,87 @@
 
 namespace sge
 {
-    void Shader::Use()
+    void Shader::use()
     {
-        glUseProgram(GetId());
+        glUseProgram(getId());
     }
 
-    unsigned int Shader::GetId()
+    uint32_t Shader::getId()
     {
-        return id_;
+        return id;
     }
 
-    void Shader::Compile(const std::string &vertex_source, const std::string &fragment_source)
+    void Shader::compile(const std::string &vertex_source, const std::string &fragment_source)
     {
-        unsigned int vertex;
-        unsigned int fragment;
+        uint32_t vertex;
+        uint32_t fragment;
         this->vertex_source = vertex_source;
         this->fragment_source = fragment_source;
 
         vertex = glCreateShader(GL_VERTEX_SHADER);
-        const char *v_source = vertex_source.c_str();
+        const char *v_source = this->vertex_source.c_str();
         glShaderSource(vertex, 1, &v_source, nullptr);
         glCompileShader(vertex);
-        CheckCompile(vertex, Type::Vertex);
+        checkCompile(vertex, Type::Vertex);
 
         fragment = glCreateShader(GL_FRAGMENT_SHADER);
-        const char *f_source = fragment_source.c_str();
+        const char *f_source = this->fragment_source.c_str();
         glShaderSource(fragment, 1, &f_source, nullptr);
         glCompileShader(fragment);
-        CheckCompile(fragment, Type::Fragment);
+        checkCompile(fragment, Type::Fragment);
 
-        id_ = glCreateProgram();
-        glAttachShader(id_, vertex);
-        glAttachShader(id_, fragment);
+        id = glCreateProgram();
+        glAttachShader(id, vertex);
+        glAttachShader(id, fragment);
 
-        glLinkProgram(id_);
-        CheckCompile(id_, Type::Program);
+        glLinkProgram(id);
+        checkCompile(id, Type::Program);
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
     }
 
-    void Shader::SetBool(const char *name, bool value)
+    void Shader::setBool(const char *name, bool value)
     {
-        glUniform1i(glGetUniformLocation(id_, name), (int)value);
+        glUniform1i(glGetUniformLocation(id, name), (int)value);
     }
 
-    void Shader::SetInt(const char *name, int value)
+    void Shader::setInt(const char *name, int value)
     {
-        glUniform1i(glGetUniformLocation(id_, name), value);
+        glUniform1i(glGetUniformLocation(id, name), value);
     }
 
-    void Shader::SetFloat(const char *name, float value)
+    void Shader::setFloat(const char *name, float value)
     {
-        glUniform1f(glGetUniformLocation(id_, name), value);
+        glUniform1f(glGetUniformLocation(id, name), value);
     }
 
-    void Shader::SetVec2(const char *name, float x, float y)
+    void Shader::setVec2(const char *name, float x, float y)
     {
-        glUniform2f(glGetUniformLocation(id_, name), x, y);
+        glUniform2f(glGetUniformLocation(id, name), x, y);
     }
 
-    void Shader::SetVec3(const char *name, float x, float y, float z)
+    void Shader::setVec3(const char *name, float x, float y, float z)
     {
-        glUniform3f(glGetUniformLocation(id_, name), x, y, z);
+        glUniform3f(glGetUniformLocation(id, name), x, y, z);
     }
 
-    void Shader::SetVec3(const char *name, glm::vec3 v3)
+    void Shader::setVec3(const char *name, glm::vec3 v3)
     {
-        glUniform3f(glGetUniformLocation(id_, name), v3.x, v3.y, v3.z);
+        glUniform3f(glGetUniformLocation(id, name), v3.x, v3.y, v3.z);
     }
 
-    void Shader::SetVec4(const char *name, float x, float y, float z, float w)
+    void Shader::setVec4(const char *name, float x, float y, float z, float w)
     {
-        glUniform4f(glGetUniformLocation(id_, name), x, y, z, w);
+        glUniform4f(glGetUniformLocation(id, name), x, y, z, w);
     }
 
-    void Shader::SetMatrix4(const char *name, const glm::mat4 &matrix)
+    void Shader::setMatrix4(const char *name, const glm::mat4 &matrix)
     {
-        glUniformMatrix4fv(glGetUniformLocation(id_, name), 1, false, glm::value_ptr(matrix));
+        glUniformMatrix4fv(glGetUniformLocation(id, name), 1, false, glm::value_ptr(matrix));
     }
 
-    void Shader::CheckCompile(unsigned int id, Type type)
+    void Shader::checkCompile(uint32_t id, Type type)
     {
         int success;
         const int buff_size = 512;

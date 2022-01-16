@@ -10,132 +10,132 @@
 
 namespace sge
 {
-    Camera::Camera(InputSystem &input, glm::vec3 position, float speed) : position_(position), speed_(speed)
+    Camera::Camera(InputSystem &input, glm::vec3 position, float speed) : position(position), speed(speed)
     {
-        input_ = &input;
-        scroll_callback_ = input_->on_mouse_scroll.AddListener(std::bind(&Camera::ProcessMouseScroll, this, std::placeholders::_1));
+        this->input = &input;
+        scroll_callback = this->input->on_mouse_scroll.addListener(std::bind(&Camera::processMouseScroll, this, std::placeholders::_1));
 
-        front_ = glm::vec3(0.0f, 0.0f, -1.0f);
-        up_ = glm::vec3(0.0f, 1.0f, 0.0f);
-        world_up_ = up_;
+        front = glm::vec3(0.0f, 0.0f, -1.0f);
+        up = glm::vec3(0.0f, 1.0f, 0.0f);
+        world_up = up;
 
-        mouse_speed_ = 0.1f;
+        mouse_speed = 0.1f;
 
-        pitch_ = 0.0f;
-        yaw_ = -90.0f;
-        zoom_ = 45.0f;
+        pitch = 0.0f;
+        yaw = -90.0f;
+        zoom = 45.0f;
 
-        last_x_ = 0.0;
-        last_y_ = 0.0;
+        last_x = 0.0;
+        last_y = 0.0;
 
-        Refresh();
+        refresh();
     }
 
     Camera::~Camera()
     {
-        if (input_ == nullptr)
+        if (input == nullptr)
         {
             return;
         }
 
-        input_->on_mouse_scroll.RemoveListener(scroll_callback_);
+        input->on_mouse_scroll.removeListener(scroll_callback);
     }
 
-    void Camera::SetPosition(double x, double y, double z)
+    void Camera::setPosition(double x, double y, double z)
     {
-        position_ = glm::vec3(x, y, z);
+        position = glm::vec3(x, y, z);
     }
 
-    void Camera::SetSpeed(double speed)
+    void Camera::setSpeed(double speed)
     {
-        speed_ = speed;
+        speed = speed;
     }
 
-    glm::vec3 Camera::GetPosition() const
+    glm::vec3 Camera::getPosition() const
     {
-        return position_;
+        return position;
     }
 
-    float Camera::GetZoom() const
+    float Camera::getZoom() const
     {
-        return zoom_;
+        return zoom;
     }
 
-    glm::mat4 Camera::GetViewMatrix() const
+    glm::mat4 Camera::getViewMatrix() const
     {
-        return glm::lookAt(position_, position_ - front_, up_);
+        return glm::lookAt(position, position - front, up);
     }
 
-    void Camera::Update(float delta_time)
+    void Camera::update(float delta_time)
     {
-        UpdateMouseMovement();
-        ProcessInput(delta_time);
+        updateMouseMovement();
+        processInput(delta_time);
     }
 
-    void Camera::UpdateMouseMovement()
+    void Camera::updateMouseMovement()
     {
-        if (input_ == nullptr)
+        if (input == nullptr)
         {
             return;
         }
 
-        if (!input_->IsPressedMouseRight())
+        if (!input->isPressedMouseRight())
         {
-            last_x_ = input_->GetX();
-            last_y_ = input_->GetY();
+            last_x = input->getX();
+            last_y = input->getY();
             return;
         }
 
-        double x = input_->GetX() - last_x_;
-        double y = last_y_ - input_->GetY();
+        double x = input->getX() - last_x;
+        double y = last_y - input->getY();
 
-        last_x_ = input_->GetX();
-        last_y_ = input_->GetY();
+        last_x = input->getX();
+        last_y = input->getY();
 
-        yaw_ += (x * mouse_speed_);
-        pitch_ -= (y * mouse_speed_);
-        pitch_ = std::min(std::max(pitch_, -kClampPitchAngle), kClampPitchAngle);
+        yaw += (x * mouse_speed);
+        pitch -= (y * mouse_speed);
+        pitch = std::min(std::max(pitch, -clamp_pitch_angle), clamp_pitch_angle);
 
-        Refresh();
+        refresh();
     }
 
-    void Camera::ProcessInput(float delta_time)
+    void Camera::processInput(float delta_time)
     {
-        float velocity = speed_ * delta_time;
+        float velocity = speed * delta_time;
 
-        if (input_->IsKeyPressed(GLFW_KEY_W))
+        if (input->isKeyPressed(GLFW_KEY_W))
         {
-            position_ -= front_ * velocity;
+            position -= front * velocity;
         }
-        else if (input_->IsKeyPressed(GLFW_KEY_S))
+        else if (input->isKeyPressed(GLFW_KEY_S))
         {
-            position_ += front_ * velocity;
+            position += front * velocity;
         }
-        else if (input_->IsKeyPressed(GLFW_KEY_A))
+        else if (input->isKeyPressed(GLFW_KEY_A))
         {
-            position_ += right_ * velocity;
+            position += right * velocity;
         }
-        else if (input_->IsKeyPressed(GLFW_KEY_D))
+        else if (input->isKeyPressed(GLFW_KEY_D))
         {
-            position_ -= right_ * velocity;
+            position -= right * velocity;
         }
     }
 
-    void Camera::ProcessMouseScroll(float offset)
+    void Camera::processMouseScroll(float offset)
     {
-        zoom_ -= offset * 2;
-        zoom_ = std::min(std::max(zoom_, kZoomMin), kZoomMax);
+        zoom -= offset * 2;
+        zoom = std::min(std::max(zoom, zoom_min), zoom_max);
     }
 
-    void Camera::Refresh()
+    void Camera::refresh()
     {
         glm::vec3 front_direction;
-        front_direction.x = cos(glm::radians(yaw_)) * cos(glm::radians(pitch_));
-        front_direction.y = sin(glm::radians(pitch_));
-        front_direction.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
-        front_ = glm::normalize(front_direction);
+        front_direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front_direction.y = sin(glm::radians(pitch));
+        front_direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+        front = glm::normalize(front_direction);
 
-        right_ = glm::normalize(glm::cross(front_, world_up_));
-        up_ = glm::normalize(glm::cross(right_, front_));
+        right = glm::normalize(glm::cross(front, world_up));
+        up = glm::normalize(glm::cross(right, front));
     }
 }

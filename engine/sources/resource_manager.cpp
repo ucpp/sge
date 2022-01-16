@@ -11,43 +11,43 @@
 
 namespace sge
 {
-    std::map<std::string, Shader> ResourceManager::shaders_;
-    std::map<std::string, Texture> ResourceManager::textures_;
-    std::map<std::string, Model> ResourceManager::models_;
+    std::map<std::string, Shader> ResourceManager::shaders;
+    std::map<std::string, Texture> ResourceManager::textures;
+    std::map<std::string, Model> ResourceManager::models;
 
-    void ResourceManager::LoadResources(const ResourcesData &config)
+    void ResourceManager::loadResources(const ResourcesData &config)
     {
         auto shaders_data = config.shaders;
         for (auto data : shaders_data)
         {
-            LoadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
+            loadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
         }
 
         auto models_data = config.models;
         for (auto data : models_data)
         {
-            LoadModel(data.path, data.name);
+            loadModel(data.path, data.name);
         }
     }
 
-    Shader ResourceManager::LoadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name, bool lit)
+    Shader ResourceManager::loadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name, bool lit)
     {
-        std::string vertex_shader_source = LoadShaderSource(vertex_file_name);
-        std::string fragment_shader_source = LoadShaderSource(fragment_file_name);
+        std::string vertex_shader_source = loadShaderSource(vertex_file_name);
+        std::string fragment_shader_source = loadShaderSource(fragment_file_name);
 
         Shader shader;
         shader.is_lit = lit;
-        shader.Compile(vertex_shader_source, fragment_shader_source);
-        shaders_[name] = shader;
+        shader.compile(vertex_shader_source, fragment_shader_source);
+        shaders[name] = shader;
 
-        return shaders_[name];
+        return shaders[name];
     }
 
-    Texture ResourceManager::LoadTexture(const std::string &file_name, const std::string &name, const std::string &type, bool alpha)
+    Texture ResourceManager::loadTexture(const std::string &file_name, const std::string &name, const std::string &type, bool alpha)
     {
-        if (textures_.count(name) == 1)
+        if (textures.count(name) == 1)
         {
-            return GetTexture(name);
+            return getTexture(name);
         }
 
         Texture texture;
@@ -74,68 +74,68 @@ namespace sge
             }
         }
 
-        texture.SetFormat(channels, sizeof(stbi_uc));
-        texture.Generate(data, width, height);
+        texture.setFormat(channels, sizeof(stbi_uc));
+        texture.generate(data, width, height);
 
         stbi_image_free(data);
-        textures_[name] = texture;
+        textures[name] = texture;
 
-        return textures_[name];
+        return textures[name];
     }
 
-    Model ResourceManager::LoadModel(const std::string &file_name, const std::string &name)
+    Model ResourceManager::loadModel(const std::string &file_name, const std::string &name)
     {
-        if (models_.count(name) == 1)
+        if (models.count(name) == 1)
         {
-            return GetModel(name);
+            return getModel(name);
         }
         Model model;
-        model.Load(file_name);
-        models_[name] = model;
+        model.load(file_name);
+        models[name] = model;
 
-        return models_[name];
+        return models[name];
     }
 
-    Model ResourceManager::GetModel(const std::string &name)
+    Model ResourceManager::getModel(const std::string &name)
     {
-        return models_[name];
+        return models[name];
     }
 
-    Shader ResourceManager::GetShader(const std::string &name)
+    Shader ResourceManager::getShader(const std::string &name)
     {
-        return shaders_[name];
+        return shaders[name];
     }
 
-    Texture ResourceManager::GetTexture(const std::string &name)
+    Texture ResourceManager::getTexture(const std::string &name)
     {
-        return textures_[name];
+        return textures[name];
     }
 
-    void ResourceManager::Clear()
+    void ResourceManager::clear()
     {
-        for (auto shader : shaders_)
+        for (auto shader : shaders)
         {
-            glDeleteProgram(shader.second.GetId());
+            glDeleteProgram(shader.second.getId());
         }
 
-        shaders_.clear();
+        shaders.clear();
 
-        for (auto texture : textures_)
+        for (auto texture : textures)
         {
             glDeleteTextures(1, &texture.second.id);
         }
 
-        textures_.clear();
+        textures.clear();
 
-        for (auto model : models_)
+        for (auto model : models)
         {
-            model.second.Clear();
+            model.second.clear();
         }
 
-        models_.clear();
+        models.clear();
     }
 
-    std::string ResourceManager::LoadShaderSource(const std::string &file_name)
+    std::string ResourceManager::loadShaderSource(const std::string &file_name)
     {
         std::string file_source;
 

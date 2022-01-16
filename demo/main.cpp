@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     try
     {
         Application application("resources/demo_config.json");
-        application.Run();
+        application.run();
     }
     catch (const std::exception &e)
     {

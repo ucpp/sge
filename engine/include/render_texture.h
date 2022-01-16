@@ -1,18 +1,19 @@
 #pragma once
+#include <stdint.h>
 
 namespace sge
 {
     class RenderTexture
     {
     public:
-        void Init(int size);
-        void Bind();
-        void BindTexture(int texture_number);
-        void Clear();
+        void initialize(int size);
+        void bind();
+        void bindTexture(int texture_number);
+        void clear();
 
     private:
-        unsigned int FBO_;
-        unsigned int id_;
-        int size_;
+        uint32_t FBO;
+        uint32_t id;
+        int size;
     };
 }

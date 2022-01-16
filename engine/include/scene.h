@@ -46,28 +46,29 @@ namespace sge
     {
     public:
         Scene(SceneData data);
-        void Init(InputSystem &input);
-        void Update(float delta_time, int width, int height);
-        void Shutdown();
+        void initialize(InputSystem &input);
+        void update(float delta_time, int width, int height);
+        void shutdown();
 
-        void EnableNormalMaps(bool is_enable);
-        Camera *GetMainCamera() const;
-
-    private:
-        glm::mat4 GetModelMatrix(const Object &obj);
-        void SetPointLight(Shader shader, PointLightData data, int index);
-        void SetDirectionalLight(Shader shader);
-        glm::mat4 GetLightSpaceMatrix(glm::vec3 ligth_direction);
+        void enableNormalMaps(bool is_enable);
+        Camera *getMainCamera() const;
 
     private:
-        SceneData data_;
-        Camera *camera_;
-        std::vector<Object> objects_;
-        std::vector<PointLight> point_lights_;
-        DirectionalLight directional_light_;
-        RenderTexture shadow_buffer_;
-        bool inited_;
+        glm::mat4 getModelMatrix(const Object &obj);
+        void setPointLight(Shader shader, PointLightData data, int index);
+        void setDirectionalLight(Shader shader);
+        glm::mat4 getLightSpaceMatrix(glm::vec3 ligth_direction);
 
-        const int kShadowMapSize = 1024;
+    private:
+        Camera *camera{nullptr};
+        SceneData data;
+        Shader depth_shader;
+        std::vector<Object> objects;
+        std::vector<PointLight> point_lights;
+        DirectionalLight directional_light;
+        RenderTexture shadow_buffer;
+        bool inited;
+
+        const int shadow_map_size = 1024;
     };
 }

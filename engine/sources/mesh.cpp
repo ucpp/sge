@@ -4,28 +4,28 @@
 
 namespace sge
 {
-    void Mesh::Init(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+    void Mesh::initialize(std::vector<Vertex> vertices, std::vector<uint32_t> indices, std::vector<Texture> textures)
     {
         this->vertices = vertices;
         this->indices = indices;
         this->textures = textures;
 
-        Setup();
+        setup();
     }
 
-    void Mesh::Setup()
+    void Mesh::setup()
     {
-        glGenVertexArrays(1, &VAO_);
-        glGenBuffers(1, &VBO_);
-        glGenBuffers(1, &EBO_);
+        glGenVertexArrays(1, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
 
-        glBindVertexArray(VAO_);
+        glBindVertexArray(VAO);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO_);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO_);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), &indices[0], GL_STATIC_DRAW);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
         glEnableVertexAttribArray(0);
@@ -42,26 +42,26 @@ namespace sge
         glBindVertexArray(0);
     }
 
-    void Mesh::Draw(Shader &shader)
+    void Mesh::draw(Shader &shader)
     {
-        for (unsigned int i = 0; i < textures.size(); ++i)
+        for (uint32_t i = 0; i < textures.size(); ++i)
         {
             glActiveTexture(GL_TEXTURE0 + i);
-            shader.SetInt(textures[i].type.c_str(), i);
-            textures[i].Bind();
+            shader.setInt(textures[i].type.c_str(), i);
+            textures[i].bind();
         }
 
-        glBindVertexArray(VAO_);
+        glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
         glActiveTexture(GL_TEXTURE0);
     }
 
-    void Mesh::Clear()
+    void Mesh::clear()
     {
-        glDeleteVertexArrays(1, &VAO_);
-        glDeleteBuffers(1, &VBO_);
-        glDeleteBuffers(1, &EBO_);
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &EBO);
     }
 }

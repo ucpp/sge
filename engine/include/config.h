@@ -119,7 +119,7 @@ namespace sge
         ResourcesData resources;
         std::vector<SceneData> scenes;
 
-        SceneData GetStartScene()
+        SceneData getStartScene()
         {
             auto find_iter = std::find_if(scenes.begin(), scenes.end(),
                                           [&](SceneData data)
@@ -156,7 +156,7 @@ namespace sge
     class Config
     {
     public:
-        bool Load(const std::string &path);
+        bool load(const std::string &path);
 
     public:
         Data data;

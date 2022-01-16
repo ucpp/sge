@@ -16,25 +16,25 @@
 
 Application::Application(std::string path_to_config)
 {
-    if (config_.Load(path_to_config))
+    if (config.load(path_to_config))
     {
-        width_ = config_.data.settings.window_width;
-        height_ = config_.data.settings.window_height;
-        kTitleWindow = config_.data.settings.application_name.c_str();
-        scene_ = new sge::Scene(config_.data.GetStartScene());
+        window_width = config.data.settings.window_width;
+        window_height = config.data.settings.window_height;
+        title_window = config.data.settings.application_name.c_str();
+        scene = new sge::Scene(config.data.getStartScene());
     }
 }
 
-void Application::Run()
+void Application::run()
 {
-    Init();
-    Update();
-    Shutdown();
+    initialize();
+    update();
+    shutdown();
 }
 
-void Application::Init()
+void Application::initialize()
 {
-    glfwSetErrorCallback(&Application::ErrorCallback);
+    glfwSetErrorCallback(&Application::errorCallback);
 
     if (!glfwInit())
     {
@@ -50,83 +50,83 @@ void Application::Init()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    window_ = glfwCreateWindow(width_, height_, kTitleWindow, nullptr, nullptr);
-    if (window_ == nullptr)
+    window = glfwCreateWindow(window_width, window_height, title_window, nullptr, nullptr);
+    if (window == nullptr)
     {
         glfwTerminate();
         throw std::runtime_error("Falied create window");
     }
 
-    glfwSetWindowUserPointer(window_, reinterpret_cast<void *>(this));
-    glfwMakeContextCurrent(window_);
+    glfwSetWindowUserPointer(window, reinterpret_cast<void *>(this));
+    glfwMakeContextCurrent(window);
 
-    glfwSetFramebufferSizeCallback(window_, &Application::ResizeCallback);
-    glfwSetKeyCallback(window_, &Application::KeyCallback);
-    glfwSetCursorPosCallback(window_, &Application::MouseCallback);
-    glfwSetMouseButtonCallback(window_, &Application::MouseButtonCallback);
-    glfwSetScrollCallback(window_, &Application::MouseScrollCallback);
+    glfwSetFramebufferSizeCallback(window, &Application::resizeCallback);
+    glfwSetKeyCallback(window, &Application::keyCallback);
+    glfwSetCursorPosCallback(window, &Application::mouseCallback);
+    glfwSetMouseButtonCallback(window, &Application::mouseButtonCallback);
+    glfwSetScrollCallback(window, &Application::mouseScrollCallback);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         throw std::runtime_error("Failed to initialize glad");
     }
 
-    glfwSwapInterval(config_.data.settings.vsync_enabled ? 1 : 0);
+    glfwSwapInterval(config.data.settings.vsync_enabled ? 1 : 0);
 
-    imgui_renderer_.Init(window_, &state_, scene_);
-    sge::ResourceManager::LoadResources(config_.data.resources);
-    scene_->Init(input_);
-    renderer_.Init();
+    imgui_renderer.initialize(window, &state, scene);
+    sge::ResourceManager::loadResources(config.data.resources);
+    scene->initialize(input);
+    renderer.initialize();
 }
 
-void Application::Update()
+void Application::update()
 {
-    delta_time_ = 0.0f;
+    delta_time = 0.0f;
     double last_frame_time = 0.0f;
 
-    while (!glfwWindowShouldClose(window_))
+    while (!glfwWindowShouldClose(window))
     {
         double current_time = glfwGetTime();
-        delta_time_ = current_time - last_frame_time;
+        delta_time = current_time - last_frame_time;
         last_frame_time = current_time;
         glfwPollEvents();
 
-        renderer_.Render();
+        renderer.render();
 
-        scene_->Update(delta_time_, width_, height_);
+        scene->update(delta_time, window_width, window_height);
 
-        if (config_.data.settings.imgui_enabled)
+        if (config.data.settings.imgui_enabled)
         {
-            imgui_renderer_.Update(delta_time_);
+            imgui_renderer.update(delta_time);
         }
 
-        glfwSwapBuffers(window_);
+        glfwSwapBuffers(window);
     }
 }
 
-void Application::Shutdown()
+void Application::shutdown()
 {
-    imgui_renderer_.Shutdown();
+    imgui_renderer.shutdown();
 
-    delete scene_;
-    scene_ = nullptr;
+    delete scene;
+    scene = nullptr;
 
-    sge::ResourceManager::Clear();
+    sge::ResourceManager::clear();
 
-    glfwDestroyWindow(window_);
-    window_ = nullptr;
+    glfwDestroyWindow(window);
+    window = nullptr;
 
     glfwTerminate();
 }
 
-void Application::ShutdownGui()
+void Application::shutdownGui()
 {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 }
 
-void Application::KeyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods)
+void Application::keyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
@@ -136,47 +136,47 @@ void Application::KeyCallback(GLFWwindow *window, int key, int scan_code, int ac
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
 
-    application->input_.ProcessInput(key, action);
+    application->input.processInput(key, action);
 }
 
-void Application::MouseCallback(GLFWwindow *window, double x, double y)
+void Application::mouseCallback(GLFWwindow *window, double x, double y)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
-    application->input_.ProcessMouseMovement(x, y);
+    application->input.processMouseMovement(x, y);
 }
 
-void Application::MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
+void Application::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
     if (button == GLFW_MOUSE_BUTTON_RIGHT)
     {
-        application->input_.SetPressedRightMouse(action == GLFW_PRESS);
+        application->input.setPressedRightMouse(action == GLFW_PRESS);
     }
 }
 
-void Application::MouseScrollCallback(GLFWwindow *window, double x, double y)
+void Application::mouseScrollCallback(GLFWwindow *window, double x, double y)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
-    application->input_.ProcessMouseScroll(y);
+    application->input.processMouseScroll(y);
 }
 
-void Application::ResizeCallback(GLFWwindow *window, int width, int height)
+void Application::resizeCallback(GLFWwindow *window, int width, int height)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
 
     glViewport(0, 0, width, height);
-    application->width_ = width;
-    application->height_ = height;
+    application->window_width = width;
+    application->window_height = height;
 }
 
-void Application::ErrorCallback(int error_code, const char *description)
+void Application::errorCallback(int error_code, const char *description)
 {
     std::cerr << "Error: " << description << std::endl;
 }

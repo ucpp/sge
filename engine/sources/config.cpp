@@ -6,7 +6,7 @@
 namespace sge
 {
     // TODO safe read and load
-    bool Config::Load(const std::string &path)
+    bool Config::load(const std::string &path)
     {
         std::ifstream file_stream(path);
         nlohmann::json j;

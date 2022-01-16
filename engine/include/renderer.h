@@ -13,9 +13,9 @@ namespace sge
     class Renderer
     {
     public:
-        void Init();
-        void Render();
+        void initialize();
+        void render();
 
-        void SetViewport(int width, int height);
+        void setViewport(int width, int height);
     };
 }

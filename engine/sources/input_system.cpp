@@ -3,57 +3,57 @@
 
 namespace sge
 {
-    void InputSystem::ProcessMouseMovement(double x, double y)
+    void InputSystem::processMouseMovement(double x, double y)
     {
-        last_mouse_x_ = x;
-        last_mouse_y_ = y;
+        last_mouse_x = x;
+        last_mouse_y = y;
     }
 
-    void InputSystem::ProcessMouseScroll(float offset)
+    void InputSystem::processMouseScroll(float offset)
     {
-        on_mouse_scroll.Invoke(offset);
+        on_mouse_scroll.invoke(offset);
     }
 
-    void InputSystem::SetPressedRightMouse(bool pressed)
+    void InputSystem::setPressedRightMouse(bool pressed)
     {
-        mouse_right_button_pressed_ = pressed;
+        mouse_right_button_pressed = pressed;
     }
 
-    double InputSystem::GetX()
+    double InputSystem::getX()
     {
-        return last_mouse_x_;
+        return last_mouse_x;
     }
 
-    double InputSystem::GetY()
+    double InputSystem::getY()
     {
-        return last_mouse_y_;
+        return last_mouse_y;
     }
 
-    bool InputSystem::IsPressedMouseRight()
+    bool InputSystem::isPressedMouseRight()
     {
-        return mouse_right_button_pressed_;
+        return mouse_right_button_pressed;
     }
 
-    void InputSystem::ProcessInput(int key, int action)
+    void InputSystem::processInput(int key, int action)
     {
         if (key >= 0 && key < 512)
         {
-            key_state_[key] = action == GLFW_PRESS || action == GLFW_REPEAT ? 1 : 0;
+            key_state[key] = action == GLFW_PRESS || action == GLFW_REPEAT ? 1 : 0;
         }
     }
 
-    bool InputSystem::IsKeyPressed(int key_code)
+    bool InputSystem::isKeyPressed(int key_code)
     {
         if (key_code < 0 || key_code >= 512)
         {
             return false;
         }
 
-        return key_state_[key_code] == GLFW_PRESS;
+        return key_state[key_code] == GLFW_PRESS;
     }
 
     InputSystem::~InputSystem()
     {
-        on_mouse_scroll.Clear();
+        on_mouse_scroll.clear();
     }
 }
