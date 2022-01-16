@@ -119,13 +119,6 @@ void Application::shutdown()
     glfwTerminate();
 }
 
-void Application::shutdownGui()
-{
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-}
-
 void Application::keyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));

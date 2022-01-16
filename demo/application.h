@@ -21,17 +21,13 @@ public:
 
 private:
     void initialize();
-    void initializeGui();
-
     void update();
-    void drawGui(float delta_time);
-
     void shutdown();
-    void shutdownGui();
 
+    static void errorCallback(int error_code, const char *description);
     static void keyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods);
     static void resizeCallback(GLFWwindow *window, int width, int height);
-    static void errorCallback(int error_code, const char *description);
+
     static void mouseCallback(GLFWwindow *window, double x, double y);
     static void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
     static void mouseScrollCallback(GLFWwindow *window, double x, double y);
