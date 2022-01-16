@@ -1,5 +1,4 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -15,7 +14,7 @@ namespace Engine
     class Camera
     {
     public:
-        Camera(InputSystem& input, glm::vec3 position, float speed);
+        Camera(InputSystem &input, glm::vec3 position, float speed);
         ~Camera();
 
         void SetPosition(double x, double y, double z);
@@ -31,13 +30,13 @@ namespace Engine
         void UpdateMouseMovement();
         void ProcessMouseScroll(float offset);
         void ProcessInput(float delta_time);
-    
+
     private:
         const float kClampPitchAngle = 89.0f;
         const float kZoomMax = 45.0f;
         const float kZoomMin = 1.0f;
 
-        InputSystem* input_ {nullptr};
+        InputSystem *input_{nullptr};
 
         double last_x_;
         double last_y_;
@@ -58,5 +57,3 @@ namespace Engine
         std::shared_ptr<void> scroll_callback_;
     };
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef IMGUI_RENDERER_H
-#define IMGUI_RENDERER_H
+#pragma once
 
 #include "scene.h"
 
@@ -12,7 +11,7 @@ namespace Engine
     class ImGuiRenderer
     {
     public:
-        void Init(GLFWwindow* window, RenderState* state, Scene* scene);
+        void Init(GLFWwindow *window, RenderState *state, Scene *scene);
         void Update(float delta_time);
         void Shutdown();
 
@@ -23,9 +22,7 @@ namespace Engine
         void DrawNormalMapsSettings();
 
     private:
-        RenderState* state_ {nullptr};
-        Scene* scene_ {nullptr};
+        RenderState *state_{nullptr};
+        Scene *scene_{nullptr};
     };
 }
-
-#endif

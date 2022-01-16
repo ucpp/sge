@@ -10,7 +10,7 @@
 
 namespace Engine
 {
-    Camera::Camera(InputSystem& input, glm::vec3 position, float speed) : position_(position), speed_(speed)
+    Camera::Camera(InputSystem &input, glm::vec3 position, float speed) : position_(position), speed_(speed)
     {
         input_ = &input;
         scroll_callback_ = input_->on_mouse_scroll.AddListener(std::bind(&Camera::ProcessMouseScroll, this, std::placeholders::_1));
@@ -18,9 +18,9 @@ namespace Engine
         front_ = glm::vec3(0.0f, 0.0f, -1.0f);
         up_ = glm::vec3(0.0f, 1.0f, 0.0f);
         world_up_ = up_;
-        
+
         mouse_speed_ = 0.1f;
-        
+
         pitch_ = 0.0f;
         yaw_ = -90.0f;
         zoom_ = 45.0f;
@@ -33,7 +33,7 @@ namespace Engine
 
     Camera::~Camera()
     {
-        if(input_ == nullptr)
+        if (input_ == nullptr)
         {
             return;
         }
@@ -74,12 +74,12 @@ namespace Engine
 
     void Camera::UpdateMouseMovement()
     {
-        if(input_ == nullptr)
+        if (input_ == nullptr)
         {
             return;
         }
 
-        if(!input_->IsPressedMouseRight())
+        if (!input_->IsPressedMouseRight())
         {
             last_x_ = input_->GetX();
             last_y_ = input_->GetY();

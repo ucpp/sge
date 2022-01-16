@@ -1,5 +1,4 @@
-#ifndef RESOURCE_MANAGER_H
-#define RESOURCE_MANAGER_H
+#pragma once
 
 #include <glad/glad.h>
 
@@ -17,7 +16,7 @@ namespace Engine
     class ResourceManager
     {
     public:
-        static void LoadResources(const ResourcesData& config);
+        static void LoadResources(const ResourcesData &config);
 
         static Shader LoadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name, bool lit = false);
         static Shader GetShader(const std::string &shader);
@@ -39,4 +38,3 @@ namespace Engine
         static std::string LoadShaderSource(const std::string &file_name);
     };
 }
-#endif

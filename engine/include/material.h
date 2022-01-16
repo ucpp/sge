@@ -1,5 +1,4 @@
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#pragma once
 
 namespace Engine
 {
@@ -7,5 +6,3 @@ namespace Engine
     {
     };
 }
-
-#endif

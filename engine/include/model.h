@@ -1,5 +1,4 @@
-#ifndef MODEL_H
-#define MODEL_h
+#pragma once
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -29,5 +28,3 @@ namespace Engine
         std::string directory_;
     };
 }
-
-#endif

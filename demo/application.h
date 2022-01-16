@@ -1,5 +1,4 @@
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#pragma once
 
 #include "input_system.h"
 #include "renderer.h"
@@ -37,7 +36,7 @@ private:
 
 private:
     GLFWwindow *window_{nullptr};
-    Engine::Scene* scene_{nullptr};
+    Engine::Scene *scene_{nullptr};
 
     Engine::Renderer renderer_;
     Engine::InputSystem input_;
@@ -52,5 +51,3 @@ private:
 
     const char *kTitleWindow;
 };
-
-#endif

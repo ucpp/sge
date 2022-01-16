@@ -1,5 +1,4 @@
-#ifndef INPUT_SYSTEM_H
-#define INPUT_SYSTEM_H
+#pragma once
 
 #include "event.h"
 
@@ -23,15 +22,12 @@ namespace Engine
 
     public:
         Event<float> on_mouse_scroll;
-        
+
     private:
-        
         double last_mouse_x_;
         double last_mouse_y_;
         double last_scroll_offset_;
         bool mouse_right_button_pressed_;
-        bool key_state_[512] {0};
+        bool key_state_[512]{0};
     };
 }
-
-#endif

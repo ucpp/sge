@@ -1,5 +1,4 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -17,7 +16,7 @@ namespace Engine
         };
 
     public:
-        void Compile(const std::string& vertex_source, const std::string& fragment_source);
+        void Compile(const std::string &vertex_source, const std::string &fragment_source);
         void Use();
         unsigned int GetId();
 
@@ -43,4 +42,3 @@ namespace Engine
         void CheckCompile(unsigned int id, Type type);
     };
 }
-#endif

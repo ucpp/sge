@@ -1,5 +1,4 @@
-#ifndef TEXTURE_H
-#define TEXTURE_H
+#pragma once
 
 #include <string>
 
@@ -29,5 +28,3 @@ namespace Engine
         unsigned int wrap_format_;
     };
 }
-
-#endif

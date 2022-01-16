@@ -1,5 +1,4 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
 namespace Engine
 {
@@ -20,5 +19,3 @@ namespace Engine
         void SetViewport(int width, int height);
     };
 }
-
-#endif

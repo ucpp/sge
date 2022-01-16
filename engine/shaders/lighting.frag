@@ -42,7 +42,7 @@ uniform vec3 viewPosition;
 
 uniform bool normals_enabled;
 
-in VS_OUT 
+in VS_OUT
 {
     vec3 Position;
     vec2 TexCoords;
@@ -75,7 +75,7 @@ void main()
     //FragColor = vec4(norm.r, norm.g, norm.b, 1.0);
 
     float shadow = GetShadow(fs_in.LightSpacePosition);
-    
+
     vec3 resultColor = CalculateDirectionLight(norm, viewDirection, shadow);
 
     for(int i = 0; i < COUNT_POINT_LIGHTS; ++i)
@@ -96,7 +96,7 @@ vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow)
     vec3 ambient = directionalLight.ambient * vec3(texture(material.diffuse, fs_in.TexCoords));
     vec3 diffuse = directionalLight.diffuse * diff * vec3(texture(material.diffuse, fs_in.TexCoords));
     vec3 specular = directionalLight.specular * spec * vec3(texture(material.specular, fs_in.TexCoords));
-    
+
     return (ambient + (1.0 - shadow) * (diffuse + specular));
 }
 
@@ -119,7 +119,6 @@ vec3 CalculatePointLight(int index, vec3 normal, vec3 viewDirection)
 
     return (ambient + diffuse + specular);
 }
-
 
 vec3 CalcBumpedNormal()
 {
@@ -158,9 +157,9 @@ float GetShadow(vec4 lightSpacePosition)
     // PCF
     float shadow;
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
-    for (int y = -1 ; y <= 1 ; ++y)
+    for(int y = -1; y <= 1; ++y)
     {
-        for (int x = -1 ; x <= 1 ; ++x) 
+        for(int x = -1; x <= 1; ++x)
         {
             float pcf = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
             shadow += currentDepth - bias > pcf ? 1.0 : 0.0;
@@ -170,7 +169,9 @@ float GetShadow(vec4 lightSpacePosition)
     // end of PCF
 
     if(projCoords.z > 1.0)
+    {
         shadow = 0;
-    
+    }
+
     return shadow;
 }

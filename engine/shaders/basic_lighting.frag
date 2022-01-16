@@ -76,7 +76,7 @@ vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection)
     vec3 ambient = directionalLight.ambient * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = directionalLight.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = directionalLight.specular * spec * vec3(texture(material.specular, TexCoords));
-    
+
     return (ambient + diffuse + specular);
 }
 

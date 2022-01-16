@@ -16,7 +16,7 @@
 
 Application::Application(std::string path_to_config)
 {
-    if(config_.Load(path_to_config))
+    if (config_.Load(path_to_config))
     {
         width_ = config_.data.settings.window_width;
         height_ = config_.data.settings.window_height;
@@ -95,7 +95,7 @@ void Application::Update()
 
         scene_->Update(delta_time_, width_, height_);
 
-        if(config_.data.settings.imgui_enabled)
+        if (config_.data.settings.imgui_enabled)
         {
             imgui_renderer_.Update(delta_time_);
         }
@@ -147,7 +147,7 @@ void Application::MouseCallback(GLFWwindow *window, double x, double y)
     application->input_.ProcessMouseMovement(x, y);
 }
 
-void Application::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
+void Application::MouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);
@@ -158,7 +158,7 @@ void Application::MouseButtonCallback(GLFWwindow* window, int button, int action
     }
 }
 
-void Application::MouseScrollCallback(GLFWwindow* window, double x, double y)
+void Application::MouseScrollCallback(GLFWwindow *window, double x, double y)
 {
     Application *application = reinterpret_cast<Application *>(glfwGetWindowUserPointer(window));
     assert(application != nullptr);

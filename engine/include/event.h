@@ -1,5 +1,4 @@
-#ifndef EVENT_H
-#define EVENT_H
+#pragma once
 
 #include <algorithm>
 #include <iostream>
@@ -52,4 +51,3 @@ namespace Engine
         std::vector<std::weak_ptr<std::function<void(Args...)>>> callbacks_;
     };
 }
-#endif

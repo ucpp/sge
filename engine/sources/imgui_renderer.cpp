@@ -11,7 +11,7 @@
 
 namespace Engine
 {
-    void ImGuiRenderer::Init(GLFWwindow* window, RenderState* state, Scene* scene)
+    void ImGuiRenderer::Init(GLFWwindow *window, RenderState *state, Scene *scene)
     {
         state_ = state;
         scene_ = scene;
@@ -19,15 +19,14 @@ namespace Engine
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
 
-    #ifdef __APPLE__
+#ifdef __APPLE__
         ImGui_ImplOpenGL3_Init("#version 150");
-    #else
+#else
         ImGui_ImplOpenGL3_Init("#version 130");
-    #endif
+#endif
 
         ImGui::StyleColorsDark();
     }
-
 
     void ImGuiRenderer::Update(float delta_time)
     {
@@ -61,10 +60,10 @@ namespace Engine
 
     void ImGuiRenderer::DrawPolygonModeSettings()
     {
-        if(state_ != nullptr)
+        if (state_ != nullptr)
         {
             std::string label_text = "Wireframe";
-            if(ImGui::Checkbox(label_text.c_str(), &state_->polygon_mode_enabled))
+            if (ImGui::Checkbox(label_text.c_str(), &state_->polygon_mode_enabled))
             {
                 glPolygonMode(GL_FRONT_AND_BACK, state_->polygon_mode_enabled ? GL_LINE : GL_FILL);
             }
@@ -73,10 +72,10 @@ namespace Engine
 
     void ImGuiRenderer::DrawNormalMapsSettings()
     {
-        if(state_ != nullptr)
+        if (state_ != nullptr)
         {
             std::string label_text = "Normal maps";
-            if(ImGui::Checkbox(label_text.c_str(), &state_->normal_maps_enabled))
+            if (ImGui::Checkbox(label_text.c_str(), &state_->normal_maps_enabled))
             {
                 scene_->EnableNormalMaps(state_->normal_maps_enabled);
             }

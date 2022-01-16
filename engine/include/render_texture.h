@@ -1,5 +1,4 @@
-#ifndef RENDER_TEXTURE_H
-#define RENDER_TEXTURE_H
+#pragma once
 
 namespace Engine
 {
@@ -17,5 +16,3 @@ namespace Engine
         int size_;
     };
 }
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -38,5 +37,3 @@ namespace Engine
         unsigned int EBO_;
     };
 }
-
-#endif

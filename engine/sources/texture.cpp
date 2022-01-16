@@ -41,11 +41,11 @@ namespace Engine
     {
         unsigned int format = GL_RGB;
 
-        if(channels == 1)
+        if (channels == 1)
         {
             format = GL_R;
         }
-        else if(channels == 4)
+        else if (channels == 4)
         {
             format = GL_RGBA;
         }
