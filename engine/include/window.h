@@ -19,6 +19,12 @@ namespace sge
         void shutdown();
 
     private:
+        void initGlfw();
+        void setApiProfile();
+        void create();
+        void addListeners();
+
+        static void errorCallback(int error_code, const char *description);
         static void keyCallback(GLFWwindow *window, int key, int scan_code, int action, int mods);
         static void resizeCallback(GLFWwindow *window, int width, int height);
         static void mouseCallback(GLFWwindow *window, double x, double y);

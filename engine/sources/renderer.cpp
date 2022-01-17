@@ -8,8 +8,15 @@
 
 namespace sge
 {
-    void Renderer::initialize()
+    void Renderer::initialize(bool vsync)
     {
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+        {
+            throw std::runtime_error("Failed to initialize glad");
+        }
+
+        glfwSwapInterval(vsync);
+
         glEnable(GL_MULTISAMPLE);
         glEnable(GL_DEPTH_TEST);
 

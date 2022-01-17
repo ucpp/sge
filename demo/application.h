@@ -4,12 +4,13 @@
 #include "renderer.h"
 #include "imgui_renderer.h"
 #include "config.h"
-#include "scene.h"
-#include "window.h"
+#include "editor.h"
 
 namespace sge
 {
     class Camera;
+    class Window;
+    class Scene;
 }
 
 class Application
@@ -22,16 +23,16 @@ private:
     void initialize();
     void update();
     void shutdown();
-    static void errorCallback(int error_code, const char *description);
+    void calculateDeltaTime(double& last_frame_time);
 
 private:
-    sge::Window *window {nullptr};
-    sge::Scene *scene {nullptr};
+    std::shared_ptr<sge::Window> window;
+    std::shared_ptr<sge::Scene> scene;
+    
     sge::Renderer renderer;
     sge::InputSystem input;
-    sge::RenderState state;
-    sge::ImGuiRenderer imgui_renderer;
     sge::Config config;
+    sge::Editor editor;
 
-    float delta_time;
+    float delta_time {0};
 };
