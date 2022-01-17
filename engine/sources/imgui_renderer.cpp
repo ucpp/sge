@@ -7,7 +7,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "resource_manager.h"
-#include "renderer.h"
+#include "editor.h"
 
 namespace sge
 {

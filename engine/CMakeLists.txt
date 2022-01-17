@@ -15,7 +15,8 @@ set(ENGINE_SOURCES
     sources/scene.cpp 
     sources/render_texture.cpp 
     sources/log.cpp 
-    sources/window.cpp)
+    sources/window.cpp 
+    sources/editor.cpp)
 
 set(ENGINE_HEADERS 
     include/shader.h 
@@ -33,7 +34,8 @@ set(ENGINE_HEADERS
     include/scene.h 
     include/render_texture.h 
     include/log.h 
-    include/window.h)
+    include/window.h 
+    include/editor.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 
