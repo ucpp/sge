@@ -1,17 +1,15 @@
 #include "imgui_renderer.h"
 
 #include <string>
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_glfw.h"
-#include "imgui/imgui_impl_opengl3.h"
+#include <sstream>
 
 #include "resource_manager.h"
 #include "editor.h"
+#include "log.h"
 
 namespace sge
 {
-    void ImGuiRenderer::initialize(GLFWwindow *window, RenderState *state, Scene *scene)
+    void ImGuiRenderer::initialize(GLFWwindow *window, RenderState *state, std::weak_ptr<Scene> scene)
     {
         this->state = state;
         this->scene = scene;
@@ -41,6 +39,25 @@ namespace sge
         drawPolygonModeSettings();
         ImGui::SameLine();
         drawNormalMapsSettings();
+
+        ImGui::Begin("Scene"); 
+        auto sptr_scene = scene.lock();
+        if (sptr_scene != nullptr)
+        {
+            int index = 0;
+            for (auto& obj : sptr_scene->objects)
+            {
+                index++;
+                std::string label_text = std::to_string(index) + ". " + obj.name;
+                ImGui::Checkbox(label_text.c_str(), &obj.enabled);
+                //ImGui::SameLine();
+                //std::stringstream fmt;
+                //fmt << "x:" << obj.position.x << ", y:" << obj.position.y << ", z:" << obj.position.z;
+                //ImGui::Text(fmt.str().c_str());
+
+            }
+        }
+        ImGui::End();
 
         ImGui::End();
         ImGui::Render();
@@ -77,7 +94,11 @@ namespace sge
             std::string label_text = "Normal maps";
             if (ImGui::Checkbox(label_text.c_str(), &state->normal_maps_enabled))
             {
-                scene->enableNormalMaps(state->normal_maps_enabled);
+                auto sptr_scene = scene.lock();
+                if(sptr_scene != nullptr)
+                {
+                    sptr_scene->enableNormalMaps(state->normal_maps_enabled);
+                }
             }
         }
     }

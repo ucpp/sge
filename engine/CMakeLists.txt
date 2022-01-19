@@ -16,7 +16,9 @@ set(ENGINE_SOURCES
     sources/render_texture.cpp 
     sources/log.cpp 
     sources/window.cpp 
-    sources/editor.cpp)
+    sources/editor.cpp 
+    sources/cubemap_renderer.cpp 
+    sources/cubemap.cpp)
 
 set(ENGINE_HEADERS 
     include/shader.h 
@@ -35,7 +37,9 @@ set(ENGINE_HEADERS
     include/render_texture.h 
     include/log.h 
     include/window.h 
-    include/editor.h)
+    include/editor.h 
+    include/cubemap_renderer.h 
+    include/cubemap.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 

@@ -13,6 +13,8 @@ namespace sge
         for (const ObjectData &object_data : data.objects)
         {
             Object object;
+            object.enabled = true;
+            object.name = object_data.name;
             object.model = ResourceManager::getModel(object_data.model);
             object.material.shader = ResourceManager::getShader(object_data.material.shader);
             object.position = glm::vec3(object_data.position.x, object_data.position.y, object_data.position.z);
@@ -32,6 +34,8 @@ namespace sge
 
         shadow_buffer.initialize(shadow_map_size);
         depth_shader = ResourceManager::getShader("depth");
+
+        skybox_renderer.initialize(data.skybox, data.skybox_shader);
         inited = true;
     }
 
@@ -52,6 +56,8 @@ namespace sge
 
             for (auto &obj : objects)
             {
+                if (!obj.enabled) continue;
+
                 glm::mat4 model = getModelMatrix(obj);
                 depth_shader.setMatrix4("model", model);
                 obj.model.draw(depth_shader);
@@ -70,6 +76,8 @@ namespace sge
 
             for (auto &obj : objects)
             {
+                if (!obj.enabled) continue;
+
                 glm::mat4 model = getModelMatrix(obj);
 
                 auto shader = obj.material.shader;
@@ -99,6 +107,8 @@ namespace sge
                 shader.setInt("shadowMap", 5);
                 obj.model.draw(shader);
             }
+
+            skybox_renderer.render(view, projection);
         }
     }
 
@@ -143,6 +153,7 @@ namespace sge
     void Scene::shutdown()
     {
         inited = false;
+        skybox_renderer.shutdown();
 
         delete camera;
         camera = nullptr;

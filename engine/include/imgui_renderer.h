@@ -1,8 +1,13 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "scene.h"
 
-class GLFWwindow;
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 namespace sge
 {
@@ -11,7 +16,7 @@ namespace sge
     class ImGuiRenderer
     {
     public:
-        void initialize(GLFWwindow *window, RenderState *state, Scene *scene);
+        void initialize(GLFWwindow *window, RenderState *state, std::weak_ptr<Scene> scene);
         void update(float delta_time);
         void shutdown();
 
@@ -23,6 +28,8 @@ namespace sge
 
     private:
         RenderState *state{nullptr};
-        Scene *scene{nullptr};
+        std::weak_ptr<Scene> scene;
+        std::vector<std::string> objects;
+        int selected_object;
     };
 }

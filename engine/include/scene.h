@@ -5,6 +5,7 @@
 #include "input_system.h"
 #include "model.h"
 #include "render_texture.h"
+#include "cubemap_renderer.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -23,6 +24,8 @@ namespace sge
     class Object
     {
     public:
+        std::string name;
+        bool enabled;
         glm::vec3 position;
         glm::vec3 rotation;
         Model model;
@@ -53,6 +56,9 @@ namespace sge
         void enableNormalMaps(bool is_enable);
         Camera *getMainCamera() const;
 
+    public:
+        std::vector<Object> objects;
+
     private:
         glm::mat4 getModelMatrix(const Object &obj);
         void setPointLight(Shader shader, PointLightData data, int index);
@@ -63,10 +69,11 @@ namespace sge
         Camera *camera{nullptr};
         SceneData data;
         Shader depth_shader;
-        std::vector<Object> objects;
         std::vector<PointLight> point_lights;
         DirectionalLight directional_light;
         RenderTexture shadow_buffer;
+        CubemapRenderer skybox_renderer;
+        Shader skybox_shader;
         bool inited;
 
         const int shadow_map_size = 1024;

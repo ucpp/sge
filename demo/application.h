@@ -28,11 +28,11 @@ private:
 private:
     std::shared_ptr<sge::Window> window;
     std::shared_ptr<sge::Scene> scene;
-    
+
     sge::Renderer renderer;
     sge::InputSystem input;
     sge::Config config;
     sge::Editor editor;
 
-    float delta_time {0};
+    double delta_time {0};
 };

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <string>
 
-class GLFWwindow;
+struct GLFWwindow;
 
 namespace sge
 {
@@ -12,7 +12,7 @@ namespace sge
     class Window
     {
     public:
-        Window(InputSystem *input, uint32_t width, uint32_t height, const std::string& title);
+        Window(InputSystem& input, const uint32_t& width, const uint32_t& height, const std::string& title);
         GLFWwindow* get() const;
         uint32_t getWidth() const;
         uint32_t getHeight() const;
