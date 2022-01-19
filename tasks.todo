@@ -98,7 +98,7 @@ Stream #016 DirectX12 initialize context:
 Other streams:
     ogl:
     ✔ Make shadow maps for directional light @done (14.01.2022, 02:31:21)
-    ☐ Reflections cube maps
+    ✔ Reflections cube maps @done (19.01.2022, 23:11:07)
     dx12:
     ☐ Initialize D3D12
     ☐ Process input and camera control dx12

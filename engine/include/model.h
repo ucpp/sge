@@ -13,7 +13,7 @@ namespace sge
     {
     public:
         void load(const std::string &path);
-        void draw(Shader &shader);
+        void draw(Shader &shader, int cubemap_texture = -1);
         void clear();
 
     public:

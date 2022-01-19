@@ -1,4 +1,4 @@
-project(engine)
+project(engine VERSION 0.2.0)
 
 set(ENGINE_SOURCES 
     sources/shader.cpp 

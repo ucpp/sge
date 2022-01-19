@@ -36,7 +36,7 @@ namespace sge
         glBindVertexArray(0);
     }
 
-    void Mesh::draw(Shader &shader)
+    void Mesh::draw(Shader &shader, int cubemap_texture)
     {
         for (uint32_t i = 0; i < textures.size(); ++i)
         {
@@ -46,6 +46,11 @@ namespace sge
         }
 
         glBindVertexArray(VAO);
+        if (cubemap_texture >= 0)
+        {
+            glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
+        }
+
         glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
