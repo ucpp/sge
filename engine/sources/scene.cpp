@@ -82,7 +82,7 @@ namespace sge
 
                 auto shader = obj.material.shader;
                 shader.use();
-
+                shader.setInt("skybox", 0);
                 shader.setMatrix4("view", view);
                 shader.setMatrix4("projection", projection);
                 shader.setMatrix4("model", model);
@@ -105,7 +105,7 @@ namespace sge
                 }
                 shadow_buffer.bindTexture(5);
                 shader.setInt("shadowMap", 5);
-                obj.model.draw(shader);
+                obj.model.draw(shader, skybox_renderer.cubemap_texture);
             }
 
             skybox_renderer.render(view, projection);

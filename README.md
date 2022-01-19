@@ -12,6 +12,7 @@ This project is a training sandbox for learning graphic techniques.
 - normal maps
 - shadow maps + pcf
 - loading resources and scene from configuration file
+- cubemaps
 
 ---
 ### Third party libs:

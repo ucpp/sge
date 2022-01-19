@@ -137,11 +137,11 @@ namespace sge
         return texture;
     }
 
-    void Model::draw(Shader &shader)
+    void Model::draw(Shader &shader, int cubemap_texture)
     {
         for (auto mesh : meshes)
         {
-            mesh.draw(shader);
+            mesh.draw(shader, cubemap_texture);
         }
     }
 

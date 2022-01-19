@@ -39,8 +39,9 @@ uniform DirectionalLight directionalLight;
 #define COUNT_POINT_LIGHTS 4
 uniform PointLight pointLights[COUNT_POINT_LIGHTS];
 uniform vec3 viewPosition;
-
 uniform bool normals_enabled;
+uniform samplerCube skybox;
+
 
 in VS_OUT
 {
@@ -71,9 +72,6 @@ void main()
     }
 
     vec3 viewDirection = normalize(viewPosition - fs_in.Position);
-    //norm = (norm + vec3(1))/2;
-    //FragColor = vec4(norm.r, norm.g, norm.b, 1.0);
-
     float shadow = GetShadow(fs_in.LightSpacePosition);
 
     vec3 resultColor = CalculateDirectionLight(norm, viewDirection, shadow);
@@ -82,6 +80,11 @@ void main()
     {
         resultColor += CalculatePointLight(i, norm, viewDirection);
     }
+
+    // skybox reflections
+    //vec3 I = normalize(fs_in.Position - viewPosition);
+    //vec3 R = reflect(I, normalize(norm));
+    //FragColor = vec4(texture(skybox, R).rgb, 1.0);
 
     FragColor = vec4(resultColor, 1.0);
 }

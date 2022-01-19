@@ -33,7 +33,7 @@ namespace sge
         ImGui::NewFrame();
 
         ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
-        ImGui::Begin("OpenGL render version 0.1", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+        ImGui::Begin("SGE version 0.2.0", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
 
         drawFPS(delta_time);
         drawPolygonModeSettings();
@@ -50,11 +50,6 @@ namespace sge
                 index++;
                 std::string label_text = std::to_string(index) + ". " + obj.name;
                 ImGui::Checkbox(label_text.c_str(), &obj.enabled);
-                //ImGui::SameLine();
-                //std::stringstream fmt;
-                //fmt << "x:" << obj.position.x << ", y:" << obj.position.y << ", z:" << obj.position.z;
-                //ImGui::Text(fmt.str().c_str());
-
             }
         }
         ImGui::End();
