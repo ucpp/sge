@@ -9,9 +9,9 @@
 
 namespace sge
 {
-    Window::Window(InputSystem *input, uint32_t width, uint32_t height, const std::string &title) : width(width), height(height)
+    Window::Window(InputSystem& input, const uint32_t& width, const uint32_t& height, const std::string& title) : width(width), height(height)
     {
-        this->input = input;
+        this->input = &input;
         this->title = title.c_str();
 
         initGlfw();

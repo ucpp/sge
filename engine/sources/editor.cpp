@@ -2,7 +2,7 @@
 
 namespace sge
 {
-    void Editor::initialize(GLFWwindow *window, Scene *scene, bool draw_gui)
+    void Editor::initialize(GLFWwindow *window, std::weak_ptr<Scene> scene, bool draw_gui)
     {
         this->draw_gui = draw_gui;
         imgui_renderer.initialize(window, &state, scene);

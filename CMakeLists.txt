@@ -14,6 +14,6 @@ add_subdirectory(externals/assimp)
 add_subdirectory(engine)
 
 if(BUILD_DEMO)
-    add_subdirectory(demo)
+	add_subdirectory(demo)
 endif()
  

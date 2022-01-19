@@ -24,9 +24,9 @@ namespace sge
         Event<float> on_mouse_scroll;
 
     private:
-        double last_mouse_x;
-        double last_mouse_y;
-        double last_scroll_offset;
+        float last_mouse_x;
+        float last_mouse_y;
+        float last_scroll_offset;
         bool mouse_right_button_pressed;
         bool key_state[512]{0};
     };

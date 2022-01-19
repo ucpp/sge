@@ -14,19 +14,26 @@ namespace sge
     std::map<std::string, Shader> ResourceManager::shaders;
     std::map<std::string, Texture> ResourceManager::textures;
     std::map<std::string, Model> ResourceManager::models;
+    std::map<std::string, Cubemap> ResourceManager::cubemaps;
 
     void ResourceManager::loadResources(const ResourcesData &config)
     {
         auto shaders_data = config.shaders;
-        for (auto data : shaders_data)
+        for (auto& data : shaders_data)
         {
             loadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
         }
 
         auto models_data = config.models;
-        for (auto data : models_data)
+        for (auto& data : models_data)
         {
             loadModel(data.path, data.name);
+        }
+
+        auto cubemaps = config.cubemaps;
+        for (auto& data : cubemaps)
+        {
+            loadCubemap(data.face_textures, data.name);
         }
     }
 
@@ -133,6 +140,13 @@ namespace sge
         }
 
         models.clear();
+
+        for (auto cubemap : cubemaps)
+        {
+            glDeleteTextures(1, &cubemap.second.id);
+        }
+
+        cubemaps.clear();
     }
 
     std::string ResourceManager::loadShaderSource(const std::string &file_name)
@@ -153,5 +167,57 @@ namespace sge
         }
 
         return file_source;
+    }
+
+    Cubemap ResourceManager::loadCubemap(const std::vector<std::string>& faces, const std::string& name)
+    {
+        if (cubemaps.count(name) == 1)
+        {
+            return getCubemap(name);
+        }
+
+        Cubemap cubemap;
+        std::vector<unsigned char*> faces_data;
+        std::vector<glm::ivec2> sizes;
+
+        for (uint32_t i = 0; i < faces.size(); ++i)
+        {
+            int width = 0;
+            int height = 0;
+            int channels = 0;
+            const char* path = faces[i].c_str();
+            unsigned char* data = stbi_load(path, &width, &height, &channels, 3);
+
+            if (data == nullptr)
+            {
+                width = 4;
+                height = 4;
+
+                data = new unsigned char[64];
+
+                for (int i = 0; i < 64; ++i)
+                {
+                    data[i] = 255;
+                }
+            }
+
+            faces_data.push_back(data);
+            sizes.push_back(glm::ivec2(width, height));
+        }
+        cubemap.generate(faces_data, sizes);
+
+        cubemaps[name] = cubemap;
+
+        for (uint32_t i = 0; i < faces.size(); ++i)
+        {
+            stbi_image_free(faces_data[i]);
+        }
+
+        return cubemaps[name];
+    }
+
+    Cubemap ResourceManager::getCubemap(const std::string& name)
+    {
+        return cubemaps[name];
     }
 }
