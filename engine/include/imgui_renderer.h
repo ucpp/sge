@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "scene.h"
+#include "window.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -16,19 +17,23 @@ namespace sge
     class ImGuiRenderer
     {
     public:
-        void initialize(GLFWwindow *window, RenderState *state, std::weak_ptr<Scene> scene);
+        void initialize(std::weak_ptr<Window>, RenderState *state, std::weak_ptr<Scene> scene);
         void update(float delta_time);
         void shutdown();
 
     private:
         void drawTitle();
+        void drawSettings(float delta_time);
         void drawFPS(float delta_time);
         void drawPolygonModeSettings();
         void drawNormalMapsSettings();
+        void drawScreenSettings();
+        void drawObjects();
 
     private:
         RenderState *state{nullptr};
         std::weak_ptr<Scene> scene;
+        std::weak_ptr<Window> window;
         std::vector<std::string> objects;
         int selected_object;
     };

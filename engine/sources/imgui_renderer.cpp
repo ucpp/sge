@@ -9,13 +9,15 @@
 
 namespace sge
 {
-    void ImGuiRenderer::initialize(GLFWwindow *window, RenderState *state, std::weak_ptr<Scene> scene)
+    void ImGuiRenderer::initialize(std::weak_ptr<Window> window, RenderState *state, std::weak_ptr<Scene> scene)
     {
         this->state = state;
         this->scene = scene;
+        this->window = window;
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        auto s_ptr_window = window.lock();
+        ImGui_ImplGlfw_InitForOpenGL(s_ptr_window->get(), true);
 
 #ifdef __APPLE__
         ImGui_ImplOpenGL3_Init("#version 150");
@@ -33,14 +35,41 @@ namespace sge
         ImGui::NewFrame();
 
         ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
-        ImGui::Begin("SGE version 0.2.0", nullptr, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+        ImGui::SetNextWindowSize(ImVec2(240, 360));
+        ImGui::Begin("SGE v0.2.0", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysVerticalScrollbar);
+        
+        drawSettings(delta_time);
 
+        ImGui::Separator();
+        ImGui::BeginGroup();
+        drawObjects();
+        ImGui::EndGroup();
+
+        ImGui::End();
+        ImGui::Render();
+
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
+
+    void ImGuiRenderer::drawSettings(float delta_time)
+    {
+        if (!ImGui::CollapsingHeader("Settings"))
+        {
+            return;
+        }
         drawFPS(delta_time);
+        ImGui::Separator();
+        drawScreenSettings();
         drawPolygonModeSettings();
-        ImGui::SameLine();
         drawNormalMapsSettings();
-
-        ImGui::Begin("Scene"); 
+    }
+    
+    void ImGuiRenderer::drawObjects()
+    {
+        if (!ImGui::CollapsingHeader("Objects"))
+        {
+            return;
+        }
         auto sptr_scene = scene.lock();
         if (sptr_scene != nullptr)
         {
@@ -52,12 +81,6 @@ namespace sge
                 ImGui::Checkbox(label_text.c_str(), &obj.enabled);
             }
         }
-        ImGui::End();
-
-        ImGui::End();
-        ImGui::Render();
-
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
     void ImGuiRenderer::drawTitle()
@@ -95,6 +118,17 @@ namespace sge
                     sptr_scene->enableNormalMaps(state->normal_maps_enabled);
                 }
             }
+        }
+    }
+
+    void ImGuiRenderer::drawScreenSettings()
+    {
+        std::string label_text = "Fullscreen";
+        auto s_ptr_window = window.lock();
+        bool is_fullscreen = s_ptr_window->isFullscreen();
+        if (ImGui::Checkbox(label_text.c_str(), &is_fullscreen))
+        {
+            s_ptr_window->setFullscreen(is_fullscreen);
         }
     }
 
