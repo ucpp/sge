@@ -48,6 +48,7 @@ namespace sge
         glBindVertexArray(VAO);
         if (cubemap_texture >= 0)
         {
+            glActiveTexture(GL_TEXTURE6);
             glBindTexture(GL_TEXTURE_CUBE_MAP, cubemap_texture);
         }
 

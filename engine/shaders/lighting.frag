@@ -52,6 +52,7 @@ in VS_OUT
     vec4 LightSpacePosition;
 } fs_in;
 
+vec3 SkyLight(vec3 normal, vec3 viewDirection);
 vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow);
 vec3 CalculatePointLight(int index, vec3 normal, vec3 viewDirection);
 vec3 CalcBumpedNormal();
@@ -64,7 +65,7 @@ void main()
     {
         discard;
     }
-
+    
     vec3 norm = normalize(fs_in.Normal);
     if(normals_enabled)
     {
@@ -75,16 +76,15 @@ void main()
     float shadow = GetShadow(fs_in.LightSpacePosition);
 
     vec3 resultColor = CalculateDirectionLight(norm, viewDirection, shadow);
-
+    resultColor += SkyLight(norm, viewDirection);
+    
     for(int i = 0; i < COUNT_POINT_LIGHTS; ++i)
     {
         resultColor += CalculatePointLight(i, norm, viewDirection);
     }
-
-    // skybox reflections
-    //vec3 I = normalize(fs_in.Position - viewPosition);
-    //vec3 R = reflect(I, normalize(norm));
-    //FragColor = vec4(texture(skybox, R).rgb, 1.0);
+    float exposure = 1.2;
+    resultColor = resultColor * exposure;
+    resultColor = resultColor / (resultColor + 1.0);
 
     FragColor = vec4(resultColor, 1.0);
 }
@@ -93,6 +93,7 @@ vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow)
 {
     vec3 lightDirection = normalize(-directionalLight.direction);
     float diff = max(dot(normal, lightDirection), 0.0);
+
     vec3 reflectDirection = reflect(-lightDirection, normal);
     float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
 
@@ -101,6 +102,15 @@ vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow)
     vec3 specular = directionalLight.specular * spec * vec3(texture(material.specular, fs_in.TexCoords));
 
     return (ambient + (1.0 - shadow) * (diffuse + specular));
+}
+
+vec3 SkyLight(vec3 normal, vec3 viewDirection)
+{
+    // skybox reflections
+    float diff = 1.0 - abs(dot(normal, viewDirection));
+    vec3 I = normalize(fs_in.Position - viewPosition);
+    vec3 R = reflect(I, normalize(normal));
+    return texture(skybox, R).rgb * diff;
 }
 
 vec3 CalculatePointLight(int index, vec3 normal, vec3 viewDirection)
