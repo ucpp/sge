@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "window.h"
 #include "imgui_renderer.h"
 
 namespace sge
@@ -16,7 +17,7 @@ namespace sge
     class Editor
     {
     public:
-        void initialize(GLFWwindow *window, std::weak_ptr<Scene> scene, bool draw_gui);
+        void initialize(std::weak_ptr<Window> window, std::weak_ptr<Scene> scene, bool draw_gui);
         void update(float delta_time);
         void shutdown();
 

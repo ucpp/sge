@@ -30,7 +30,7 @@ void Application::initialize()
 
     renderer.initialize(settings.vsync_enabled ? 1 : 0);
     sge::ResourceManager::loadResources(config.data.resources);
-    editor.initialize(window->get(), std::weak_ptr(scene), settings.imgui_enabled);
+    editor.initialize(std::weak_ptr(window), std::weak_ptr(scene), settings.imgui_enabled);
     scene->initialize(input);
 }
 

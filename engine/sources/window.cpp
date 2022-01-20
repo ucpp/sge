@@ -9,7 +9,12 @@
 
 namespace sge
 {
-    Window::Window(InputSystem& input, const uint32_t& width, const uint32_t& height, const std::string& title) : width(width), height(height)
+    Window::Window(InputSystem& input, const uint32_t& width, const uint32_t& height, const std::string& title) 
+        : width(width)
+        , height(height)
+        , is_fullscreen(false)
+        , prev_width(width)
+        , prev_height(height)
     {
         this->input = &input;
         this->title = title.c_str();
@@ -18,6 +23,34 @@ namespace sge
         setApiProfile();
         create();
         addListeners();
+    }
+
+    bool Window::isFullscreen() const
+    {
+        return is_fullscreen;
+    }
+
+    void Window::setFullscreen(bool is_fullscreen)
+    {
+        this->is_fullscreen = is_fullscreen;
+
+        if (monitor == nullptr)
+        {
+            Log::warning("You could not set fullscreen - monitor is null!");
+            return;
+        }
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        if (is_fullscreen) 
+        {
+            prev_width = width;
+            prev_height = height;
+            glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        }
+        else
+        {
+            glfwSetWindowMonitor(window, nullptr, 50, 50, prev_width, prev_height, mode->refreshRate);
+        }
     }
 
     GLFWwindow *Window::get() const
@@ -67,12 +100,15 @@ namespace sge
 
     void Window::create()
     {
+        monitor = glfwGetPrimaryMonitor();
         window = glfwCreateWindow(this->width, this->height, this->title, nullptr, nullptr);
         if (window == nullptr)
         {
             glfwTerminate();
             throw std::runtime_error("Falied create window");
         }
+
+        setFullscreen(is_fullscreen);
     }
 
     void Window::addListeners()
