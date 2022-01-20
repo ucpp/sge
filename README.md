@@ -13,6 +13,7 @@ This project is a training sandbox for learning graphic techniques.
 - shadow maps + pcf
 - loading resources and scene from configuration file
 - cubemaps
+- cubemap based sky reflection
 
 ---
 ### Third party libs:

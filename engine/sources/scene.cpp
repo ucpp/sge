@@ -82,7 +82,7 @@ namespace sge
 
                 auto shader = obj.material.shader;
                 shader.use();
-                shader.setInt("skybox", 0);
+                shader.setInt("skybox", 6);
                 shader.setMatrix4("view", view);
                 shader.setMatrix4("projection", projection);
                 shader.setMatrix4("model", model);
