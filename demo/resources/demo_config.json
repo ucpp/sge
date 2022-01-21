@@ -5,6 +5,11 @@
     "window_height": 600,
     "vsync_enabled": false,
     "imgui_enabled": true,
+    "clear_color": {
+      "r": 1.0,
+      "g": 1.0,
+      "b": 1.0
+    },
     "start_scene": "default"
   },
   "resources": {

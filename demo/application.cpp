@@ -29,6 +29,7 @@ void Application::initialize()
     window = std::make_shared<sge::Window>(input, settings.window_width, settings.window_height, settings.application_name.c_str());
 
     renderer.initialize(settings.vsync_enabled ? 1 : 0);
+    renderer.setClearColor(glm::vec3(settings.clear_color.r, settings.clear_color.g, settings.clear_color.b));
     sge::ResourceManager::loadResources(config.data.resources);
     editor.initialize(std::weak_ptr(window), std::weak_ptr(scene), settings.imgui_enabled);
     scene->initialize(input);

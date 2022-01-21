@@ -2632,6 +2632,14 @@ using is_detected_convertible =
 #define NLOHMANN_JSON_TO(v1) nlohmann_json_j[#v1] = nlohmann_json_t.v1;
 #define NLOHMANN_JSON_FROM(v1) nlohmann_json_j.at(#v1).get_to(nlohmann_json_t.v1);
 
+// ignore null and missing fields
+#undef NLOHMANN_JSON_FROM
+#define NLOHMANN_JSON_FROM(v1) {\
+auto iter = nlohmann_json_j.find(#v1);\
+if (iter != nlohmann_json_j.end())\
+    if (!iter->is_null())\
+        iter->get_to(nlohmann_json_t.v1); }
+
 /*!
 @brief macro
 @def NLOHMANN_DEFINE_TYPE_INTRUSIVE

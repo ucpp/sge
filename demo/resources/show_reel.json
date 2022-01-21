@@ -1,0 +1,72 @@
+{
+  "settings": {
+    "application_name": "Show reel: 1 month",
+    "window_width": 1280,
+    "window_height": 768,
+    "vsync_enabled": false,
+    "imgui_enabled": true,
+    "clear_color": {
+      "r": 0.25,
+      "g": 0.25,
+      "b": 0.25
+    },
+    "start_scene": "default"
+  },
+  "resources": {
+    "shaders": [
+      {
+        "name": "color",
+        "path_to_fragment": "shaders/show_reel/color.frag",
+        "path_to_vertex": "shaders/show_reel/color.vert",
+        "lit": false
+      }
+    ],
+    "models": [
+      {
+        "name": "barrel",
+        "path": "resources/barrel/barrel.obj"
+      }
+    ],
+    "cubemaps": [ ]
+  },
+  "scenes": [
+    {
+      "name": "default",
+      "objects": [
+        {
+          "name": "barrel_01",
+          "model": "barrel",
+          "enabled": false,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.0,
+          "material": {
+            "shader": "color",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        }
+      ],
+      "camera": {
+        "name": "",
+        "position": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": -2.0
+        },
+        "speed": 7
+      }
+    }
+  ]
+}

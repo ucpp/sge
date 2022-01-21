@@ -13,7 +13,7 @@ namespace sge
 		void shutdown();
 	
 	public:
-		uint32_t cubemap_texture;
+		uint32_t cubemap_texture = -1;
 
 	private:
 		Shader shader;

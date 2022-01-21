@@ -5,13 +5,12 @@
 
 namespace sge
 {
-    // TODO safe read and load
-    bool Config::load(const std::string &path)
+    bool Config::load(const std::string& path)
     {
         std::ifstream file_stream(path);
-        nlohmann::json j;
-        file_stream >> j;
-        data = j.get<Data>();
+        nlohmann::json json_file;
+        file_stream >> json_file;
+        data = json_file.get<Data>();
 
         return true;
     }
