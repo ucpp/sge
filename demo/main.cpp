@@ -5,7 +5,7 @@ int main(int argc, char **argv)
 {
     try
     {
-        std::string path = "resources/demo_config.json";
+        std::string path = "resources/show_reel.json";
         sge::Log::info("Start demo with config: %s\n", path.c_str());
         Application application(path);
         application.run();
