@@ -3,6 +3,9 @@
 
 namespace sge
 {
+    InputSystem::InputSystem() : mouse_right_button_pressed(false)
+    {}
+
     void InputSystem::processMouseMovement(double x, double y)
     {
         last_mouse_x = x;

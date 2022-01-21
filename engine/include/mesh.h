@@ -23,6 +23,8 @@ namespace sge
         void draw(Shader &shader, int cubemap_texture = -1);
         void clear();
 
+        uint32_t getCountVertices() const;
+
     public:
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;

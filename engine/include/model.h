@@ -16,6 +16,8 @@ namespace sge
         void draw(Shader &shader, int cubemap_texture = -1);
         void clear();
 
+        uint32_t getCountVertices() const;
+
     public:
         std::vector<Mesh> meshes;
 
@@ -26,5 +28,6 @@ namespace sge
 
     private:
         std::string directory;
+        uint32_t count_vertices {0};
     };
 }
