@@ -58,6 +58,8 @@ namespace sge
             return;
         }
         drawFPS(delta_time);
+        ImGui::SameLine();
+        drawCountVertices();
         ImGui::Separator();
         drawScreenSettings();
         drawPolygonModeSettings();
@@ -83,14 +85,16 @@ namespace sge
         }
     }
 
-    void ImGuiRenderer::drawTitle()
-    {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "OpenGL render version 0.1");
-    }
-
     void ImGuiRenderer::drawFPS(float delta_time)
     {
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), (std::to_string((int)(1.0f / delta_time)) + " fps").c_str());
+    }
+
+    void ImGuiRenderer::drawCountVertices()
+    {
+        auto s_ptr_scene = scene.lock();
+        std::string vertices = "vertices: " + std::to_string(s_ptr_scene.get()->getCountVertices());
+        ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), vertices.c_str());
     }
 
     void ImGuiRenderer::drawPolygonModeSettings()

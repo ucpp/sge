@@ -55,6 +55,7 @@ namespace sge
 
         void enableNormalMaps(bool is_enable);
         Camera *getMainCamera() const;
+        uint32_t getCountVertices() const;
 
     public:
         std::vector<Object> objects;

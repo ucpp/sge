@@ -7,6 +7,7 @@ namespace sge
     class InputSystem
     {
     public:
+        InputSystem();
         ~InputSystem();
 
         void processMouseMovement(double x, double y);

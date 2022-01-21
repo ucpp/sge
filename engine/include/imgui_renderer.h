@@ -22,9 +22,9 @@ namespace sge
         void shutdown();
 
     private:
-        void drawTitle();
         void drawSettings(float delta_time);
         void drawFPS(float delta_time);
+        void drawCountVertices();
         void drawPolygonModeSettings();
         void drawNormalMapsSettings();
         void drawScreenSettings();

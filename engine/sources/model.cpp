@@ -18,6 +18,7 @@ namespace sge
         }
 
         directory = path.substr(0, path.find_last_of('/'));
+        count_vertices = 0;
 
         loadNode(scene->mRootNode, scene);
     }
@@ -98,6 +99,7 @@ namespace sge
 
         Mesh result_mesh;
         result_mesh.initialize(vertices, indices, textures);
+        count_vertices += result_mesh.getCountVertices();
 
         return result_mesh;
     }
@@ -153,5 +155,10 @@ namespace sge
         }
 
         meshes.clear();
+    }
+
+    uint32_t Model::getCountVertices() const
+    {
+        return count_vertices;
     }
 }

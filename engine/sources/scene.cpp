@@ -188,4 +188,18 @@ namespace sge
 
         return light_projection * light_view;
     }
+
+    uint32_t Scene::getCountVertices() const
+    {
+        uint32_t count_vertices = 0;
+        for (auto& obj : objects)
+        {
+            if (obj.enabled) 
+            {
+                count_vertices += obj.model.getCountVertices();
+            }
+        }
+
+        return count_vertices;
+    }
 }

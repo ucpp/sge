@@ -64,4 +64,9 @@ namespace sge
         glDeleteBuffers(1, &VBO);
         glDeleteBuffers(1, &EBO);
     }
+
+    uint32_t Mesh::getCountVertices() const
+    {
+        return vertices.size();
+    }
 }
