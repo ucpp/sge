@@ -8,6 +8,8 @@
 
 namespace sge
 {
+    Renderer::Renderer() : clear_color(glm::vec3(0.0f)) {}
+
     void Renderer::initialize(bool vsync)
     {
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -26,11 +28,21 @@ namespace sge
 
     void Renderer::render()
     {
-        glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+        clearScreen();
     }
 
     void Renderer::setViewport(int width, int height)
     {
         glViewport(0, 0, width, height);
+    }
+
+    void Renderer::setClearColor(glm::vec3 color)
+    {
+        clear_color = color;
+    }
+
+    void Renderer::clearScreen()
+    {
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, 1.0f);
     }
 }

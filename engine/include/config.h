@@ -16,6 +16,13 @@ namespace sge
         double z;
     };
 
+    struct ColorData
+    {
+        double r;
+        double g;
+        double b;
+    };
+
     struct SettingsData
     {
         std::string application_name;
@@ -23,6 +30,7 @@ namespace sge
         int window_height;
         bool vsync_enabled;
         bool imgui_enabled;
+        ColorData clear_color;
         std::string start_scene;
     };
 
@@ -56,12 +64,14 @@ namespace sge
     struct MaterialData
     {
         std::string shader;
+        ColorData color;
     };
 
     struct ObjectData
     {
         std::string name;
         std::string model;
+        bool enabled;
         Vector3 position;
         Vector3 rotation;
         float scale;
@@ -83,13 +93,6 @@ namespace sge
         double ambient;
         double diffuse;
         double specular;
-    };
-
-    struct ColorData
-    {
-        double r;
-        double g;
-        double b;
     };
 
     struct PointLightData
@@ -142,20 +145,20 @@ namespace sge
     };
 
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Vector3, x, y, z);
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SettingsData, application_name, window_width, window_height, vsync_enabled, imgui_enabled, start_scene);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ColorData, r, g, b);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SettingsData, application_name, window_width, window_height, vsync_enabled, imgui_enabled, start_scene, clear_color);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ShaderData, name, path_to_fragment, path_to_vertex, lit);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ModelData, name, path);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CubemapData, name, face_textures);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ResourcesData, shaders, models, cubemaps);
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MaterialData, shader);
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObjectData, name, model, position, rotation, scale, material);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MaterialData, shader, color);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObjectData, name, model, enabled, position, rotation, scale, material);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CameraData, name, position, speed);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DirectionalLightData, gizmo, gizmo_shader, position, ambient, diffuse, specular);
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ColorData, r, g, b);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, gizmo, gizmo_shader, position, ambient, diffuse, specular, linear, quadratic, color);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SceneData, name, objects, camera, skybox, skybox_shader, directional_light, point_lights);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Data, settings, resources, scenes);
-
+    
     class Config
     {
     public:

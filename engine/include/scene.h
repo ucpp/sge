@@ -19,6 +19,7 @@ namespace sge
         Material() : normal_maps(true) {}
         Shader shader;
         bool normal_maps;
+        glm::vec3 color;
     };
 
     class Object

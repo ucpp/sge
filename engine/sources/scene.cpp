@@ -17,9 +17,11 @@ namespace sge
             object.name = object_data.name;
             object.model = ResourceManager::getModel(object_data.model);
             object.material.shader = ResourceManager::getShader(object_data.material.shader);
+            object.material.color = glm::vec3(object_data.material.color.r, object_data.material.color.g, object_data.material.color.b);
             object.position = glm::vec3(object_data.position.x, object_data.position.y, object_data.position.z);
             object.rotation = glm::vec3(object_data.rotation.x, object_data.rotation.y, object_data.rotation.z);
             object.scale = static_cast<float>(object_data.scale);
+            object.enabled = object_data.enabled;
             this->objects.push_back(object);
         }
 
@@ -35,7 +37,10 @@ namespace sge
         shadow_buffer.initialize(shadow_map_size);
         depth_shader = ResourceManager::getShader("depth");
 
-        skybox_renderer.initialize(data.skybox, data.skybox_shader);
+        if (!data.skybox.empty())
+        {
+            skybox_renderer.initialize(data.skybox, data.skybox_shader);
+        }
         inited = true;
     }
 
@@ -82,6 +87,7 @@ namespace sge
 
                 auto shader = obj.material.shader;
                 shader.use();
+                shader.setVec3("color", obj.material.color);
                 shader.setInt("skybox", 6);
                 shader.setMatrix4("view", view);
                 shader.setMatrix4("projection", projection);
@@ -107,8 +113,10 @@ namespace sge
                 shader.setInt("shadowMap", 5);
                 obj.model.draw(shader, skybox_renderer.cubemap_texture);
             }
-
-            skybox_renderer.render(view, projection);
+            if (!data.skybox.empty()) 
+            {
+                skybox_renderer.render(view, projection);
+            }
         }
     }
 
