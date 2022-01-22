@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "resource_manager.h"
+#include "log.h"
 
 namespace sge
 {
@@ -106,8 +107,10 @@ namespace sge
                         setPointLight(shader, light.data, i);
                         i++;
                     }
-
-                    setDirectionalLight(shader);
+                    if (data.directional_light.enabled)
+                    {
+                        setDirectionalLight(shader);
+                    }
                 }
                 shadow_buffer.bindTexture(5);
                 shader.setInt("shadowMap", 5);
@@ -150,8 +153,9 @@ namespace sge
 
     void Scene::setDirectionalLight(Shader shader)
     {
-        auto data = directional_light.data;
-        auto position = data.position;
+        auto& data = directional_light.data;
+        auto& position = data.position;
+        shader.setBool("directional_enabled", data.enabled);
         shader.setVec3("directionalLight.direction", position.x, position.y, position.z);
         shader.setFloat("directionalLight.ambient", data.ambient);
         shader.setFloat("directionalLight.diffuse", data.diffuse);
@@ -209,5 +213,10 @@ namespace sge
         }
 
         return count_vertices;
+    }
+
+    DirectionalLight *Scene::getDirectionalLight()
+    {
+        return &directional_light;
     }
 }

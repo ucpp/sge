@@ -4,6 +4,7 @@
 
 #include <map>
 #include <string>
+#include <set>
 
 #include "shader.h"
 #include "texture.h"
@@ -31,6 +32,8 @@ namespace sge
         static Cubemap loadCubemap(const std::vector<std::string>& faces, const std::string &name);
         static Cubemap getCubemap(const std::string& name);
 
+        static std::set<std::string>& getAllShaderNames();
+
         static void clear();
 
     private:
@@ -38,6 +41,8 @@ namespace sge
         static std::map<std::string, Texture> textures;
         static std::map<std::string, Model> models;
         static std::map<std::string, Cubemap> cubemaps;
+
+        static std::set<std::string> shader_names;
 
     private:
         static std::string loadShaderSource(const std::string &file_name);

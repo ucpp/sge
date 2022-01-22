@@ -35,7 +35,7 @@ namespace sge
         ImGui::NewFrame();
 
         ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
-        ImGui::SetNextWindowSize(ImVec2(240, 360));
+        ImGui::SetNextWindowSize(ImVec2(360, 400));
         ImGui::Begin("SGE v0.2.0", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysVerticalScrollbar);
         
         drawSettings(delta_time);
@@ -75,12 +75,45 @@ namespace sge
         auto sptr_scene = scene.lock();
         if (sptr_scene != nullptr)
         {
+            ImGui::Text("Lights");
+            ImGui::Checkbox("Directional light", &sptr_scene->getDirectionalLight()->data.enabled);
+            ImGui::SameLine();
+            auto& v3 = sptr_scene->getDirectionalLight()->data.position;
+            float pos[3]{ v3.x, v3.y, v3.z };
+            ImGui::SetNextItemWidth(160.0f);
+            if (ImGui::DragFloat3("", pos, 0.2f, 0.0f, 0.0f, "%.2f"))
+            {
+                v3.x = pos[0];
+                v3.y = pos[1];
+                v3.z = pos[2];
+            }
+            ImGui::Separator();
+
+            ImGui::Separator();
+            ImGui::Text("Models");
             int index = 0;
             for (auto& obj : sptr_scene->objects)
             {
                 index++;
                 std::string label_text = std::to_string(index) + ". " + obj.name;
                 ImGui::Checkbox(label_text.c_str(), &obj.enabled);
+                ImGui::SameLine();
+                if (ImGui::BeginPopup(label_text.c_str()))
+                {
+                    for (const std::string& shader_name : ResourceManager::getAllShaderNames())
+                    {
+                        if (ImGui::Button(shader_name.c_str(), ImVec2(90, 20)))
+                        {
+                            obj.material.shader = ResourceManager::getShader(shader_name);
+                            ImGui::CloseCurrentPopup();
+                        }
+                    }
+                    ImGui::EndPopup();
+                }
+                if (ImGui::Button(obj.material.shader.name.c_str(), ImVec2(90, 20)))
+                {
+                    ImGui::OpenPopup(label_text.c_str());
+                }
             }
         }
     }
