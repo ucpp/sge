@@ -31,6 +31,7 @@ namespace sge
         void setVec3(const char *name, glm::vec3 v3);
 
     public:
+        std::string name;
         bool is_lit;
         std::string vertex_source;
         std::string fragment_source;

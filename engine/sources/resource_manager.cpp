@@ -16,6 +16,8 @@ namespace sge
     std::map<std::string, Model> ResourceManager::models;
     std::map<std::string, Cubemap> ResourceManager::cubemaps;
 
+    std::set<std::string> ResourceManager::shader_names;
+
     void ResourceManager::loadResources(const ResourcesData &config)
     {
         auto shaders_data = config.shaders;
@@ -43,9 +45,12 @@ namespace sge
         std::string fragment_shader_source = loadShaderSource(fragment_file_name);
 
         Shader shader;
+        shader.name = name;
         shader.is_lit = lit;
         shader.compile(vertex_shader_source, fragment_shader_source);
         shaders[name] = shader;
+
+        shader_names.emplace(name);
 
         return shaders[name];
     }
@@ -126,6 +131,7 @@ namespace sge
         }
 
         shaders.clear();
+        shader_names.clear();
 
         for (auto texture : textures)
         {
@@ -219,5 +225,10 @@ namespace sge
     Cubemap ResourceManager::getCubemap(const std::string& name)
     {
         return cubemaps[name];
+    }
+
+    std::set<std::string>& ResourceManager::getAllShaderNames()
+    {
+        return shader_names;
     }
 }
