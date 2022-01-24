@@ -98,6 +98,7 @@ namespace sge
 
     struct PointLightData
     {
+        bool enabled;
         std::string gizmo;
         std::string gizmo_shader;
         Vector3 position;
@@ -107,6 +108,8 @@ namespace sge
         double linear;
         double quadratic;
         ColorData color;
+
+        int distance = 7;
     };
 
     struct SceneData
@@ -156,7 +159,7 @@ namespace sge
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObjectData, name, model, enabled, position, rotation, scale, material);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CameraData, name, position, speed);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DirectionalLightData, enabled, gizmo, gizmo_shader, position, ambient, diffuse, specular);
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, gizmo, gizmo_shader, position, ambient, diffuse, specular, linear, quadratic, color);
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, enabled, gizmo, gizmo_shader, position, ambient, diffuse, specular, linear, quadratic, color);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SceneData, name, objects, camera, skybox, skybox_shader, directional_light, point_lights);
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Data, settings, resources, scenes);
     

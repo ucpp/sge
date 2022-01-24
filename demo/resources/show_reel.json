@@ -15,21 +15,51 @@
   "resources": {
     "shaders": [
       {
-        "name": "color",
+        "name": "depth",
+        "path_to_fragment": "shaders/depth.frag",
+        "path_to_vertex": "shaders/depth.vert",
+        "lit": false
+      },
+      {
+        "name": "skybox",
+        "path_to_fragment": "shaders/skybox.frag",
+        "path_to_vertex": "shaders/skybox.vert",
+        "lit": false
+      },
+      {
+        "name": "1.color",
         "path_to_fragment": "shaders/show_reel/color.frag",
         "path_to_vertex": "shaders/show_reel/color.vert",
         "lit": false
       },
       {
-        "name": "diffuse",
+        "name": "2.diffuse",
         "path_to_fragment": "shaders/show_reel/diffuse.frag",
         "path_to_vertex": "shaders/show_reel/diffuse.vert",
         "lit": false
       },
       {
-        "name": "bumped_diffuse",
-        "path_to_fragment": "shaders/show_reel/bumped_diffuse.frag",
-        "path_to_vertex": "shaders/show_reel/bumped_diffuse.vert",
+        "name": "3.bumped",
+        "path_to_fragment": "shaders/show_reel/bumped.frag",
+        "path_to_vertex": "shaders/show_reel/bumped.vert",
+        "lit": true
+      },
+      {
+        "name": "4.point_lights",
+        "path_to_fragment": "shaders/show_reel/point_lights.frag",
+        "path_to_vertex": "shaders/show_reel/point_lights.vert",
+        "lit": true
+      },
+      {
+        "name": "5.with_shadows",
+        "path_to_fragment": "shaders/show_reel/with_shadows.frag",
+        "path_to_vertex": "shaders/show_reel/with_shadows.vert",
+        "lit": true
+      },
+      {
+        "name": "6.final",
+        "path_to_fragment": "shaders/show_reel/final.frag",
+        "path_to_vertex": "shaders/show_reel/final.vert",
         "lit": true
       }
     ],
@@ -37,14 +67,58 @@
       {
         "name": "barrel",
         "path": "resources/barrel/barrel.obj"
+      },
+      {
+        "name": "floor",
+        "path": "resources/floor/floor.obj"
+      },
+      {
+        "name": "trash",
+        "path": "resources/trash/trash.obj"
       }
     ],
-    "cubemaps": [ ]
+    "cubemaps": [
+      {
+        "name": "sky1",
+        "face_textures": [
+          "resources/textures/skybox/right.jpg",
+          "resources/textures/skybox/left.jpg",
+          "resources/textures/skybox/top.jpg",
+          "resources/textures/skybox/bottom.jpg",
+          "resources/textures/skybox/front.jpg",
+          "resources/textures/skybox/back.jpg"
+        ]
+      }
+    ]
   },
   "scenes": [
     {
       "name": "default",
       "objects": [
+        {
+          "name": "trash_01",
+          "model": "trash",
+          "enabled": false,
+          "position": {
+            "x": 0.5,
+            "y": 0.0,
+            "z": -0.7
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 45.0,
+            "z": 0.0
+          },
+          "scale": 2.0,
+          "material": {
+            "shader": "1.color",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
         {
           "name": "barrel_01",
           "model": "barrel",
@@ -61,7 +135,30 @@
           },
           "scale": 1.0,
           "material": {
-            "shader": "diffuse",
+            "shader": "1.color",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "floor_01",
+          "model": "floor",
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "1.color",
             "color": {
               "r": 1.0,
               "g": 1.0,
@@ -79,17 +176,57 @@
         },
         "speed": 7
       },
+      "skybox": "sky1",
+      "skybox_shader": "skybox",
       "directional_light": {
         "enabled": true,
         "position": {
-          "x": -1.0,
-          "y": -1.0,
-          "z": 1.0
+          "x": -5.0,
+          "y": -5.0,
+          "z": -2.0
         },
         "ambient": 0.2,
         "diffuse": 0.6,
         "specular": 0.7
-      }
+      },
+      "point_lights": [
+        {
+          "type": "point",
+          "position": {
+            "x": 0.0,
+            "y": 4.0,
+            "z": 0.0
+          },
+          "ambient": 0.3,
+          "diffuse": 0.8,
+          "specular": 0.7,
+          "linear": 0.09,
+          "quadratic": 0.032,
+          "color": {
+            "r": 0.0,
+            "g": 1.0,
+            "b": 0.0
+          }
+        },
+        {
+          "type": "point",
+          "position": {
+            "x": 0.0,
+            "y": 4.0,
+            "z": 0.0
+          },
+          "ambient": 0.3,
+          "diffuse": 0.8,
+          "specular": 0.7,
+          "linear": 0.09,
+          "quadratic": 0.032,
+          "color": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          }
+        }
+      ]
     }
   ]
 }

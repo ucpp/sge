@@ -18,7 +18,7 @@ namespace sge
             object.name = object_data.name;
             object.model = ResourceManager::getModel(object_data.model);
             object.material.shader = ResourceManager::getShader(object_data.material.shader);
-            object.material.color = glm::vec3(object_data.material.color.r, object_data.material.color.g, object_data.material.color.b);
+            object.material.color = object_data.material.color;
             object.position = glm::vec3(object_data.position.x, object_data.position.y, object_data.position.z);
             object.rotation = glm::vec3(object_data.rotation.x, object_data.rotation.y, object_data.rotation.z);
             object.scale = static_cast<float>(object_data.scale);
@@ -88,7 +88,8 @@ namespace sge
 
                 auto shader = obj.material.shader;
                 shader.use();
-                shader.setVec3("color", obj.material.color);
+              
+                shader.setVec3("color", glm::vec3(obj.material.color.r, obj.material.color.g, obj.material.color.b));
                 shader.setInt("skybox", 6);
                 shader.setMatrix4("view", view);
                 shader.setMatrix4("projection", projection);
@@ -100,13 +101,16 @@ namespace sge
                 {
                     shader.setFloat("material.shininess", 128.0f);
                     shader.setBool("normals_enabled", obj.material.normal_maps);
-
-                    int i = 0;
+                    shader.setBool("skylight_enabled", skybox_enabled);
+                    int count_point_lights = 0;
                     for (auto &light : point_lights)
                     {
-                        setPointLight(shader, light.data, i);
-                        i++;
+                        if (!light.data.enabled) continue;
+
+                        setPointLight(shader, light.data, count_point_lights);
+                        count_point_lights++;
                     }
+                    shader.setInt("count_point_lights", count_point_lights);
                     if (data.directional_light.enabled)
                     {
                         setDirectionalLight(shader);
@@ -116,7 +120,7 @@ namespace sge
                 shader.setInt("shadowMap", 5);
                 obj.model.draw(shader, skybox_renderer.cubemap_texture);
             }
-            if (!data.skybox.empty()) 
+            if (!data.skybox.empty() && skybox_enabled) 
             {
                 skybox_renderer.render(view, projection);
             }
@@ -218,5 +222,10 @@ namespace sge
     DirectionalLight *Scene::getDirectionalLight()
     {
         return &directional_light;
+    }
+
+    std::vector<PointLight>& Scene::getPointLights()
+    {
+        return point_lights;
     }
 }
