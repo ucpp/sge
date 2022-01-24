@@ -23,12 +23,21 @@ namespace sge
 
     private:
         void drawSettings(float delta_time);
+
+        void drawLight();
+        void drawPointLights();
+        void drawDirectionalLight();
+
+        void drawModel(Object& obj, int index);
+        void drawPosition(std::string& name, Vector3& position);
+        void drawColor(std::string& name, ColorData& color);
         void drawFPS(float delta_time);
         void drawCountVertices();
         void drawPolygonModeSettings();
         void drawNormalMapsSettings();
         void drawScreenSettings();
         void drawObjects();
+        void setPointLightDistance(PointLightData& point_light);
 
     private:
         RenderState *state{nullptr};

@@ -106,7 +106,8 @@ namespace sge
             if (!success)
             {
                 glGetShaderInfoLog(id, buff_size, nullptr, info);
-                std::cout << "Shader compile error:" << info << std::endl;
+                std::string type_name = type == Shader::Type::Fragment ? "fragment" : "vertex";
+                std::cout << "Shader compile error " << type_name << ": " << info << std::endl;
             }
         }
     }

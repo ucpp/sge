@@ -19,7 +19,7 @@ namespace sge
         Material() : normal_maps(true) {}
         Shader shader;
         bool normal_maps;
-        glm::vec3 color;
+        ColorData color;
     };
 
     class Object
@@ -58,9 +58,12 @@ namespace sge
         Camera *getMainCamera() const;
         uint32_t getCountVertices() const;
         DirectionalLight *getDirectionalLight();
+        std::vector<PointLight>& getPointLights();
+        bool skyboxEnabled();
 
     public:
         std::vector<Object> objects;
+        bool skybox_enabled = false;
 
     private:
         glm::mat4 getModelMatrix(const Object &obj);

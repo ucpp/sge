@@ -8,6 +8,7 @@
 #include "stb_image.h"
 
 #include "model.h"
+#include "log.h"
 
 namespace sge
 {
@@ -20,18 +21,19 @@ namespace sge
 
     void ResourceManager::loadResources(const ResourcesData &config)
     {
+        Log::info("loading and compiling shaders:\n");
         auto shaders_data = config.shaders;
         for (auto& data : shaders_data)
         {
             loadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
         }
-
+        Log::info("loading models with textures:\n");
         auto models_data = config.models;
         for (auto& data : models_data)
         {
             loadModel(data.path, data.name);
         }
-
+        Log::info("loading cubemaps:\n");
         auto cubemaps = config.cubemaps;
         for (auto& data : cubemaps)
         {
@@ -47,6 +49,7 @@ namespace sge
         Shader shader;
         shader.name = name;
         shader.is_lit = lit;
+        Log::info("%s\n", name.c_str());
         shader.compile(vertex_shader_source, fragment_shader_source);
         shaders[name] = shader;
 
@@ -72,7 +75,7 @@ namespace sge
         int channels = 0;
         const char *path = file_name.c_str();
         unsigned char *data = stbi_load(path, &width, &height, &channels, 0);
-
+        Log::info("Texture %s loaded with size: %d mb\n", file_name.c_str(), width * height * channels * sizeof(stbi_uc) / 1024 / 1024);
         if (data == nullptr)
         {
             width = 4;
@@ -193,7 +196,7 @@ namespace sge
             int channels = 0;
             const char* path = faces[i].c_str();
             unsigned char* data = stbi_load(path, &width, &height, &channels, 3);
-
+            Log::info("Texture %s loaded with size: %d mb\n", path, width * height * channels * sizeof(stbi_uc) / 1024 / 1024 );
             if (data == nullptr)
             {
                 width = 4;
