@@ -8,7 +8,7 @@ namespace sge
     {
     public:
         Texture();
-        void generate(unsigned char *data, uint32_t width, uint32_t height);
+        void generate(const unsigned char *data, uint32_t width, uint32_t height);
         void bind() const;
 
         void enableAlpha();

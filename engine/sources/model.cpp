@@ -104,17 +104,9 @@ namespace sge
         return result_mesh;
     }
 
-    Texture Model::loadTexture(aiMaterial *material, aiTextureType type, std::string type_name, std::string force_path)
+    Texture Model::loadTexture(aiMaterial *material, aiTextureType type, std::string type_name)
     {
         Texture texture;
-        // TODO: remove temporary hack
-        if (force_path != "")
-        {
-            std::string file_name(this->directory + "/" + force_path);
-            texture = sge::ResourceManager::loadTexture(file_name, force_path.substr(0, force_path.find_last_of('.')), type_name);
-
-            return texture;
-        }
 
         if (material->GetTextureCount(type) > 0)
         {

@@ -75,6 +75,10 @@
       {
         "name": "trash",
         "path": "resources/trash/trash.obj"
+      },
+      {
+        "name": "sponza",
+        "path": "resources/pbr_sponza/sponza.obj"
       }
     ],
     "cubemaps": [
@@ -175,6 +179,95 @@
           "z": -2.0
         },
         "speed": 7
+      },
+      "skybox": "sky1",
+      "skybox_shader": "skybox",
+      "directional_light": {
+        "enabled": true,
+        "position": {
+          "x": -5.0,
+          "y": -5.0,
+          "z": -2.0
+        },
+        "ambient": 0.2,
+        "diffuse": 0.6,
+        "specular": 0.7
+      },
+      "point_lights": [
+        {
+          "type": "point",
+          "position": {
+            "x": 0.0,
+            "y": 4.0,
+            "z": 0.0
+          },
+          "ambient": 0.3,
+          "diffuse": 0.8,
+          "specular": 0.7,
+          "linear": 0.09,
+          "quadratic": 0.032,
+          "color": {
+            "r": 0.0,
+            "g": 1.0,
+            "b": 0.0
+          }
+        },
+        {
+          "type": "point",
+          "position": {
+            "x": 0.0,
+            "y": 4.0,
+            "z": 0.0
+          },
+          "ambient": 0.3,
+          "diffuse": 0.8,
+          "specular": 0.7,
+          "linear": 0.09,
+          "quadratic": 0.032,
+          "color": {
+            "r": 1.0,
+            "g": 1.0,
+            "b": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "name": "sponza",
+      "objects": [
+        {
+          "name": "sponza",
+          "model": "sponza",
+          "enabled": false,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 0.01,
+          "material": {
+            "shader": "1.color",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        }
+      ],
+      "camera": {
+        "name": "",
+        "position": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": -2.0
+        },
+        "speed": 3
       },
       "skybox": "sky1",
       "skybox_shader": "skybox",

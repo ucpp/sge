@@ -18,6 +18,7 @@ namespace sge
     std::map<std::string, Cubemap> ResourceManager::cubemaps;
 
     std::set<std::string> ResourceManager::shader_names;
+    unsigned char* ResourceManager::default_texture;
 
     void ResourceManager::loadResources(const ResourcesData &config)
     {
@@ -73,26 +74,22 @@ namespace sge
         int width = 0;
         int height = 0;
         int channels = 0;
+
         const char *path = file_name.c_str();
         unsigned char *data = stbi_load(path, &width, &height, &channels, 0);
-        Log::info("Texture %s loaded with size: %d mb\n", file_name.c_str(), width * height * channels * sizeof(stbi_uc) / 1024 / 1024);
+        
+        texture.setFormat(channels, sizeof(stbi_uc));
+        printTextureSize(file_name, width, height, channels);
         if (data == nullptr)
         {
-            width = 4;
-            height = 4;
-
-            data = new unsigned char[64];
-
-            for (int i = 0; i < 64; ++i)
-            {
-                data[i] = 255;
-            }
+            texture.generate(getDefaultEmptyTexture(), width, height);
+        }
+        else 
+        { 
+            texture.generate(data, width, height);
+            stbi_image_free(data);
         }
 
-        texture.setFormat(channels, sizeof(stbi_uc));
-        texture.generate(data, width, height);
-
-        stbi_image_free(data);
         textures[name] = texture;
 
         return textures[name];
@@ -156,6 +153,12 @@ namespace sge
         }
 
         cubemaps.clear();
+
+        if (default_texture != nullptr)
+        {
+            delete[] default_texture;
+            default_texture = nullptr;
+        }
     }
 
     std::string ResourceManager::loadShaderSource(const std::string &file_name)
@@ -195,33 +198,26 @@ namespace sge
             int height = 0;
             int channels = 0;
             const char* path = faces[i].c_str();
-            unsigned char* data = stbi_load(path, &width, &height, &channels, 3);
-            Log::info("Texture %s loaded with size: %d mb\n", path, width * height * channels * sizeof(stbi_uc) / 1024 / 1024 );
-            if (data == nullptr)
+            faces_data.push_back(stbi_load(path, &width, &height, &channels, 3));
+            printTextureSize(path, width, height, channels);
+            if (faces_data[i] == nullptr)
             {
-                width = 4;
-                height = 4;
-
-                data = new unsigned char[64];
-
-                for (int i = 0; i < 64; ++i)
-                {
-                    data[i] = 255;
-                }
+                faces_data[i] = getDefaultEmptyTexture();
+                sizes.push_back(glm::ivec2(4, 4));
             }
-
-            faces_data.push_back(data);
-            sizes.push_back(glm::ivec2(width, height));
+            else
+            {
+                sizes.push_back(glm::ivec2(width, height));
+            }
         }
         cubemap.generate(faces_data, sizes);
-
-        cubemaps[name] = cubemap;
-
-        for (uint32_t i = 0; i < faces.size(); ++i)
+        for (uint32_t i = 0; i < faces_data.size(); ++i)
         {
             stbi_image_free(faces_data[i]);
         }
 
+        cubemaps[name] = cubemap;
+        faces_data.clear();
         return cubemaps[name];
     }
 
@@ -233,5 +229,28 @@ namespace sge
     std::set<std::string>& ResourceManager::getAllShaderNames()
     {
         return shader_names;
+    }
+
+    void ResourceManager::printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels)
+    {
+        Log::info("Texture %s loaded with size: %d mb\n", name.c_str(), width * height * channels * sizeof(stbi_uc) / 1024 / 1024);
+    }
+
+    unsigned char* ResourceManager::getDefaultEmptyTexture()
+    {
+        if (default_texture == nullptr)
+        {
+            uint32_t width = 4;
+            uint32_t height = 4;
+
+            default_texture = new unsigned char[64];
+
+            for (int i = 0; i < 64; ++i)
+            {
+                default_texture[i] = 255;
+            }
+        }
+
+        return default_texture;
     }
 }

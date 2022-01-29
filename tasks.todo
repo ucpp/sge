@@ -100,12 +100,18 @@ Other streams:
     ✔ Make shadow maps for directional light @done (14.01.2022, 02:31:21)
     ✔ Reflections cube maps @done (19.01.2022, 23:11:07)
     dx12:
-    ☐ Initialize D3D12
     ☐ Process input and camera control dx12
     ☐ Load simple model without animation dx12
     --- before 25.01 ---
 
+    ☐ Initialize D3D12 and draw triangle
+    ☐ Make dynamic environment reflections via render to cube map
+    ☐ Make soft shadows (VSM and ESM)
+    --- before 8.02 ---
+
+My plan:
     ☐ Move rendering to renderer
+    ☐ Fix piont lights
     ☐ HDR, tone mapping
     ☐ Bloom
     ☐ SSAO
@@ -131,11 +137,13 @@ Roadmap:
     code:
     ☐ Initialize D3D12
     ☐ Process input and camera control
-    ☐ Load simple model without animation
     ☐ Load mip-mapped textures (diffuse, normal, specular, gloss)
     ☐ Calculate Phong lighting from direct and point lights in the pixel shader
+    ☐ Make soft shadows (SM+PCF)
+    ☐ Load simple model without animation
+---
     ☐ Particle System (10000+ particles)
-    ☐ Make soft shadows (SM+PCF, VSM or ESM)
+    ☐ Make soft shadows (VSM or ESM)
     ☐ Make dynamic environment reflections via render to cube map
     ☐ Add fog effect (pixel shader or post-process)
     ☐ Add bloom post-process effect

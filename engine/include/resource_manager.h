@@ -44,7 +44,11 @@ namespace sge
 
         static std::set<std::string> shader_names;
 
+        static unsigned char* default_texture;
+
     private:
         static std::string loadShaderSource(const std::string &file_name);
+        static unsigned char* getDefaultEmptyTexture();
+        static void printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels);
     };
 }
