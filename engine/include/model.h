@@ -24,7 +24,7 @@ namespace sge
     private:
         void loadNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-        Texture loadTexture(aiMaterial *material, aiTextureType type, std::string type_name, std::string force_path = "");
+        Texture loadTexture(aiMaterial *material, aiTextureType type, std::string type_name);
 
     private:
         std::string directory;

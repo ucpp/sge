@@ -15,7 +15,7 @@ namespace sge
         glGenTextures(1, &id);
     }
 
-    void Texture::generate(unsigned char *data, uint32_t width, uint32_t height)
+    void Texture::generate(const unsigned char *data, uint32_t width, uint32_t height)
     {
         this->width = width;
         this->height = height;

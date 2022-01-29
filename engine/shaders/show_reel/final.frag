@@ -84,6 +84,7 @@ void main()
     {
         resultColor = CalculateDirectionLight(calculatedNormal, viewDirection, shadow);
     }
+
     if(skylight_enabled)
     {
         resultColor += SkyLight(calculatedNormal, viewDirection);
@@ -101,7 +102,6 @@ void main()
     FragColor = vec4(color * resultColor, 1.0);
 }
 
-
 vec3 SkyLight(vec3 normal, vec3 viewDirection)
 {
     // skybox reflections
@@ -110,7 +110,6 @@ vec3 SkyLight(vec3 normal, vec3 viewDirection)
     vec3 R = reflect(I, normalize(normal));
     return texture(skybox, R).rgb * diff;
 }
-
 
 vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow)
 {

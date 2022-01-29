@@ -197,7 +197,7 @@ namespace sge
 
         glm::mat4 light_projection = glm::ortho(-distance, distance, -distance, distance, near, far);
 
-        glm::vec3 eye = camera->getPosition() - normalize(light_direction) * distance;
+        glm::vec3 eye = camera->getPosition() - light_direction;
         glm::vec3 center = camera->getPosition();
         glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
         glm::mat4 light_view = glm::lookAt(eye, center, up);
