@@ -9,25 +9,25 @@
 
 namespace sge
 {
-    class Model
-    {
-    public:
-        void load(const std::string &path);
-        void draw(Shader &shader, int cubemap_texture = -1);
-        void clear();
+	class Model
+	{
+	public:
+		void load(const std::string& path);
+		void draw(Shader& shader, int cubemap_texture = -1);
+		void clear();
 
-        uint32_t getCountVertices() const;
+		uint32_t getCountVertices() const;
 
-    public:
-        std::vector<Mesh> meshes;
+	public:
+		std::vector<Mesh> meshes;
 
-    private:
-        void loadNode(aiNode *node, const aiScene *scene);
-        Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-        Texture loadTexture(aiMaterial *material, aiTextureType type, std::string type_name);
+	private:
+		void loadNode(aiNode* node, const aiScene* scene);
+		Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+		Texture loadTexture(aiMaterial* material, aiTextureType type, std::string type_name);
 
-    private:
-        std::string directory;
-        uint32_t count_vertices {0};
-    };
+	private:
+		std::string directory;
+		uint32_t count_vertices{ 0 };
+	};
 }

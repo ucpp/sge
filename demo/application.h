@@ -8,31 +8,31 @@
 
 namespace sge
 {
-    class Camera;
-    class Window;
-    class Scene;
+	class Camera;
+	class Window;
+	class Scene;
 }
 
 class Application
 {
 public:
-    Application(std::string path_to_config);
-    void run();
+	Application(std::string path_to_config);
+	void run();
 
 private:
-    void initialize();
-    void update();
-    void shutdown();
-    void calculateDeltaTime(double& last_frame_time);
+	void initialize();
+	void update();
+	void shutdown();
+	void calculateDeltaTime(double& last_frame_time);
 
 private:
-    std::shared_ptr<sge::Window> window;
-    std::shared_ptr<sge::Scene> scene;
+	std::shared_ptr<sge::Window> window;
+	std::shared_ptr<sge::Scene> scene;
 
-    sge::Renderer renderer;
-    sge::InputSystem input;
-    sge::Config config;
-    sge::Editor editor;
+	sge::Renderer renderer;
+	sge::InputSystem input;
+	sge::Config config;
+	sge::Editor editor;
 
-    double delta_time {0};
+	double delta_time{ 0 };
 };

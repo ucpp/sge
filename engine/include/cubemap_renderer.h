@@ -11,7 +11,7 @@ namespace sge
 		void initialize(const std::string& cubemap_name, const std::string& shader_name);
 		void render(const glm::mat4& view, const glm::mat4& projection);
 		void shutdown();
-	
+
 	public:
 		uint32_t cubemap_texture = -1;
 

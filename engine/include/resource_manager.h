@@ -13,42 +13,42 @@
 
 namespace sge
 {
-    class Model;
+	class Model;
 
-    class ResourceManager
-    {
-    public:
-        static void loadResources(const ResourcesData &config);
+	class ResourceManager
+	{
+	public:
+		static void loadResources(const ResourcesData& config);
 
-        static Shader loadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name, bool lit = false);
-        static Shader getShader(const std::string &shader);
+		static Shader loadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit = false);
+		static Shader getShader(const std::string& shader);
 
-        static Texture loadTexture(const std::string &file_name, const std::string &name, const std::string &type = "diffuse", bool alpha = false);
-        static Texture getTexture(const std::string &name);
+		static Texture loadTexture(const std::string& file_name, const std::string& name, const std::string& type = "diffuse", bool alpha = false);
+		static Texture getTexture(const std::string& name);
 
-        static Model loadModel(const std::string &file_name, const std::string &name);
-        static Model getModel(const std::string &name);
+		static Model loadModel(const std::string& file_name, const std::string& name);
+		static Model getModel(const std::string& name);
 
-        static Cubemap loadCubemap(const std::vector<std::string>& faces, const std::string &name);
-        static Cubemap getCubemap(const std::string& name);
+		static Cubemap loadCubemap(const std::vector<std::string>& faces, const std::string& name);
+		static Cubemap getCubemap(const std::string& name);
 
-        static std::set<std::string>& getAllShaderNames();
+		static std::set<std::string>& getAllShaderNames();
 
-        static void clear();
+		static void clear();
 
-    private:
-        static std::map<std::string, Shader> shaders;
-        static std::map<std::string, Texture> textures;
-        static std::map<std::string, Model> models;
-        static std::map<std::string, Cubemap> cubemaps;
+	private:
+		static std::map<std::string, Shader> shaders;
+		static std::map<std::string, Texture> textures;
+		static std::map<std::string, Model> models;
+		static std::map<std::string, Cubemap> cubemaps;
 
-        static std::set<std::string> shader_names;
+		static std::set<std::string> shader_names;
 
-        static unsigned char* default_texture;
+		static unsigned char* default_texture;
 
-    private:
-        static std::string loadShaderSource(const std::string &file_name);
-        static unsigned char* getDefaultEmptyTexture();
-        static void printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels);
-    };
+	private:
+		static std::string loadShaderSource(const std::string& file_name);
+		static unsigned char* getDefaultEmptyTexture();
+		static void printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels);
+	};
 }

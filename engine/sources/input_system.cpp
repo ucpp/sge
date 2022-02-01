@@ -3,60 +3,60 @@
 
 namespace sge
 {
-    InputSystem::InputSystem() : mouse_right_button_pressed(false)
-    {}
+	InputSystem::InputSystem() : mouse_right_button_pressed(false)
+	{}
 
-    void InputSystem::processMouseMovement(double x, double y)
-    {
-        last_mouse_x = x;
-        last_mouse_y = y;
-    }
+	void InputSystem::processMouseMovement(double x, double y)
+	{
+		last_mouse_x = x;
+		last_mouse_y = y;
+	}
 
-    void InputSystem::processMouseScroll(float offset)
-    {
-        on_mouse_scroll.invoke(offset);
-    }
+	void InputSystem::processMouseScroll(float offset)
+	{
+		on_mouse_scroll.invoke(offset);
+	}
 
-    void InputSystem::setPressedRightMouse(bool pressed)
-    {
-        mouse_right_button_pressed = pressed;
-    }
+	void InputSystem::setPressedRightMouse(bool pressed)
+	{
+		mouse_right_button_pressed = pressed;
+	}
 
-    double InputSystem::getX()
-    {
-        return last_mouse_x;
-    }
+	double InputSystem::getX()
+	{
+		return last_mouse_x;
+	}
 
-    double InputSystem::getY()
-    {
-        return last_mouse_y;
-    }
+	double InputSystem::getY()
+	{
+		return last_mouse_y;
+	}
 
-    bool InputSystem::isPressedMouseRight()
-    {
-        return mouse_right_button_pressed;
-    }
+	bool InputSystem::isPressedMouseRight()
+	{
+		return mouse_right_button_pressed;
+	}
 
-    void InputSystem::processInput(int key, int action)
-    {
-        if (key >= 0 && key < 512)
-        {
-            key_state[key] = action == GLFW_PRESS || action == GLFW_REPEAT ? 1 : 0;
-        }
-    }
+	void InputSystem::processInput(int key, int action)
+	{
+		if (key >= 0 && key < 512)
+		{
+			key_state[key] = action == GLFW_PRESS || action == GLFW_REPEAT ? 1 : 0;
+		}
+	}
 
-    bool InputSystem::isKeyPressed(int key_code)
-    {
-        if (key_code < 0 || key_code >= 512)
-        {
-            return false;
-        }
+	bool InputSystem::isKeyPressed(int key_code)
+	{
+		if (key_code < 0 || key_code >= 512)
+		{
+			return false;
+		}
 
-        return key_state[key_code] == GLFW_PRESS;
-    }
+		return key_state[key_code] == GLFW_PRESS;
+	}
 
-    InputSystem::~InputSystem()
-    {
-        on_mouse_scroll.clear();
-    }
+	InputSystem::~InputSystem()
+	{
+		on_mouse_scroll.clear();
+	}
 }

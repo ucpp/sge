@@ -12,245 +12,245 @@
 
 namespace sge
 {
-    std::map<std::string, Shader> ResourceManager::shaders;
-    std::map<std::string, Texture> ResourceManager::textures;
-    std::map<std::string, Model> ResourceManager::models;
-    std::map<std::string, Cubemap> ResourceManager::cubemaps;
+	std::map<std::string, Shader> ResourceManager::shaders;
+	std::map<std::string, Texture> ResourceManager::textures;
+	std::map<std::string, Model> ResourceManager::models;
+	std::map<std::string, Cubemap> ResourceManager::cubemaps;
 
-    std::set<std::string> ResourceManager::shader_names;
-    unsigned char* ResourceManager::default_texture;
+	std::set<std::string> ResourceManager::shader_names;
+	unsigned char* ResourceManager::default_texture;
 
-    void ResourceManager::loadResources(const ResourcesData &config)
-    {
-        Log::info("loading and compiling shaders:\n");
-        auto shaders_data = config.shaders;
-        for (auto& data : shaders_data)
-        {
-            loadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
-        }
-        Log::info("loading models with textures:\n");
-        auto models_data = config.models;
-        for (auto& data : models_data)
-        {
-            loadModel(data.path, data.name);
-        }
-        Log::info("loading cubemaps:\n");
-        auto cubemaps = config.cubemaps;
-        for (auto& data : cubemaps)
-        {
-            loadCubemap(data.face_textures, data.name);
-        }
-    }
+	void ResourceManager::loadResources(const ResourcesData& config)
+	{
+		Log::info("loading and compiling shaders:\n");
+		auto shaders_data = config.shaders;
+		for (auto& data : shaders_data)
+		{
+			loadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
+		}
+		Log::info("loading models with textures:\n");
+		auto models_data = config.models;
+		for (auto& data : models_data)
+		{
+			loadModel(data.path, data.name);
+		}
+		Log::info("loading cubemaps:\n");
+		auto cubemaps = config.cubemaps;
+		for (auto& data : cubemaps)
+		{
+			loadCubemap(data.face_textures, data.name);
+		}
+	}
 
-    Shader ResourceManager::loadShader(const std::string &vertex_file_name, const std::string &fragment_file_name, const std::string &name, bool lit)
-    {
-        std::string vertex_shader_source = loadShaderSource(vertex_file_name);
-        std::string fragment_shader_source = loadShaderSource(fragment_file_name);
+	Shader ResourceManager::loadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit)
+	{
+		std::string vertex_shader_source = loadShaderSource(vertex_file_name);
+		std::string fragment_shader_source = loadShaderSource(fragment_file_name);
 
-        Shader shader;
-        shader.name = name;
-        shader.is_lit = lit;
-        Log::info("%s\n", name.c_str());
-        shader.compile(vertex_shader_source, fragment_shader_source);
-        shaders[name] = shader;
+		Shader shader;
+		shader.name = name;
+		shader.is_lit = lit;
+		Log::info("%s\n", name.c_str());
+		shader.compile(vertex_shader_source, fragment_shader_source);
+		shaders[name] = shader;
 
-        shader_names.emplace(name);
+		shader_names.emplace(name);
 
-        return shaders[name];
-    }
+		return shaders[name];
+	}
 
-    Texture ResourceManager::loadTexture(const std::string &file_name, const std::string &name, const std::string &type, bool alpha)
-    {
-        if (textures.count(name) == 1)
-        {
-            return getTexture(name);
-        }
+	Texture ResourceManager::loadTexture(const std::string& file_name, const std::string& name, const std::string& type, bool alpha)
+	{
+		if (textures.count(name) == 1)
+		{
+			return getTexture(name);
+		}
 
-        Texture texture;
-        texture.type = type;
+		Texture texture;
+		texture.type = type;
 
-        // stbi_set_flip_vertically_on_load(true);
+		// stbi_set_flip_vertically_on_load(true);
 
-        int width = 0;
-        int height = 0;
-        int channels = 0;
+		int width = 0;
+		int height = 0;
+		int channels = 0;
 
-        const char *path = file_name.c_str();
-        unsigned char *data = stbi_load(path, &width, &height, &channels, 0);
-        
-        texture.setFormat(channels, sizeof(stbi_uc));
-        printTextureSize(file_name, width, height, channels);
-        if (data == nullptr)
-        {
-            texture.generate(getDefaultEmptyTexture(), width, height);
-        }
-        else 
-        { 
-            texture.generate(data, width, height);
-            stbi_image_free(data);
-        }
+		const char* path = file_name.c_str();
+		unsigned char* data = stbi_load(path, &width, &height, &channels, 0);
 
-        textures[name] = texture;
+		texture.setFormat(channels, sizeof(stbi_uc));
+		printTextureSize(file_name, width, height, channels);
+		if (data == nullptr)
+		{
+			texture.generate(getDefaultEmptyTexture(), width, height);
+		}
+		else
+		{
+			texture.generate(data, width, height);
+			stbi_image_free(data);
+		}
 
-        return textures[name];
-    }
+		textures[name] = texture;
 
-    Model ResourceManager::loadModel(const std::string &file_name, const std::string &name)
-    {
-        if (models.count(name) == 1)
-        {
-            return getModel(name);
-        }
-        Model model;
-        model.load(file_name);
-        models[name] = model;
+		return textures[name];
+	}
 
-        return models[name];
-    }
+	Model ResourceManager::loadModel(const std::string& file_name, const std::string& name)
+	{
+		if (models.count(name) == 1)
+		{
+			return getModel(name);
+		}
+		Model model;
+		model.load(file_name);
+		models[name] = model;
 
-    Model ResourceManager::getModel(const std::string &name)
-    {
-        return models[name];
-    }
+		return models[name];
+	}
 
-    Shader ResourceManager::getShader(const std::string &name)
-    {
-        return shaders[name];
-    }
+	Model ResourceManager::getModel(const std::string& name)
+	{
+		return models[name];
+	}
 
-    Texture ResourceManager::getTexture(const std::string &name)
-    {
-        return textures[name];
-    }
+	Shader ResourceManager::getShader(const std::string& name)
+	{
+		return shaders[name];
+	}
 
-    void ResourceManager::clear()
-    {
-        for (auto shader : shaders)
-        {
-            glDeleteProgram(shader.second.getId());
-        }
+	Texture ResourceManager::getTexture(const std::string& name)
+	{
+		return textures[name];
+	}
 
-        shaders.clear();
-        shader_names.clear();
+	void ResourceManager::clear()
+	{
+		for (auto shader : shaders)
+		{
+			glDeleteProgram(shader.second.getId());
+		}
 
-        for (auto texture : textures)
-        {
-            glDeleteTextures(1, &texture.second.id);
-        }
+		shaders.clear();
+		shader_names.clear();
 
-        textures.clear();
+		for (auto texture : textures)
+		{
+			glDeleteTextures(1, &texture.second.id);
+		}
 
-        for (auto model : models)
-        {
-            model.second.clear();
-        }
+		textures.clear();
 
-        models.clear();
+		for (auto model : models)
+		{
+			model.second.clear();
+		}
 
-        for (auto cubemap : cubemaps)
-        {
-            glDeleteTextures(1, &cubemap.second.id);
-        }
+		models.clear();
 
-        cubemaps.clear();
+		for (auto cubemap : cubemaps)
+		{
+			glDeleteTextures(1, &cubemap.second.id);
+		}
 
-        if (default_texture != nullptr)
-        {
-            delete[] default_texture;
-            default_texture = nullptr;
-        }
-    }
+		cubemaps.clear();
 
-    std::string ResourceManager::loadShaderSource(const std::string &file_name)
-    {
-        std::string file_source;
+		if (default_texture != nullptr)
+		{
+			delete[] default_texture;
+			default_texture = nullptr;
+		}
+	}
 
-        try
-        {
-            std::ifstream file_stream(file_name);
-            std::stringstream stream;
-            stream << file_stream.rdbuf();
-            file_stream.close();
-            file_source = stream.str();
-        }
-        catch (const std::exception &e)
-        {
-            std::cout << e.what() << '\n';
-        }
+	std::string ResourceManager::loadShaderSource(const std::string& file_name)
+	{
+		std::string file_source;
 
-        return file_source;
-    }
+		try
+		{
+			std::ifstream file_stream(file_name);
+			std::stringstream stream;
+			stream << file_stream.rdbuf();
+			file_stream.close();
+			file_source = stream.str();
+		}
+		catch (const std::exception& e)
+		{
+			std::cout << e.what() << '\n';
+		}
 
-    Cubemap ResourceManager::loadCubemap(const std::vector<std::string>& faces, const std::string& name)
-    {
-        if (cubemaps.count(name) == 1)
-        {
-            return getCubemap(name);
-        }
+		return file_source;
+	}
 
-        Cubemap cubemap;
-        std::vector<unsigned char*> faces_data;
-        std::vector<glm::ivec2> sizes;
+	Cubemap ResourceManager::loadCubemap(const std::vector<std::string>& faces, const std::string& name)
+	{
+		if (cubemaps.count(name) == 1)
+		{
+			return getCubemap(name);
+		}
 
-        for (uint32_t i = 0; i < faces.size(); ++i)
-        {
-            int width = 0;
-            int height = 0;
-            int channels = 0;
-            const char* path = faces[i].c_str();
-            faces_data.push_back(stbi_load(path, &width, &height, &channels, 3));
-            printTextureSize(path, width, height, channels);
-            if (faces_data[i] == nullptr)
-            {
-                faces_data[i] = getDefaultEmptyTexture();
-                sizes.push_back(glm::ivec2(4, 4));
-            }
-            else
-            {
-                sizes.push_back(glm::ivec2(width, height));
-            }
-        }
-        cubemap.generate(faces_data, sizes);
-        for (uint32_t i = 0; i < faces_data.size(); ++i)
-        {
-            stbi_image_free(faces_data[i]);
-        }
+		Cubemap cubemap;
+		std::vector<unsigned char*> faces_data;
+		std::vector<glm::ivec2> sizes;
 
-        cubemaps[name] = cubemap;
-        faces_data.clear();
-        return cubemaps[name];
-    }
+		for (uint32_t i = 0; i < faces.size(); ++i)
+		{
+			int width = 0;
+			int height = 0;
+			int channels = 0;
+			const char* path = faces[i].c_str();
+			faces_data.push_back(stbi_load(path, &width, &height, &channels, 3));
+			printTextureSize(path, width, height, channels);
+			if (faces_data[i] == nullptr)
+			{
+				faces_data[i] = getDefaultEmptyTexture();
+				sizes.push_back(glm::ivec2(4, 4));
+			}
+			else
+			{
+				sizes.push_back(glm::ivec2(width, height));
+			}
+		}
+		cubemap.generate(faces_data, sizes);
+		for (uint32_t i = 0; i < faces_data.size(); ++i)
+		{
+			stbi_image_free(faces_data[i]);
+		}
 
-    Cubemap ResourceManager::getCubemap(const std::string& name)
-    {
-        return cubemaps[name];
-    }
+		cubemaps[name] = cubemap;
+		faces_data.clear();
+		return cubemaps[name];
+	}
 
-    std::set<std::string>& ResourceManager::getAllShaderNames()
-    {
-        return shader_names;
-    }
+	Cubemap ResourceManager::getCubemap(const std::string& name)
+	{
+		return cubemaps[name];
+	}
 
-    void ResourceManager::printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels)
-    {
-        Log::info("Texture %s loaded with size: %d mb\n", name.c_str(), width * height * channels * sizeof(stbi_uc) / 1024 / 1024);
-    }
+	std::set<std::string>& ResourceManager::getAllShaderNames()
+	{
+		return shader_names;
+	}
 
-    unsigned char* ResourceManager::getDefaultEmptyTexture()
-    {
-        if (default_texture == nullptr)
-        {
-            uint32_t width = 4;
-            uint32_t height = 4;
+	void ResourceManager::printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels)
+	{
+		Log::info("Texture %s loaded with size: %d mb\n", name.c_str(), width * height * channels * sizeof(stbi_uc) / 1024 / 1024);
+	}
 
-            default_texture = new unsigned char[64];
+	unsigned char* ResourceManager::getDefaultEmptyTexture()
+	{
+		if (default_texture == nullptr)
+		{
+			uint32_t width = 4;
+			uint32_t height = 4;
 
-            for (int i = 0; i < 64; ++i)
-            {
-                default_texture[i] = 255;
-            }
-        }
+			default_texture = new unsigned char[64];
 
-        return default_texture;
-    }
+			for (int i = 0; i < 64; ++i)
+			{
+				default_texture[i] = 255;
+			}
+		}
+
+		return default_texture;
+	}
 }
