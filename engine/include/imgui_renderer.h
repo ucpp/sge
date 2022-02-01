@@ -12,38 +12,38 @@
 
 namespace sge
 {
-    class RenderState;
+	class RenderState;
 
-    class ImGuiRenderer
-    {
-    public:
-        void initialize(std::weak_ptr<Window>, RenderState *state, std::weak_ptr<Scene> scene);
-        void update(float delta_time);
-        void shutdown();
+	class ImGuiRenderer
+	{
+	public:
+		void initialize(std::weak_ptr<Window>, RenderState* state, std::weak_ptr<Scene> scene);
+		void update(float delta_time);
+		void shutdown();
 
-    private:
-        void drawSettings(float delta_time);
+	private:
+		void drawSettings(float delta_time);
 
-        void drawLight();
-        void drawPointLights();
-        void drawDirectionalLight();
+		void drawLight();
+		void drawPointLights();
+		void drawDirectionalLight();
 
-        void drawModel(Object& obj, int index);
-        void drawPosition(std::string& name, Vector3& position);
-        void drawColor(std::string& name, ColorData& color);
-        void drawFPS(float delta_time);
-        void drawCountVertices();
-        void drawPolygonModeSettings();
-        void drawNormalMapsSettings();
-        void drawScreenSettings();
-        void drawObjects();
-        void setPointLightDistance(PointLightData& point_light);
+		void drawModel(Object& obj, int index);
+		void drawPosition(std::string& name, Vector3& position);
+		void drawColor(std::string& name, ColorData& color);
+		void drawFPS(float delta_time);
+		void drawCountVertices();
+		void drawPolygonModeSettings();
+		void drawNormalMapsSettings();
+		void drawScreenSettings();
+		void drawObjects();
+		void setPointLightDistance(PointLightData& point_light);
 
-    private:
-        RenderState *state{nullptr};
-        std::weak_ptr<Scene> scene;
-        std::weak_ptr<Window> window;
-        std::vector<std::string> objects;
-        int selected_object;
-    };
+	private:
+		RenderState* state{ nullptr };
+		std::weak_ptr<Scene> scene;
+		std::weak_ptr<Window> window;
+		std::vector<std::string> objects;
+		int selected_object;
+	};
 }

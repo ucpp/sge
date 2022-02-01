@@ -4,228 +4,228 @@
 
 namespace sge
 {
-    Scene::Scene(SceneData data) : data(data), inited(false) {}
-    
-    void Scene::initialize(InputSystem &input)
-    {
-        CameraData cam = data.camera;
-        this->camera = new Camera(input, glm::vec3(cam.position.x, cam.position.y, cam.position.z), cam.speed);
+	Scene::Scene(SceneData data) : data(data), inited(false) {}
 
-        for (const ObjectData &object_data : data.objects)
-        {
-            Object object;
-            object.enabled = true;
-            object.name = object_data.name;
-            object.model = ResourceManager::getModel(object_data.model);
-            object.material.shader = ResourceManager::getShader(object_data.material.shader);
-            object.material.color = object_data.material.color;
-            object.position = glm::vec3(object_data.position.x, object_data.position.y, object_data.position.z);
-            object.rotation = glm::vec3(object_data.rotation.x, object_data.rotation.y, object_data.rotation.z);
-            object.scale = static_cast<float>(object_data.scale);
-            object.enabled = object_data.enabled;
-            this->objects.push_back(object);
-        }
+	void Scene::initialize(InputSystem& input)
+	{
+		CameraData cam = data.camera;
+		this->camera = new Camera(input, glm::vec3(cam.position.x, cam.position.y, cam.position.z), cam.speed);
 
-        for (const auto &light : data.point_lights)
-        {
-            PointLight point_light;
-            point_light.data = light;
-            point_lights.push_back(point_light);
-        }
+		for (const ObjectData& object_data : data.objects)
+		{
+			Object object;
+			object.enabled = true;
+			object.name = object_data.name;
+			object.model = ResourceManager::getModel(object_data.model);
+			object.material.shader = ResourceManager::getShader(object_data.material.shader);
+			object.material.color = object_data.material.color;
+			object.position = glm::vec3(object_data.position.x, object_data.position.y, object_data.position.z);
+			object.rotation = glm::vec3(object_data.rotation.x, object_data.rotation.y, object_data.rotation.z);
+			object.scale = static_cast<float>(object_data.scale);
+			object.enabled = object_data.enabled;
+			this->objects.push_back(object);
+		}
 
-        directional_light.data = data.directional_light;
+		for (const auto& light : data.point_lights)
+		{
+			PointLight point_light;
+			point_light.data = light;
+			point_lights.push_back(point_light);
+		}
 
-        shadow_buffer.initialize(shadow_map_size);
-        depth_shader = ResourceManager::getShader("depth");
+		directional_light.data = data.directional_light;
 
-        if (!data.skybox.empty())
-        {
-            skybox_renderer.initialize(data.skybox, data.skybox_shader);
-        }
-        inited = true;
-    }
+		shadow_buffer.initialize(shadow_map_size);
+		depth_shader = ResourceManager::getShader("depth");
 
-    void Scene::update(float delta_time, int width, int height)
-    {
-        if (inited)
-        {
-            shadow_buffer.clear();
+		if (!data.skybox.empty())
+		{
+			skybox_renderer.initialize(data.skybox, data.skybox_shader);
+		}
+		inited = true;
+	}
 
-            auto light_pos = directional_light.data.position;
-            glm::mat4 light_space = getLightSpaceMatrix(glm::vec3(light_pos.x, light_pos.y, light_pos.z));
+	void Scene::update(float delta_time, int width, int height)
+	{
+		if (inited)
+		{
+			shadow_buffer.clear();
 
-            depth_shader.use();
-            depth_shader.setMatrix4("lightSpace", light_space);
+			auto light_pos = directional_light.data.position;
+			glm::mat4 light_space = getLightSpaceMatrix(glm::vec3(light_pos.x, light_pos.y, light_pos.z));
 
-            shadow_buffer.bind();
-            shadow_buffer.clear();
+			depth_shader.use();
+			depth_shader.setMatrix4("lightSpace", light_space);
 
-            for (auto &obj : objects)
-            {
-                if (!obj.enabled) continue;
+			shadow_buffer.bind();
+			shadow_buffer.clear();
 
-                glm::mat4 model = getModelMatrix(obj);
-                depth_shader.setMatrix4("model", model);
-                obj.model.draw(depth_shader);
-            }
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			for (auto& obj : objects)
+			{
+				if (!obj.enabled) continue;
 
-            glViewport(0, 0, width, height);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glm::mat4 model = getModelMatrix(obj);
+				depth_shader.setMatrix4("model", model);
+				obj.model.draw(depth_shader);
+			}
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            camera->update(delta_time);
+			glViewport(0, 0, width, height);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glm::mat4 view = camera->getViewMatrix();
-            glm::mat4 projection = glm::mat4(1.0f);
-            float aspect = static_cast<float>(width) / static_cast<float>(height);
-            projection = glm::perspective(glm::radians(camera->getZoom()), aspect, 0.1f, 1000.0f);
+			camera->update(delta_time);
 
-            for (auto &obj : objects)
-            {
-                if (!obj.enabled) continue;
+			glm::mat4 view = camera->getViewMatrix();
+			glm::mat4 projection = glm::mat4(1.0f);
+			float aspect = static_cast<float>(width) / static_cast<float>(height);
+			projection = glm::perspective(glm::radians(camera->getZoom()), aspect, 0.1f, 1000.0f);
 
-                glm::mat4 model = getModelMatrix(obj);
+			for (auto& obj : objects)
+			{
+				if (!obj.enabled) continue;
 
-                auto shader = obj.material.shader;
-                shader.use();
-              
-                shader.setVec3("color", glm::vec3(obj.material.color.r, obj.material.color.g, obj.material.color.b));
-                shader.setInt("skybox", 6);
-                shader.setMatrix4("view", view);
-                shader.setMatrix4("projection", projection);
-                shader.setMatrix4("model", model);
-                shader.setVec3("viewPosition", camera->getPosition());
-                shader.setMatrix4("lightSpace", light_space);
+				glm::mat4 model = getModelMatrix(obj);
 
-                if (shader.is_lit)
-                {
-                    shader.setFloat("material.shininess", 128.0f);
-                    shader.setBool("normals_enabled", obj.material.normal_maps);
-                    shader.setBool("skylight_enabled", skybox_enabled);
-                    int count_point_lights = 0;
-                    for (auto &light : point_lights)
-                    {
-                        if (!light.data.enabled) continue;
+				auto shader = obj.material.shader;
+				shader.use();
 
-                        setPointLight(shader, light.data, count_point_lights);
-                        count_point_lights++;
-                    }
-                    shader.setInt("count_point_lights", count_point_lights);
-                    if (data.directional_light.enabled)
-                    {
-                        setDirectionalLight(shader);
-                    }
-                }
-                shadow_buffer.bindTexture(5);
-                shader.setInt("shadowMap", 5);
-                obj.model.draw(shader, skybox_renderer.cubemap_texture);
-            }
-            if (!data.skybox.empty() && skybox_enabled) 
-            {
-                skybox_renderer.render(view, projection);
-            }
-        }
-    }
+				shader.setVec3("color", glm::vec3(obj.material.color.r, obj.material.color.g, obj.material.color.b));
+				shader.setInt("skybox", 6);
+				shader.setMatrix4("view", view);
+				shader.setMatrix4("projection", projection);
+				shader.setMatrix4("model", model);
+				shader.setVec3("viewPosition", camera->getPosition());
+				shader.setMatrix4("lightSpace", light_space);
 
-    glm::mat4 Scene::getModelMatrix(const Object &obj)
-    {
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(obj.position.x, obj.position.y, obj.position.z));
+				if (shader.is_lit)
+				{
+					shader.setFloat("material.shininess", 128.0f);
+					shader.setBool("normals_enabled", obj.material.normal_maps);
+					shader.setBool("skylight_enabled", skybox_enabled);
+					int count_point_lights = 0;
+					for (auto& light : point_lights)
+					{
+						if (!light.data.enabled) continue;
 
-        model = glm::rotate(model, static_cast<float>(glm::radians(obj.rotation.x)), glm::vec3(1.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, static_cast<float>(glm::radians(obj.rotation.y)), glm::vec3(0.0f, 1.0f, 0.0f));
-        model = glm::rotate(model, static_cast<float>(glm::radians(obj.rotation.z)), glm::vec3(0.0f, 0.0f, 1.0f));
+						setPointLight(shader, light.data, count_point_lights);
+						count_point_lights++;
+					}
+					shader.setInt("count_point_lights", count_point_lights);
+					if (data.directional_light.enabled)
+					{
+						setDirectionalLight(shader);
+					}
+				}
+				shadow_buffer.bindTexture(5);
+				shader.setInt("shadowMap", 5);
+				obj.model.draw(shader, skybox_renderer.cubemap_texture);
+			}
+			if (!data.skybox.empty() && skybox_enabled)
+			{
+				skybox_renderer.render(view, projection);
+			}
+		}
+	}
 
-        model = glm::scale(model, glm::vec3(obj.scale));
+	glm::mat4 Scene::getModelMatrix(const Object& obj)
+	{
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(obj.position.x, obj.position.y, obj.position.z));
 
-        return model;
-    }
+		model = glm::rotate(model, static_cast<float>(glm::radians(obj.rotation.x)), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, static_cast<float>(glm::radians(obj.rotation.y)), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, static_cast<float>(glm::radians(obj.rotation.z)), glm::vec3(0.0f, 0.0f, 1.0f));
 
-    void Scene::setPointLight(Shader shader, PointLightData data, int index)
-    {
-        std::string light_name = "pointLights[" + std::to_string(index) + "]";
-        shader.setVec3((light_name + ".color").c_str(), data.color.r, data.color.g, data.color.b);
-        shader.setVec3((light_name + ".position").c_str(), data.position.x, data.position.y, data.position.z);
+		model = glm::scale(model, glm::vec3(obj.scale));
 
-        shader.setFloat((light_name + ".linear").c_str(), data.linear);
-        shader.setFloat((light_name + ".quadratic").c_str(), data.quadratic);
+		return model;
+	}
 
-        shader.setFloat((light_name + ".ambient").c_str(), data.ambient);
-        shader.setFloat((light_name + ".diffuse").c_str(), data.diffuse);
-        shader.setFloat((light_name + ".specular").c_str(), data.specular);
-    }
+	void Scene::setPointLight(Shader shader, PointLightData data, int index)
+	{
+		std::string light_name = "pointLights[" + std::to_string(index) + "]";
+		shader.setVec3((light_name + ".color").c_str(), data.color.r, data.color.g, data.color.b);
+		shader.setVec3((light_name + ".position").c_str(), data.position.x, data.position.y, data.position.z);
 
-    void Scene::setDirectionalLight(Shader shader)
-    {
-        auto& data = directional_light.data;
-        auto& position = data.position;
-        shader.setBool("directional_enabled", data.enabled);
-        shader.setVec3("directionalLight.direction", position.x, position.y, position.z);
-        shader.setFloat("directionalLight.ambient", data.ambient);
-        shader.setFloat("directionalLight.diffuse", data.diffuse);
-        shader.setFloat("directionalLight.specular", data.specular);
-    }
+		shader.setFloat((light_name + ".linear").c_str(), data.linear);
+		shader.setFloat((light_name + ".quadratic").c_str(), data.quadratic);
 
-    void Scene::shutdown()
-    {
-        inited = false;
-        skybox_renderer.shutdown();
+		shader.setFloat((light_name + ".ambient").c_str(), data.ambient);
+		shader.setFloat((light_name + ".diffuse").c_str(), data.diffuse);
+		shader.setFloat((light_name + ".specular").c_str(), data.specular);
+	}
 
-        delete camera;
-        camera = nullptr;
-    }
+	void Scene::setDirectionalLight(Shader shader)
+	{
+		auto& data = directional_light.data;
+		auto& position = data.position;
+		shader.setBool("directional_enabled", data.enabled);
+		shader.setVec3("directionalLight.direction", position.x, position.y, position.z);
+		shader.setFloat("directionalLight.ambient", data.ambient);
+		shader.setFloat("directionalLight.diffuse", data.diffuse);
+		shader.setFloat("directionalLight.specular", data.specular);
+	}
 
-    void Scene::enableNormalMaps(bool is_enable)
-    {
-        for (auto &obj : objects)
-        {
-            obj.material.normal_maps = is_enable;
-        }
-    }
+	void Scene::shutdown()
+	{
+		inited = false;
+		skybox_renderer.shutdown();
 
-    Camera *Scene::getMainCamera() const
-    {
-        return camera;
-    }
+		delete camera;
+		camera = nullptr;
+	}
 
-    // TODO: move to render
-    glm::mat4 Scene::getLightSpaceMatrix(glm::vec3 light_direction)
-    {
-        float distance = 8.0f;
-        float near = 1.0f;
-        float far = distance * 2;
+	void Scene::enableNormalMaps(bool is_enable)
+	{
+		for (auto& obj : objects)
+		{
+			obj.material.normal_maps = is_enable;
+		}
+	}
 
-        glm::mat4 light_projection = glm::ortho(-distance, distance, -distance, distance, near, far);
+	Camera* Scene::getMainCamera() const
+	{
+		return camera;
+	}
 
-        glm::vec3 eye = camera->getPosition() - light_direction;
-        glm::vec3 center = camera->getPosition();
-        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-        glm::mat4 light_view = glm::lookAt(eye, center, up);
+	// TODO: move to render
+	glm::mat4 Scene::getLightSpaceMatrix(glm::vec3 light_direction)
+	{
+		float distance = 8.0f;
+		float near = 1.0f;
+		float far = distance * 2;
 
-        return light_projection * light_view;
-    }
+		glm::mat4 light_projection = glm::ortho(-distance, distance, -distance, distance, near, far);
 
-    uint32_t Scene::getCountVertices() const
-    {
-        uint32_t count_vertices = 0;
-        for (auto& obj : objects)
-        {
-            if (obj.enabled) 
-            {
-                count_vertices += obj.model.getCountVertices();
-            }
-        }
+		glm::vec3 eye = camera->getPosition() - light_direction;
+		glm::vec3 center = camera->getPosition();
+		glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+		glm::mat4 light_view = glm::lookAt(eye, center, up);
 
-        return count_vertices;
-    }
+		return light_projection * light_view;
+	}
 
-    DirectionalLight *Scene::getDirectionalLight()
-    {
-        return &directional_light;
-    }
+	uint32_t Scene::getCountVertices() const
+	{
+		uint32_t count_vertices = 0;
+		for (auto& obj : objects)
+		{
+			if (obj.enabled)
+			{
+				count_vertices += obj.model.getCountVertices();
+			}
+		}
 
-    std::vector<PointLight>& Scene::getPointLights()
-    {
-        return point_lights;
-    }
+		return count_vertices;
+	}
+
+	DirectionalLight* Scene::getDirectionalLight()
+	{
+		return &directional_light;
+	}
+
+	std::vector<PointLight>& Scene::getPointLights()
+	{
+		return point_lights;
+	}
 }

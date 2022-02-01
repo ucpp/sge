@@ -73,7 +73,7 @@ namespace sge
 		glDepthFunc(GL_LEQUAL);
 		shader.setMatrix4("view", glm::mat4(glm::mat3(view)));
 		shader.setMatrix4("projection", projection);
-		
+
 		glBindVertexArray(VAO);
 		glEnable(GL_TEXTURE_CUBE_MAP);
 		glActiveTexture(GL_TEXTURE0);

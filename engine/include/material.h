@@ -2,7 +2,7 @@
 
 namespace sge
 {
-    class Material
-    {
-    };
+	class Material
+	{
+	};
 }
