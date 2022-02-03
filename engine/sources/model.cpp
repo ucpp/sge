@@ -54,10 +54,13 @@ namespace sge
 			v3.z = mesh->mVertices[i].z;
 			vertex.position = v3;
 
-			v3.x = mesh->mNormals[i].x;
-			v3.y = mesh->mNormals[i].y;
-			v3.z = mesh->mNormals[i].z;
-			vertex.normal = v3;
+			if (mesh->HasNormals())
+			{
+				v3.x = mesh->mNormals[i].x;
+				v3.y = mesh->mNormals[i].y;
+				v3.z = mesh->mNormals[i].z;
+				vertex.normal = v3;
+			}
 
 			if (mesh->mTextureCoords[0])
 			{
@@ -72,13 +75,16 @@ namespace sge
 				vertex.uv = glm::vec2(0.0f, 0.0f);
 			}
 
-			glm::vec3 tg;
-			tg.x = mesh->mTangents[i].x;
-			tg.x = mesh->mTangents[i].x;
-			tg.x = mesh->mTangents[i].x;
+			if (mesh->HasTangentsAndBitangents())
+			{
+				glm::vec3 tg;
+				tg.x = mesh->mTangents[i].x;
+				tg.y = mesh->mTangents[i].y;
+				tg.z = mesh->mTangents[i].z;
 
-			vertex.tangent = tg;
-
+				vertex.tangent = tg;
+			}
+		
 			vertices.push_back(vertex);
 		}
 
