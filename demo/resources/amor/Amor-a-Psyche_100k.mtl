@@ -1,0 +1,19 @@
+newmtl Solid
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.0 0.0 0.0
+d 1.0
+Ns 0.0
+illum 0
+
+newmtl Amor-a-Psyche_100k
+Ka 1.0 1.0 1.0
+Kd 1.0 1.0 1.0
+Ks 0.0 0.0 0.0
+d 1.0
+Ns 0.0
+illum 0
+map_Kd Amor-a-Psyche_100k.jpg
+map_Bump Amor-a-Psyche_100k_normal.jpg
+map_ao Amor-a-Psyche_100k_occlusion.jpg
+

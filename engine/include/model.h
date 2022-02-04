@@ -25,6 +25,7 @@ namespace sge
 		void loadNode(aiNode* node, const aiScene* scene);
 		Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 		Texture loadTexture(aiMaterial* material, aiTextureType type, std::string type_name);
+		glm::vec4 getColor(aiMaterial* material, const char* key, int type, int index);
 
 	private:
 		std::string directory;
