@@ -4,12 +4,15 @@
 
 namespace sge
 {
-	void Mesh::initialize(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture>& textures)
+	void Mesh::initialize(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture>& textures, glm::vec4 color)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
-
+		for (auto& v : this->vertices)
+		{
+			v.color = glm::vec3(color.r, color.g, color.b);
+		}
 		setup();
 	}
 
@@ -33,6 +36,8 @@ namespace sge
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, tangent)));
 		glEnableVertexAttribArray(3);
+		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, color)));
+		glEnableVertexAttribArray(4);
 		glBindVertexArray(0);
 	}
 

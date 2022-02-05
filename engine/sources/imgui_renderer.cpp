@@ -160,6 +160,21 @@ namespace sge
 		}
 	}
 
+	void ImGuiRenderer::drawPosition(const std::string& title, const std::string& name, glm::vec3& position)
+	{
+		std::string new_name = "##" + name + title;
+		ImGui::Text(title.c_str());
+		ImGui::SameLine();
+		float v3[3]{ position.x, position.y, position.z };
+		ImGui::SetNextItemWidth(160.0f);
+		if (ImGui::DragFloat3(new_name.c_str(), v3, 0.05f, 0.0f, 0.0f, "%.2f"))
+		{
+			position.x = v3[0];
+			position.y = v3[1];
+			position.z = v3[2];
+		}
+	}
+
 	void ImGuiRenderer::drawPosition(std::string& name, Vector3& position)
 	{
 		name = "##" + name;
@@ -199,6 +214,8 @@ namespace sge
 		}
 		ImGui::SameLine();
 		drawColor(label_text, obj.material.color);
+		drawPosition("Position: ", label_text, obj.position);
+		drawPosition("Rotation: ", label_text, obj.rotation);
 	}
 
 	void ImGuiRenderer::drawFPS(float delta_time)

@@ -43,6 +43,7 @@ namespace sge
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
 		std::vector<Texture> textures;
+		std::vector<glm::vec4> colors;
 
 		for (uint32_t i = 0; i < mesh->mNumVertices; ++i)
 		{
@@ -99,16 +100,29 @@ namespace sge
 		}
 
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		glm::vec4 color = getColor(material, AI_MATKEY_COLOR_DIFFUSE);
+
 		textures.push_back(loadTexture(material, aiTextureType_DIFFUSE, "material.diffuse"));
 		textures.push_back(loadTexture(material, aiTextureType_HEIGHT, "material.normal"));
 		textures.push_back(loadTexture(material, aiTextureType_SPECULAR, "material.specular"));
 		// textures.push_back(LoadTexture(material, aiTextureType_AMBIENT, "material.ambient"));
 
 		Mesh result_mesh;
-		result_mesh.initialize(vertices, indices, textures);
+		result_mesh.initialize(vertices, indices, textures, color);
 		count_vertices += result_mesh.getCountVertices();
 
 		return result_mesh;
+	}
+
+	glm::vec4 Model::getColor(aiMaterial* material, const char* key, int type, int index)
+	{
+		aiColor4D color4d;
+		glm::vec4 color = glm::vec4(1.0f);
+		if (AI_SUCCESS == aiGetMaterialColor(material, key, type, index, &color4d))
+		{
+			color = glm::vec4(color4d.r, color4d.g, color4d.b, color4d.a);
+		}
+		return color;
 	}
 
 	Texture Model::loadTexture(aiMaterial* material, aiTextureType type, std::string type_name)

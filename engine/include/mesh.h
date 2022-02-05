@@ -14,12 +14,13 @@ namespace sge
 		glm::vec3 normal;
 		glm::vec2 uv;
 		glm::vec2 tangent;
+		glm::vec3 color;
 	};
 
 	class Mesh
 	{
 	public:
-		void initialize(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture>& textures);
+		void initialize(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices, const std::vector<Texture>& textures, glm::vec4 color);
 		void draw(Shader& shader, int cubemap_texture = -1);
 		void clear();
 
@@ -29,6 +30,7 @@ namespace sge
 		std::vector<Vertex> vertices;
 		std::vector<uint32_t> indices;
 		std::vector<Texture> textures;
+		glm::vec4 color;
 
 	private:
 		void setup();

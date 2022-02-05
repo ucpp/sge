@@ -25,6 +25,8 @@ This project is a training sandbox for learning graphic techniques.
 - [imgui](https://github.com/ocornut/imgui)
 - [json parser](https://github.com/nlohmann)
 
+[Studying graphics APIs: 1st month (youtube video)](https://youtu.be/tLl0RwSArfo)
+  
 ![alt text](https://github.com/ucpp/sge/blob/master/demo/promo/demo.png)
 
 ### License:

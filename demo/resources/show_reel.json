@@ -1,6 +1,6 @@
 {
   "settings": {
-    "application_name": "Show reel: 1 month",
+    "application_name": "Shadows tests",
     "window_width": 1280,
     "window_height": 768,
     "vsync_enabled": false,
@@ -10,7 +10,7 @@
       "g": 0.25,
       "b": 0.25
     },
-    "start_scene": "default"
+    "start_scene": "amor"
   },
   "resources": {
     "shaders": [
@@ -57,9 +57,15 @@
         "lit": true
       },
       {
-        "name": "6.final",
+        "name": "7.final",
         "path_to_fragment": "shaders/show_reel/final.frag",
         "path_to_vertex": "shaders/show_reel/final.vert",
+        "lit": true
+      },
+      {
+        "name": "6.VSM",
+        "path_to_fragment": "shaders/show_reel/vsm.frag",
+        "path_to_vertex": "shaders/show_reel/vsm.vert",
         "lit": true
       }
     ],
@@ -77,8 +83,8 @@
         "path": "resources/trash/trash.obj"
       },
       {
-        "name": "sponza",
-        "path": "resources/pbr_sponza/sponza.obj"
+        "name": "amor",
+        "path": "resources/amor/Amor-a-Psyche_100k.obj"
       }
     ],
     "cubemaps": [
@@ -233,12 +239,35 @@
       ]
     },
     {
-      "name": "sponza",
+      "name": "amor",
       "objects": [
         {
-          "name": "sponza",
-          "model": "sponza",
+          "name": "amor",
+          "model": "amor",
           "enabled": false,
+          "position": {
+            "x": 0.05,
+            "y": 0.55,
+            "z": 1.75
+          },
+          "rotation": {
+            "x": 5.05,
+            "y": -20.10,
+            "z": 274.60
+          },
+          "scale": 0.3,
+          "material": {
+            "shader": "1.color",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "floor_01",
+          "model": "floor",
           "position": {
             "x": 0.0,
             "y": 0.0,
@@ -249,7 +278,7 @@
             "y": 0.0,
             "z": 0.0
           },
-          "scale": 0.01,
+          "scale": 1.00,
           "material": {
             "shader": "1.color",
             "color": {
@@ -267,59 +296,22 @@
           "y": 1.0,
           "z": -2.0
         },
-        "speed": 3
+        "speed": 10
       },
       "skybox": "sky1",
       "skybox_shader": "skybox",
       "directional_light": {
         "enabled": true,
         "position": {
-          "x": -5.0,
-          "y": -5.0,
-          "z": -2.0
+          "x": 0.65,
+          "y": -2.50,
+          "z": 2.20
         },
         "ambient": 0.2,
-        "diffuse": 0.6,
-        "specular": 0.7
+        "diffuse": 0.4,
+        "specular": 0.5
       },
-      "point_lights": [
-        {
-          "type": "point",
-          "position": {
-            "x": 0.0,
-            "y": 4.0,
-            "z": 0.0
-          },
-          "ambient": 0.3,
-          "diffuse": 0.8,
-          "specular": 0.7,
-          "linear": 0.09,
-          "quadratic": 0.032,
-          "color": {
-            "r": 0.0,
-            "g": 1.0,
-            "b": 0.0
-          }
-        },
-        {
-          "type": "point",
-          "position": {
-            "x": 0.0,
-            "y": 4.0,
-            "z": 0.0
-          },
-          "ambient": 0.3,
-          "diffuse": 0.8,
-          "specular": 0.7,
-          "linear": 0.09,
-          "quadratic": 0.032,
-          "color": {
-            "r": 1.0,
-            "g": 1.0,
-            "b": 1.0
-          }
-        }
-      ]
+      "point_lights": [ ]
     }
   ]
 }
