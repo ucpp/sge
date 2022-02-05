@@ -29,6 +29,7 @@ namespace sge
 		void drawDirectionalLight();
 
 		void drawModel(Object& obj, int index);
+		void drawPosition(const std::string& title, const std::string& name, glm::vec3& position);
 		void drawPosition(std::string& name, Vector3& position);
 		void drawColor(std::string& name, ColorData& color);
 		void drawFPS(float delta_time);

@@ -57,9 +57,15 @@
         "lit": true
       },
       {
-        "name": "6.final",
+        "name": "7.final",
         "path_to_fragment": "shaders/show_reel/final.frag",
         "path_to_vertex": "shaders/show_reel/final.vert",
+        "lit": true
+      },
+      {
+        "name": "6.VSM",
+        "path_to_fragment": "shaders/show_reel/vsm.frag",
+        "path_to_vertex": "shaders/show_reel/vsm.vert",
         "lit": true
       }
     ],
@@ -240,14 +246,14 @@
           "model": "amor",
           "enabled": false,
           "position": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 0.05,
+            "y": 0.55,
+            "z": 1.75
           },
           "rotation": {
-            "x": 0.0,
-            "y": 0.0,
-            "z": 0.0
+            "x": 5.05,
+            "y": -20.10,
+            "z": 274.60
           },
           "scale": 0.3,
           "material": {
@@ -297,13 +303,13 @@
       "directional_light": {
         "enabled": true,
         "position": {
-          "x": -5.0,
-          "y": -5.0,
-          "z": -2.0
+          "x": 0.65,
+          "y": -2.50,
+          "z": 2.20
         },
         "ambient": 0.2,
-        "diffuse": 0.6,
-        "specular": 0.7
+        "diffuse": 0.4,
+        "specular": 0.5
       },
       "point_lights": [ ]
     }
