@@ -48,9 +48,60 @@ namespace sge
 		ImGui::End();
 		
 		auto wnd = window.lock();
-		ImGui::SetNextWindowPos(ImVec2(wnd->getWidth() - 210, 10.0f), 1);
-		ImGui::SetNextWindowSize(ImVec2(200, 100));
+		ImGui::SetNextWindowPos(ImVec2(wnd->getWidth() - 250, 10.0f), 1);
+		ImGui::SetNextWindowSize(ImVec2(240, 100));
 		ImGui::Begin("Shadows");
+
+		static int cascading_count = 0;
+		ImGui::Text("Cascading:");
+		ImGui::SameLine(0, 120 - ImGui::GetItemRectSize().x);
+		ImGui::SetNextItemWidth(100.0f);
+		ImGui::SliderInt("##Cascading:", &cascading_count, 0, 5);
+
+		const char* sm_sizes[] = { "512", "1024", "2048", "4096" };
+		static const char* current_size = sm_sizes[1];
+		ImGui::Text("Shadow map size:");
+		ImGui::SameLine(0, 120 - ImGui::GetItemRectSize().x);
+		ImGui::SetNextItemWidth(100.0f);
+		if (ImGui::BeginCombo("##shadow_map_size", current_size))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(sm_sizes); n++)
+			{
+				bool is_selected = (current_size == sm_sizes[n]);
+				if (ImGui::Selectable(sm_sizes[n], is_selected))
+				{
+					current_size = sm_sizes[n];
+				}
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		const char* shadow_technique[] = { "Simple", "PCF 3x3", "VSM", "VSM + Gaussian 5x5" };
+		static const char* current_shadow_technique = shadow_technique[0];
+		ImGui::Text("Shadow technique:");
+		ImGui::SameLine(0, 120 - ImGui::GetItemRectSize().x);
+		ImGui::SetNextItemWidth(100.0f);
+		if (ImGui::BeginCombo("##shadow_technique:", current_shadow_technique))
+		{
+			for (int n = 0; n < IM_ARRAYSIZE(shadow_technique); n++)
+			{
+				bool is_selected = (current_shadow_technique == shadow_technique[n]);
+				if (ImGui::Selectable(shadow_technique[n], is_selected))
+				{
+					current_shadow_technique = shadow_technique[n];
+				}
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
 		ImGui::End();
 
 		ImGui::Render();
