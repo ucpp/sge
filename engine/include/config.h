@@ -82,6 +82,8 @@ namespace sge
 	{
 		std::string name;
 		Vector3 position;
+		double pitch;
+		double yaw;
 		double speed;
 	};
 
@@ -157,7 +159,7 @@ namespace sge
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ResourcesData, shaders, models, cubemaps);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(MaterialData, shader, color);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ObjectData, name, model, enabled, position, rotation, scale, material);
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CameraData, name, position, speed);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CameraData, name, position, pitch, yaw, speed);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(DirectionalLightData, enabled, gizmo, gizmo_shader, position, ambient, diffuse, specular);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PointLightData, enabled, gizmo, gizmo_shader, position, ambient, diffuse, specular, linear, quadratic, color);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SceneData, name, objects, camera, skybox, skybox_shader, directional_light, point_lights);

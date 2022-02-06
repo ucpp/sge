@@ -46,6 +46,13 @@ namespace sge
 		position = glm::vec3(x, y, z);
 	}
 
+	void Camera::setRotation(double pitch, double yaw)
+	{
+		this->pitch = pitch;
+		this->yaw = yaw;
+		refresh();
+	}
+
 	void Camera::setSpeed(double speed)
 	{
 		speed = speed;
@@ -54,6 +61,11 @@ namespace sge
 	glm::vec3 Camera::getPosition() const
 	{
 		return position;
+	}
+
+	glm::vec2 Camera::getRotation() const
+	{
+		return glm::vec2(pitch, yaw);
 	}
 
 	float Camera::getZoom() const

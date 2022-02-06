@@ -5,6 +5,7 @@
 
 #include "resource_manager.h"
 #include "editor.h"
+#include "utilities.h"
 
 namespace sge
 {
@@ -89,6 +90,10 @@ namespace sge
 			{
 				auto& position = sptr_scene->getMainCamera()->getPosition();
 				drawPosition("Position", "main_camera", position);
+				glm::vec2 rotation = sptr_scene->getMainCamera()->getRotation();
+				ImGui::Text(("Pitch: " + Utils::to_string(rotation.x, 1)).c_str());
+				ImGui::SameLine();
+				ImGui::Text(("Yaw: " + Utils::to_string(rotation.y, 1)).c_str());
 				ImGui::TreePop();
 			}
 
