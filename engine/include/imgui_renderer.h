@@ -24,7 +24,6 @@ namespace sge
 	private:
 		void drawSettings(float delta_time);
 
-		void drawLight();
 		void drawPointLights();
 		void drawDirectionalLight();
 

@@ -34,7 +34,7 @@ namespace sge
 		ImGui::NewFrame();
 
 		ImGui::SetNextWindowPos(ImVec2(10.0f, 10.0f), 1);
-		ImGui::SetNextWindowSize(ImVec2(360, 400));
+		ImGui::SetNextWindowSize(ImVec2(340, 300));
 		ImGui::Begin("SGE v0.2.0", nullptr, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysVerticalScrollbar);
 
 		drawSettings(delta_time);
@@ -45,9 +45,17 @@ namespace sge
 		ImGui::EndGroup();
 
 		ImGui::End();
+		
+		auto wnd = window.lock();
+		ImGui::SetNextWindowPos(ImVec2(wnd->getWidth() - 210, 10.0f), 1);
+		ImGui::SetNextWindowSize(ImVec2(200, 100));
+		ImGui::Begin("Shadows");
+		ImGui::End();
+
 		ImGui::Render();
 
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 	}
 
 	void ImGuiRenderer::drawSettings(float delta_time)
@@ -61,7 +69,9 @@ namespace sge
 		drawCountVertices();
 		ImGui::Separator();
 		drawScreenSettings();
+		ImGui::SameLine();
 		drawPolygonModeSettings();
+		ImGui::SameLine();
 		drawNormalMapsSettings();
 	}
 
@@ -74,11 +84,16 @@ namespace sge
 		auto sptr_scene = scene.lock();
 		if (sptr_scene != nullptr)
 		{
-			drawLight();
 			ImGui::Separator();
-			ImGui::Checkbox("skybox", &sptr_scene->skybox_enabled);
+			if (ImGui::TreeNode("Camera"))
+			{
+				auto& position = sptr_scene->getMainCamera()->getPosition();
+				drawPosition("Position", "main_camera", position);
+				ImGui::TreePop();
+			}
+
 			ImGui::Separator();
-			if (ImGui::TreeNode("models"))
+			if (ImGui::TreeNode("Models"))
 			{
 				int index = 0;
 				for (auto& obj : sptr_scene->objects)
@@ -88,17 +103,22 @@ namespace sge
 				}
 				ImGui::TreePop();
 			}
-		}
-	}
 
-	void ImGuiRenderer::drawLight()
-	{
-		if (ImGui::TreeNode("lights"))
-		{
-			drawDirectionalLight();
 			ImGui::Separator();
-			drawPointLights();
-			ImGui::TreePop();
+			if (ImGui::TreeNode("Lights"))
+			{
+				drawDirectionalLight();
+				ImGui::Separator();
+				drawPointLights();
+				ImGui::TreePop();
+			}
+
+			ImGui::Separator();
+			if (ImGui::TreeNode("Other"))
+			{
+				ImGui::Checkbox("skybox", &sptr_scene->skybox_enabled);
+				ImGui::TreePop();
+			}
 		}
 	}
 
@@ -106,11 +126,12 @@ namespace sge
 	{
 		auto sptr_scene = scene.lock();
 		auto& lights = sptr_scene->getPointLights();
-		if (ImGui::TreeNode("points"))
+		if (ImGui::TreeNode("Point lights"))
 		{
 			for (int i = 0; i < lights.size(); ++i)
 			{
 				std::string name = "point[" + std::to_string(i) + "]";
+				ImGui::SetNextItemWidth(120.0f);
 				ImGui::Checkbox(name.c_str(), &lights[i].data.enabled);
 				ImGui::SameLine();
 				drawPosition(name, lights[i].data.position);
@@ -129,13 +150,15 @@ namespace sge
 
 	void ImGuiRenderer::drawDirectionalLight()
 	{
-		ImGui::Indent();
-		auto sptr_scene = scene.lock();
-		std::string name = "DirLight";
-		ImGui::Checkbox(name.c_str(), &sptr_scene->getDirectionalLight()->data.enabled);
-		ImGui::SameLine();
-		drawPosition(name, sptr_scene->getDirectionalLight()->data.position);
-		ImGui::Unindent();
+		if (ImGui::TreeNode("Directional light"))
+		{
+			auto sptr_scene = scene.lock();
+			std::string name = "Direction: ";
+			ImGui::Checkbox(name.c_str(), &sptr_scene->getDirectionalLight()->data.enabled);
+			ImGui::SameLine();
+			drawPosition(name, sptr_scene->getDirectionalLight()->data.position);
+			ImGui::TreePop();
+		}
 	}
 
 	void ImGuiRenderer::drawColor(std::string& name, ColorData& color)
@@ -166,7 +189,7 @@ namespace sge
 		ImGui::Text(title.c_str());
 		ImGui::SameLine();
 		float v3[3]{ position.x, position.y, position.z };
-		ImGui::SetNextItemWidth(160.0f);
+		ImGui::SetNextItemWidth(150.0f);
 		if (ImGui::DragFloat3(new_name.c_str(), v3, 0.05f, 0.0f, 0.0f, "%.2f"))
 		{
 			position.x = v3[0];
@@ -179,7 +202,7 @@ namespace sge
 	{
 		name = "##" + name;
 		float v3[3]{ position.x, position.y, position.z };
-		ImGui::SetNextItemWidth(160.0f);
+		ImGui::SetNextItemWidth(150.0f);
 		if (ImGui::DragFloat3(name.c_str(), v3, 0.05f, 0.0f, 0.0f, "%.2f"))
 		{
 			position.x = v3[0];
@@ -192,30 +215,36 @@ namespace sge
 	{
 		ImGui::AlignTextToFramePadding();
 		std::string label_text = std::to_string(index) + ". " + obj.name;
-		ImGui::Checkbox(label_text.c_str(), &obj.enabled);
-		float w = ImGui::GetItemRectSize().x;
-		ImGui::SameLine(0, 150 - w);
-		if (ImGui::BeginPopup(label_text.c_str()))
-		{
-			for (const std::string& shader_name : ResourceManager::getAllShaderNames())
-			{
-				if (ImGui::Button(shader_name.c_str(), ImVec2(110, 20)))
-				{
-					obj.material.shader = ResourceManager::getShader(shader_name);
-					ImGui::CloseCurrentPopup();
-				}
-			}
-			ImGui::EndPopup();
-		}
-		std::string button_name = obj.material.shader.name + "##" + label_text;
-		if (ImGui::Button(button_name.c_str(), ImVec2(110, 20)))
-		{
-			ImGui::OpenPopup(label_text.c_str());
-		}
+		ImGui::Checkbox(("##" + label_text).c_str(), &obj.enabled);
 		ImGui::SameLine();
-		drawColor(label_text, obj.material.color);
-		drawPosition("Position: ", label_text, obj.position);
-		drawPosition("Rotation: ", label_text, obj.rotation);
+		if (ImGui::TreeNode((label_text + "##foldout").c_str()))
+		{
+			ImGui::Text("Shader: ");
+			float w = ImGui::GetItemRectSize().x;
+			ImGui::SameLine(0, 78 - w);
+			if (ImGui::BeginPopup(label_text.c_str()))
+			{
+				for (const std::string& shader_name : ResourceManager::getAllShaderNames())
+				{
+					if (ImGui::Button(shader_name.c_str(), ImVec2(123, 20)))
+					{
+						obj.material.shader = ResourceManager::getShader(shader_name);
+						ImGui::CloseCurrentPopup();
+					}
+				}
+				ImGui::EndPopup();
+			}
+			std::string button_name = obj.material.shader.name + "##" + label_text;
+			if (ImGui::Button(button_name.c_str(), ImVec2(123, 20)))
+			{
+				ImGui::OpenPopup(label_text.c_str());
+			}
+			ImGui::SameLine();
+			drawColor(label_text, obj.material.color);
+			drawPosition("Position: ", label_text, obj.position);
+			drawPosition("Rotation: ", label_text, obj.rotation);
+			ImGui::TreePop();
+		}
 	}
 
 	void ImGuiRenderer::drawFPS(float delta_time)
