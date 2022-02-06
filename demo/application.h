@@ -8,7 +8,6 @@
 
 namespace sge
 {
-	class Camera;
 	class Window;
 	class Scene;
 }

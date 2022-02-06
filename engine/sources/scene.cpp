@@ -10,6 +10,7 @@ namespace sge
 	{
 		CameraData cam = data.camera;
 		this->camera = new Camera(input, glm::vec3(cam.position.x, cam.position.y, cam.position.z), cam.speed);
+		this->camera->setRotation(cam.pitch, cam.yaw);
 
 		for (const ObjectData& object_data : data.objects)
 		{

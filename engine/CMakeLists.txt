@@ -18,7 +18,8 @@ set(ENGINE_SOURCES
     sources/window.cpp 
     sources/editor.cpp 
     sources/cubemap_renderer.cpp 
-    sources/cubemap.cpp)
+    sources/cubemap.cpp 
+    sources/utilities.cpp)
 
 set(ENGINE_HEADERS 
     include/shader.h 
@@ -39,7 +40,8 @@ set(ENGINE_HEADERS
     include/window.h 
     include/editor.h 
     include/cubemap_renderer.h 
-    include/cubemap.h)
+    include/cubemap.h 
+    include/utilities.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 

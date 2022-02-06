@@ -18,11 +18,13 @@ namespace sge
 		~Camera();
 
 		void setPosition(double x, double y, double z);
+		void setRotation(double pitch, double yaw);
 		void setSpeed(double speed);
 		void update(float delta_time);
 
 		glm::mat4 getViewMatrix() const;
 		glm::vec3 getPosition() const;
+		glm::vec2 getRotation() const;
 		float getZoom() const;
 
 	private:
