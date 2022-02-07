@@ -1,0 +1,176 @@
+{
+  "settings": {
+    "application_name": "Shadows",
+    "window_width": 1360,
+    "window_height": 768,
+    "vsync_enabled": false,
+    "imgui_enabled": true,
+    "clear_color": {
+      "r": 0.0,
+      "g": 0.0,
+      "b": 0.0
+    },
+    "start_scene": "first"
+  },
+  "resources": {
+    "shaders": [
+      {
+        "name": "depth",
+        "path_to_fragment": "resources/shaders/core/depth.frag",
+        "path_to_vertex": "resources/shaders/core/depth.vert",
+        "lit": false,
+        "hide_in_editor": true
+      },
+      {
+        "name": "skybox",
+        "path_to_fragment": "resources/shaders/core/skybox.frag",
+        "path_to_vertex": "resources/shaders/core/skybox.vert",
+        "lit": false,
+        "hide_in_editor": true
+      },
+      {
+        "name": "diffuse",
+        "path_to_fragment": "resources/shaders/shadows/diffuse.frag",
+        "path_to_vertex": "resources/shaders/shadows/diffuse.vert",
+        "lit": false
+      },
+      {
+        "name": "shadows",
+        "path_to_fragment": "resources/shaders/shadows/shadows.frag",
+        "path_to_vertex": "resources/shaders/shadows/shadows.vert",
+        "lit": true
+      }
+    ],
+    "models": [
+      {
+        "name": "barrel",
+        "path": "resources/models/barrel/barrel.obj"
+      },
+      {
+        "name": "ground",
+        "path": "resources/models/floor/floor.obj"
+      },
+      {
+        "name": "statue",
+        "path": "resources/models/amor/Amor-a-Psyche_100k.obj"
+      }
+    ],
+    "cubemaps": [
+      {
+        "name": "sky",
+        "face_textures": [
+          "resources/textures/skybox/right.jpg",
+          "resources/textures/skybox/left.jpg",
+          "resources/textures/skybox/top.jpg",
+          "resources/textures/skybox/bottom.jpg",
+          "resources/textures/skybox/front.jpg",
+          "resources/textures/skybox/back.jpg"
+        ]
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "name": "first",
+      "objects": [
+        {
+          "name": "ground",
+          "model": "ground",
+          "enabled": true,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "diffuse",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "barrel",
+          "model": "barrel",
+          "enabled": true,
+          "position": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "diffuse",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "statue",
+          "model": "statue",
+          "enabled": false,
+          "position": {
+            "x": 0.05,
+            "y": 0.55,
+            "z": 1.75
+          },
+          "rotation": {
+            "x": 5.05,
+            "y": -20.10,
+            "z": 274.60
+          },
+          "scale": 0.3,
+          "material": {
+            "shader": "diffuse",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        }
+      ],
+      "camera": {
+        "name": "",
+        "position": {
+          "x": -3.50,
+          "y": 3.05,
+          "z": 0.32
+        },
+        "pitch": 29.0,
+        "yaw": -180.0,
+        "speed": 10
+      },
+      "skybox": "sky",
+      "skybox_shader": "skybox",
+      "directional_light": {
+        "enabled": true,
+        "position": {
+          "x": 0.65,
+          "y": -2.50,
+          "z": 2.20
+        },
+        "ambient": 0.2,
+        "diffuse": 0.4,
+        "specular": 0.5
+      },
+      "point_lights": [ ]
+    }
+  ]
+}
