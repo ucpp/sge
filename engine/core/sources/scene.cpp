@@ -36,7 +36,7 @@ namespace sge
 
 		directional_light.data = data.directional_light;
 
-		shadow_buffer.initialize(shadow_map_size);
+		shadow_buffer.initialize(data.shadow_map_size);
 		depth_shader = ResourceManager::getShader("depth");
 
 		if (!data.skybox.empty())
@@ -44,6 +44,12 @@ namespace sge
 			skybox_renderer.initialize(data.skybox, data.skybox_shader);
 		}
 		inited = true;
+	}
+
+	void Scene::resetShadowMap()
+	{
+		shadow_buffer.destroy();
+		shadow_buffer.initialize(data.shadow_map_size);
 	}
 
 	void Scene::update(float delta_time, int width, int height)
@@ -98,7 +104,7 @@ namespace sge
 				shader.setVec3("viewPosition", camera->getPosition());
 				shader.setMatrix4("lightSpace", light_space);
 
-				if (shader.is_lit)
+				if (shader.data.lit)
 				{
 					shader.setFloat("material.shininess", 128.0f);
 					shader.setBool("normals_enabled", obj.material.normal_maps);
@@ -228,5 +234,10 @@ namespace sge
 	std::vector<PointLight>& Scene::getPointLights()
 	{
 		return point_lights;
+	}
+
+	int& Scene::getShadowMapSize()
+	{
+		return data.shadow_map_size;
 	}
 }

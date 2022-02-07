@@ -19,17 +19,15 @@ namespace sge
 	{
 		uint32_t vertex;
 		uint32_t fragment;
-		this->vertex_source = vertex_source;
-		this->fragment_source = fragment_source;
 
 		vertex = glCreateShader(GL_VERTEX_SHADER);
-		const char* v_source = this->vertex_source.c_str();
+		const char* v_source = vertex_source.c_str();
 		glShaderSource(vertex, 1, &v_source, nullptr);
 		glCompileShader(vertex);
 		checkCompile(vertex, Type::Vertex);
 
 		fragment = glCreateShader(GL_FRAGMENT_SHADER);
-		const char* f_source = this->fragment_source.c_str();
+		const char* f_source = fragment_source.c_str();
 		glShaderSource(fragment, 1, &f_source, nullptr);
 		glCompileShader(fragment);
 		checkCompile(fragment, Type::Fragment);

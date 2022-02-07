@@ -20,7 +20,7 @@ namespace sge
 	public:
 		static void loadResources(const ResourcesData& config);
 
-		static Shader loadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit = false);
+		static Shader loadShader(const ShaderData& data);
 		static Shader getShader(const std::string& shader);
 
 		static Texture loadTexture(const std::string& file_name, const std::string& name, const std::string& type = "diffuse", bool alpha = false);
@@ -32,7 +32,7 @@ namespace sge
 		static Cubemap loadCubemap(const std::vector<std::string>& faces, const std::string& name);
 		static Cubemap getCubemap(const std::string& name);
 
-		static std::set<std::string>& getAllShaderNames();
+		static std::set<std::string>& getUserShaderNames();
 
 		static void clear();
 
@@ -42,7 +42,7 @@ namespace sge
 		static std::map<std::string, Model> models;
 		static std::map<std::string, Cubemap> cubemaps;
 
-		static std::set<std::string> shader_names;
+		static std::set<std::string> user_shaders;
 
 		static unsigned char* default_texture;
 
