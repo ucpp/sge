@@ -40,6 +40,7 @@ namespace sge
 		std::string path_to_fragment;
 		std::string path_to_vertex;
 		bool lit;
+		bool hide_in_editor;
 	};
 
 	struct ModelData
@@ -123,6 +124,7 @@ namespace sge
 		std::string skybox_shader;
 		DirectionalLightData directional_light;
 		std::vector<PointLightData> point_lights;
+		int shadow_map_size = 1024;
 	};
 
 	struct Data
@@ -153,7 +155,7 @@ namespace sge
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(Vector3, x, y, z);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ColorData, r, g, b);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(SettingsData, application_name, window_width, window_height, vsync_enabled, imgui_enabled, start_scene, clear_color);
-	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ShaderData, name, path_to_fragment, path_to_vertex, lit);
+	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ShaderData, name, path_to_fragment, path_to_vertex, lit, hide_in_editor);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ModelData, name, path);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(CubemapData, name, face_textures);
 	NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ResourcesData, shaders, models, cubemaps);

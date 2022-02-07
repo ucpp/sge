@@ -10,6 +10,7 @@ namespace sge
 		void bind();
 		void bindTexture(int texture_number);
 		void clear();
+		void destroy();
 
 	private:
 		uint32_t FBO;

@@ -58,6 +58,7 @@ namespace sge
 		ImGui::SetNextItemWidth(100.0f);
 		ImGui::SliderInt("##Cascading:", &cascading_count, 0, 5);
 
+		const int sm_size_values[] = { 512, 1024, 2048, 4096 };
 		const char* sm_sizes[] = { "512", "1024", "2048", "4096" };
 		static const char* current_size = sm_sizes[1];
 		ImGui::Text("Shadow map size:");
@@ -71,6 +72,10 @@ namespace sge
 				if (ImGui::Selectable(sm_sizes[n], is_selected))
 				{
 					current_size = sm_sizes[n];
+					auto& sptr_scene = scene.lock();
+					int& size = sptr_scene->getShadowMapSize();
+					size = sm_size_values[n];
+					sptr_scene->resetShadowMap();
 				}
 				if (is_selected)
 				{
@@ -280,7 +285,7 @@ namespace sge
 			ImGui::SameLine(0, 78 - w);
 			if (ImGui::BeginPopup(label_text.c_str()))
 			{
-				for (const std::string& shader_name : ResourceManager::getAllShaderNames())
+				for (const std::string& shader_name : ResourceManager::getUserShaderNames())
 				{
 					if (ImGui::Button(shader_name.c_str(), ImVec2(123, 20)))
 					{
@@ -290,7 +295,7 @@ namespace sge
 				}
 				ImGui::EndPopup();
 			}
-			std::string button_name = obj.material.shader.name + "##" + label_text;
+			std::string button_name = obj.material.shader.data.name + "##" + label_text;
 			if (ImGui::Button(button_name.c_str(), ImVec2(123, 20)))
 			{
 				ImGui::OpenPopup(label_text.c_str());

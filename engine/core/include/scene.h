@@ -26,12 +26,12 @@ namespace sge
 	{
 	public:
 		std::string name;
-		bool enabled;
-		glm::vec3 position;
-		glm::vec3 rotation;
 		Model model;
 		Material material;
+		glm::vec3 position;
+		glm::vec3 rotation;
 		double scale;
+		bool enabled;
 	};
 
 	class DirectionalLight
@@ -60,6 +60,8 @@ namespace sge
 		DirectionalLight* getDirectionalLight();
 		std::vector<PointLight>& getPointLights();
 		bool skyboxEnabled();
+		int& getShadowMapSize();
+		void resetShadowMap();
 
 	public:
 		std::vector<Object> objects;
@@ -74,14 +76,15 @@ namespace sge
 	private:
 		Camera* camera{ nullptr };
 		SceneData data;
+
 		Shader depth_shader;
+		Shader skybox_shader;
+
 		std::vector<PointLight> point_lights;
 		DirectionalLight directional_light;
 		RenderTexture shadow_buffer;
 		CubemapRenderer skybox_renderer;
-		Shader skybox_shader;
-		bool inited;
 
-		const int shadow_map_size = 1024;
+		bool inited;
 	};
 }

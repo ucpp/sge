@@ -46,4 +46,10 @@ namespace sge
 	{
 		glClear(GL_DEPTH_BUFFER_BIT);
 	}
+
+	void RenderTexture::destroy()
+	{
+		glDeleteTextures(1, &id);
+		glDeleteFramebuffers(1, &FBO);
+	}
 }

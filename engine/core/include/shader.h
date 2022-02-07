@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include "config.h"
 
 namespace sge
 {
@@ -31,11 +32,8 @@ namespace sge
 		void setVec3(const char* name, glm::vec3 v3);
 
 	public:
-		std::string name;
-		bool is_lit;
-		std::string vertex_source;
-		std::string fragment_source;
-
+		ShaderData data;
+		
 	private:
 		uint32_t id;
 

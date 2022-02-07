@@ -17,7 +17,7 @@ namespace sge
 	std::map<std::string, Model> ResourceManager::models;
 	std::map<std::string, Cubemap> ResourceManager::cubemaps;
 
-	std::set<std::string> ResourceManager::shader_names;
+	std::set<std::string> ResourceManager::user_shaders;
 	unsigned char* ResourceManager::default_texture;
 
 	void ResourceManager::loadResources(const ResourcesData& config)
@@ -26,7 +26,7 @@ namespace sge
 		auto shaders_data = config.shaders;
 		for (auto& data : shaders_data)
 		{
-			loadShader(data.path_to_vertex, data.path_to_fragment, data.name, data.lit);
+			loadShader(data);
 		}
 		Log::info("loading models with textures:\n");
 		auto models_data = config.models;
@@ -42,21 +42,20 @@ namespace sge
 		}
 	}
 
-	Shader ResourceManager::loadShader(const std::string& vertex_file_name, const std::string& fragment_file_name, const std::string& name, bool lit)
+	Shader ResourceManager::loadShader(const ShaderData& data)
 	{
-		std::string vertex_shader_source = loadShaderSource(vertex_file_name);
-		std::string fragment_shader_source = loadShaderSource(fragment_file_name);
-
 		Shader shader;
-		shader.name = name;
-		shader.is_lit = lit;
-		Log::info("%s\n", name.c_str());
-		shader.compile(vertex_shader_source, fragment_shader_source);
-		shaders[name] = shader;
+		shader.data = data;
+		Log::info("%s\n", shader.data.name.c_str());
+		shader.compile(loadShaderSource(shader.data.path_to_vertex), loadShaderSource(shader.data.path_to_fragment));
+		shaders[shader.data.name] = shader;
+		
+		if (!shader.data.hide_in_editor)
+		{
+			user_shaders.emplace(shader.data.name);
+		}
 
-		shader_names.emplace(name);
-
-		return shaders[name];
+		return shaders[shader.data.name];
 	}
 
 	Texture ResourceManager::loadTexture(const std::string& file_name, const std::string& name, const std::string& type, bool alpha)
@@ -131,7 +130,7 @@ namespace sge
 		}
 
 		shaders.clear();
-		shader_names.clear();
+		user_shaders.clear();
 
 		for (auto texture : textures)
 		{
@@ -226,9 +225,9 @@ namespace sge
 		return cubemaps[name];
 	}
 
-	std::set<std::string>& ResourceManager::getAllShaderNames()
+	std::set<std::string>& ResourceManager::getUserShaderNames()
 	{
-		return shader_names;
+		return user_shaders;
 	}
 
 	void ResourceManager::printTextureSize(const std::string& name, uint32_t width, uint32_t height, uint32_t channels)
