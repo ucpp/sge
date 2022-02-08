@@ -4,7 +4,7 @@
 #include "config.h"
 #include "input_system.h"
 #include "model.h"
-#include "render_texture.h"
+#include "shadow_map_fbo.h"
 #include "cubemap_renderer.h"
 
 #include <glm/glm.hpp>
@@ -82,7 +82,7 @@ namespace sge
 
 		std::vector<PointLight> point_lights;
 		DirectionalLight directional_light;
-		RenderTexture shadow_buffer;
+		ShadowMapFBO shadow_map;
 		CubemapRenderer skybox_renderer;
 
 		bool inited;

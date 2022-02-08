@@ -36,7 +36,7 @@ namespace sge
 
 		directional_light.data = data.directional_light;
 
-		shadow_buffer.initialize(data.shadow_map_size);
+		shadow_map.initialize(data.shadow_map_size, data.shadow_map_size);
 		depth_shader = ResourceManager::getShader("depth");
 
 		if (!data.skybox.empty())
@@ -48,15 +48,15 @@ namespace sge
 
 	void Scene::resetShadowMap()
 	{
-		shadow_buffer.destroy();
-		shadow_buffer.initialize(data.shadow_map_size);
+		shadow_map.destroy();
+		shadow_map.initialize(data.shadow_map_size, data.shadow_map_size);
 	}
 
 	void Scene::update(float delta_time, int width, int height)
 	{
 		if (inited)
 		{
-			shadow_buffer.clear();
+			glClear(GL_DEPTH_BUFFER_BIT);
 
 			auto light_pos = directional_light.data.position;
 			glm::mat4 light_space = getLightSpaceMatrix(glm::vec3(light_pos.x, light_pos.y, light_pos.z));
@@ -64,8 +64,8 @@ namespace sge
 			depth_shader.use();
 			depth_shader.setMatrix4("lightSpace", light_space);
 
-			shadow_buffer.bind();
-			shadow_buffer.clear();
+			shadow_map.bindForWriting();
+			glClear(GL_DEPTH_BUFFER_BIT);
 
 			for (auto& obj : objects)
 			{
@@ -123,7 +123,7 @@ namespace sge
 						setDirectionalLight(shader);
 					}
 				}
-				shadow_buffer.bindTexture(5);
+				shadow_map.bindForReading(5);
 				shader.setInt("shadowMap", 5);
 				obj.model.draw(shader, skybox_renderer.cubemap_texture);
 			}
