@@ -16,20 +16,20 @@ set(CORE_ENGINE_HEADERS
     ${CORE_ENGINE_HEADERS_PATH}/cubemap_renderer.h 
     ${CORE_ENGINE_HEADERS_PATH}/editor.h 
     ${CORE_ENGINE_HEADERS_PATH}/event.h 
-    ${CORE_ENGINE_HEADERS_PATH}/imgui_renderer.h 
     ${CORE_ENGINE_HEADERS_PATH}/input_system.h 
     ${CORE_ENGINE_HEADERS_PATH}/log.h 
     ${CORE_ENGINE_HEADERS_PATH}/material.h 
     ${CORE_ENGINE_HEADERS_PATH}/mesh.h 
     ${CORE_ENGINE_HEADERS_PATH}/model.h 
-    ${CORE_ENGINE_HEADERS_PATH}/render_texture.h 
     ${CORE_ENGINE_HEADERS_PATH}/renderer.h 
     ${CORE_ENGINE_HEADERS_PATH}/resource_manager.h 
     ${CORE_ENGINE_HEADERS_PATH}/scene.h 
     ${CORE_ENGINE_HEADERS_PATH}/texture.h 
     ${CORE_ENGINE_HEADERS_PATH}/utilities.h
     ${CORE_ENGINE_HEADERS_PATH}/window.h 
-    ${CORE_ENGINE_HEADERS_PATH}/shader.h)
+    ${CORE_ENGINE_HEADERS_PATH}/shader.h 
+    ${CORE_ENGINE_HEADERS_PATH}/cascaded_shadow_map_fbo.h 
+    ${CORE_ENGINE_HEADERS_PATH}/shadow_map_fbo.h)
 
 set(CORE_ENGINE_SOURCES 
     ${CORE_ENGINE_SOURCES_PATH}/camera.cpp 
@@ -37,31 +37,31 @@ set(CORE_ENGINE_SOURCES
     ${CORE_ENGINE_SOURCES_PATH}/cubemap.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/cubemap_renderer.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/editor.cpp 
-    ${CORE_ENGINE_SOURCES_PATH}/imgui_renderer.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/input_system.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/log.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/material.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/mesh.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/model.cpp 
-    ${CORE_ENGINE_SOURCES_PATH}/render_texture.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/renderer.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/resource_manager.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/scene.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/texture.cpp 
     ${CORE_ENGINE_SOURCES_PATH}/utilities.cpp
     ${CORE_ENGINE_SOURCES_PATH}/window.cpp 
-    ${CORE_ENGINE_SOURCES_PATH}/shader.cpp)
+    ${CORE_ENGINE_SOURCES_PATH}/shader.cpp 
+    ${CORE_ENGINE_SOURCES_PATH}/cascaded_shadow_map_fbo.cpp 
+    ${CORE_ENGINE_SOURCES_PATH}/shadow_map_fbo.cpp)
 
 set(EDITOR_ENGINE_HEADERS 
-    )
+    ${CORE_ENGINE_HEADERS_PATH}/imgui_renderer.h)
 set(EDITOR_ENGINE_SOURCES 
-    )
+    ${CORE_ENGINE_SOURCES_PATH}/imgui_renderer.cpp)
 
 add_library(engine STATIC 
     ${CORE_ENGINE_HEADERS} 
     ${CORE_ENGINE_SOURCES} 
-    ${ENGINE_ENGINE_HEADERS}
-    ${ENGINE_ENGINE_SOURCES})
+    ${EDITOR_ENGINE_HEADERS}
+    ${EDITOR_ENGINE_SOURCES})
 
 target_link_libraries(engine PUBLIC 
     glad 
@@ -73,5 +73,6 @@ target_link_libraries(engine PUBLIC
 
 target_include_directories(engine PUBLIC 
     ${CORE_ENGINE_HEADERS_PATH} 
+    ${EDITOR_ENGINE_HEADERS_PATH} 
     ${THIRD_PARTY_PATH}/stb/ 
     ${THIRD_PARTY_PATH}/json/)
