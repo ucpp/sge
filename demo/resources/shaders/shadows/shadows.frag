@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 #define COUNT_POINT_LIGHTS 64
 #define EPSILON 0.0001
+#define NUM_CASCADES 3
 
 struct Material
 {
@@ -40,7 +41,8 @@ in VertexData
     vec2 texCoords;
     vec3 normal;
     vec3 tangent;
-    vec4 lightSpacePosition;
+    vec4 lightSpacePosition[NUM_CASCADES];
+    float clipSpacePosZ;
 } inData;
 
 uniform Material material;
@@ -48,7 +50,8 @@ uniform DirectionalLight directionalLight;
 uniform PointLight pointLights[COUNT_POINT_LIGHTS];
 uniform vec3 viewPosition;
 uniform vec3 color;
-uniform sampler2D shadowMap;
+uniform sampler2D shadowMap[NUM_CASCADES];
+uniform float cascadeEndClipSpace[NUM_CASCADES];
 
 uniform bool normals_enabled;
 uniform bool directional_enabled;
@@ -56,7 +59,7 @@ uniform int count_point_lights;
 
 vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow);
 vec3 CalculatePointLight(int index, vec3 normal, vec3 viewDirection);
-float GetShadow(vec4 lightSpacePos);
+float GetShadow(int cascadeIndex, vec4 lightSpacePos);
 vec3 CalculateBumped();
 
 void main()
@@ -69,12 +72,29 @@ void main()
         calculatedNormal = CalculateBumped();
     }
 
-    float shadow = GetShadow(inData.lightSpacePosition);
+    vec4 cascadeIndicator = vec4(0.0, 0.0, 0.0, 0.0);
+    float shadowFactor = 0.0;
+
+    for (int i = 0 ; i < NUM_CASCADES; i++) 
+    {
+        if(inData.clipSpacePosZ <= cascadeEndClipSpace[i])
+        {
+            shadowFactor = GetShadow(i, inData.lightSpacePosition[i]);
+            if (i == 0) 
+                cascadeIndicator = vec4(0.1, 0.0, 0.0, 0.0);
+            else if (i == 1)
+                cascadeIndicator = vec4(0.0, 0.1, 0.0, 0.0);
+            else if (i == 2)
+                cascadeIndicator = vec4(0.0, 0.0, 0.1, 0.0);
+
+            break;
+        }
+    }
 
     vec3 resultColor;
     if(directional_enabled)
     {
-        resultColor = CalculateDirectionLight(calculatedNormal, viewDirection, shadow);
+        resultColor = CalculateDirectionLight(calculatedNormal, viewDirection, shadowFactor);
     }
 
     for(int i = 0; i < min(COUNT_POINT_LIGHTS, count_point_lights); ++i)
@@ -82,7 +102,7 @@ void main()
         resultColor += CalculatePointLight(i, calculatedNormal, viewDirection);
     }
 
-    FragColor = vec4(color * resultColor, 1.0);
+    FragColor = vec4(color * resultColor, 1.0) + cascadeIndicator;
 }
 
 vec3 CalculateDirectionLight(vec3 normal, vec3 viewDirection, float shadow)
@@ -145,11 +165,11 @@ vec3 CalculateBumped()
     return ResultNormal;
 }
 
-float GetShadow(vec4 lightSpacePos)
+float GetShadow(int index, vec4 lightSpacePos)
 {
     vec3 projCoords = lightSpacePos.xyz / lightSpacePos.w;
     projCoords = projCoords * 0.5 + 0.5;
-    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float closestDepth = texture(shadowMap[index], projCoords.xy).r;
     float currentDepth = projCoords.z;
 
     vec3 normal = normalize(inData.normal);
@@ -158,12 +178,12 @@ float GetShadow(vec4 lightSpacePos)
 
     // PCF
     float shadow;
-    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    vec2 texelSize = 1.0 / textureSize(shadowMap[index], 0);
     for(int y = -1; y <= 1; ++y)
     {
         for(int x = -1; x <= 1; ++x)
         {
-            float pcf = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            float pcf = texture(shadowMap[index], projCoords.xy + vec2(x, y) * texelSize).r;
             shadow += currentDepth - bias > pcf ? 1.0 : 0.0;
         }
     }

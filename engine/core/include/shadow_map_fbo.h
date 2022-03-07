@@ -13,6 +13,7 @@ namespace sge
 		void bindForReading(uint32_t texture_unit);
 		void bindForWriting();
 		void destroy();
+		inline uint32_t getTexId() const { return id; };
 
 	private:
 		uint32_t FBO;

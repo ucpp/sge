@@ -74,7 +74,7 @@
       "name": "first",
       "objects": [
         {
-          "name": "ground",
+          "name": "ground_0",
           "model": "ground",
           "enabled": true,
           "position": {
@@ -89,7 +89,7 @@
           },
           "scale": 1.00,
           "material": {
-            "shader": "diffuse",
+            "shader": "shadows",
             "color": {
               "r": 1.0,
               "g": 1.0,
@@ -98,7 +98,103 @@
           }
         },
         {
-          "name": "barrel",
+          "name": "ground_1",
+          "model": "ground",
+          "enabled": true,
+          "position": {
+            "x": 6.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "ground_2",
+          "model": "ground",
+          "enabled": true,
+          "position": {
+            "x": 12.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "ground_3",
+          "model": "ground",
+          "enabled": true,
+          "position": {
+            "x": 18.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "ground_3",
+          "model": "ground",
+          "enabled": true,
+          "position": {
+            "x": 24.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "barrel_0",
           "model": "barrel",
           "enabled": true,
           "position": {
@@ -113,7 +209,103 @@
           },
           "scale": 1.00,
           "material": {
-            "shader": "diffuse",
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "barrel_0",
+          "model": "barrel",
+          "enabled": true,
+          "position": {
+            "x": 6.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "barrel_1",
+          "model": "barrel",
+          "enabled": true,
+          "position": {
+            "x": 12.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "barrel_2",
+          "model": "barrel",
+          "enabled": true,
+          "position": {
+            "x": 18.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
+            "color": {
+              "r": 1.0,
+              "g": 1.0,
+              "b": 1.0
+            }
+          }
+        },
+        {
+          "name": "barrel_4",
+          "model": "barrel",
+          "enabled": true,
+          "position": {
+            "x": 24.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "rotation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "scale": 1.00,
+          "material": {
+            "shader": "shadows",
             "color": {
               "r": 1.0,
               "g": 1.0,
@@ -137,7 +329,7 @@
           },
           "scale": 0.3,
           "material": {
-            "shader": "diffuse",
+            "shader": "shadows",
             "color": {
               "r": 1.0,
               "g": 1.0,

@@ -29,7 +29,8 @@ set(CORE_ENGINE_HEADERS
     ${CORE_ENGINE_HEADERS_PATH}/window.h 
     ${CORE_ENGINE_HEADERS_PATH}/shader.h 
     ${CORE_ENGINE_HEADERS_PATH}/cascaded_shadow_map_fbo.h 
-    ${CORE_ENGINE_HEADERS_PATH}/shadow_map_fbo.h)
+    ${CORE_ENGINE_HEADERS_PATH}/shadow_map_fbo.h 
+    ${CORE_ENGINE_HEADERS_PATH}/engine_common.h)
 
 set(CORE_ENGINE_SOURCES 
     ${CORE_ENGINE_SOURCES_PATH}/camera.cpp 
