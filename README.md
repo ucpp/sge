@@ -14,6 +14,7 @@ This project is a training sandbox for learning graphic techniques.
 - loading resources and scene from configuration file
 - cubemaps
 - cubemap based sky reflection
+- cascaded shadow maps
 
 ---
 ### Third party libs:
