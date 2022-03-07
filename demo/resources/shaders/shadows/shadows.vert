@@ -4,19 +4,22 @@ layout(location = 1) in vec3 aNormal;
 layout(location = 2) in vec2 aTexCoords;
 layout(location = 3) in vec3 aTangent;
 
+#define NUM_CASCADES 3
+
 out VertexData
 {
     vec3 position;
     vec2 texCoords;
     vec3 normal;
     vec3 tangent;
-    vec4 lightSpacePosition;
+    vec4 lightSpacePosition[NUM_CASCADES];
+    float clipSpacePosZ;
 } outData;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform mat4 lightSpace;
+uniform mat4 lightSpace[NUM_CASCADES];
 
 void main()
 {
@@ -26,6 +29,11 @@ void main()
     outData.normal = (model * vec4(aNormal, 0.0)).xyz;
     outData.tangent = (model * vec4(aTangent, 0.0)).xyz;
 
-    outData.lightSpacePosition = lightSpace * vec4(outData.position, 1.0);
+    for (int i = 0 ; i < NUM_CASCADES ; i++) 
+    {
+        outData.lightSpacePosition[i] = lightSpace[i] * vec4(outData.position, 1.0);
+    }
+
 	gl_Position = projection * view * vec4(outData.position, 1.0);
+    outData.clipSpacePosZ = gl_Position.z;
 }

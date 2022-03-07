@@ -49,7 +49,7 @@ namespace sge
 		
 		auto wnd = window.lock();
 		ImGui::SetNextWindowPos(ImVec2(wnd->getWidth() - 250, 10.0f), 1);
-		ImGui::SetNextWindowSize(ImVec2(240, 100));
+		ImGui::SetNextWindowSize(ImVec2(240, 420));
 		ImGui::Begin("Shadows");
 
 		static int cascading_count = 0;
@@ -106,7 +106,27 @@ namespace sge
 			}
 			ImGui::EndCombo();
 		}
-
+		if (ImGui::TreeNode("Shadow map cascade[0]"))
+		{
+			auto& sptr_scene = scene.lock();
+			auto image_texture = sptr_scene->getShadowMapTexture(0);
+			ImGui::Image((void*)(intptr_t)image_texture, ImVec2(180, 180));
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Shadow map cascade[1]"))
+		{
+			auto& sptr_scene = scene.lock();
+			auto image_texture = sptr_scene->getShadowMapTexture(1);
+			ImGui::Image((void*)(intptr_t)image_texture, ImVec2(180, 180));
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("Shadow map cascade[2]"))
+		{
+			auto& sptr_scene = scene.lock();
+			auto image_texture = sptr_scene->getShadowMapTexture(2);
+			ImGui::Image((void*)(intptr_t)image_texture, ImVec2(180, 180));
+			ImGui::TreePop();
+		}
 		ImGui::End();
 
 		ImGui::Render();
