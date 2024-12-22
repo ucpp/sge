@@ -1,0 +1,33 @@
+# VSCode
+.vscode/
+
+# Build artifacts
+build/
+[Bb]uild/
+*.o
+*.obj
+*.exe
+*.pdb
+*.lib
+*.dll
+*.out
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.filters
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+
+# ImGui
+imgui.ini
