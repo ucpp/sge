@@ -11,9 +11,9 @@ namespace SGE
 {
     enum class LogLevel
     {
-        INFO,
-        WARN,
-        ERROR
+        INFO_LVL,
+        WARN_LVL,
+        ERROR_LVL
     };
 
     class Logger final
@@ -39,9 +39,9 @@ namespace SGE
     };
 
 #ifdef _DEBUG
-    #define LOG_INFO(msg) SGE::Logger::Get().Log(SGE::LogLevel::INFO, msg)
-    #define LOG_WARN(msg) SGE::Logger::Get().Log(SGE::LogLevel::WARN, msg)
-    #define LOG_ERROR(msg) SGE::Logger::Get().Log(SGE::LogLevel::ERROR, msg)
+    #define LOG_INFO(msg) SGE::Logger::Get().Log(SGE::LogLevel::INFO_LVL, msg)
+    #define LOG_WARN(msg) SGE::Logger::Get().Log(SGE::LogLevel::WARN_LVL, msg)
+    #define LOG_ERROR(msg) SGE::Logger::Get().Log(SGE::LogLevel::ERROR_LVL, msg)
 #else
     #define LOG_INFO(msg) 
     #define LOG_WARN(msg) 

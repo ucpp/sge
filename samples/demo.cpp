@@ -1,7 +1,15 @@
 #include "sge_logger.h"
+#include "sge_application.h"
 
 int main()
 {
-    LOG_INFO("Demo started.");
-    LOG_INFO("Demo finished.");
+    try
+    {
+        SGE::Application app{};
+        app.Run();
+    }
+    catch(const std::exception& e)
+    {
+        LOG_ERROR(e.what());
+    }
 }
