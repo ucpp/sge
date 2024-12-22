@@ -6,6 +6,7 @@
 #include <mutex>
 #include <fstream>
 #include <iostream>
+#include "sge_singleton.h"
 
 namespace SGE
 {
@@ -16,21 +17,17 @@ namespace SGE
         ERROR_LVL
     };
 
-    class Logger final
+    class Logger final : public Singleton<Logger>
     {
-    public:
-        static Logger& Get();
+        friend class Singleton<Logger>;
 
+    public:
         void SetFileStream(const std::string& fileName = "log.txt");
         void SetConsoleStream();
         void Log(LogLevel level, const std::string& message);
 
     private:
         Logger();
-        ~Logger() = default;
-        Logger(const Logger&) = delete;
-        Logger& operator=(const Logger&) = delete;
-
         bool IsStreamValid() const;
 
     private:

@@ -12,12 +12,6 @@ namespace SGE
     const std::string WARN_STR = "[WARN]";
     const std::string ERROR_STR = "[ERROR]";
 
-    Logger& Logger::Get()
-    {
-        static Logger instance;
-        return instance;
-    }
-
     Logger::Logger() : m_stream(std::make_unique<std::ofstream>("log.txt"))
     {
         if (!IsStreamValid())
