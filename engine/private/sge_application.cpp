@@ -1,4 +1,4 @@
-#include "application.h"
+#include "sge_application.h"
 
 namespace SGE
 {
