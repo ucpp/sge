@@ -71,13 +71,13 @@ namespace SGE
         std::string levelStr;
         switch (level)
         {
-        case LogLevel::INFO_LVL:
+        case LogLevel::Info:
             levelStr = INFO_STR;
             break;
-        case LogLevel::WARN_LVL:
+        case LogLevel::Warn:
             levelStr = WARN_STR;
             break;
-        case LogLevel::ERROR_LVL:
+        case LogLevel::Error:
             levelStr = ERROR_STR;
             break;
         }
