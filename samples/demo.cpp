@@ -1,6 +1,7 @@
-#include <iostream>
+#include "sge_logger.h"
 
 int main()
 {
-    std::cout << "Demo started." << std::endl;
+    LOG_INFO("Demo started.");
+    LOG_INFO("Demo finished.");
 }
