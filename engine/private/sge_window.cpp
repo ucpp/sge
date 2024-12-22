@@ -1,5 +1,8 @@
 #include "sge_window.h"
 
+#include "sge_input.h"
+#include "sge_logger.h"
+
 namespace SGE
 {
     Window::Window()
@@ -155,11 +158,13 @@ namespace SGE
                 DispatchMessage(&msg);
             }
 
-            if (msg.message == WM_QUIT)
+            if (msg.message == WM_QUIT || Input::Get().GetKeyDown(VK_ESCAPE))
             {
                 done = true;
                 break;
             }
+
+            Input::Get().ResetStates();
         }
     }
 
@@ -191,7 +196,7 @@ namespace SGE
         }
         default:
         {
-            return DefWindowProc(hwnd, umsg, wparam, lparam);
+            return Input::Get().MessageHandler(hwnd, umsg, wparam, lparam);
         }
         }
     }

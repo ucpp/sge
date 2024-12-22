@@ -7,7 +7,6 @@
 #include <Windows.h>
 #include <string>
 
-
 namespace SGE
 {
     class Window
