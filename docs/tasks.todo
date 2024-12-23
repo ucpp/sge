@@ -1,0 +1,18 @@
+### Common tasks
+
+☐ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events.
+☐ Implement the ViewportScissors class to manage viewport and scissor rect for rendering.
+☐ Implement the DescriptorHeap class to manage Direct3D descriptor heaps.
+☐ Set up the base for a rendering class.
+✔ Add a Device class to manage the D3D12 device and swap chain. @done(24-12-23 22:22)
+✔ Add an Input class to handle keyboard and mouse input. @done(24-12-23 22:22)
+✔ Implement the Singleton pattern for the Logger class. @done(24-12-23 22:22)
+✔ Add a Window class with a WinAPI implementation for window creation. @done(24-12-23 22:22)
+✔ Add a Logger class for logging to both file and console. @done(24-12-23 22:22)
+✔ Add Verify functions for value and HRESULT validation. @done(24-12-23 22:22)
+✔ Set up the basic CMake configuration and a minimal stub for the engine library. @done(24-12-23 22:22)
+
+### Refactoring
+
+✔ Make the Application class non-copyable and use unique_ptr for window management. @done(24-12-23 22:22)
+✔ Change the naming of LogLevel enum values to follow the camel case style. @done(24-12-23 22:30)
