@@ -1,16 +1,15 @@
 #ifndef _SGE_APPLICATION_H_
 #define _SGE_APPLICATION_H_
 
+#include <memory>
 #include "sge_window.h"
+#include "sge_non_copyable.h"
 
 namespace SGE
 {
-    class Application
+    class Application : public NonCopyable
     {
     public:
-        Application();
-        virtual ~Application();
-
         void Run();
 
     private:
@@ -19,7 +18,7 @@ namespace SGE
         void Shutdown();
 
     private:
-        Window* m_window;
+        std::unique_ptr<Window> m_window;
     };
 }
 

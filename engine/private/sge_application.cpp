@@ -2,13 +2,6 @@
 
 namespace SGE
 {
-    Application::Application() : m_window(new Window()) {}
-
-    Application::~Application()
-    {
-        delete m_window;
-    }
-
     void Application::Run()
     {
         Initialize();
@@ -16,7 +9,8 @@ namespace SGE
 
     void Application::Initialize()
     {
-        m_window->Create("Test", 800, 600, false);
+        m_window = std::make_unique<Window>();
+        m_window->Create("SGE: simple game engine v.0.9.0", 800, 600, false);
         m_window->StartUpdateLoop();
     }
 
