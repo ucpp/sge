@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "sge_window.h"
+#include "sge_renderer.h"
 #include "sge_non_copyable.h"
 
 namespace SGE
@@ -19,6 +20,7 @@ namespace SGE
 
     private:
         std::unique_ptr<Window> m_window;
+        std::unique_ptr<Renderer> m_renderer;
     };
 }
 

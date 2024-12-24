@@ -144,6 +144,8 @@ namespace SGE
 
     void Window::Update()
     {
+        m_frameTimer.Reset();
+
         MSG msg;
         bool done;
 
@@ -164,12 +166,17 @@ namespace SGE
                 break;
             }
 
+            m_updateEvent.Invoke(m_frameTimer.GetElapsedSeconds());
+            
             Input::Get().ResetStates();
+            m_frameTimer.Reset();
         }
     }
 
     void Window::Shutdown()
     {
+        m_updateEvent.Clear();
+
         DestroyWindowHandle();
         UnregisterWindowClass();
     }

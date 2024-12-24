@@ -7,6 +7,9 @@
 #include <Windows.h>
 #include <string>
 
+#include "sge_frame_timer.h"
+#include "sge_action.h"
+
 namespace SGE
 {
     class Window
@@ -25,6 +28,8 @@ namespace SGE
         inline int GetWidth() const { return m_width; }
         inline int GetHeight() const { return m_height; }
         inline bool IsFullscreen() const { return m_fullscreen; }
+
+        Action<double>& OnUpdate() { return m_updateEvent; }
 
     private:
         void RegisterWindowClass();
@@ -49,6 +54,9 @@ namespace SGE
 
         HINSTANCE m_hinstance;
         HWND m_hwnd;
+
+        FrameTimer m_frameTimer;
+        Action<double> m_updateEvent;
     };
 }
 
