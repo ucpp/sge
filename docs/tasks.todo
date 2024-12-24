@@ -1,9 +1,14 @@
 ### Common tasks
 
+☐ Add a Fence class to manage synchronization.
+☐ Create a VertexBuffer class for managing vertex buffer resources. 
+☐ Implement an IndexBuffer class to handle index buffer resources. 
+☐ Integrate the stb library for image loading.
+☐ Develop a Texture class to manage texture resources.
 ✔ Implement the Timer class to manage time intervals. @done(24-12-24 21:34)
 ✔ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events. @done(24-12-24 21:37)
 ✔ Implement the ViewportScissors class to manage viewport and scissor rect for rendering. @done(24-12-24 22:05)
-☐ Implement the DescriptorHeap class to manage Direct3D descriptor heaps.
+✔ Implement the DescriptorHeap class to manage Direct3D descriptor heaps. @done(24-12-24 23:14)
 ✔ Set up the base for a rendering class. @done(24-12-24 21:39)
 ✔ Add a Device class to manage the D3D12 device and swap chain. @done(24-12-23 22:22)
 ✔ Add an Input class to handle keyboard and mouse input. @done(24-12-23 22:22)
