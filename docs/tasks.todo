@@ -1,7 +1,7 @@
 ### Common tasks
 
 ✔ Implement the Timer class to manage time intervals. @done(24-12-24 21:34)
-☐ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events.
+✔ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events. @done(24-12-24 21:37)
 ☐ Implement the ViewportScissors class to manage viewport and scissor rect for rendering.
 ☐ Implement the DescriptorHeap class to manage Direct3D descriptor heaps.
 ☐ Set up the base for a rendering class.
