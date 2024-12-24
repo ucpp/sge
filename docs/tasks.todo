@@ -2,7 +2,7 @@
 
 ✔ Implement the Timer class to manage time intervals. @done(24-12-24 21:34)
 ✔ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events. @done(24-12-24 21:37)
-☐ Implement the ViewportScissors class to manage viewport and scissor rect for rendering.
+✔ Implement the ViewportScissors class to manage viewport and scissor rect for rendering. @done(24-12-24 22:05)
 ☐ Implement the DescriptorHeap class to manage Direct3D descriptor heaps.
 ✔ Set up the base for a rendering class. @done(24-12-24 21:39)
 ✔ Add a Device class to manage the D3D12 device and swap chain. @done(24-12-23 22:22)
