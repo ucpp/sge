@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void VertexBuffer::Initialize(Device *device, ID3D12GraphicsCommandList *commandList, const std::vector<Vertex> &vertices)
+    void VertexBuffer::Initialize(Device* device, ID3D12GraphicsCommandList* commandList, const std::vector<Vertex>& vertices)
     {
         ID3D12Device* d3dDevice = device->GetDevice().Get();
         size_t bufferSize = vertices.size() * sizeof(Vertex);

@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void DescriptorHeap::Initialize(ID3D12Device *device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptors, bool shaderVisible)
+    void DescriptorHeap::Initialize(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptors, bool shaderVisible)
     {
         if (!device || numDescriptors == 0)
         {

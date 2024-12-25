@@ -18,7 +18,7 @@ namespace SGE
         Shutdown();
     }
     
-    void Window::Create(const std::string &title, int width, int height, bool fullscreen)
+    void Window::Create(const std::string& title, int width, int height, bool fullscreen)
     {
         std::wstring wstrTitle = std::wstring(title.begin(), title.end());
         m_title = wstrTitle.c_str();
