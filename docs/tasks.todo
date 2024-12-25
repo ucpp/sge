@@ -1,6 +1,6 @@
 ### Common tasks
 
-☐ Add a Fence class to manage synchronization.
+✔ Add a Fence class to manage synchronization. @done(24-12-25 18:11)
 ☐ Create a VertexBuffer class for managing vertex buffer resources. 
 ☐ Implement an IndexBuffer class to handle index buffer resources. 
 ☐ Integrate the stb library for image loading.
