@@ -1,5 +1,6 @@
 ### Common tasks
 
+✔ Add RenderTarget class implementation. @done(24-12-26 19:24)
 ✔ Add a ConstantBuffer class to manage constant buffer resources. @done(24-12-26 19:22)
 ✔ Implement a PipelineState class to encapsulate pipeline state creation and management. @done(24-12-26 19:21)
 ✔ Add a Shader class to handle shaders. @done(24-12-25 19:30)
