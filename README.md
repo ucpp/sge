@@ -2,6 +2,8 @@
 
 SGE (Simple Game Engine) is a learning project aimed at building a minimalistic game engine using **DirectX 12**. This project is structured as a roadmap consisting several tasks, designed to teach and implement various modern rendering techniques and systems.  
 
+![img](https://github.com/ucpp/sge/blob/master/docs/first_triangle.png)
+
 ## Roadmap  
 
 - [x] **Initialize D3D12 context**: Set up the DirectX 12 framework [(last commit)](https://github.com/ucpp/sge/commit/13da25b1de4a97eeb2f3149d05a9619258020e4b).
