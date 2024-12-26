@@ -15,6 +15,8 @@ namespace SGE
         CreateGraphicsDevice();
         CreateCommandQueue();
         CreateSwapChain(hwnd, width, height);
+        CreateCommandAllocators();
+        CreateCommandList();
     }
 
     void Device::EnableDebugLayer()
@@ -159,5 +161,25 @@ namespace SGE
 
         hr = swapChain1.As(&m_swapChain);
         Verify(hr, "Failed to cast swap chain to IDXGISwapChain3.");
+    }
+    
+    void Device::CreateCommandAllocators()
+    {
+        for (UINT i = 0; i < SwapChainBufferCount; ++i)
+        {
+            HRESULT hr = m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocators[i]));
+            Verify(hr, "Failed to create command allocator.");
+        }
+    }
+
+    ComPtr<ID3D12CommandAllocator> Device::GetCommandAllocator(UINT index) const
+    {
+        return m_commandAllocators[index];
+    }
+        
+    void Device::CreateCommandList()
+    {
+        HRESULT hr = m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_commandAllocators[0].Get(), nullptr, IID_PPV_ARGS(&m_commandList));
+        Verify(hr, "Failed to create command list.");
     }
 }

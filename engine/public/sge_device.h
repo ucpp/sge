@@ -26,6 +26,8 @@ namespace SGE
         ComPtr<ID3D12Device> GetDevice() const { return m_device; }
         ComPtr<ID3D12CommandQueue> GetCommandQueue() const { return m_commandQueue; }
         ComPtr<IDXGISwapChain3> GetSwapChain() const { return m_swapChain; }
+        ComPtr<ID3D12CommandAllocator> GetCommandAllocator(UINT index) const;
+        ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return m_commandList; }
 
     private:
         void EnableDebugLayer();
@@ -37,12 +39,17 @@ namespace SGE
 
         void CreateCommandQueue();
         void CreateSwapChain(HWND hwnd, UINT width, UINT height);
+        void CreateCommandAllocators();
+        void CreateCommandList();
 
     private:
         ComPtr<ID3D12Device> m_device;
         ComPtr<ID3D12CommandQueue> m_commandQueue;
         ComPtr<IDXGISwapChain3> m_swapChain;
         ComPtr<IDXGIFactory4> m_dxgiFactory;
+        ComPtr<ID3D12GraphicsCommandList> m_commandList;
+        ComPtr<ID3D12CommandAllocator> m_commandAllocators[SwapChainBufferCount];
+
         UINT m_dxgiFactoryCreationFlags;
     };
 }
