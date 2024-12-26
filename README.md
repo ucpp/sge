@@ -4,7 +4,7 @@ SGE (Simple Game Engine) is a learning project aimed at building a minimalistic 
 
 ## Roadmap  
 
-- [ ] **Initialize D3D12 context**: Set up the DirectX 12 framework.  
+- [x] **Initialize D3D12 context**: Set up the DirectX 12 framework [(last commit)](https://github.com/ucpp/sge/commit/13da25b1de4a97eeb2f3149d05a9619258020e4b).
 - [ ] **Process input and camera control**: Implement user input and basic camera movement.  
 - [ ] **Load simple models without animation**: Import static models such as teapots, cars, and tanks.  
 - [ ] **Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.  
