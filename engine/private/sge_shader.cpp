@@ -10,7 +10,7 @@ namespace SGE
         m_blob.Reset();
     }
     
-    void Shader::Initialize(ID3D12Device* device, const std::wstring& filePath, ShaderType type)
+    void Shader::Initialize(const std::wstring& filePath, ShaderType type)
     {
         UINT compileFlags = 0;
 #ifdef _DEBUG
@@ -33,21 +33,21 @@ namespace SGE
 
         Verify(hr, "Failed to compile shader");
     }
-    
+
+    D3D12_SHADER_BYTECODE Shader::GetShaderBytecode() const
+    {
+        return D3D12_SHADER_BYTECODE{ m_blob->GetBufferPointer(), m_blob->GetBufferSize() };
+    }
+
     std::string Shader::ShaderTypeToTarget(ShaderType type) const
     {
         switch (type)
         {
-        case ShaderType::Vertex:
-            return "vs_5_0";
-        case ShaderType::Pixel:
-            return "ps_5_0";
-        case ShaderType::Compute:
-            return "cs_5_0";
-        case ShaderType::Geometry:
-            return "gs_5_0";
-        default:
-            throw std::invalid_argument("Invalid ShaderType");
+            case ShaderType::Vertex: return "vs_5_0";
+            case ShaderType::Pixel: return "ps_5_0";
+            case ShaderType::Compute: return "cs_5_0";
+            case ShaderType::Geometry: return "gs_5_0";
+            default: throw std::invalid_argument("Unsupported shader type.");
         }
     }
 }
