@@ -5,7 +5,7 @@
 ✔ Implement a PipelineState class to encapsulate pipeline state creation and management. @done(24-12-26 19:21)
 ✔ Add a Shader class to handle shaders. @done(24-12-25 19:30)
 ✔ Create a RootSignature class to configure and manage the root signature. @done(24-12-26 19:19)
-☐ Integrate ConstantBuffer, PipelineState, Shader, and RootSignature into the Renderer class.
+✔ Integrate ConstantBuffer, PipelineState, Shader, and RootSignature into the Renderer class. @done(24-12-26 19:25)
 ✔ Add a Fence class to manage synchronization. @done(24-12-25 18:11)
 ✔ Create a VertexBuffer class for managing vertex buffer resources. @done(24-12-25 18:12)
 ✔ Implement an IndexBuffer class to handle index buffer resources. @done(24-12-25 18:13)
