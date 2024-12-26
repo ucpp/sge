@@ -1,5 +1,11 @@
 #include "sge_input.h"
 
+#include "imgui.h"
+#include "imgui_impl_dx12.h"
+#include "imgui_impl_win32.h"
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace SGE
 {
     void Input::ResetStates()
@@ -11,6 +17,11 @@ namespace SGE
 
     LRESULT Input::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
     {
+        if (ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam))
+        {
+            return true;
+        }
+
         switch (umsg)
         {
         case WM_KEYDOWN:
