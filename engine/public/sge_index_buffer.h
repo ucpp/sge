@@ -16,16 +16,14 @@ namespace SGE
     class IndexBuffer
     {
     public:
-        void Initialize(Device* device, ID3D12GraphicsCommandList* commandList, const std::vector<UINT>& indices);
+        void Initialize(Device* device, const std::vector<UINT>& indices);
         void Shutdown();
 
         D3D12_INDEX_BUFFER_VIEW GetView() const { return m_view; }
-
-        void ReleaseUploadResource();
+        ID3D12Resource* GetResource() const { return m_resource.Get(); }
 
     private:
         ComPtr<ID3D12Resource> m_resource;
-        ComPtr<ID3D12Resource> m_resourceUpload;
         D3D12_INDEX_BUFFER_VIEW m_view = {};
     };
 }

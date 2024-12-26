@@ -5,61 +5,33 @@
 
 namespace SGE
 {
-    void VertexBuffer::Initialize(Device* device, ID3D12GraphicsCommandList* commandList, const std::vector<Vertex>& vertices)
+    void VertexBuffer::Initialize(Device* device, const std::vector<Vertex>& vertices)
     {
-        ID3D12Device* d3dDevice = device->GetDevice().Get();
-        size_t bufferSize = vertices.size() * sizeof(Vertex);
+        const UINT vertexBufferSize = static_cast<UINT>(vertices.size() * sizeof(Vertex));
 
-        ComPtr<ID3D12Resource> resource;
-        HRESULT hr = d3dDevice->CreateCommittedResource(
-            &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-            D3D12_HEAP_FLAG_NONE,
-            &CD3DX12_RESOURCE_DESC::Buffer(bufferSize),
-            D3D12_RESOURCE_STATE_COPY_DEST,
-            nullptr,
-            IID_PPV_ARGS(&resource));
-
-        Verify(hr, "Failed to create vertex buffer resource.");
-        m_resource = resource;
-
-        ComPtr<ID3D12Resource> resourceUpload;
-        hr = d3dDevice->CreateCommittedResource(
+        HRESULT hr = device->GetDevice()->CreateCommittedResource(
             &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
             D3D12_HEAP_FLAG_NONE,
-            &CD3DX12_RESOURCE_DESC::Buffer(bufferSize),
+            &CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
             D3D12_RESOURCE_STATE_GENERIC_READ,
             nullptr,
-            IID_PPV_ARGS(&resourceUpload));
+            IID_PPV_ARGS(&m_resource)
+        );
+        Verify(hr, "Failed to create vertex buffer resource.");
 
-        Verify(hr, "Failed to create vertex buffer upload resource.");
-
-        m_resourceUpload = resourceUpload;
-
-        D3D12_SUBRESOURCE_DATA vertexData = {};
-        vertexData.pData = vertices.data();
-        vertexData.RowPitch = bufferSize;
-        vertexData.SlicePitch = bufferSize;
-
-        UpdateSubresources<1>(commandList, m_resource.Get(), m_resourceUpload.Get(), 0, 0, 1, &vertexData);
-        
-        commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-            m_resource.Get(),
-            D3D12_RESOURCE_STATE_COPY_DEST,
-            D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
+        UINT8* pVertexDataBegin;
+        CD3DX12_RANGE readRange(0, 0);
+        Verify(m_resource->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)), "Failed to map vertex buffer.");
+        memcpy(pVertexDataBegin, vertices.data(), vertexBufferSize);
+        m_resource->Unmap(0, nullptr);
 
         m_view.BufferLocation = m_resource->GetGPUVirtualAddress();
-        m_view.SizeInBytes = static_cast<UINT>(bufferSize);
-        m_view.StrideInBytes = static_cast<UINT>(sizeof(Vertex));
+        m_view.StrideInBytes = sizeof(Vertex);
+        m_view.SizeInBytes = vertexBufferSize;
     }
-    
+
     void VertexBuffer::Shutdown()
     {
         m_resource.Reset();
-        m_resourceUpload.Reset();
-    }
-    
-    void VertexBuffer::ReleaseUploadResource()
-    {
-        m_resourceUpload.Reset();
     }
 }

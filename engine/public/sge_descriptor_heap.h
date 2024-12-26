@@ -13,7 +13,7 @@ namespace SGE
         void Initialize(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptors, bool shaderVisible = false);
         void Shutdown();
 
-        ID3D12DescriptorHeap* GetHeap() const { return m_heap.Get(); }
+        ComPtr<ID3D12DescriptorHeap> GetHeap() const { return m_heap; }
         D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(UINT index) const;
         D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(UINT index) const;
         UINT GetDescriptorSize() const { return m_descriptorSize; }
