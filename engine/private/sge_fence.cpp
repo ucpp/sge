@@ -23,20 +23,18 @@ namespace SGE
         Verify(m_fenceEvent, "Failed to create event handle.");
     }
 
-    void Fence::Signal(ID3D12CommandQueue* commandQueue)
+    UINT64 Fence::Signal(ID3D12CommandQueue* commandQueue)
     {
+        const UINT64 fence = m_fenceValue;
+        HRESULT hr = commandQueue->Signal(m_fence.Get(), fence);
         m_fenceValue++;
-        HRESULT hr = commandQueue->Signal(m_fence.Get(), m_fenceValue);
         Verify(hr, "Failed to signal command queue.");
+
+        return fence;
     }
 
     void Fence::Wait(UINT64 waitValue)
     {
-        if (waitValue == 0)
-        {
-            waitValue = m_fenceValue;
-        }
-
         if (m_fence->GetCompletedValue() < waitValue)
         {
             HRESULT hr = m_fence->SetEventOnCompletion(waitValue, m_fenceEvent);

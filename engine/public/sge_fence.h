@@ -12,8 +12,8 @@ namespace SGE
         ~Fence();
 
         void Initialize(Device* device, UINT64 initialValue = 0);
-        void Signal(ID3D12CommandQueue* commandQueue);
-        void Wait(UINT64 waitValue = 0);
+        UINT64 Signal(ID3D12CommandQueue* commandQueue);
+        void Wait(UINT64 waitValue);
 
         UINT64 GetCompletedValue() const;
         UINT64 GetCurrentFenceValue() const { return m_fenceValue; }
