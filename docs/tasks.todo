@@ -1,5 +1,8 @@
 ### Common tasks
 
+☐ Add a Camera class to manage camera properties and view transformations.
+☐ Implement a CameraController class to handle camera input and movement.
+☐ Compute rendering adjustments based on the world, view, and model matrices.
 ✔ Add RenderTarget class implementation. @done(24-12-26 19:24)
 ✔ Add a ConstantBuffer class to manage constant buffer resources. @done(24-12-26 19:22)
 ✔ Implement a PipelineState class to encapsulate pipeline state creation and management. @done(24-12-26 19:21)
