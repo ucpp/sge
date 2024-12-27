@@ -3,9 +3,9 @@
 ☐ Integrate the stb library for image loading.
 ☐ Develop a Texture class to manage texture resources.
 ☐ Integrate the assimp library for meshes loading.
-☐ Add a Camera class to manage camera properties and view transformations.
-☐ Implement a CameraController class to handle camera input and movement.
-☐ Compute rendering adjustments based on the projection, view, and model matrices.
+✔ Add a Camera class to manage camera properties and view transformations. @done(24-12-27 18:46)
+✔ Implement a CameraController class to handle camera input and movement. @done(24-12-27 18:46)
+✔ Compute rendering adjustments based on the projection, view, and model matrices. @done(24-12-27 18:46)
 ✔ Add RenderTarget class implementation. @done(24-12-26 19:24)
 ✔ Add a ConstantBuffer class to manage constant buffer resources. @done(24-12-26 19:22)
 ✔ Implement a PipelineState class to encapsulate pipeline state creation and management. @done(24-12-26 19:21)
