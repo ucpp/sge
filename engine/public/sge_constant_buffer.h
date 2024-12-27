@@ -13,8 +13,9 @@ namespace SGE
     {
     public:
         void Initialize(ID3D12Device* device, size_t bufferSize);
-        void Update(ID3D12GraphicsCommandList* commandList, const void* data, size_t dataSize);
+        void Update(const void* data, size_t dataSize);
         ID3D12Resource* GetBuffer() const { return m_buffer.Get(); }
+        D3D12_GPU_VIRTUAL_ADDRESS GetGPUVirtualAddress() const { return m_gpuAddress; }
 
     private:
         ComPtr<ID3D12Resource> m_buffer;

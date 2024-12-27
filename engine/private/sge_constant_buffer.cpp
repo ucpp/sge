@@ -32,13 +32,13 @@ namespace SGE
             nullptr,
             IID_PPV_ARGS(&m_buffer)
         );
-        
+
         Verify(hr, "Failed to create constant buffer.");
 
         m_gpuAddress = m_buffer->GetGPUVirtualAddress();
     }
 
-    void ConstantBuffer::Update(ID3D12GraphicsCommandList* commandList, const void* data, size_t dataSize)
+    void ConstantBuffer::Update(const void* data, size_t dataSize)
     {
         if (dataSize > m_buffer->GetDesc().Width)
         {
