@@ -1,8 +1,11 @@
 ### Common tasks
 
+☐ Integrate the stb library for image loading.
+☐ Develop a Texture class to manage texture resources.
+☐ Integrate the assimp library for meshes loading.
 ☐ Add a Camera class to manage camera properties and view transformations.
 ☐ Implement a CameraController class to handle camera input and movement.
-☐ Compute rendering adjustments based on the world, view, and model matrices.
+☐ Compute rendering adjustments based on the projection, view, and model matrices.
 ✔ Add RenderTarget class implementation. @done(24-12-26 19:24)
 ✔ Add a ConstantBuffer class to manage constant buffer resources. @done(24-12-26 19:22)
 ✔ Implement a PipelineState class to encapsulate pipeline state creation and management. @done(24-12-26 19:21)
@@ -12,8 +15,6 @@
 ✔ Add a Fence class to manage synchronization. @done(24-12-25 18:11)
 ✔ Create a VertexBuffer class for managing vertex buffer resources. @done(24-12-25 18:12)
 ✔ Implement an IndexBuffer class to handle index buffer resources. @done(24-12-25 18:13)
-☐ Integrate the stb library for image loading.
-☐ Develop a Texture class to manage texture resources.
 ✔ Implement the Timer class to manage time intervals. @done(24-12-24 21:34)
 ✔ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events. @done(24-12-24 21:37)
 ✔ Implement the ViewportScissors class to manage viewport and scissor rect for rendering. @done(24-12-24 22:05)
@@ -32,3 +33,4 @@
 ✔ Make the Application class non-copyable and use unique_ptr for window management. @done(24-12-23 22:22)
 ✔ Change the naming of LogLevel enum values to follow the camel case style. @done(24-12-23 22:30)
 ☐ Extend Logger to support string formatting
+☐ Refactor the ImGui functionality from the Renderer class into a separate Editor class.
