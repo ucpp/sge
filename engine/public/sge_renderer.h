@@ -17,6 +17,9 @@
 #include "sge_fence.h"
 #include "sge_render_target.h"
 
+#include "sge_camera.h"
+#include "sge_camera_controller.h"
+
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
@@ -31,6 +34,7 @@ namespace SGE
         void Shutdown();
 
     private:
+        void InitializeCamera();
         void PopulateCommandList();
         void WaitForPreviousFrame();
         void BuildImGuiFrame();
@@ -54,6 +58,13 @@ namespace SGE
 
         Fence m_fence;
         UINT m_frameIndex;
+
+        Camera m_camera;
+        CameraController m_cameraController;
+
+        std::unique_ptr<ConstantBuffer> m_modelBuffer;
+        std::unique_ptr<ConstantBuffer> m_viewBuffer;
+        std::unique_ptr<ConstantBuffer> m_projectionBuffer;
     };
 }
 

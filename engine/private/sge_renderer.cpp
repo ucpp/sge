@@ -43,17 +43,28 @@ namespace SGE
 
         std::vector<Vertex> vertices = 
         {
-            { { 0.0f, 0.25f * aspectRatio, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
-            { { 0.25f, -0.25f * aspectRatio, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
-            { { -0.25f, -0.25f * aspectRatio, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } }
+            { { 0.0f, 2.0f, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
+            { { 2.5f, -2.0f, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
+            { { -2.5f, -2.0f, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
         };
 
         m_vertexBuffer = std::make_unique<VertexBuffer>();
         m_vertexBuffer->Initialize(m_device.get(), vertices);
 
-        std::vector<UINT> indices = { 0, 1, 2 };
+        std::vector<UINT> indices = { 2, 1, 0 };
         m_indexBuffer = std::make_unique<IndexBuffer>();
         m_indexBuffer->Initialize(m_device.get(), indices);
+
+        m_modelBuffer = std::make_unique<ConstantBuffer>();
+        m_modelBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
+
+        m_viewBuffer = std::make_unique<ConstantBuffer>();
+        m_viewBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
+
+        m_projectionBuffer = std::make_unique<ConstantBuffer>();
+        m_projectionBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
+
+        InitializeCamera();
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -71,9 +82,20 @@ namespace SGE
         m_fence.Initialize(m_device.get(), 1);
         WaitForPreviousFrame();
     }
+
+    void Renderer::InitializeCamera()
+    {
+        Vector3 target = { 0.0f, 0.0f, 0.0f };
+        m_camera.SetTarget(target);
+
+        m_cameraController.SetCamera(&m_camera);
+        m_cameraController.SetMoveSpeed(1000.0f);
+        m_cameraController.SetSensitivity(0.1f);
+    }
     
     void Renderer::Update(double deltaTime)
     {
+        m_cameraController.Update(deltaTime);
     }
 
     void Renderer::Render()
@@ -97,6 +119,20 @@ namespace SGE
         commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), m_pipelineState->GetPipelineState());
 
         commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
+
+        XMMATRIX modelMatrix = XMMatrixIdentity();
+        m_modelBuffer->Update(&modelMatrix, sizeof(XMMATRIX));
+
+        XMMATRIX viewMatrix = m_camera.GetViewMatrix();
+        m_viewBuffer->Update(&viewMatrix, sizeof(XMMATRIX));
+
+        XMMATRIX projectionMatrix = m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight());
+        m_projectionBuffer->Update(&projectionMatrix, sizeof(XMMATRIX));
+
+        commandList->SetGraphicsRootConstantBufferView(0, m_modelBuffer->GetGPUVirtualAddress());
+        commandList->SetGraphicsRootConstantBufferView(1, m_viewBuffer->GetGPUVirtualAddress());
+        commandList->SetGraphicsRootConstantBufferView(2, m_projectionBuffer->GetGPUVirtualAddress());
+
         commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());
         commandList->RSSetScissorRects(1, &m_viewportScissors->GetScissorRect());
 
