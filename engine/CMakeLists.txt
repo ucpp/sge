@@ -17,4 +17,5 @@ target_include_directories(
     ${PROJECT_NAME} PUBLIC  
     ${ENGINE_HEADERS_PATH}  
     ${THIRD_PARTY_PATH}/imgui/  
+    ${THIRD_PARTY_PATH}/simple_math/  
 )
