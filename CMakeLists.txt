@@ -11,6 +11,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set(EXTERNALS_PATH externals)
 add_subdirectory(${EXTERNALS_PATH}/imgui)
+add_subdirectory(${EXTERNALS_PATH}/assimp)
 
 add_subdirectory(engine)
 add_subdirectory(samples)

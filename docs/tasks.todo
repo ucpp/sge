@@ -2,7 +2,7 @@
 
 ☐ Integrate the stb library for image loading.
 ☐ Develop a Texture class to manage texture resources.
-☐ Integrate the assimp library for meshes loading.
+✔ Integrate the assimp library for meshes loading. @done(24-12-27 21:57)
 ✔ Add a Camera class to manage camera properties and view transformations. @done(24-12-27 18:46)
 ✔ Implement a CameraController class to handle camera input and movement. @done(24-12-27 18:46)
 ✔ Compute rendering adjustments based on the projection, view, and model matrices. @done(24-12-27 18:46)

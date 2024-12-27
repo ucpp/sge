@@ -12,7 +12,7 @@ file(GLOB_RECURSE ENGINE_HEADERS ${ENGINE_HEADERS_PATH}/*.h)
 file(GLOB_RECURSE ENGINE_SOURCES ${ENGINE_SOURCES_PATH}/*.cpp)
 
 add_library(${PROJECT_NAME} STATIC ${ENGINE_HEADERS} ${ENGINE_SOURCES})
-target_link_libraries(${PROJECT_NAME} PUBLIC imgui d3d12 dxgi dxguid d3dcompiler)
+target_link_libraries(${PROJECT_NAME} PUBLIC assimp imgui d3d12 dxgi dxguid d3dcompiler)
 target_include_directories(
     ${PROJECT_NAME} PUBLIC  
     ${ENGINE_HEADERS_PATH}  
