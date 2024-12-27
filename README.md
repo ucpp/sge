@@ -11,10 +11,16 @@ SGE (Simple Game Engine) is a learning project aimed at building a minimalistic 
 
   [Last commit](https://github.com/ucpp/sge/commit/13da25b1de4a97eeb2f3149d05a9619258020e4b)
 </details>
+<details>
+  <summary><strong>✔ Process input and camera control</strong>: Implement user input and basic camera movement.</summary>
+ 
+  ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/camera_and_input.gif)
+
+  [Last commit](https://github.com/ucpp/sge/commit/ba4c22781d8f4f9242fe2f4917e1cb136106b02b)
+</details>
 
 ---
 
-- [ ] **Process input and camera control**: Implement user input and basic camera movement.  
 - [ ] **Load simple models without animation**: Import static models such as teapots, cars, and tanks.  
 - [ ] **Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.  
 - [ ] **Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.  
