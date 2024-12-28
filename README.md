@@ -18,10 +18,16 @@ SGE (Simple Game Engine) is a learning project aimed at building a minimalistic 
 
   [Last commit](https://github.com/ucpp/sge/commit/ba4c22781d8f4f9242fe2f4917e1cb136106b02b)
 </details>
+<details>
+  <summary><strong>✔ Load simple models without animation</strong>: Import static models such as teapots, cars, and tanks.</summary>
+ 
+  ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/load_meshes.png)
+
+  [Last commit](https://github.com/ucpp/sge/commit/97288dfe5bd48521b60c2f83586c5614c38b82e2)
+</details>
 
 ---
-
-- [ ] **Load simple models without animation**: Import static models such as teapots, cars, and tanks.  
+  
 - [ ] **Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.  
 - [ ] **Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.  
 - [ ] **Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.  
