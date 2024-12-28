@@ -1,7 +1,11 @@
 ### Common tasks
 
-☐ Integrate the stb library for image loading.
-☐ Develop a Texture class to manage texture resources.
+☐ Add stb_image library to handle texture loading.
+☐ Extend model loading to retain paths to associated textures.
+☐ Implement a Texture class to handle texture data and mipmap levels.
+☐ Update shaders to accept diffuse, normal, specular, and gloss maps (and possibly other textures).
+☐ Implement mipmap generation for loaded textures.
+☐ Add editor functionality to switch between mipmap levels during rendering.
 ✔ Implement basic model data loading. @done(24-12-28 20:02)
 ✔ Add a Mesh class to represent individual meshes. @done(24-12-28 19:59)
 ✔ Add a Model class to encapsulate multiple meshes. @done(24-12-28 20:00)
