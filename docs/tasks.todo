@@ -4,7 +4,7 @@
 ☐ Develop a Texture class to manage texture resources.
 ☐ Implement basic model data loading.
 ✔ Add a Mesh class to represent individual meshes. @done(24-12-28 19:59)
-☐ Add a Model class to encapsulate multiple meshes.
+✔ Add a Model class to encapsulate multiple meshes. @done(24-12-28 20:00)
 ☐ Integrate model loading and rendering into the Renderer class.
 ✔ Integrate the assimp library for meshes loading. @done(24-12-27 21:57)
 ✔ Add a Camera class to manage camera properties and view transformations. @done(24-12-27 18:46)
