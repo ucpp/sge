@@ -5,6 +5,7 @@ namespace SGE
 {
     void IndexBuffer::Initialize(Device* device, const std::vector<UINT>& indices)
     {
+        m_indexCount = static_cast<UINT>(indices.size());
         const UINT indexBufferSize = static_cast<UINT>(indices.size() * sizeof(UINT));
 
         HRESULT hr = device->GetDevice()->CreateCommittedResource(

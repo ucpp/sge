@@ -16,13 +16,15 @@ cbuffer ProjectionBuffer : register(b2)
 struct VertexInput
 {
     float3 position : POSITION;
-    float4 color : COLOR;
+    float3 normal : NORMAL;
+    float2 texCoords : TEXCOORD;
 };
 
 struct PixelInput
 {
     float4 position : SV_POSITION;
-    float4 color : COLOR;
+    float3 normal : NORMAL;
+    float2 texCoords : TEXCOORD;
 };
 
 PixelInput main(VertexInput input)
@@ -33,6 +35,8 @@ PixelInput main(VertexInput input)
     float4 viewPos = mul(modelPos, view);
     output.position = mul(viewPos, projection);
 
-    output.color = input.color;
+    output.normal = input.normal;
+    output.texCoords = input.texCoords;
+
     return output;
 }

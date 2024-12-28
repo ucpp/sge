@@ -7,6 +7,8 @@
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 
+#include "sge_model_loader.h"
+#include "sge_mesh.h"
 
 namespace SGE
 {
@@ -39,21 +41,8 @@ namespace SGE
 
         m_device->GetCommandList()->Close();
 
-        float aspectRatio = static_cast<float>(m_window->GetWidth()) / static_cast<float>(m_window->GetHeight());
-
-        std::vector<Vertex> vertices = 
-        {
-            { { 0.0f, 2.0f, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
-            { { 2.5f, -2.0f, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
-            { { -2.5f, -2.0f, 0.0f }, { 1.0f, 0.435f, 0.38f, 1.0f } },
-        };
-
-        m_vertexBuffer = std::make_unique<VertexBuffer>();
-        m_vertexBuffer->Initialize(m_device.get(), vertices);
-
-        std::vector<UINT> indices = { 2, 1, 0 };
-        m_indexBuffer = std::make_unique<IndexBuffer>();
-        m_indexBuffer->Initialize(m_device.get(), indices);
+        m_model = std::make_unique<Model>();
+        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get());
 
         m_modelBuffer = std::make_unique<ConstantBuffer>();
         m_modelBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
@@ -87,6 +76,7 @@ namespace SGE
     {
         Vector3 target = { 0.0f, 0.0f, 0.0f };
         m_camera.SetTarget(target);
+        m_camera.SetPosition({0.0f, 0.0f, -10.0f});
 
         m_cameraController.SetCamera(&m_camera);
         m_cameraController.SetMoveSpeed(1000.0f);
@@ -120,7 +110,8 @@ namespace SGE
 
         commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
 
-        XMMATRIX modelMatrix = XMMatrixIdentity();
+        //XMMATRIX modelMatrix = XMMatrixIdentity();
+        XMMATRIX modelMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
         m_modelBuffer->Update(&modelMatrix, sizeof(XMMATRIX));
 
         XMMATRIX viewMatrix = m_camera.GetViewMatrix();
@@ -146,8 +137,10 @@ namespace SGE
         commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        commandList->IASetVertexBuffers(0, 1, &m_vertexBuffer->GetView());
-        commandList->IASetIndexBuffer(&m_indexBuffer->GetView());
+        for (const Mesh& mesh : m_model->GetMeshes())
+        {
+            mesh.Render(commandList);
+        }
 
         commandList->DrawIndexedInstanced(3, 1, 0, 0, 0);
         

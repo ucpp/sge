@@ -19,6 +19,7 @@
 
 #include "sge_camera.h"
 #include "sge_camera_controller.h"
+#include "sge_model.h"
 
 #include <wrl.h>
 using namespace Microsoft::WRL;
@@ -51,9 +52,6 @@ namespace SGE
         std::unique_ptr<RootSignature> m_rootSignature;
         std::unique_ptr<PipelineState> m_pipelineState;
 
-        std::unique_ptr<VertexBuffer> m_vertexBuffer;
-        std::unique_ptr<IndexBuffer> m_indexBuffer;
-
         std::unique_ptr<DescriptorHeap> m_descriptorHeap;
 
         Fence m_fence;
@@ -65,6 +63,8 @@ namespace SGE
         std::unique_ptr<ConstantBuffer> m_modelBuffer;
         std::unique_ptr<ConstantBuffer> m_viewBuffer;
         std::unique_ptr<ConstantBuffer> m_projectionBuffer;
+
+        std::unique_ptr<Model> m_model;
     };
 }
 
