@@ -5,6 +5,7 @@
 #include "sge_window.h"
 #include "sge_renderer.h"
 #include "sge_non_copyable.h"
+#include "sge_application_settings.h"
 
 namespace SGE
 {
@@ -21,6 +22,7 @@ namespace SGE
     private:
         std::unique_ptr<Window> m_window;
         std::unique_ptr<Renderer> m_renderer;
+        std::unique_ptr<ApplicationSettings> m_settings;
     };
 }
 

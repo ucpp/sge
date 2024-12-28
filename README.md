@@ -21,7 +21,7 @@ SGE (Simple Game Engine) is a learning project aimed at building a minimalistic 
 <details>
   <summary><strong>✔ Load simple models without animation</strong>: Import static models such as teapots, cars, and tanks.</summary>
  
-  ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/load_meshes.png)
+  ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/load_model.gif)
 
   [Last commit](https://github.com/ucpp/sge/commit/97288dfe5bd48521b60c2f83586c5614c38b82e2)
 </details>

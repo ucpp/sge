@@ -37,4 +37,4 @@
 ✔ Make the Application class non-copyable and use unique_ptr for window management. @done(24-12-23 22:22)
 ✔ Change the naming of LogLevel enum values to follow the camel case style. @done(24-12-23 22:30)
 ☐ Extend Logger to support string formatting
-☐ Refactor the ImGui functionality from the Renderer class into a separate Editor class.
+✔ Refactor the ImGui functionality from the Renderer class into a separate Editor class. @done(24-12-28 22:51)

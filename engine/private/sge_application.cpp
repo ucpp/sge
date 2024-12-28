@@ -15,8 +15,10 @@ namespace SGE
         m_window->Create("SGE: simple game engine v.0.9.0", 800, 600, false);
         m_window->OnUpdate().Subscribe(this, &Application::Update);
 
+        m_settings = std::make_unique<ApplicationSettings>();
+
         m_renderer = std::make_unique<Renderer>();
-        m_renderer->Initialize(m_window.get());
+        m_renderer->Initialize(m_window.get(), m_settings.get());
 
         m_window->StartUpdateLoop();
     }

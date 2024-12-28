@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include "sge_application_settings.h"
 #include "sge_non_copyable.h"
 #include "sge_device.h"
 #include "sge_window.h"
@@ -21,6 +22,8 @@
 #include "sge_camera_controller.h"
 #include "sge_model.h"
 
+#include "sge_editor.h"
+
 #include <wrl.h>
 using namespace Microsoft::WRL;
 
@@ -29,7 +32,7 @@ namespace SGE
     class Renderer : public NonCopyable
     {
     public:
-        void Initialize(Window* window);
+        void Initialize(Window* window, ApplicationSettings* settings);
         void Update(double deltaTime);
         void Render();
         void Shutdown();
@@ -43,6 +46,7 @@ namespace SGE
     private:
         std::unique_ptr<Device> m_device;
         Window* m_window = nullptr;
+        ApplicationSettings* m_settings = nullptr;
         
         std::unique_ptr<ViewportScissors> m_viewportScissors;
         std::unique_ptr<RenderTarget> m_renderTarget;
@@ -50,9 +54,9 @@ namespace SGE
         std::unique_ptr<Shader> m_vertexShader;
         std::unique_ptr<Shader> m_pixelShader;
         std::unique_ptr<RootSignature> m_rootSignature;
+        
         std::unique_ptr<PipelineState> m_pipelineState;
-
-        std::unique_ptr<DescriptorHeap> m_descriptorHeap;
+        std::unique_ptr<PipelineState> m_wireframePipelineState;
 
         Fence m_fence;
         UINT m_frameIndex;
@@ -65,6 +69,8 @@ namespace SGE
         std::unique_ptr<ConstantBuffer> m_projectionBuffer;
 
         std::unique_ptr<Model> m_model;
+
+        std::unique_ptr<Editor> m_editor;
     };
 }
 

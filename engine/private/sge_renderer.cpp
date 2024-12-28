@@ -3,24 +3,18 @@
 #include "sge_helpers.h"
 #include <d3dx12.h>
 
-#include "imgui.h"
-#include "imgui_impl_dx12.h"
-#include "imgui_impl_win32.h"
-
 #include "sge_model_loader.h"
 #include "sge_mesh.h"
 
 namespace SGE
 {
-    void Renderer::Initialize(Window* window)
+    void Renderer::Initialize(Window* window, ApplicationSettings* settings)
     {
         m_frameIndex = 0;
         m_window = window;
+        m_settings = settings;
         m_device = std::make_unique<Device>();
         m_device->Initialize(m_window->GetHandle(), m_window->GetWidth(), m_window->GetHeight());
-
-        m_descriptorHeap = std::make_unique<DescriptorHeap>();
-        m_descriptorHeap->Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, true);
 
         m_viewportScissors = std::make_unique<ViewportScissors>(m_window->GetWidth(), m_window->GetHeight());
         
@@ -37,7 +31,13 @@ namespace SGE
         m_rootSignature->Initialize(m_device->GetDevice().Get());
 
         m_pipelineState = std::make_unique<PipelineState>();
-        m_pipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature);
+        D3D12_GRAPHICS_PIPELINE_STATE_DESC standardDesc = PipelineState::CreateDefaultPSODesc();
+        m_pipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, standardDesc);
+
+        m_wireframePipelineState = std::make_unique<PipelineState>();
+        D3D12_GRAPHICS_PIPELINE_STATE_DESC descWireframe = PipelineState::CreateDefaultPSODesc();
+        descWireframe.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+        m_wireframePipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, descWireframe);
 
         m_device->GetCommandList()->Close();
 
@@ -55,18 +55,8 @@ namespace SGE
 
         InitializeCamera();
 
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui_ImplWin32_Init(m_window->GetHandle());
-        ImGui_ImplDX12_Init(
-            m_device->GetDevice().Get(),
-            SwapChainBufferCount,
-            DXGI_FORMAT_R8G8B8A8_UNORM,
-            m_descriptorHeap->GetHeap().Get(),
-            m_descriptorHeap->GetCPUHandle(0),
-            m_descriptorHeap->GetGPUHandle(0)
-        );
+        m_editor = std::make_unique<Editor>();
+        m_editor->Initialize(m_window, m_device.get(), m_settings);
 
         m_fence.Initialize(m_device.get(), 1);
         WaitForPreviousFrame();
@@ -90,7 +80,7 @@ namespace SGE
 
     void Renderer::Render()
     {
-        BuildImGuiFrame();
+        m_editor->BuildImGuiFrame();
 
         PopulateCommandList();
 
@@ -106,7 +96,11 @@ namespace SGE
         ID3D12GraphicsCommandList* commandList = m_device->GetCommandList().Get();
 
         m_device->GetCommandAllocator(m_frameIndex)->Reset();
-        commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), m_pipelineState->GetPipelineState());
+        ID3D12PipelineState* activePipelineState = m_settings->wireframeMode 
+        ? m_wireframePipelineState->GetPipelineState() 
+        : m_pipelineState->GetPipelineState();
+
+        commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), activePipelineState);
 
         commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
 
@@ -144,9 +138,7 @@ namespace SGE
 
         commandList->DrawIndexedInstanced(3, 1, 0, 0, 0);
         
-        ImGui::Render();
-        commandList->SetDescriptorHeaps(1, m_descriptorHeap->GetHeap().GetAddressOf());
-        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+        m_editor->Render(commandList);
 
         commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
             m_renderTarget->GetTarget(m_frameIndex), 
@@ -164,42 +156,9 @@ namespace SGE
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
     }
 
-    void Renderer::BuildImGuiFrame()
-    {
-        // ONLY FOR TEST IMGUI!!!
-        ImGui_ImplDX12_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
-
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
-                if (ImGui::MenuItem("New Scene")) { }
-                if (ImGui::MenuItem("Open Scene")) { }
-                if (ImGui::MenuItem("Save Scene")) { }
-                if (ImGui::MenuItem("Exit")) { }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Help"))
-            {
-                if (ImGui::MenuItem("Documentation")) { }
-                if (ImGui::MenuItem("About")) { }
-                ImGui::EndMenu();
-            }
-
-            ImGui::EndMainMenuBar();
-        }
-    }
-
     void Renderer::Shutdown() 
     {
-        ImGui_ImplDX12_Shutdown();
-        ImGui_ImplWin32_Shutdown();
-        ImGui::DestroyContext();
-
+        m_editor->Shutdown();
         m_renderTarget->Shutdown();
-        m_descriptorHeap->Shutdown();
     }
 }
