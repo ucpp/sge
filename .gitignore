@@ -31,3 +31,6 @@ Makefile
 
 # ImGui
 imgui.ini
+
+# Exceptions
+!samples/**/*.obj
