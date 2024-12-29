@@ -18,6 +18,8 @@ namespace SGE
         m_viewportScissors = std::make_unique<ViewportScissors>(m_window->GetWidth(), m_window->GetHeight());
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
 
+        m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, true);
+
         m_renderTarget = std::make_unique<RenderTarget>();
         m_renderTarget->Initialize(m_device.get(), SwapChainBufferCount);
 
@@ -44,14 +46,8 @@ namespace SGE
         m_model = std::make_unique<Model>();
         *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get());
 
-        m_modelBuffer = std::make_unique<ConstantBuffer>();
-        m_modelBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
-
-        m_viewBuffer = std::make_unique<ConstantBuffer>();
-        m_viewBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
-
-        m_projectionBuffer = std::make_unique<ConstantBuffer>();
-        m_projectionBuffer->Initialize(m_device->GetDevice().Get(), sizeof(DirectX::XMMATRIX));
+        m_transformBuffer = std::make_unique<ConstantBuffer>();
+        m_transformBuffer->Initialize(m_device->GetDevice().Get(), &m_cbvSrvUavHeap, sizeof(TransformBuffer), 0);
 
         InitializeCamera();
 
@@ -106,17 +102,16 @@ namespace SGE
 
         //XMMATRIX modelMatrix = XMMatrixIdentity();
         XMMATRIX modelMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-        m_modelBuffer->Update(&modelMatrix, sizeof(XMMATRIX));
-
         XMMATRIX viewMatrix = m_camera.GetViewMatrix();
-        m_viewBuffer->Update(&viewMatrix, sizeof(XMMATRIX));
-
         XMMATRIX projectionMatrix = m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight());
-        m_projectionBuffer->Update(&projectionMatrix, sizeof(XMMATRIX));
+       
+        TransformBuffer transformData = {};
+        transformData.model = modelMatrix;
+        transformData.view = viewMatrix;
+        transformData.projection = projectionMatrix;
 
-        commandList->SetGraphicsRootConstantBufferView(0, m_modelBuffer->GetGPUVirtualAddress());
-        commandList->SetGraphicsRootConstantBufferView(1, m_viewBuffer->GetGPUVirtualAddress());
-        commandList->SetGraphicsRootConstantBufferView(2, m_projectionBuffer->GetGPUVirtualAddress());
+        m_transformBuffer->Update(&transformData, sizeof(TransformBuffer));
+        commandList->SetGraphicsRootDescriptorTable(0, m_cbvSrvUavHeap.GetGPUHandle(0));
 
         commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());
         commandList->RSSetScissorRects(1, &m_viewportScissors->GetScissorRect());
@@ -135,8 +130,6 @@ namespace SGE
         {
             mesh.Render(commandList);
         }
-
-        //commandList->DrawIndexedInstanced(3, 1, 0, 0, 0);
         
         m_editor->Render(commandList);
 

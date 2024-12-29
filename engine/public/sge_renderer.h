@@ -29,6 +29,13 @@ using namespace Microsoft::WRL;
 
 namespace SGE
 {
+    struct TransformBuffer
+    {
+        DirectX::XMMATRIX model;
+        DirectX::XMMATRIX view;
+        DirectX::XMMATRIX projection;
+    };
+
     class Renderer : public NonCopyable
     {
     public:
@@ -64,13 +71,11 @@ namespace SGE
         Camera m_camera;
         CameraController m_cameraController;
 
-        std::unique_ptr<ConstantBuffer> m_modelBuffer;
-        std::unique_ptr<ConstantBuffer> m_viewBuffer;
-        std::unique_ptr<ConstantBuffer> m_projectionBuffer;
-
+        std::unique_ptr<ConstantBuffer> m_transformBuffer;
         std::unique_ptr<Model> m_model;
-
         std::unique_ptr<Editor> m_editor;
+
+        DescriptorHeap m_cbvSrvUavHeap;
     };
 }
 

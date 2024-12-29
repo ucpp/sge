@@ -1,15 +1,7 @@
-cbuffer ModelBuffer : register(b0)
+cbuffer TransformBuffer : register(b0)
 {
     matrix model;
-}
-
-cbuffer ViewBuffer : register(b1)
-{
     matrix view;
-}
-
-cbuffer ProjectionBuffer : register(b2)
-{
     matrix projection;
 }
 

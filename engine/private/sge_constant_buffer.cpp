@@ -1,11 +1,13 @@
 #include "sge_constant_buffer.h"
-
 #include "sge_helpers.h"
+#include "sge_logger.h"
 
 namespace SGE
 {
-    void ConstantBuffer::Initialize(ID3D12Device* device, size_t bufferSize)
+    void ConstantBuffer::Initialize(ID3D12Device* device, DescriptorHeap* descriptorHeap, size_t bufferSize, UINT descriptorIndex)
     {
+        m_descriptorHeap = descriptorHeap;
+
         D3D12_RESOURCE_DESC bufferDesc = {};
         bufferDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
         bufferDesc.Alignment = 0;
@@ -35,7 +37,13 @@ namespace SGE
 
         Verify(hr, "Failed to create constant buffer.");
 
-        m_gpuAddress = m_buffer->GetGPUVirtualAddress();
+        m_gpuDescriptorHandle = m_descriptorHeap->GetGPUHandle(descriptorIndex);
+
+        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+        cbvDesc.SizeInBytes = (static_cast<UINT>(bufferSize) + 255) & ~255;
+        cbvDesc.BufferLocation = m_buffer->GetGPUVirtualAddress();
+
+        device->CreateConstantBufferView(&cbvDesc, m_descriptorHeap->GetCPUHandle(descriptorIndex));
     }
 
     void ConstantBuffer::Update(const void* data, size_t dataSize)

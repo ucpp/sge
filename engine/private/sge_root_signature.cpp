@@ -6,28 +6,26 @@ namespace SGE
 {
     void RootSignature::Initialize(ID3D12Device* device)
     {
-        D3D12_ROOT_PARAMETER rootParameters[3];
+        D3D12_ROOT_PARAMETER rootParameters[1];
 
-        // model
-        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-        rootParameters[0].Descriptor.ShaderRegister = 0;
-        rootParameters[0].Descriptor.RegisterSpace = 0;
+        rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+
+        D3D12_DESCRIPTOR_RANGE ranges[1];
+        ranges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+        ranges[0].NumDescriptors = 1;
+        ranges[0].BaseShaderRegister = 0;
+        ranges[0].RegisterSpace = 0;
+        ranges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+        D3D12_ROOT_DESCRIPTOR_TABLE descriptorTable = {};
+        descriptorTable.NumDescriptorRanges = _countof(ranges);
+        descriptorTable.pDescriptorRanges = ranges;
+
+        rootParameters[0].DescriptorTable = descriptorTable;
         rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-        // view
-        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-        rootParameters[1].Descriptor.ShaderRegister = 1;
-        rootParameters[1].Descriptor.RegisterSpace = 0;
-        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
-        // projection
-        rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-        rootParameters[2].Descriptor.ShaderRegister = 2;
-        rootParameters[2].Descriptor.RegisterSpace = 0;
-        rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
         D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-        rootSignatureDesc.NumParameters = _countof(rootParameters); 
+        rootSignatureDesc.NumParameters = _countof(rootParameters);
         rootSignatureDesc.pParameters = rootParameters;
         rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
