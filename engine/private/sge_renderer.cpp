@@ -15,9 +15,9 @@ namespace SGE
         m_settings = settings;
         m_device = std::make_unique<Device>();
         m_device->Initialize(m_window->GetHandle(), m_window->GetWidth(), m_window->GetHeight());
-
         m_viewportScissors = std::make_unique<ViewportScissors>(m_window->GetWidth(), m_window->GetHeight());
-        
+        m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
+
         m_renderTarget = std::make_unique<RenderTarget>();
         m_renderTarget->Initialize(m_device.get(), SwapChainBufferCount);
 
@@ -136,7 +136,7 @@ namespace SGE
             mesh.Render(commandList);
         }
 
-        commandList->DrawIndexedInstanced(3, 1, 0, 0, 0);
+        //commandList->DrawIndexedInstanced(3, 1, 0, 0, 0);
         
         m_editor->Render(commandList);
 
