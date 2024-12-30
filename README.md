@@ -38,21 +38,21 @@ This project is **actively under development**, and its purpose is to experiment
 
 ---
   
-- [ ] **Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.  
-- [ ] **Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.  
-- [ ] **Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.  
-- [ ] **Dynamic environment reflections**: Render cube maps for dynamic reflections.  
-- [ ] **Fog effect**: Add fog either in the pixel shader or as a post-process effect.  
-- [ ] **Bloom effect**: Implement a post-process bloom effect.  
-- [ ] **Load skinned mesh animations**: Import animated models and process on the GPU.  
-- [ ] **Animation blending**: Combine multiple animations (e.g., running and shooting).  
+- [ ] **Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.
 - [ ] **GPU compressed textures**: Use compressed texture formats for better performance.  
-- [ ] **Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.  
-- [ ] **Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
-- [ ] **HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
-- [ ] **MSAA**: Support multi-sample anti-aliasing.  
+- [ ] **Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.
+- [ ] **Fog effect**: Add fog either in the pixel shader or as a post-process effect.
+- [ ] **Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.
+- [ ] **Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.
+- [ ] **HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.
+- [ ] **Bloom effect**: Implement a post-process bloom effect.  
+- [ ] **Dynamic environment reflections**: Render cube maps for dynamic reflections.  
+- [ ] **Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.
 - [ ] **SSAO**: Implement screen-space ambient occlusion.  
 - [ ] **SSLR**: Add screen-space local reflections.
+- [ ] **Load skinned mesh animations**: Import animated models and process on the GPU.  
+- [ ] **Animation blending**: Combine multiple animations (e.g., running and shooting).  
+- [ ] **MSAA**: Support multi-sample anti-aliasing.  
 - [ ] **Particle system**: Create a system that supports 10,000+ particles.  
 
 ## Project Goals  
