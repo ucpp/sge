@@ -15,21 +15,21 @@ This project is **actively under development**, and its purpose is to experiment
 ## Roadmap  
 ---
 <details>
-  <summary><strong>✔ Initialize D3D12 context</strong>: Set up the DirectX 12 framework.</summary>
+  <summary><strong>✔ 1. Initialize D3D12 context</strong>: Set up the DirectX 12 framework.</summary>
  
   ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/first_triangle.png)
 
   [Last commit](https://github.com/ucpp/sge/commit/13da25b1de4a97eeb2f3149d05a9619258020e4b)
 </details>
 <details>
-  <summary><strong>✔ Process input and camera control</strong>: Implement user input and basic camera movement.</summary>
+  <summary><strong>✔ 2. Process input and camera control</strong>: Implement user input and basic camera movement.</summary>
  
   ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/camera_and_input.gif)
 
   [Last commit](https://github.com/ucpp/sge/commit/ba4c22781d8f4f9242fe2f4917e1cb136106b02b)
 </details>
 <details>
-  <summary><strong>✔ Load simple models without animation</strong>: Import static models such as teapots, cars, and tanks.</summary>
+  <summary><strong>✔ 3. Load simple models without animation</strong>: Import static models such as teapots, cars, and tanks.</summary>
  
   ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/load_model.gif)
 
@@ -38,22 +38,22 @@ This project is **actively under development**, and its purpose is to experiment
 
 ---
   
-- [ ] **Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.
-- [ ] **GPU compressed textures**: Use compressed texture formats for better performance.  
-- [ ] **Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.
-- [ ] **Fog effect**: Add fog either in the pixel shader or as a post-process effect.
-- [ ] **Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.
-- [ ] **Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.
-- [ ] **HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.
-- [ ] **Bloom effect**: Implement a post-process bloom effect.  
-- [ ] **Dynamic environment reflections**: Render cube maps for dynamic reflections.  
-- [ ] **Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.
-- [ ] **SSAO**: Implement screen-space ambient occlusion.  
-- [ ] **SSLR**: Add screen-space local reflections.
-- [ ] **Load skinned mesh animations**: Import animated models and process on the GPU.  
-- [ ] **Animation blending**: Combine multiple animations (e.g., running and shooting).  
-- [ ] **MSAA**: Support multi-sample anti-aliasing.  
-- [ ] **Particle system**: Create a system that supports 10,000+ particles.  
+**4. Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.  
+**5. GPU compressed textures**: Use compressed texture formats for better performance.  
+**6. Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.  
+**7. Fog effect**: Add fog either in the pixel shader or as a post-process effect.  
+**8. Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.  
+**9. Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
+**10. HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
+**11. Bloom effect**: Implement a post-process bloom effect.  
+**12. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
+**13. Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.  
+**14. SSAO**: Implement screen-space ambient occlusion.  
+**15. SSLR**: Add screen-space local reflections.  
+**16. Load skinned mesh animations**: Import animated models and process on the GPU.  
+**17. Animation blending**: Combine multiple animations (e.g., running and shooting).  
+**18. MSAA**: Support multi-sample anti-aliasing.  
+**19. Particle system**: Create a system that supports 10,000+ particles.  
 
 ## Project Goals  
 
