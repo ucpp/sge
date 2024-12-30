@@ -1,7 +1,6 @@
 #include "sge_shader.h"
 
 #include "sge_helpers.h"
-#include <d3dcompiler.h>
 
 namespace SGE
 {

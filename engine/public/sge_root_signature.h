@@ -1,10 +1,7 @@
 #ifndef _SGE_ROOT_SIGNATURE_H_
 #define _SGE_ROOT_SIGNATURE_H_
 
-#include <d3d12.h>
-#include <wrl.h>
-
-using namespace Microsoft::WRL;
+#include "pch.h"
 
 namespace SGE
 {

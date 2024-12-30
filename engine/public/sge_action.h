@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+
 namespace SGE
 {
     template <typename... Args>

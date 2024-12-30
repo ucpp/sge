@@ -1,9 +1,9 @@
 #ifndef _SGE_INPUT_H_
 #define _SGE_INPUT_H_
 
+#include <array>
 #include "sge_singleton.h"
 #include "sge_window.h"
-#include <array>
 
 namespace SGE
 {

@@ -1,5 +1,10 @@
 #include "sge_editor.h"
+
+#include "sge_application_settings.h"
+#include "sge_descriptor_heap.h"
+#include "sge_device.h"
 #include "sge_helpers.h"
+#include "sge_window.h"
 
 namespace SGE
 {

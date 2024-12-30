@@ -1,11 +1,7 @@
 #ifndef _SGE_SHADER_H_
 #define _SGE_SHADER_H_
 
-#include <d3d12.h>
-#include <wrl.h>
-#include <string>
-
-using namespace Microsoft::WRL;
+#include "pch.h"
 
 namespace SGE
 {
@@ -27,11 +23,12 @@ namespace SGE
         D3D12_SHADER_BYTECODE GetShaderBytecode() const;
         ID3DBlob* GetBlob() const { return m_blob.Get(); }
 
-        static constexpr const char* EntryPoint = "main";
+    private:
+        std::string ShaderTypeToTarget(ShaderType type) const;
 
     private:
         ComPtr<ID3DBlob> m_blob;
-        std::string ShaderTypeToTarget(ShaderType type) const;
+        static constexpr const char* EntryPoint = "main";
     };
 }
 

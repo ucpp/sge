@@ -18,7 +18,7 @@ namespace SGE
         Shutdown();
     }
     
-    void Window::Create(const std::string& title, int width, int height, bool fullscreen)
+    void Window::Create(const std::string& title, int32 width, int32 height, bool fullscreen)
     {
         std::wstring wstrTitle = std::wstring(title.begin(), title.end());
         m_title = wstrTitle.c_str();
@@ -36,7 +36,7 @@ namespace SGE
         Update();
     }
 
-    void Window::SetWindowSize(int width, int height)
+    void Window::SetWindowSize(int32 width, int32 height)
     {
         RECT windowRect = { 0, 0, width, height };
         AdjustWindowRectEx(&windowRect, GetWindowLong(m_hwnd, GWL_STYLE), false, GetWindowLong(m_hwnd, GWL_EXSTYLE));
@@ -83,7 +83,7 @@ namespace SGE
         RegisterClassEx(&wc);
     }
 
-    void Window::CreateWindowHandle(int width, int height)
+    void Window::CreateWindowHandle(int32 width, int32 height)
     {
         HINSTANCE hInstance = GetModuleHandle(nullptr);
         DWORD windowStyle = WS_OVERLAPPEDWINDOW;

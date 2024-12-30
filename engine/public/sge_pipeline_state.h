@@ -1,12 +1,9 @@
 #ifndef _SGE_PIPELINE_STATE_H_
 #define _SGE_PIPELINE_STATE_H_
 
-#include <d3d12.h>
-#include <wrl.h>
+#include "pch.h"
 #include "sge_shader.h"
 #include "sge_root_signature.h"
-
-using namespace Microsoft::WRL;
 
 namespace SGE
 {

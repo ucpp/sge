@@ -1,4 +1,7 @@
 #include "sge_index_buffer.h"
+
+#include "sge_device.h"
+
 #include "sge_helpers.h"
 
 namespace SGE

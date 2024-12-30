@@ -1,20 +1,14 @@
 #ifndef _SGE_RENDER_TARGET_H_
 #define _SGE_RENDER_TARGET_H_
 
-#include <vector>
-#include <wrl.h>
-#include <d3d12.h>
-#include <d3dx12.h>
-#include "sge_device.h"
-
-using namespace Microsoft::WRL;
+#include "pch.h"
 
 namespace SGE
 {
     class RenderTarget
     {
     public:
-        void Initialize(Device* device, UINT bufferCount);
+        void Initialize(class Device* device, UINT bufferCount);
         void Shutdown();
 
         ID3D12Resource* GetTarget(UINT index) const { return m_renderTargets[index].Get(); }

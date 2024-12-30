@@ -1,11 +1,10 @@
 #include "sge_renderer.h"
 
-#include "sge_helpers.h"
-#include <d3dx12.h>
-
+#include "sge_application_settings.h"
+#include "sge_common_structures.h"
+#include "sge_device.h"
 #include "sge_model_loader.h"
-#include "sge_mesh.h"
-#include "sge_logger.h"
+#include "sge_window.h"
 
 namespace SGE
 {

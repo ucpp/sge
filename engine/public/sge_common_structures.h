@@ -2,7 +2,6 @@
 #define _SGE_COMMON_STRUCTURES_H_
 
 #include <DirectXMath.h>
-
 using namespace DirectX;
 
 namespace SGE

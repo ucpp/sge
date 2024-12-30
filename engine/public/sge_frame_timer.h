@@ -1,10 +1,7 @@
 #ifndef _SGE_FRAME_TIMER_H_
 #define _SGE_FRAME_TIMER_H_
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers.
-#endif
-#include <Windows.h>
+#include "pch.h"
 
 namespace SGE
 {

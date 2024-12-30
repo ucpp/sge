@@ -1,7 +1,6 @@
 #include "sge_pipeline_state.h"
 
 #include "sge_helpers.h"
-#include <d3dx12.h>
 
 namespace SGE
 {

@@ -1,12 +1,8 @@
 #ifndef _SGE_CONSTANT_BUFFER_H_
 #define _SGE_CONSTANT_BUFFER_H_
 
-#include <d3d12.h>
-#include <wrl.h>
-#include <memory>
+#include "pch.h"
 #include "sge_descriptor_heap.h"
-
-using namespace Microsoft::WRL;
 
 namespace SGE
 {

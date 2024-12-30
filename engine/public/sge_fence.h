@@ -1,7 +1,7 @@
 #ifndef _SGE_FENCE_H_
 #define _SGE_FENCE_H_
 
-#include "sge_device.h"
+#include "pch.h"
 
 namespace SGE
 {
@@ -11,7 +11,7 @@ namespace SGE
         Fence() = default;
         ~Fence();
 
-        void Initialize(Device* device, UINT64 initialValue = 0);
+        void Initialize(class Device* device, UINT64 initialValue = 0);
         UINT64 Signal(ID3D12CommandQueue* commandQueue);
         void Wait(UINT64 waitValue);
 

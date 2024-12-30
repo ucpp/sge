@@ -1,22 +1,14 @@
 #ifndef _SGE_INDEX_BUFFER_H_
 #define _SGE_INDEX_BUFFER_H_
 
-#include <vector>
-#include <d3dx12.h>
-#include <wrl.h>
-#include <DirectXMath.h>
-
-#include "sge_device.h"
-
-using namespace Microsoft::WRL;
-using namespace DirectX;
+#include "pch.h"
 
 namespace SGE
 {
     class IndexBuffer
     {
     public:
-        void Initialize(Device* device, const std::vector<UINT>& indices);
+        void Initialize(class Device* device, const std::vector<UINT>& indices);
         void Shutdown();
 
         D3D12_INDEX_BUFFER_VIEW GetView() const { return m_view; }

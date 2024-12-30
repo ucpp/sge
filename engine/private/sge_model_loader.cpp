@@ -1,6 +1,6 @@
 #include "sge_model_loader.h"
 
-#include <stdexcept>
+#include "sge_device.h"
 
 namespace SGE
 {

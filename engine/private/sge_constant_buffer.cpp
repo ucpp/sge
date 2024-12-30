@@ -1,4 +1,5 @@
 #include "sge_constant_buffer.h"
+
 #include "sge_helpers.h"
 #include "sge_logger.h"
 

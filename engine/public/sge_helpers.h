@@ -1,13 +1,7 @@
 #ifndef _SGE_DEBUG_H_
 #define _SGE_DEBUG_H_
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers.
-#endif
-#include <Windows.h>
-#include <string>
-#include <sstream>
-#include <stdexcept>
+#include "pch.h"
 
 #ifdef _DEBUG
     #define DEBUG_ONLY(x) x

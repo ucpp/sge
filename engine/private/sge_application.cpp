@@ -1,4 +1,5 @@
 #include "sge_application.h"
+
 #include "sge_logger.h"
 #include "sge_frame_timer.h"
 

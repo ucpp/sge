@@ -1,7 +1,8 @@
 #include "sge_vertex_buffer.h"
 
 #include "sge_helpers.h"
-#include <d3dx12.h>
+#include "sge_device.h"
+#include "sge_common_structures.h"
 
 namespace SGE
 {

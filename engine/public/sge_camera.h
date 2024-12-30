@@ -1,14 +1,7 @@
 #ifndef _SGE_CAMERA_H_
 #define _SGE_CAMERA_H_
 
-#include <d3d12.h>
-#include <DirectXMath.h>
-#include <SimpleMath.h>
-#include <array>
-#include <algorithm>
-
-using namespace DirectX;
-using namespace SimpleMath;
+#include "pch.h"
 
 namespace SGE
 {

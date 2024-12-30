@@ -4,14 +4,14 @@
 
 namespace SGE
 {
-    ViewportScissors::ViewportScissors(UINT width, UINT height, float minDepth, float maxDepth)
+    ViewportScissors::ViewportScissors(uint32 width, uint32 height, float minDepth, float maxDepth)
     : m_minDepth(minDepth)
     , m_maxDepth(maxDepth)
     {
         Set(width, height);
     }
     
-    void ViewportScissors::Set(UINT width, UINT height)
+    void ViewportScissors::Set(uint32 width, uint32 height)
     {
         if (width == 0 || height == 0)
         {

@@ -3,16 +3,15 @@
 
 #include <vector>
 #include "sge_mesh.h"
-#include "sge_vertex_buffer.h"
 #include "sge_index_buffer.h"
-#include "sge_device.h"
+#include "sge_vertex_buffer.h"
 
 namespace SGE
 {
     class Model
     {
     public:
-        void Initialize(const std::vector<Mesh>& meshes, Device* device);
+        void Initialize(const std::vector<Mesh>& meshes, class Device* device);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
     private:

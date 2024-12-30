@@ -1,11 +1,7 @@
 #ifndef _SGE_LOGGER_H_
 #define _SGE_LOGGER_H_
 
-#include <string>
-#include <memory>
-#include <mutex>
-#include <fstream>
-#include <iostream>
+#include "pch.h"
 #include "sge_singleton.h"
 
 namespace SGE

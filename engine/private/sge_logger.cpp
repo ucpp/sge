@@ -1,11 +1,5 @@
 #include "sge_logger.h"
 
-#include <chrono>
-#include <iomanip>
-#include <sstream>
-#include <ctime>
-#include <iostream>
-
 namespace SGE
 {
     const std::string INFO_STR = "[INFO]";

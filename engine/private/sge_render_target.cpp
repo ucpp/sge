@@ -1,5 +1,6 @@
 #include "sge_render_target.h"
 
+#include "sge_device.h"
 #include "sge_helpers.h"
 
 namespace SGE

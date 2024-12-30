@@ -1,29 +1,27 @@
 #ifndef _SGE_EDITOR_H_
 #define _SGE_EDITOR_H_
 
+#include "pch.h"
+
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
-
-#include "sge_window.h"
 #include "sge_descriptor_heap.h"
-#include "sge_device.h"
-#include "sge_application_settings.h"
 
 namespace SGE
 {
     class Editor
     {
     public:
-        void Initialize(Window* window, Device* device, ApplicationSettings* settings);
+        void Initialize(class Window* window, class Device* device, struct ApplicationSettings* settings);
         void BuildImGuiFrame();
         void Render(ID3D12GraphicsCommandList* commandList);
         void Shutdown();
 
     private:
-        Window* m_window = nullptr;
-        Device* m_device = nullptr;
-        ApplicationSettings* m_settings = nullptr;
+        class Window* m_window = nullptr;
+        class Device* m_device = nullptr;
+        struct ApplicationSettings* m_settings = nullptr;
         DescriptorHeap m_descriptorHeap;
 
         bool m_isOpenSettingsWindow = false;

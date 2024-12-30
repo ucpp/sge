@@ -1,5 +1,7 @@
 #include "sge_model.h"
 
+#include "sge_device.h"
+
 namespace SGE
 {
     void Model::Initialize(const std::vector<Mesh>& meshes, Device* device)
