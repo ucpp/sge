@@ -2,24 +2,23 @@
 #define _SGE_MESH_H_
 
 #include <vector>
-#include <d3d12.h>
-#include "sge_vertex_buffer.h"
-#include "sge_index_buffer.h"
+#include "sge_common_structures.h"
 
 namespace SGE
 {
     class Mesh
     {
     public:
-        void Initialize(const std::vector<Vertex>& vertices, const std::vector<UINT>& indices, Device* device);
-        void Render(ID3D12GraphicsCommandList* commandList) const;
+        Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
+            : m_vertices(vertices)
+            , m_indices(indices) {}
 
-        const VertexBuffer& GetVertexBuffer() const { return m_vertexBuffer; }
-        const IndexBuffer& GetIndexBuffer() const { return m_indexBuffer; }
+        const std::vector<Vertex>& GetVertices() const { return m_vertices; }
+        const std::vector<unsigned int>& GetIndices() const { return m_indices; }
 
     private:
-        VertexBuffer m_vertexBuffer;
-        IndexBuffer m_indexBuffer;
+        std::vector<Vertex> m_vertices;
+        std::vector<unsigned int> m_indices;
     };
 }
 

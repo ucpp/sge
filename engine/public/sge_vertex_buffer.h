@@ -2,23 +2,15 @@
 #define _SGE_VERTEX_BUFFER_H_
 
 #include <vector>
-#include <DirectXMath.h>
 #include <wrl.h>
 
 #include "sge_device.h"
+#include "sge_common_structures.h"
 
-using namespace DirectX;
 using namespace Microsoft::WRL;
 
 namespace SGE
 {
-    struct Vertex
-    {
-        XMFLOAT3 position;
-        XMFLOAT3 normal;
-        XMFLOAT2 texCoords;
-    };
-
     class VertexBuffer
     {
     public:

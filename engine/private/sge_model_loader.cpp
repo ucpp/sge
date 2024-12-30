@@ -8,36 +8,43 @@ namespace SGE
     {
         Assimp::Importer importer;
 
-        const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_GenNormals);
-        
+        const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate);
+
         if (!scene || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !scene->mRootNode)
         {
             throw std::runtime_error("Failed to load model: " + std::string(importer.GetErrorString()));
         }
 
+        std::vector<Mesh> meshes;
+        ProcessNode(scene->mRootNode, scene, meshes);
+
         Model model;
-        ProcessNode(scene->mRootNode, scene, model, device);
+        model.Initialize(meshes, device);
+
         return model;
     }
 
-    void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, Model& model, Device* device)
+    void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes)
     {
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            model.AddMesh(ProcessMesh(mesh, scene, device));
+            meshes.push_back(ProcessMesh(mesh, scene));
         }
 
         for (unsigned int i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(node->mChildren[i], scene, model, device);
+            ProcessNode(node->mChildren[i], scene, meshes);
         }
     }
 
-    Mesh ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, Device* device)
+    Mesh ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene)
     {
         std::vector<Vertex> vertices;
         std::vector<UINT> indices;
+
+        vertices.reserve(mesh->mNumVertices);
+        indices.reserve(mesh->mNumFaces * 3);
 
         for (unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
@@ -70,9 +77,6 @@ namespace SGE
             }
         }
 
-        Mesh resultMesh;
-        resultMesh.Initialize(vertices, indices, device);
-
-        return resultMesh;
+        return Mesh(std::move(vertices), std::move(indices));
     }
 }

@@ -5,6 +5,7 @@
 
 #include "sge_model_loader.h"
 #include "sge_mesh.h"
+#include "sge_logger.h"
 
 namespace SGE
 {
@@ -126,11 +127,7 @@ namespace SGE
         commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        for (const Mesh& mesh : m_model->GetMeshes())
-        {
-            mesh.Render(commandList);
-        }
-        
+        m_model->Render(commandList);
         m_editor->Render(commandList);
 
         commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(

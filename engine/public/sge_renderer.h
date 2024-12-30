@@ -17,6 +17,7 @@
 #include "sge_constant_buffer.h"
 #include "sge_fence.h"
 #include "sge_render_target.h"
+#include "sge_common_structures.h"
 
 #include "sge_camera.h"
 #include "sge_camera_controller.h"
@@ -29,13 +30,6 @@ using namespace Microsoft::WRL;
 
 namespace SGE
 {
-    struct TransformBuffer
-    {
-        DirectX::XMMATRIX model;
-        DirectX::XMMATRIX view;
-        DirectX::XMMATRIX projection;
-    };
-
     class Renderer : public NonCopyable
     {
     public:
