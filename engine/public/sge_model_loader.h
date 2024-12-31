@@ -16,8 +16,9 @@ namespace SGE
         static Model LoadModel(const std::string& filePath, class Device* device);
 
     private:
-        static void ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes);
-        static Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        static void ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, const std::string& modelPath);
+        static Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& modelPath);
+        static std::string BuildTexturePath(const std::string& modelPath, const std::string& textureRelativePath);
     };
 }
 

@@ -7,7 +7,7 @@
     ☐ Add a settings window in the editor to allow users to change the window size.
     ☐ Modify the Renderer class to handle dynamic resizing of the window and adjust rendering accordingly.
 ✔ Integrate DirectXTex library to handle texture loading and mipmap generation. @done(24-12-30 22:25)
-☐ Extend model loading to retain paths to associated textures.
+✔ Extend model loading to retain paths to associated textures. @done(24-12-31 12:58)
 ☐ Implement a Texture class to manage texture data, including mipmap levels, using DirectXTex.
 ☐ Update shaders to accept diffuse, normal, specular, and gloss maps (and possibly other textures).
 ☐ Add editor functionality to switch between mipmap levels during rendering.

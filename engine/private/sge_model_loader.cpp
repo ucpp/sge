@@ -1,6 +1,6 @@
 #include "sge_model_loader.h"
-
 #include "sge_device.h"
+#include <filesystem>
 
 namespace SGE
 {
@@ -16,7 +16,7 @@ namespace SGE
         }
 
         std::vector<Mesh> meshes;
-        ProcessNode(scene->mRootNode, scene, meshes);
+        ProcessNode(scene->mRootNode, scene, meshes, filePath);
 
         Model model;
         model.Initialize(meshes, device);
@@ -24,29 +24,29 @@ namespace SGE
         return model;
     }
 
-    void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes)
+    void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, const std::string& modelPath)
     {
-        for (unsigned int i = 0; i < node->mNumMeshes; i++)
+        for (uint32 i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(ProcessMesh(mesh, scene));
+            meshes.push_back(ProcessMesh(mesh, scene, modelPath));
         }
 
-        for (unsigned int i = 0; i < node->mNumChildren; i++)
+        for (uint32 i = 0; i < node->mNumChildren; i++)
         {
-            ProcessNode(node->mChildren[i], scene, meshes);
+            ProcessNode(node->mChildren[i], scene, meshes, modelPath);
         }
     }
 
-    Mesh ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+    Mesh ModelLoader::ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& modelPath)
     {
         std::vector<Vertex> vertices;
-        std::vector<UINT> indices;
+        std::vector<uint32> indices;
 
         vertices.reserve(mesh->mNumVertices);
         indices.reserve(mesh->mNumFaces * 3);
 
-        for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+        for (uint32 i = 0; i < mesh->mNumVertices; i++)
         {
             Vertex vertex;
             vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
@@ -68,15 +68,43 @@ namespace SGE
             vertices.push_back(vertex);
         }
 
-        for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+        for (uint32 i = 0; i < mesh->mNumFaces; i++)
         {
             aiFace face = mesh->mFaces[i];
-            for (unsigned int j = 0; j < face.mNumIndices; j++)
+            for (uint32 j = 0; j < face.mNumIndices; j++)
             {
                 indices.push_back(face.mIndices[j]);
             }
         }
 
-        return Mesh(std::move(vertices), std::move(indices));
+        MaterialData material = {};
+        if (scene->mMaterials)
+        {
+            aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
+            aiString path;
+
+            if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
+            {
+                material.diffuseTexturePath = BuildTexturePath(modelPath, path.C_Str());
+            }
+            if (aiMat->GetTexture(aiTextureType_HEIGHT, 0, &path) == AI_SUCCESS)
+            {
+                material.normalTexturePath = BuildTexturePath(modelPath, path.C_Str());
+            }
+            if (aiMat->GetTexture(aiTextureType_SPECULAR, 0, &path) == AI_SUCCESS)
+            {
+                material.specularTexturePath = BuildTexturePath(modelPath, path.C_Str());
+            }
+        }
+
+        return Mesh(std::move(vertices), std::move(indices), material);
+    }
+
+    std::string ModelLoader::BuildTexturePath(const std::string& modelPath, const std::string& textureRelativePath)
+    {
+        std::filesystem::path modelDir = std::filesystem::path(modelPath).parent_path();
+        std::filesystem::path texturePath = modelDir / textureRelativePath;
+
+        return texturePath.string();
     }
 }
