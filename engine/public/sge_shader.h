@@ -19,7 +19,7 @@ namespace SGE
         Shader() = default;
         ~Shader();
 
-        void Initialize(const std::wstring& filePath, ShaderType type);
+        void Initialize(const std::string& filePath, ShaderType type);
         D3D12_SHADER_BYTECODE GetShaderBytecode() const;
         ID3DBlob* GetBlob() const { return m_blob.Get(); }
 

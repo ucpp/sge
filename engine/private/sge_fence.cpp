@@ -14,7 +14,7 @@ namespace SGE
         }
     }
 
-    void Fence::Initialize(Device* device, UINT64 initialValue)
+    void Fence::Initialize(Device* device, uint64 initialValue)
     {
         HRESULT hr = device->GetDevice()->CreateFence(initialValue, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_fence));
         Verify(hr, "Failed to create D3D12 fence.");
@@ -24,9 +24,9 @@ namespace SGE
         Verify(m_fenceEvent, "Failed to create event handle.");
     }
 
-    UINT64 Fence::Signal(ID3D12CommandQueue* commandQueue)
+    uint64 Fence::Signal(ID3D12CommandQueue* commandQueue)
     {
-        const UINT64 fence = m_fenceValue;
+        const uint64 fence = m_fenceValue;
         HRESULT hr = commandQueue->Signal(m_fence.Get(), fence);
         m_fenceValue++;
         Verify(hr, "Failed to signal command queue.");
@@ -34,7 +34,7 @@ namespace SGE
         return fence;
     }
 
-    void Fence::Wait(UINT64 waitValue)
+    void Fence::Wait(uint64 waitValue)
     {
         if (m_fence->GetCompletedValue() < waitValue)
         {
@@ -44,7 +44,7 @@ namespace SGE
         }
     }
 
-    UINT64 Fence::GetCompletedValue() const
+    uint64 Fence::GetCompletedValue() const
     {
         return m_fence->GetCompletedValue();
     }

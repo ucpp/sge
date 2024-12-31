@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void DescriptorHeap::Initialize(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptors, bool shaderVisible)
+    void DescriptorHeap::Initialize(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32 numDescriptors, bool shaderVisible)
     {
         if (!device || numDescriptors == 0)
         {
@@ -47,7 +47,7 @@ namespace SGE
         m_gpuHandle.ptr = 0;
     }
     
-    D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetCPUHandle(UINT index) const
+    D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetCPUHandle(uint32 index) const
     {
         if (!m_heap)
         {
@@ -60,7 +60,7 @@ namespace SGE
         return handle;
     }
     
-    D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUHandle(UINT index) const
+    D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUHandle(uint32 index) const
     {
         if (!m_heap)
         {

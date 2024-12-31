@@ -6,18 +6,18 @@
 namespace SGE
 {
     constexpr bool UseWarpDevice = true;
-    constexpr UINT SwapChainBufferCount = 2;
-    constexpr UINT SampleCount = 1;
+    constexpr uint32 SwapChainBufferCount = 2;
+    constexpr uint32 SampleCount = 1;
 
     class Device
     {
     public:
-        void Initialize(HWND hwnd, UINT width, UINT height);
+        void Initialize(HWND hwnd, uint32 width, uint32 height);
 
         ComPtr<ID3D12Device> GetDevice() const { return m_device; }
         ComPtr<ID3D12CommandQueue> GetCommandQueue() const { return m_commandQueue; }
         ComPtr<IDXGISwapChain3> GetSwapChain() const { return m_swapChain; }
-        ComPtr<ID3D12CommandAllocator> GetCommandAllocator(UINT index) const;
+        ComPtr<ID3D12CommandAllocator> GetCommandAllocator(uint32 index) const;
         ComPtr<ID3D12GraphicsCommandList> GetCommandList() const { return m_commandList; }
 
     private:
@@ -29,7 +29,7 @@ namespace SGE
         bool IsValidAdapter(ComPtr<IDXGIAdapter1>& adapter);
 
         void CreateCommandQueue();
-        void CreateSwapChain(HWND hwnd, UINT width, UINT height);
+        void CreateSwapChain(HWND hwnd, uint32 width, uint32 height);
         void CreateCommandAllocators();
         void CreateCommandList();
 
@@ -41,7 +41,7 @@ namespace SGE
         ComPtr<ID3D12GraphicsCommandList> m_commandList;
         ComPtr<ID3D12CommandAllocator> m_commandAllocators[SwapChainBufferCount];
 
-        UINT m_dxgiFactoryCreationFlags;
+        uint32 m_dxgiFactoryCreationFlags;
     };
 }
 

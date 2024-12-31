@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void RenderTarget::Initialize(Device* device, UINT bufferCount)
+    void RenderTarget::Initialize(Device* device, uint32 bufferCount)
     {
         m_rtvDescriptorSize = device->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
@@ -20,7 +20,7 @@ namespace SGE
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 
-        for (UINT i = 0; i < bufferCount; i++)
+        for (uint32 i = 0; i < bufferCount; i++)
         {
             hr = device->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&m_renderTargets[i]));
             Verify(hr, "Failed to get buffer from SwapChain.");
@@ -36,7 +36,7 @@ namespace SGE
         m_rtvHeap.Reset();
     }
 
-    CD3DX12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(UINT index) const
+    CD3DX12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(uint32 index) const
     {
         CD3DX12_CPU_DESCRIPTOR_HANDLE handle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
         handle.Offset(index, m_rtvDescriptorSize);

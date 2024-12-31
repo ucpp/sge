@@ -155,7 +155,7 @@ namespace SGE
         };
 
         std::array<Matrix, 6> matrices;
-        for (int i = 0; i < 6; ++i)
+        for (int32 i = 0; i < 6; ++i)
         {
             matrices[i] = XMMatrixLookAtRH(m_position, m_position + directions[i], ups[i]);
         }

@@ -9,7 +9,7 @@ namespace SGE
         m_blob.Reset();
     }
     
-    void Shader::Initialize(const std::wstring& filePath, ShaderType type)
+    void Shader::Initialize(const std::string& filePath, ShaderType type)
     {
         UINT compileFlags = 0;
 #ifdef _DEBUG
@@ -17,9 +17,10 @@ namespace SGE
 #endif
 
         std::string target = ShaderTypeToTarget(type);
+        std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
 
         HRESULT hr = D3DCompileFromFile(
-            filePath.c_str(),
+            wFilePath.c_str(),
             nullptr,
             nullptr,
             EntryPoint,

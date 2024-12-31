@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void ConstantBuffer::Initialize(ID3D12Device* device, DescriptorHeap* descriptorHeap, size_t bufferSize, UINT descriptorIndex)
+    void ConstantBuffer::Initialize(ID3D12Device* device, DescriptorHeap* descriptorHeap, size_t bufferSize, uint32 descriptorIndex)
     {
         m_descriptorHeap = descriptorHeap;
 
@@ -41,7 +41,7 @@ namespace SGE
         m_gpuDescriptorHandle = m_descriptorHeap->GetGPUHandle(descriptorIndex);
 
         D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-        cbvDesc.SizeInBytes = (static_cast<UINT>(bufferSize) + 255) & ~255;
+        cbvDesc.SizeInBytes = (static_cast<uint32>(bufferSize) + 255) & ~255;
         cbvDesc.BufferLocation = m_buffer->GetGPUVirtualAddress();
 
         device->CreateConstantBufferView(&cbvDesc, m_descriptorHeap->GetCPUHandle(descriptorIndex));

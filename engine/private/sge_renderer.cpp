@@ -26,8 +26,8 @@ namespace SGE
         m_vertexShader = std::make_unique<Shader>();
         m_pixelShader = std::make_unique<Shader>();
 
-        m_vertexShader->Initialize(L"shaders/vs_default.hlsl", ShaderType::Vertex);
-        m_pixelShader->Initialize(L"shaders/ps_default.hlsl", ShaderType::Pixel);
+        m_vertexShader->Initialize("shaders/vs_default.hlsl", ShaderType::Vertex);
+        m_pixelShader->Initialize("shaders/ps_default.hlsl", ShaderType::Pixel);
 
         m_rootSignature = std::make_unique<RootSignature>();
         m_rootSignature->Initialize(m_device->GetDevice().Get());

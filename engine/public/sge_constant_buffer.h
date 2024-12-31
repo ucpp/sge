@@ -9,7 +9,7 @@ namespace SGE
     class ConstantBuffer
     {
     public:
-        void Initialize(ID3D12Device* device, DescriptorHeap* descriptorHeap, size_t bufferSize, UINT descriptorIndex);
+        void Initialize(ID3D12Device* device, DescriptorHeap* descriptorHeap, size_t bufferSize, uint32 descriptorIndex);
         void Update(const void* data, size_t dataSize);
         D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandle() const { return m_gpuDescriptorHandle; }
 

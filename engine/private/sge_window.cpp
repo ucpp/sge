@@ -40,7 +40,11 @@ namespace SGE
     {
         RECT windowRect = { 0, 0, width, height };
         AdjustWindowRectEx(&windowRect, GetWindowLong(m_hwnd, GWL_STYLE), false, GetWindowLong(m_hwnd, GWL_EXSTYLE));
-        SetWindowPos(m_hwnd, HWND_NOTOPMOST, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOZORDER | SWP_FRAMECHANGED);
+        
+        int32 cx = windowRect.right - windowRect.left;
+        int32 cy = windowRect.bottom - windowRect.top;
+        SetWindowPos(m_hwnd, HWND_NOTOPMOST, 0, 0, cx, cy, SWP_NOZORDER | SWP_FRAMECHANGED);
+        
         m_width = width;
         m_height = height;
     }

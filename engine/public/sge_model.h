@@ -17,7 +17,7 @@ namespace SGE
     private:
         VertexBuffer m_vertexBuffer;
         IndexBuffer m_indexBuffer;
-        UINT m_indexCount = 0;
+        uint32 m_indexCount = 0;
     };
 }
 

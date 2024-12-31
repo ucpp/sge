@@ -8,17 +8,17 @@ namespace SGE
     class IndexBuffer
     {
     public:
-        void Initialize(class Device* device, const std::vector<UINT>& indices);
+        void Initialize(class Device* device, const std::vector<uint32>& indices);
         void Shutdown();
 
         D3D12_INDEX_BUFFER_VIEW GetView() const { return m_view; }
         ID3D12Resource* GetResource() const { return m_resource.Get(); }
-        UINT GetIndexCount() const { return m_indexCount; }
+        uint32 GetIndexCount() const { return m_indexCount; }
 
     private:
         ComPtr<ID3D12Resource> m_resource;
         D3D12_INDEX_BUFFER_VIEW m_view = {};
-        UINT m_indexCount = {};
+        uint32 m_indexCount = {};
     };
 }
 

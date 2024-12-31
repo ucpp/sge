@@ -6,10 +6,10 @@
 
 namespace SGE
 {
-    void IndexBuffer::Initialize(Device* device, const std::vector<UINT>& indices)
+    void IndexBuffer::Initialize(Device* device, const std::vector<uint32>& indices)
     {
-        m_indexCount = static_cast<UINT>(indices.size());
-        const UINT indexBufferSize = static_cast<UINT>(indices.size() * sizeof(UINT));
+        m_indexCount = static_cast<uint32>(indices.size());
+        const uint32 indexBufferSize = static_cast<uint32>(indices.size() * sizeof(uint32));
 
         HRESULT hr = device->GetDevice()->CreateCommittedResource(
             &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),

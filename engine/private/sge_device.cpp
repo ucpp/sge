@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void Device::Initialize(HWND hwnd, UINT width, UINT height)
+    void Device::Initialize(HWND hwnd, uint32 width, uint32 height)
     {
         HRESULT hr = DXGIDeclareAdapterRemovalSupport();
         Verify(hr,"Failed to declare adapter removal support.");
@@ -94,7 +94,7 @@ namespace SGE
         {
             DXGI_GPU_PREFERENCE gpuPreference = highPerformance ? DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE : DXGI_GPU_PREFERENCE_UNSPECIFIED;
 
-            for (UINT index = 0; SUCCEEDED(factory1->EnumAdapters1(index, &adapter)); ++index)
+            for (uint32 index = 0; SUCCEEDED(factory1->EnumAdapters1(index, &adapter)); ++index)
             {
                 if (IsValidAdapter(adapter))
                 {
@@ -107,7 +107,7 @@ namespace SGE
         {
             DXGI_GPU_PREFERENCE gpuPreference = highPerformance ? DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE : DXGI_GPU_PREFERENCE_UNSPECIFIED;
 
-            for (UINT index = 0; SUCCEEDED(factory6->EnumAdapterByGpuPreference(index, gpuPreference, IID_PPV_ARGS(&adapter))); ++index)
+            for (uint32 index = 0; SUCCEEDED(factory6->EnumAdapterByGpuPreference(index, gpuPreference, IID_PPV_ARGS(&adapter))); ++index)
             {
                 if (IsValidAdapter(adapter))
                 {
@@ -143,7 +143,7 @@ namespace SGE
         Verify(hr, "Failed to create command queue.");
     }
     
-    void Device::CreateSwapChain(HWND hwnd, UINT width, UINT height)
+    void Device::CreateSwapChain(HWND hwnd, uint32 width, uint32 height)
     {
         DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
         swapChainDesc.BufferCount = SwapChainBufferCount;
@@ -165,14 +165,14 @@ namespace SGE
     
     void Device::CreateCommandAllocators()
     {
-        for (UINT i = 0; i < SwapChainBufferCount; ++i)
+        for (uint32 i = 0; i < SwapChainBufferCount; ++i)
         {
             HRESULT hr = m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocators[i]));
             Verify(hr, "Failed to create command allocator.");
         }
     }
 
-    ComPtr<ID3D12CommandAllocator> Device::GetCommandAllocator(UINT index) const
+    ComPtr<ID3D12CommandAllocator> Device::GetCommandAllocator(uint32 index) const
     {
         return m_commandAllocators[index];
     }

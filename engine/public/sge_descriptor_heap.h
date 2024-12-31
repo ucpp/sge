@@ -8,17 +8,17 @@ namespace SGE
     class DescriptorHeap
     {
     public:
-        void Initialize(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, UINT numDescriptors, bool shaderVisible = false);
+        void Initialize(ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_TYPE type, uint32 numDescriptors, bool shaderVisible = false);
         void Shutdown();
 
         ComPtr<ID3D12DescriptorHeap> GetHeap() const { return m_heap; }
-        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(UINT index) const;
-        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(UINT index) const;
-        UINT GetDescriptorSize() const { return m_descriptorSize; }
+        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32 index) const;
+        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32 index) const;
+        uint32 GetDescriptorSize() const { return m_descriptorSize; }
 
     private:
         ComPtr<ID3D12DescriptorHeap> m_heap;
-        UINT m_descriptorSize = 0;
+        uint32 m_descriptorSize = 0;
         D3D12_CPU_DESCRIPTOR_HANDLE m_cpuHandle = {};
         D3D12_GPU_DESCRIPTOR_HANDLE m_gpuHandle = {};
     };
