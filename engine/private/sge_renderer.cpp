@@ -111,6 +111,9 @@ namespace SGE
         transformData.projection = projectionMatrix;
 
         m_transformBuffer->Update(&transformData, sizeof(TransformBuffer));
+
+        ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
+        commandList->SetDescriptorHeaps(_countof(heaps), heaps);
         commandList->SetGraphicsRootDescriptorTable(0, m_cbvSrvUavHeap.GetGPUHandle(0));
 
         commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());

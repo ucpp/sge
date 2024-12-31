@@ -9,10 +9,12 @@ namespace SGE
     {
         m_descriptorHeap = descriptorHeap;
 
+        size_t alignedBufferSize = (bufferSize + 255) & ~255;
+
         D3D12_RESOURCE_DESC bufferDesc = {};
         bufferDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
         bufferDesc.Alignment = 0;
-        bufferDesc.Width = bufferSize;
+        bufferDesc.Width = alignedBufferSize;
         bufferDesc.Height = 1;
         bufferDesc.DepthOrArraySize = 1;
         bufferDesc.MipLevels = 1;
@@ -41,7 +43,7 @@ namespace SGE
         m_gpuDescriptorHandle = m_descriptorHeap->GetGPUHandle(descriptorIndex);
 
         D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-        cbvDesc.SizeInBytes = (static_cast<uint32>(bufferSize) + 255) & ~255;
+        cbvDesc.SizeInBytes = static_cast<uint32>(alignedBufferSize);
         cbvDesc.BufferLocation = m_buffer->GetGPUVirtualAddress();
 
         device->CreateConstantBufferView(&cbvDesc, m_descriptorHeap->GetCPUHandle(descriptorIndex));
