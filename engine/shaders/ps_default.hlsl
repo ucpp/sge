@@ -1,3 +1,7 @@
+Texture2D diffuseMap : register(t0);
+
+SamplerState sampleWrap : register(s0);
+
 struct PixelInput
 {
     float4 position : SV_POSITION;
@@ -7,5 +11,6 @@ struct PixelInput
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    float4 color = diffuseMap.Sample(sampleWrap, input.texCoords);
+    return color;
 }
