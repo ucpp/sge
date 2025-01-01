@@ -5,7 +5,7 @@ namespace SGE
 {
     struct ApplicationSettings
     {
-        bool wireframeMode = true;
+        bool wireframeMode = false;
     };
 }
 
