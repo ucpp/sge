@@ -63,6 +63,7 @@ namespace SGE
 
         DescriptorHeap m_cbvSrvUavHeap;
         DescriptorHeap m_rtvHeap;
+        DescriptorHeap m_dsvHeap;
     };
 }
 

@@ -16,24 +16,22 @@ namespace SGE
         }
 
         m_rtvHeap = rtvHeap;
-
         m_renderTargets.resize(bufferCount);
-
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(0);
 
         for (uint32 i = 0; i < bufferCount; i++)
         {
             HRESULT hr = device->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&m_renderTargets[i]));
             Verify(hr, "Failed to get buffer from SwapChain.");
 
+            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(i);
             device->GetDevice()->CreateRenderTargetView(m_renderTargets[i].Get(), nullptr, rtvHandle);
-            rtvHandle.Offset(1, m_rtvHeap->GetDescriptorSize());
         }
     }
 
     void RenderTarget::Shutdown()
     {
         m_renderTargets.clear();
+        m_rtvHeap = nullptr;
     }
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(uint32 index) const
