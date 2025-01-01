@@ -24,21 +24,27 @@ This project is **actively under development**, and its purpose is to experiment
 <details>
   <summary><strong>✔ 2. Process input and camera control</strong>: Implement user input and basic camera movement.</summary>
  
-  ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/camera_and_input.gif)
+  ![Camera and Input](https://github.com/ucpp/sge/blob/master/docs/camera_and_input.gif)
 
   [Last commit](https://github.com/ucpp/sge/commit/ba4c22781d8f4f9242fe2f4917e1cb136106b02b)
 </details>
 <details>
   <summary><strong>✔ 3. Load simple models without animation</strong>: Import static models such as teapots, cars, and tanks.</summary>
  
-  ![First Triangle](https://github.com/ucpp/sge/blob/master/docs/load_model.gif)
+  ![Models](https://github.com/ucpp/sge/blob/master/docs/load_model.gif)
 
   [Last commit](https://github.com/ucpp/sge/commit/97288dfe5bd48521b60c2f83586c5614c38b82e2)
 </details>
+<details>
+  <summary><strong>✔ 4. Load mip-mapped textures</strong>: Support diffuse, normal, specular, and gloss maps.</summary>
+ 
+  ![Textures](https://github.com/ucpp/sge/blob/master/docs/textures.gif)
+
+
+</details>
 
 ---
-  
-**4. Load mip-mapped textures**: Support diffuse, normal, specular, and gloss maps.  
+    
 **5. GPU compressed textures**: Use compressed texture formats for better performance.  
 **6. Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.  
 **7. Fog effect**: Add fog either in the pixel shader or as a post-process effect.  
