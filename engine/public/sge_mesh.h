@@ -20,6 +20,8 @@ namespace SGE
         const std::vector<uint32>& GetIndices() const { return m_indices; }
         const MaterialData& GetMaterial() const { return m_material; }
 
+        void Initialize(class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex) const;
+
     private:
         std::vector<Vertex> m_vertices;
         std::vector<uint32> m_indices;

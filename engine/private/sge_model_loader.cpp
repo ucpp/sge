@@ -1,10 +1,12 @@
 #include "sge_model_loader.h"
+
 #include "sge_device.h"
+#include "sge_descriptor_heap.h"
 #include <filesystem>
 
 namespace SGE
 {
-    Model ModelLoader::LoadModel(const std::string& filePath, Device* device)
+    Model ModelLoader::LoadModel(const std::string& filePath, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         Assimp::Importer importer;
 
@@ -19,7 +21,7 @@ namespace SGE
         ProcessNode(scene->mRootNode, scene, meshes, filePath);
 
         Model model;
-        model.Initialize(meshes, device);
+        model.Initialize(meshes, device, descriptorHeap, descriptorIndex);
 
         return model;
     }

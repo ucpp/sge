@@ -1,10 +1,11 @@
 #include "sge_model.h"
 
 #include "sge_device.h"
+#include "sge_descriptor_heap.h"
 
 namespace SGE
 {
-    void Model::Initialize(const std::vector<Mesh>& meshes, Device* device)
+    void Model::Initialize(const std::vector<Mesh>& meshes, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         size_t totalVertexCount = 0;
         size_t totalIndexCount = 0;
@@ -16,11 +17,11 @@ namespace SGE
         }
 
         std::vector<Vertex> allVertices;
-        std::vector<UINT> allIndices;
+        std::vector<uint32> allIndices;
         allVertices.reserve(totalVertexCount);
         allIndices.reserve(totalIndexCount);
 
-        UINT currentIndexOffset = 0;
+        uint32 currentIndexOffset = 0;
 
         for (const auto& mesh : meshes)
         {
@@ -34,12 +35,16 @@ namespace SGE
                 allIndices.push_back(index + currentIndexOffset);
             }
 
-            currentIndexOffset += static_cast<UINT>(vertices.size());
+            currentIndexOffset += static_cast<uint32>(vertices.size());
+
+            mesh.Initialize(device, descriptorHeap, descriptorIndex);
         }
+
+        std::reverse(allIndices.begin(), allIndices.end());
 
         m_vertexBuffer.Initialize(device, std::move(allVertices));
         m_indexBuffer.Initialize(device, std::move(allIndices));
-        m_indexCount = static_cast<UINT>(allIndices.size());
+        m_indexCount = static_cast<uint32>(allIndices.size());
     }
 
     void Model::Render(ID3D12GraphicsCommandList* commandList) const

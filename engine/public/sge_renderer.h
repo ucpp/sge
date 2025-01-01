@@ -33,6 +33,7 @@ namespace SGE
         void InitializeCamera();
         void PopulateCommandList();
         void WaitForPreviousFrame();
+        void ExecuteCommandList();
 
     private:
         class Window* m_window = nullptr;

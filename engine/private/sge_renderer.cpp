@@ -18,7 +18,7 @@ namespace SGE
         m_viewportScissors = std::make_unique<ViewportScissors>(m_window->GetWidth(), m_window->GetHeight());
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
 
-        m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, true);
+        m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2, true);
 
         m_renderTarget = std::make_unique<RenderTarget>();
         m_renderTarget->Initialize(m_device.get(), SwapChainBufferCount);
@@ -44,20 +44,21 @@ namespace SGE
         descWireframe.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
         m_wireframePipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, descWireframe);
 
-        m_device->GetCommandList()->Close();
-
-        m_model = std::make_unique<Model>();
-        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get());
+        m_fence.Initialize(m_device.get(), 1);
 
         m_transformBuffer = std::make_unique<ConstantBuffer>();
         m_transformBuffer->Initialize(m_device->GetDevice().Get(), &m_cbvSrvUavHeap, sizeof(TransformBuffer), 0);
+
+        m_model = std::make_unique<Model>();
+        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get(), &m_cbvSrvUavHeap, 1);
 
         InitializeCamera();
 
         m_editor = std::make_unique<Editor>();
         m_editor->Initialize(m_window, m_device.get(), m_settings);
-
-        m_fence.Initialize(m_device.get(), 1);
+        
+        m_device->GetCommandList()->Close();
+        ExecuteCommandList();
         WaitForPreviousFrame();
     }
 
@@ -82,9 +83,7 @@ namespace SGE
         m_editor->BuildImGuiFrame();
 
         PopulateCommandList();
-
-        ID3D12CommandList* ppCommandLists[] = { m_device->GetCommandList().Get() };
-        m_device->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+        ExecuteCommandList();
 
         m_device->GetSwapChain()->Present(1, 0);
         WaitForPreviousFrame();
@@ -118,6 +117,7 @@ namespace SGE
         ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
         commandList->SetGraphicsRootDescriptorTable(0, m_cbvSrvUavHeap.GetGPUHandle(0));
+        commandList->SetGraphicsRootDescriptorTable(1, m_cbvSrvUavHeap.GetGPUHandle(1));
 
         commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());
         commandList->RSSetScissorRects(1, &m_viewportScissors->GetScissorRect());
@@ -152,6 +152,12 @@ namespace SGE
         m_fence.Wait(fence);
 
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
+    }
+
+    void Renderer::ExecuteCommandList()
+    {
+        ID3D12CommandList* ppCommandLists[] = { m_device->GetCommandList().Get() };
+        m_device->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
     }
 
     void Renderer::Shutdown() 

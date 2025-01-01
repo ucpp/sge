@@ -11,7 +11,7 @@ namespace SGE
     class Model
     {
     public:
-        void Initialize(const std::vector<Mesh>& meshes, class Device* device);
+        void Initialize(const std::vector<Mesh>& meshes, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
     private:

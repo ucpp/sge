@@ -13,7 +13,7 @@ namespace SGE
     class ModelLoader
     {
     public:
-        static Model LoadModel(const std::string& filePath, class Device* device);
+        static Model LoadModel(const std::string& filePath, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
 
     private:
         static void ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, const std::string& modelPath);
