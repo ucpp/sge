@@ -23,6 +23,9 @@ namespace SGE
         m_renderTarget = std::make_unique<RenderTarget>();
         m_renderTarget->Initialize(m_device.get(), SwapChainBufferCount);
 
+        m_depthBuffer = std::make_unique<DepthBuffer>();
+        m_depthBuffer->Initialize(m_device.get(), m_window->GetWidth(), m_window->GetHeight(), SwapChainBufferCount);
+
         m_vertexShader = std::make_unique<Shader>();
         m_pixelShader = std::make_unique<Shader>();
 
@@ -119,14 +122,17 @@ namespace SGE
         commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());
         commandList->RSSetScissorRects(1, &m_viewportScissors->GetScissorRect());
 
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(m_frameIndex);
         commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTarget->GetTarget(m_frameIndex), 
-                                    D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+                                        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex);
-        commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+        commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
         const float clearColor[] = { 0.314f, 0.314f, 0.314f, 1.0f };
         commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+        commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         m_model->Render(commandList);

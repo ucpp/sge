@@ -7,6 +7,7 @@
 #include "sge_camera_controller.h"
 #include "sge_constant_buffer.h"
 #include "sge_device.h"
+#include "sge_depth_buffer.h"
 #include "sge_descriptor_heap.h"
 #include "sge_editor.h"
 #include "sge_fence.h"
@@ -40,6 +41,7 @@ namespace SGE
         std::unique_ptr<Device> m_device;
         std::unique_ptr<ViewportScissors> m_viewportScissors;
         std::unique_ptr<RenderTarget> m_renderTarget;
+        std::unique_ptr<DepthBuffer> m_depthBuffer;
 
         std::unique_ptr<Shader> m_vertexShader;
         std::unique_ptr<Shader> m_pixelShader;
