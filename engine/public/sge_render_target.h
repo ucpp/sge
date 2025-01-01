@@ -8,16 +8,15 @@ namespace SGE
     class RenderTarget
     {
     public:
-        void Initialize(class Device* device, uint32 bufferCount);
+        void Initialize(class Device* device, class DescriptorHeap* rtvHeap, uint32 bufferCount);
         void Shutdown();
 
         ID3D12Resource* GetTarget(uint32 index) const { return m_renderTargets[index].Get(); }
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(uint32 index) const;
 
     private:
-        ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
+        class DescriptorHeap* m_rtvHeap = nullptr;
         std::vector<ComPtr<ID3D12Resource>> m_renderTargets;
-        uint32 m_rtvDescriptorSize = 0;
     };
 }
 

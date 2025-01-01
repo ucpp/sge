@@ -62,6 +62,7 @@ namespace SGE
         std::unique_ptr<Editor> m_editor;
 
         DescriptorHeap m_cbvSrvUavHeap;
+        DescriptorHeap m_rtvHeap;
     };
 }
 

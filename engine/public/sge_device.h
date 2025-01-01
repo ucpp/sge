@@ -6,7 +6,7 @@
 namespace SGE
 {
     constexpr bool UseWarpDevice = true;
-    constexpr uint32 SwapChainBufferCount = 2;
+    constexpr uint32 BufferCount = 2;
     constexpr uint32 SampleCount = 1;
 
     class Device
@@ -39,7 +39,7 @@ namespace SGE
         ComPtr<IDXGISwapChain3> m_swapChain;
         ComPtr<IDXGIFactory4> m_dxgiFactory;
         ComPtr<ID3D12GraphicsCommandList> m_commandList;
-        ComPtr<ID3D12CommandAllocator> m_commandAllocators[SwapChainBufferCount];
+        ComPtr<ID3D12CommandAllocator> m_commandAllocators[BufferCount];
 
         uint32 m_dxgiFactoryCreationFlags;
     };

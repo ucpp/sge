@@ -22,7 +22,7 @@ namespace SGE
         ImGui_ImplWin32_Init(m_window->GetHandle());
         ImGui_ImplDX12_Init(
             m_device->GetDevice().Get(),
-            SwapChainBufferCount,
+            BufferCount,
             DXGI_FORMAT_R8G8B8A8_UNORM,
             m_descriptorHeap.GetHeap().Get(),
             m_descriptorHeap.GetCPUHandle(0),

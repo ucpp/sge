@@ -146,7 +146,7 @@ namespace SGE
     void Device::CreateSwapChain(HWND hwnd, uint32 width, uint32 height)
     {
         DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-        swapChainDesc.BufferCount = SwapChainBufferCount;
+        swapChainDesc.BufferCount = BufferCount;
         swapChainDesc.SampleDesc.Count = SampleCount;
         swapChainDesc.Width = width;
         swapChainDesc.Height = height;
@@ -165,7 +165,7 @@ namespace SGE
     
     void Device::CreateCommandAllocators()
     {
-        for (uint32 i = 0; i < SwapChainBufferCount; ++i)
+        for (uint32 i = 0; i < BufferCount; ++i)
         {
             HRESULT hr = m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocators[i]));
             Verify(hr, "Failed to create command allocator.");

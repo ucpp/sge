@@ -47,7 +47,7 @@ namespace SGE
         m_gpuHandle.ptr = 0;
     }
     
-    D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetCPUHandle(uint32 index) const
+    CD3DX12_CPU_DESCRIPTOR_HANDLE DescriptorHeap::GetCPUHandle(uint32 index) const
     {
         if (!m_heap)
         {
@@ -55,12 +55,12 @@ namespace SGE
             return {};
         }
 
-        D3D12_CPU_DESCRIPTOR_HANDLE handle = m_cpuHandle;
+        CD3DX12_CPU_DESCRIPTOR_HANDLE handle = m_cpuHandle;
         handle.ptr += index * m_descriptorSize;
         return handle;
     }
     
-    D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUHandle(uint32 index) const
+    CD3DX12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUHandle(uint32 index) const
     {
         if (!m_heap)
         {
@@ -68,7 +68,7 @@ namespace SGE
             return {};
         }
 
-        D3D12_GPU_DESCRIPTOR_HANDLE handle = m_gpuHandle;
+        CD3DX12_GPU_DESCRIPTOR_HANDLE handle = m_gpuHandle;
         handle.ptr += index * m_descriptorSize;
         return handle;
     }

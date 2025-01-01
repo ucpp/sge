@@ -12,15 +12,15 @@ namespace SGE
         void Shutdown();
 
         ComPtr<ID3D12DescriptorHeap> GetHeap() const { return m_heap; }
-        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32 index) const;
-        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32 index) const;
+        CD3DX12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32 index) const;
+        CD3DX12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32 index) const;
         uint32 GetDescriptorSize() const { return m_descriptorSize; }
 
     private:
         ComPtr<ID3D12DescriptorHeap> m_heap;
         uint32 m_descriptorSize = 0;
-        D3D12_CPU_DESCRIPTOR_HANDLE m_cpuHandle = {};
-        D3D12_GPU_DESCRIPTOR_HANDLE m_gpuHandle = {};
+        CD3DX12_CPU_DESCRIPTOR_HANDLE m_cpuHandle = {};
+        CD3DX12_GPU_DESCRIPTOR_HANDLE m_gpuHandle = {};
     };
 }
 

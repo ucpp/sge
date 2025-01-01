@@ -19,12 +19,13 @@ namespace SGE
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
 
         m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2, true);
+        m_rtvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, BufferCount);
 
         m_renderTarget = std::make_unique<RenderTarget>();
-        m_renderTarget->Initialize(m_device.get(), SwapChainBufferCount);
+        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BufferCount);
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
-        m_depthBuffer->Initialize(m_device.get(), m_window->GetWidth(), m_window->GetHeight(), SwapChainBufferCount);
+        m_depthBuffer->Initialize(m_device.get(), m_window->GetWidth(), m_window->GetHeight(), BufferCount);
 
         m_vertexShader = std::make_unique<Shader>();
         m_pixelShader = std::make_unique<Shader>();
