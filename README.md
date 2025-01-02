@@ -38,7 +38,7 @@ This project is **actively under development**, and its purpose is to experiment
 <details>
   <summary><strong>✔ 4. Load mip-mapped textures</strong>: Support diffuse, normal, specular, and gloss maps (in progress).</summary>
  
-  ![Textures](https://github.com/ucpp/sge/blob/master/docs/textures.gif)
+  ![Textures](https://github.com/ucpp/sge/blob/master/docs/test_mips.gif)
 
 
 </details>
