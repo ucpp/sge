@@ -12,6 +12,7 @@ namespace SGE
     class Application : public NonCopyable
     {
     public:
+        explicit Application(const std::string& configPath);
         void Run();
 
     private:

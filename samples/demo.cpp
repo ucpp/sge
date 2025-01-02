@@ -5,7 +5,7 @@ int main()
 {
     try
     {
-        SGE::Application app{};
+        SGE::Application app("resources/configs/application_settings.json");
         app.Run();
     }
     catch(const std::exception& e)

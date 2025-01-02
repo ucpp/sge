@@ -1,8 +1,8 @@
 ### Common tasks
 
 ✔ Integrate nlohmann/json library for JSON parsing. @done(25-01-02 18:12)
-    ☐ Add a configuration file (e.g., config.json) to store application settings.  
-    ☐ Implement functionality to read the configuration file during application startup and apply settings (e.g., window size, rendering options).
+    ✔ Add a configuration file (e.g., config.json) to store application settings. @done(25-01-02 19:06)
+    ✔ Implement functionality to read the configuration file during application startup and apply settings (e.g., window size, rendering options). @done(25-01-02 19:07)
 ☐ Implement window resizing functionality.
     ☐ Add a settings window in the editor to allow users to change the window size.
     ☐ Modify the Renderer class to handle dynamic resizing of the window and adjust rendering accordingly.

@@ -2,9 +2,19 @@
 
 #include "sge_logger.h"
 #include "sge_frame_timer.h"
+#include "sge_config.h"
 
 namespace SGE
 {
+    Application::Application(const std::string& configPath)
+    {
+        m_settings = std::make_unique<ApplicationSettings>();
+        if (!Config::Load(configPath, *m_settings))
+        {
+            LOG_ERROR("Failed to load settings from " + configPath);
+        }
+    }
+
     void Application::Run()
     {
         Initialize();
@@ -16,10 +26,8 @@ namespace SGE
         FrameTimer timer;
     
         m_window = std::make_unique<Window>();
-        m_window->Create("SGE: simple game engine v.0.9.0", 800, 600, false);
+        m_window->Create(m_settings->title, m_settings->width, m_settings->height, false);
         m_window->OnUpdate().Subscribe(this, &Application::Update);
-
-        m_settings = std::make_unique<ApplicationSettings>();
 
         m_renderer = std::make_unique<Renderer>();
         m_renderer->Initialize(m_window.get(), m_settings.get());
