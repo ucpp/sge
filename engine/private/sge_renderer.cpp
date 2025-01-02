@@ -113,6 +113,7 @@ namespace SGE
         transformData.model = modelMatrix;
         transformData.view = viewMatrix;
         transformData.projection = projectionMatrix;
+        transformData.lodLevel = m_settings->lodLevel;
 
         m_transformBuffer->Update(&transformData, sizeof(TransformBuffer));
 

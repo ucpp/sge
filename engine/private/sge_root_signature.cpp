@@ -20,7 +20,7 @@ namespace SGE
 
         rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
         rootParameters[0].DescriptorTable = cbvTable;
-        rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+        rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
         D3D12_DESCRIPTOR_RANGE srvRange = {};
         srvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;

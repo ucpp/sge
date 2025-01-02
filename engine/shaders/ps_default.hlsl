@@ -1,3 +1,11 @@
+cbuffer TransformBuffer : register(b0)
+{
+    matrix model;
+    matrix view;
+    matrix projection;
+    float lodLevel;
+}
+
 Texture2D diffuseMap : register(t0);
 
 SamplerState sampleWrap : register(s0);
@@ -11,6 +19,6 @@ struct PixelInput
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    float4 color = diffuseMap.Sample(sampleWrap, input.texCoords);
+    float4 color = diffuseMap.SampleLevel(sampleWrap, input.texCoords, lodLevel);
     return color;
 }

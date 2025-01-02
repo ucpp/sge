@@ -1,7 +1,7 @@
 {
     "application_title": "SGE Editor",
-    "screen_width": 1280,
-    "screen_height": 720,
+    "screen_width": 800,
+    "screen_height": 600,
     "fullscreen": false,
     "wireframe_mode": false
 }
