@@ -1,16 +1,23 @@
 ### Common tasks
 
-✔ Integrate nlohmann/json library for JSON parsing. @done(25-01-02 18:12)
-    ✔ Add a configuration file (e.g., config.json) to store application settings. @done(25-01-02 19:06)
-    ✔ Implement functionality to read the configuration file during application startup and apply settings (e.g., window size, rendering options). @done(25-01-02 19:07)
+☐ Implement Phong lighting.
+    ☐ Pass vertex position, normal, and UV coordinates from the vertex shader to the pixel shader.
+    ☐ Define constant buffers for light sources, camera position, and material properties.
+    ☐ Implement the Phong lighting model in the pixel shader, combining ambient, diffuse, and specular components for both directional and point lights.
+    ☐ Combine the computed lighting with the sampled texture color.
+☐ Add support for compressed textures using BCn compression formats.
+☐ Create a dedicated buffer for test data and move the LOD level data to it.
 ☐ Implement window resizing functionality.
     ☐ Add a settings window in the editor to allow users to change the window size.
     ☐ Modify the Renderer class to handle dynamic resizing of the window and adjust rendering accordingly.
+✔ Integrate nlohmann/json library for JSON parsing. @done(25-01-02 18:12)
+    ✔ Add a configuration file (e.g., config.json) to store application settings. @done(25-01-02 19:06)
+    ✔ Implement functionality to read the configuration file during application startup and apply settings (e.g., window size, rendering options). @done(25-01-02 19:07)
 ✔ Integrate DirectXTex library to handle texture loading and mipmap generation. @done(24-12-30 22:25)
 ✔ Extend model loading to retain paths to associated textures. @done(24-12-31 12:58)
-☐ Implement a Texture class to manage texture data, including mipmap levels, using DirectXTex.
-☐ Update shaders to accept diffuse, normal, specular, and gloss maps (and possibly other textures).
-☐ Add editor functionality to switch between mipmap levels during rendering.
+✔ Implement a Texture class to manage texture data, including mipmap levels, using DirectXTex. @done(25-01-02 22:10)
+✔ Update shaders to accept diffuse, normal, specular, and gloss maps (and possibly other textures). @done(25-01-02 22:10)
+✔ Add editor functionality to switch between mipmap levels during rendering. @done(25-01-02 22:09)
 ✔ Implement basic model data loading. @done(24-12-28 20:02)
 ✔ Add a Mesh class to represent individual meshes. @done(24-12-28 19:59)
 ✔ Add a Model class to encapsulate multiple meshes. @done(24-12-28 20:00)
