@@ -51,7 +51,7 @@ This project is **actively under development**, and its purpose is to experiment
 </details>
 
 <details>
-  <summary><strong>☐ 6. Phong lighting</strong>: Use compressed texture formats for better performance (in progress).</summary>
+  <summary><strong>☐ 6. Phong lighting</strong>: Calculate lighting from direct and point lights in the pixel shader (in progress).</summary>
  
 </details>
 
