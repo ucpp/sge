@@ -36,17 +36,27 @@ This project is **actively under development**, and its purpose is to experiment
   [Last commit](https://github.com/ucpp/sge/commit/97288dfe5bd48521b60c2f83586c5614c38b82e2)
 </details>
 <details>
-  <summary><strong>✔ 4. Load mip-mapped textures</strong>: Support diffuse, normal, specular, and gloss maps (in progress).</summary>
+  <summary><strong>✔ 4. Load mip-mapped textures</strong>: Support diffuse, normal, specular, and gloss maps.</summary>
  
   ![Textures](https://github.com/ucpp/sge/blob/master/docs/test_mips.gif)
 
+</details>
+<details>
+  <summary><strong>✔ 5. GPU compressed textures</strong>: Use compressed texture formats for better performance.</summary>
+ 
+  ![Textures](https://github.com/ucpp/sge/blob/master/docs/gpu_compressed_textures.png)
+
+  [Last commit](https://github.com/ucpp/sge/commit/7f94cee0e085e4e762407c829d87ead4bfd991c2)
 
 </details>
 
+<details>
+  <summary><strong>☐ 6. Phong lighting</strong>: Use compressed texture formats for better performance (in progress).</summary>
+ 
+</details>
+
 ---
-    
-**5. GPU compressed textures**: Use compressed texture formats for better performance.  
-**6. Phong lighting**: Calculate lighting from direct and point lights in the pixel shader.  
+  
 **7. Fog effect**: Add fog either in the pixel shader or as a post-process effect.  
 **8. Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.  
 **9. Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
