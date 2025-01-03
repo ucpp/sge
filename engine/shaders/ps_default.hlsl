@@ -7,6 +7,8 @@ cbuffer TransformBuffer : register(b0)
 }
 
 Texture2D diffuseMap : register(t0);
+Texture2D normalMap : register(t1);
+Texture2D specularMap : register(t2);
 
 SamplerState sampleWrap : register(s0);
 

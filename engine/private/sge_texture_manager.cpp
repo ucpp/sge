@@ -1,26 +1,33 @@
 #include "sge_texture_manager.h"
-
 #include "sge_device.h"
 #include "sge_descriptor_heap.h"
 
 namespace SGE
 {
-    std::unordered_map<std::string, std::unique_ptr<Texture>> TextureManager::m_textureCache;
+    std::unordered_map<std::string, TextureManager::TextureData> TextureManager::m_textureCache;
+    uint32 TextureManager::m_currentTextureIndex = TextureHeapStartIndex;
 
-    Texture* TextureManager::GetTexture(const std::string& texturePath, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    uint32 TextureManager::GetTextureIndex(const std::string& texturePath, Device* device, DescriptorHeap* descriptorHeap)
     {
         auto it = m_textureCache.find(texturePath);
         if (it != m_textureCache.end())
         {
-            return it->second.get();
+            return it->second.descriptorIndex;
+        }
+
+        if (m_currentTextureIndex >= CbvSrvHeapCapacity)
+        {
+            throw std::runtime_error("TextureManager: Descriptor heap capacity exceeded!");
         }
 
         auto texture = std::make_unique<Texture>();
+        uint32 descriptorIndex = m_currentTextureIndex;
+
         texture->Initialize(texturePath, device, descriptorHeap, descriptorIndex);
-        Texture* texturePtr = texture.get();
 
-        m_textureCache[texturePath] = std::move(texture);
+        m_textureCache[texturePath] = { std::move(texture), descriptorIndex };
+        m_currentTextureIndex++;
 
-        return texturePtr;
+        return descriptorIndex;
     }
 }

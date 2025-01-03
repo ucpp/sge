@@ -33,12 +33,17 @@ namespace SGE
             depthDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
             depthDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
+            D3D12_CLEAR_VALUE clearValue = {};
+            clearValue.Format = DXGI_FORMAT_D32_FLOAT;
+            clearValue.DepthStencil.Depth = 1.0f;
+            clearValue.DepthStencil.Stencil = 0;
+
             HRESULT hr = device->GetDevice()->CreateCommittedResource(
                 &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
                 D3D12_HEAP_FLAG_NONE,
                 &depthDesc,
                 D3D12_RESOURCE_STATE_DEPTH_WRITE,
-                nullptr,
+                &clearValue,
                 IID_PPV_ARGS(&m_depthBuffers[i])
             );
             Verify(hr, "Failed to create depth buffer.");

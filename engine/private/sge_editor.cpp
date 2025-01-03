@@ -29,8 +29,7 @@ namespace SGE
             m_descriptorHeap.GetHeap().Get(),
             m_descriptorHeap.GetCPUHandle(0),
             m_descriptorHeap.GetGPUHandle(0)
-        );
-        
+        );     
     }
 
     void Editor::BuildImGuiFrame()

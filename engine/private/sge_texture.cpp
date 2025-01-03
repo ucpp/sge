@@ -51,13 +51,22 @@ namespace SGE
         textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
         textureDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-        Verify(device->GetDevice().Get()->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-                                                                 D3D12_HEAP_FLAG_NONE, &textureDesc, D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&m_resource)));
+        Verify(device->GetDevice().Get()->CreateCommittedResource(
+            &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+            D3D12_HEAP_FLAG_NONE,
+            &textureDesc,
+            D3D12_RESOURCE_STATE_COPY_DEST,
+            nullptr, IID_PPV_ARGS(&m_resource)));
 
         const uint32 subresourceCount = textureDesc.DepthOrArraySize * textureDesc.MipLevels;
         const uint64 uploadBufferSize = GetRequiredIntermediateSize(m_resource.Get(), 0, subresourceCount);
-        Verify(device->GetDevice().Get()->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-                                                                 &CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_resourceUpload)));
+        
+        Verify(device->GetDevice().Get()->CreateCommittedResource(
+            &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), 
+            D3D12_HEAP_FLAG_NONE,
+            &CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize), 
+            D3D12_RESOURCE_STATE_GENERIC_READ, 
+            nullptr, IID_PPV_ARGS(&m_resourceUpload)));
 
         ID3D12GraphicsCommandList* commandList = device->GetCommandList().Get();
 
@@ -71,16 +80,13 @@ namespace SGE
             subresourceData[i].SlicePitch = mipmap->slicePitch;
         }
 
-        CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_COPY_DEST);
-        commandList->ResourceBarrier(1, &barrier);
-
         UpdateSubresources(commandList, m_resource.Get(), m_resourceUpload.Get(), 0, 0, subresourceCount, subresourceData.data());
 
-        barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_resource.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         commandList->ResourceBarrier(1, &barrier);
 
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; 
+        srvDesc.Format = metadata.format == DXGI_FORMAT_UNKNOWN ? DXGI_FORMAT_R8G8B8A8_UNORM : metadata.format;
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
         srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
         srvDesc.Texture2D.MipLevels = static_cast<uint32>(metadata.mipLevels); 

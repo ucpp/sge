@@ -30,11 +30,11 @@ namespace SGE
             debugController->EnableDebugLayer();
             m_dxgiFactoryCreationFlags |= DXGI_CREATE_FACTORY_DEBUG;
 
-            //ComPtr<ID3D12Debug1> debugController1;
-            //if (SUCCEEDED(debugController.As(&debugController1)))
-            //{
-            //    debugController1->SetEnableGPUBasedValidation(TRUE);
-            //}
+            ComPtr<ID3D12Debug1> debugController1;
+            if (SUCCEEDED(debugController.As(&debugController1)))
+            {
+                debugController1->SetEnableGPUBasedValidation(TRUE);
+            }
         }
         else
         {

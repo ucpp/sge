@@ -5,6 +5,7 @@
 #include "sge_mesh.h"
 #include "sge_index_buffer.h"
 #include "sge_vertex_buffer.h"
+#include "sge_constant_buffer.h"
 
 namespace SGE
 {
@@ -12,12 +13,32 @@ namespace SGE
     {
     public:
         void Initialize(const std::vector<Mesh>& meshes, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
+        void Update(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, float lodLevel);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
+        void SetPosition(const XMFLOAT3& position) { m_position = position; }
+        void SetRotation(const XMFLOAT3& rotation) { m_rotation = rotation; }
+        void SetScale(const XMFLOAT3& scale) { m_scale = scale; }
+
+        XMFLOAT3 GetPosition() const { return m_position; }
+        XMFLOAT3 GetRotation() const { return m_rotation; }
+        XMFLOAT3 GetScale() const { return m_scale; }
+
+        XMMATRIX GetWorldMatrix() const;
+
     private:
+        DescriptorHeap* m_descriptorHeap = nullptr;
         VertexBuffer m_vertexBuffer;
         IndexBuffer m_indexBuffer;
         uint32 m_indexCount = 0;
+        uint32 m_descriptorIndex = 0;
+
+        XMFLOAT3 m_position = { 0.0f, 0.0f, 0.0f };
+        XMFLOAT3 m_rotation = { 0.0f, 0.0f, 0.0f };
+        XMFLOAT3 m_scale = { 1.0f, 1.0f, 1.0f };
+
+        std::unique_ptr<ConstantBuffer> m_transformBuffer;
+        std::vector<MeshResourceInfo> m_meshResourceInfo;
     };
 }
 

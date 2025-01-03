@@ -18,7 +18,7 @@ namespace SGE
         m_viewportScissors = std::make_unique<ViewportScissors>(m_window->GetWidth(), m_window->GetHeight());
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
 
-        m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 2, true);
+        m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, CbvSrvHeapCapacity, true);
         m_rtvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, BufferCount);
         m_dsvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, BufferCount);
 
@@ -48,11 +48,9 @@ namespace SGE
 
         m_fence.Initialize(m_device.get(), 1);
 
-        m_transformBuffer = std::make_unique<ConstantBuffer>();
-        m_transformBuffer->Initialize(m_device->GetDevice().Get(), &m_cbvSrvUavHeap, sizeof(TransformBuffer), 0);
-
         m_model = std::make_unique<Model>();
-        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get(), &m_cbvSrvUavHeap, 1);
+        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get(), &m_cbvSrvUavHeap, 0);
+        m_model->SetRotation({0, 180.0f, 0});
 
         InitializeCamera();
 
@@ -104,24 +102,10 @@ namespace SGE
 
         commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
 
-        //XMMATRIX modelMatrix = XMMatrixIdentity();
-        XMMATRIX modelMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-        XMMATRIX viewMatrix = m_camera.GetViewMatrix();
-        XMMATRIX projectionMatrix = m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight());
-       
-        TransformBuffer transformData = {};
-        transformData.model = modelMatrix;
-        transformData.view = viewMatrix;
-        transformData.projection = projectionMatrix;
-        transformData.lodLevel = m_settings->lodLevel;
-
-        m_transformBuffer->Update(&transformData, sizeof(TransformBuffer));
+        m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()), m_settings->lodLevel);
 
         ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
-
-        commandList->SetGraphicsRootDescriptorTable(0, m_cbvSrvUavHeap.GetGPUHandle(0));
-        commandList->SetGraphicsRootDescriptorTable(1, m_cbvSrvUavHeap.GetGPUHandle(1));
 
         commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());
         commandList->RSSetScissorRects(1, &m_viewportScissors->GetScissorRect());
@@ -135,7 +119,7 @@ namespace SGE
 
         const float clearColor[] = { 0.314f, 0.314f, 0.314f, 1.0f };
         commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-        commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+        commandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

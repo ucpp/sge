@@ -56,8 +56,6 @@ namespace SGE
         Camera m_camera;
         CameraController m_cameraController;
 
-        std::unique_ptr<ConstantBuffer> m_transformBuffer;
-
         std::unique_ptr<Model> m_model;
         std::unique_ptr<Editor> m_editor;
 

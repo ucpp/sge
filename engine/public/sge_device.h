@@ -5,9 +5,10 @@
 
 namespace SGE
 {
-    constexpr bool UseWarpDevice = true;
+    constexpr bool UseWarpDevice = false;
     constexpr uint32 BufferCount = 2;
     constexpr uint32 SampleCount = 1;
+    constexpr uint32 CbvSrvHeapCapacity = 256;
 
     class Device
     {

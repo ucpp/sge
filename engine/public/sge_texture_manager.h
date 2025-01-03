@@ -3,16 +3,26 @@
 
 #include "pch.h"
 #include "sge_texture.h"
+#include "sge_device.h"
 
 namespace SGE
 {
     class TextureManager
     {
     public:
-        static Texture* GetTexture(const std::string& texturePath, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
+        static uint32 GetTextureIndex(const std::string& texturePath, class Device* device, class DescriptorHeap* descriptorHeap);
 
     private:
-        static std::unordered_map<std::string, std::unique_ptr<Texture>> m_textureCache;
+        struct TextureData
+        {
+            std::unique_ptr<Texture> texture;
+            uint32 descriptorIndex;
+        };
+
+        static std::unordered_map<std::string, TextureData> m_textureCache;
+
+        static constexpr uint32 TextureHeapStartIndex = CbvSrvHeapCapacity / 2;
+        static uint32 m_currentTextureIndex;
     };
 }
 

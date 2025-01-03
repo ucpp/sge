@@ -30,7 +30,15 @@ namespace SGE
 
         m_descriptorSize = device->GetDescriptorHandleIncrementSize(type);
         m_cpuHandle = m_heap->GetCPUDescriptorHandleForHeapStart();
-        m_gpuHandle = m_heap->GetGPUDescriptorHandleForHeapStart();
+
+        if (shaderVisible)
+        {
+            m_gpuHandle = m_heap->GetGPUDescriptorHandleForHeapStart();
+        }
+        else
+        {
+            m_gpuHandle.ptr = 0;
+        }
     }
     
     void DescriptorHeap::Shutdown()
