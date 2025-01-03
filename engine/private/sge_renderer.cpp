@@ -5,6 +5,7 @@
 #include "sge_device.h"
 #include "sge_model_loader.h"
 #include "sge_window.h"
+#include "sge_light.h"
 
 namespace SGE
 {
@@ -48,8 +49,11 @@ namespace SGE
 
         m_fence.Initialize(m_device.get(), 1);
 
+        m_lightDataBuffer = std::make_unique<ConstantBuffer>();
+        m_lightDataBuffer->Initialize(m_device->GetDevice().Get(), &m_cbvSrvUavHeap, sizeof(LightData), 0);
+
         m_model = std::make_unique<Model>();
-        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get(), &m_cbvSrvUavHeap, 0);
+        *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get(), &m_cbvSrvUavHeap, 1);
         m_model->SetRotation({0, 180.0f, 0});
 
         InitializeCamera();
@@ -104,6 +108,17 @@ namespace SGE
 
         m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()), m_settings->lodLevel);
 
+        LightData lightData = {};
+        lightData.directionalLight.direction = { 1.0f, 0.5f, -1.0f };
+        lightData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
+        lightData.directionalLight.intensity = 2.0f;
+        lightData.pointLight.position = { 0.0f, 5.0f, 0.0f };
+        lightData.pointLight.color = { 1.0f, 0.0f, 0.0f };
+        lightData.pointLight.intensity = 1.0f;
+        lightData.cameraPosition = m_camera.GetPosition();
+
+        m_lightDataBuffer->Update(&lightData, sizeof(LightData));
+
         ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
@@ -123,6 +138,7 @@ namespace SGE
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+        commandList->SetGraphicsRootDescriptorTable(1, m_cbvSrvUavHeap.GetGPUHandle(0));
         m_model->Render(commandList);
         m_editor->Render(commandList);
 

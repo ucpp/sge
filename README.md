@@ -52,6 +52,8 @@ This project is **actively under development**, and its purpose is to experiment
 
 <details>
   <summary><strong>☐ 6. Phong lighting</strong>: Calculate lighting from direct and point lights in the pixel shader (in progress).</summary>
+
+  ![Textures](https://github.com/ucpp/sge/blob/master/docs/directional_test.png)
  
 </details>
 

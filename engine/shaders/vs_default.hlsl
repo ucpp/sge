@@ -26,9 +26,10 @@ PixelInput main(VertexInput input)
 
     float4 modelPos = mul(float4(input.position, 1.0f), model);
     float4 viewPos = mul(modelPos, view);
+
     output.position = mul(viewPos, projection);
 
-    output.normal = input.normal;
+    output.normal = normalize(mul(input.normal, (float3x3)model));
     output.texCoords = input.texCoords;
 
     return output;

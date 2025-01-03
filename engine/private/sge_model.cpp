@@ -76,9 +76,9 @@ namespace SGE
         {
             const auto& resourceInfo = m_meshResourceInfo[i];
 
-            commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(resourceInfo.diffuseTextureIndex));
-            commandList->SetGraphicsRootDescriptorTable(2, m_descriptorHeap->GetGPUHandle(resourceInfo.normalTextureIndex));
-            commandList->SetGraphicsRootDescriptorTable(3, m_descriptorHeap->GetGPUHandle(resourceInfo.specularTextureIndex));
+            commandList->SetGraphicsRootDescriptorTable(2, m_descriptorHeap->GetGPUHandle(resourceInfo.diffuseTextureIndex));
+            commandList->SetGraphicsRootDescriptorTable(3, m_descriptorHeap->GetGPUHandle(resourceInfo.normalTextureIndex));
+            commandList->SetGraphicsRootDescriptorTable(4, m_descriptorHeap->GetGPUHandle(resourceInfo.specularTextureIndex));
 
             uint32 meshIndexCount = resourceInfo.meshIndexCount;
             uint32 vertexOffset = resourceInfo.vertexCountOffset;

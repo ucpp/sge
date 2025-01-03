@@ -62,6 +62,8 @@ namespace SGE
         DescriptorHeap m_cbvSrvUavHeap;
         DescriptorHeap m_rtvHeap;
         DescriptorHeap m_dsvHeap;
+
+        std::unique_ptr<ConstantBuffer> m_lightDataBuffer;
     };
 }
 

@@ -5,7 +5,7 @@ namespace SGE
 {
     void RootSignature::Initialize(ID3D12Device* device)
     {
-        D3D12_ROOT_PARAMETER rootParameters[4] = {};
+        D3D12_ROOT_PARAMETER rootParameters[5] = {};
 
         D3D12_DESCRIPTOR_RANGE cbvRange = {};
         cbvRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
@@ -22,6 +22,21 @@ namespace SGE
         rootParameters[0].DescriptorTable = cbvTable;
         rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+        D3D12_DESCRIPTOR_RANGE lightCBVRange = {};
+        lightCBVRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+        lightCBVRange.NumDescriptors = 1;
+        lightCBVRange.BaseShaderRegister = 1; // b1
+        lightCBVRange.RegisterSpace = 0;
+        lightCBVRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+        D3D12_ROOT_DESCRIPTOR_TABLE lightCBVTable = {};
+        lightCBVTable.NumDescriptorRanges = 1;
+        lightCBVTable.pDescriptorRanges = &lightCBVRange;
+
+        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        rootParameters[1].DescriptorTable = lightCBVTable;
+        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
         // diffuse (t0)
         D3D12_DESCRIPTOR_RANGE diffuseRange = {};
         diffuseRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
@@ -34,9 +49,9 @@ namespace SGE
         diffuseTable.NumDescriptorRanges = 1;
         diffuseTable.pDescriptorRanges = &diffuseRange;
 
-        rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        rootParameters[1].DescriptorTable = diffuseTable;
-        rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+        rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        rootParameters[2].DescriptorTable = diffuseTable;
+        rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
         // normal (t1)
         D3D12_DESCRIPTOR_RANGE normalRange = {};
@@ -50,9 +65,9 @@ namespace SGE
         normalTable.NumDescriptorRanges = 1;
         normalTable.pDescriptorRanges = &normalRange;
 
-        rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        rootParameters[2].DescriptorTable = normalTable;
-        rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+        rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        rootParameters[3].DescriptorTable = normalTable;
+        rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
         // specular (t2)
         D3D12_DESCRIPTOR_RANGE specularRange = {};
@@ -66,9 +81,9 @@ namespace SGE
         specularTable.NumDescriptorRanges = 1;
         specularTable.pDescriptorRanges = &specularRange;
 
-        rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        rootParameters[3].DescriptorTable = specularTable;
-        rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+        rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        rootParameters[4].DescriptorTable = specularTable;
+        rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
         D3D12_STATIC_SAMPLER_DESC staticSampler = {};
         staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
