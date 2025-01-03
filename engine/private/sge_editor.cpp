@@ -20,7 +20,7 @@ namespace SGE
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2((float)m_window->GetWidth(), (float)m_window->GetHeight());
-
+        ImGui_ImplWin32_EnableDpiAwareness();
         ImGui_ImplWin32_Init(m_window->GetHandle());
         ImGui_ImplDX12_Init(
             m_device->GetDevice().Get(),
@@ -30,6 +30,7 @@ namespace SGE
             m_descriptorHeap.GetCPUHandle(0),
             m_descriptorHeap.GetGPUHandle(0)
         );
+        
     }
 
     void Editor::BuildImGuiFrame()

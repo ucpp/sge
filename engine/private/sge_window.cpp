@@ -25,6 +25,11 @@ namespace SGE
 
         m_fullscreen = fullscreen;
 
+        if (!SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2))
+        {
+            LOG_ERROR("Failed to set DPI awareness.");
+        }
+
         RegisterWindowClass();
         CreateWindowHandle(width, height);
         RetrieveClientSize();
