@@ -20,6 +20,8 @@ namespace SGE
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2((float)m_window->GetWidth(), (float)m_window->GetHeight());
+        io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
         ImGui_ImplWin32_EnableDpiAwareness();
         ImGui_ImplWin32_Init(m_window->GetHandle());
         ImGui_ImplDX12_Init(
@@ -37,6 +39,9 @@ namespace SGE
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
+
+        SetupDockspace();
+        ShowDockingExample();
 
         if (ImGui::BeginMainMenuBar())
         {
@@ -69,9 +74,8 @@ namespace SGE
             {
                 ImGui::Text("Rendering Settings");
                 ImGui::Checkbox("Wireframe Mode", &m_settings->wireframeMode);
-
-                ImGui::End();
             }
+            ImGui::End();
         }
     }
 
@@ -89,5 +93,40 @@ namespace SGE
         ImGui::DestroyContext();
 
         m_descriptorHeap.Shutdown();
+    }
+
+    void Editor::SetupDockspace()
+    {
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::SetNextWindowBgAlpha(0.0f);
+
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoCollapse |
+                                        ImGuiWindowFlags_NoResize |
+                                        ImGuiWindowFlags_NoMove |
+                                        ImGuiWindowFlags_NoBringToFrontOnFocus |
+                                        ImGuiWindowFlags_NoNavFocus;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("Main DockSpace", nullptr, window_flags);
+        ImGui::PopStyleVar();
+
+        ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
+        ImGui::DockSpace(dockspace_id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruCentralNode);
+
+        ImGui::End();
+    }
+
+    void Editor::ShowDockingExample()
+    {
+        ImGui::Begin("Scene hierarchy", nullptr, ImGuiWindowFlags_NoSavedSettings);
+        ImGui::Text("This is the Scene hierarchy!");
+        ImGui::End();
+
+        ImGui::Begin("Content browser", nullptr, ImGuiWindowFlags_NoSavedSettings);
+        ImGui::Text("This is the Content browser!");
+        ImGui::End();
     }
 }

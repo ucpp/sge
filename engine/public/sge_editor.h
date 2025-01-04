@@ -6,6 +6,7 @@
 #include "imgui.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
+#include "imgui_internal.h"
 #include "sge_descriptor_heap.h"
 
 namespace SGE
@@ -18,6 +19,9 @@ namespace SGE
         void Render(ID3D12GraphicsCommandList* commandList);
         void Shutdown();
 
+        void ShowDockingExample();
+        void SetupDockspace();
+
     private:
         class Window* m_window = nullptr;
         class Device* m_device = nullptr;
@@ -25,6 +29,7 @@ namespace SGE
         DescriptorHeap m_descriptorHeap;
 
         bool m_isOpenSettingsWindow = false;
+        bool dockspace_created = false;
     };
 }
 
