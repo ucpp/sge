@@ -12,7 +12,9 @@ namespace SGE
         uint32 height = 480;
         bool fullscreen = false;
 
+        // editor
         bool wireframeMode = false;
+        bool isPressedQuit = false;
     };
 }
 

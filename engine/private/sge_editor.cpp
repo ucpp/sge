@@ -44,7 +44,7 @@ namespace SGE
             {
                 if (ImGui::MenuItem("Quit"))
                 {
-                    // Implement exit functionality here
+                    m_settings->isPressedQuit = true;
                 }
                 ImGui::EndMenu();
             }

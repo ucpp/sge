@@ -197,7 +197,8 @@ namespace SGE
                 DispatchMessage(&msg);
             }
 
-            if (msg.message == WM_QUIT || Input::Get().GetKeyDown(VK_ESCAPE))
+            bool isPressedQuit = m_applicationSettings->isPressedQuit || Input::Get().GetKeyDown(VK_ESCAPE);
+            if (msg.message == WM_QUIT || isPressedQuit)
             {
                 done = true;
                 break;

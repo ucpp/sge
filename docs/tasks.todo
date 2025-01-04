@@ -48,7 +48,7 @@
 ### Refactoring and improvements
 
 ☐ Editor improvements
-    ☐ Add quit application button functionality.
+    ✔ Add quit application button functionality. @done(25-01-04 11:32)
 ☐ Implement window resizing functionality.
     ☐ Add a settings window in the editor to allow users to change the window size.
     ☐ Modify the Renderer class to handle dynamic resizing of the window and adjust rendering accordingly.
