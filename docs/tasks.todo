@@ -47,10 +47,12 @@
 
 ### Refactoring and improvements
 
+☐ Editor improvements
+    ☐ Add quit application button functionality.
 ☐ Implement window resizing functionality.
     ☐ Add a settings window in the editor to allow users to change the window size.
     ☐ Modify the Renderer class to handle dynamic resizing of the window and adjust rendering accordingly.
-☐ Extend Logger to support string formatting
+✔ Extend Logger to support string formatting @done(25-01-04 11:23)
 ✔ Replace built-in types with custom types defined in the Types class @done(24-12-31 12:37)
 ✔ Make the Application class non-copyable and use unique_ptr for window management. @done(24-12-23 22:22)
 ✔ Change the naming of LogLevel enum values to follow the camel case style. @done(24-12-23 22:30)

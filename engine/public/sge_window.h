@@ -11,9 +11,10 @@ namespace SGE
     class Window
     {
     public:
-        Window();
+        Window(const struct ApplicationSettings* applicationSettings);
         virtual ~Window();
 
+        void Create();
         void Create(const std::string& title, int32 width, int32 height, bool fullscreen);
         void StartUpdateLoop();
 
@@ -51,6 +52,8 @@ namespace SGE
         HWND           m_hwnd;
         FrameTimer     m_frameTimer;
         Action<double> m_updateEvent;
+    
+        const struct ApplicationSettings* m_applicationSettings;
     };
 }
 

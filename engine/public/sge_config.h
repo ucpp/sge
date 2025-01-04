@@ -45,12 +45,12 @@ namespace SGE
             }
             catch (const std::exception& e)
             {
-                LOG_ERROR("Failed to load config file: " + filePath);
+                LOG_ERROR("Failed to load config file: {}", filePath);
                 LOG_ERROR(e.what());
                 return false;
             }
 
-            LOG_INFO("Config file loaded: " + filePath);
+            LOG_INFO("Config file loaded: {}", filePath);
             return true;
         }
 
@@ -69,12 +69,12 @@ namespace SGE
             }
             catch (const std::exception& e)
             {
-                LOG_ERROR("Failed to save config file: " + filePath);
+                LOG_ERROR("Failed to save config file: {}", filePath);
                 LOG_ERROR(e.what());
                 return false;
             }
 
-            LOG_INFO("Config file saved: " + filePath);
+            LOG_INFO("Config file saved: {}", filePath);
             return true;
         }
     };

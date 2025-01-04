@@ -11,7 +11,7 @@ namespace SGE
         m_settings = std::make_unique<ApplicationSettings>();
         if (!Config::Load(configPath, *m_settings))
         {
-            LOG_ERROR("Failed to load settings from " + configPath);
+            LOG_ERROR("Failed to load settings from {}", configPath);
         }
     }
 
@@ -25,14 +25,14 @@ namespace SGE
     {
         FrameTimer timer;
     
-        m_window = std::make_unique<Window>();
-        m_window->Create(m_settings->title, m_settings->width, m_settings->height, false);
+        m_window = std::make_unique<Window>(m_settings.get());
+        m_window->Create();
         m_window->OnUpdate().Subscribe(this, &Application::Update);
 
         m_renderer = std::make_unique<Renderer>();
         m_renderer->Initialize(m_window.get(), m_settings.get());
 
-        LOG_INFO("Initialization time: " + std::to_string(timer.GetElapsedSeconds()));
+        LOG_INFO("Initialization time: {}", timer.GetElapsedSeconds());
 
         m_window->StartUpdateLoop();
     }

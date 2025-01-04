@@ -1,21 +1,39 @@
 #include "sge_window.h"
 
+#include "sge_application_settings.h"
 #include "sge_input.h"
 #include "sge_logger.h"
 
 namespace SGE
 {
-    Window::Window()
+    Window::Window(const ApplicationSettings* applicationSettings)
     : m_title(nullptr)
     , m_width(0)
     , m_height(0)
     , m_fullscreen(false)
     , m_hinstance(nullptr)
-    , m_hwnd(nullptr) { }
+    , m_hwnd(nullptr)
+    , m_applicationSettings(applicationSettings) { }
     
     Window::~Window()
     {
         Shutdown();
+    }
+
+    void Window::Create()
+    {
+        if(m_applicationSettings == nullptr)
+        {
+            LOG_ERROR("Failed to create the window: Application settings are null.");
+            return;
+        }
+
+        const std::string& title = m_applicationSettings->title;
+        const uint32 width = m_applicationSettings->width;
+        const uint32 height = m_applicationSettings->height;
+        const bool fullscreen = m_applicationSettings->fullscreen;
+
+        Create(title, width, height, fullscreen);
     }
     
     void Window::Create(const std::string& title, int32 width, int32 height, bool fullscreen)
@@ -34,6 +52,8 @@ namespace SGE
         CreateWindowHandle(width, height);
         RetrieveClientSize();
         SetFullscreen(fullscreen);
+
+        LOG_INFO("Window created with parameters: title = {}, width = {}, height = {}", title, width, height);
     }
 
     void Window::StartUpdateLoop()
@@ -128,6 +148,8 @@ namespace SGE
         SetWindowPos(m_hwnd, HWND_TOPMOST, 0, 0, m_width, m_height, SWP_FRAMECHANGED);
         ShowCursor(false);
         m_fullscreen = true;
+
+        LOG_INFO("Fullscreen mode enabled.");
     }
 
     void Window::DisableFullscreen()
@@ -137,18 +159,24 @@ namespace SGE
         SetWindowPos(m_hwnd, HWND_NOTOPMOST, 0, 0, m_width, m_height, SWP_FRAMECHANGED);
         ShowCursor(true);
         m_fullscreen = false;
+
+        LOG_INFO("Fullscreen mode disabled.");
     }
 
     void Window::DestroyWindowHandle()
     {
         DestroyWindow(m_hwnd);
         m_hwnd = nullptr;
+
+        LOG_INFO("Destroyed window successfully.");
     }
 
     void Window::UnregisterWindowClass()
     {
         HINSTANCE hInstance = GetModuleHandle(nullptr);
         UnregisterClass(m_title, hInstance);
+
+        LOG_INFO("Window class unregistered successfully.");
     }
 
     void Window::Update()

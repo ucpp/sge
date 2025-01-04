@@ -2,9 +2,9 @@
 
 namespace SGE
 {
-    const std::string INFO_STR = "[INFO]";
-    const std::string WARN_STR = "[WARN]";
-    const std::string ERROR_STR = "[ERROR]";
+    const std::string InfoPrefix = "[INFO]";
+    const std::string WarningPrefix = "[WARN]";
+    const std::string ErrorPrefix = "[ERROR]";
 
     Logger::Logger() : m_stream(std::make_unique<std::ofstream>("log.txt"))
     {
@@ -18,7 +18,7 @@ namespace SGE
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         m_stream = std::make_unique<std::ofstream>(fileName);
-        
+
         if (!IsStreamValid())
         {
             m_stream = std::make_unique<std::ostream>(std::cout.rdbuf());
@@ -31,7 +31,7 @@ namespace SGE
         m_stream = std::make_unique<std::ostream>(std::cout.rdbuf());
     }
 
-    void Logger::Log(LogLevel level, const std::string& message)
+    void Logger::LogMessage(LogLevel level, const std::string& message)
     {
         std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -43,9 +43,9 @@ namespace SGE
 
         auto now = std::chrono::system_clock::now();
         auto time = std::chrono::system_clock::to_time_t(now);
-        
+
         std::tm localTime = {};
-        
+
 #ifdef _MSC_VER // MSVC-specific block
         localtime_s(&localTime, &time);
 #else
@@ -66,13 +66,13 @@ namespace SGE
         switch (level)
         {
         case LogLevel::Info:
-            levelStr = INFO_STR;
+            levelStr = InfoPrefix;
             break;
         case LogLevel::Warn:
-            levelStr = WARN_STR;
+            levelStr = WarningPrefix;
             break;
         case LogLevel::Error:
-            levelStr = ERROR_STR;
+            levelStr = ErrorPrefix;
             break;
         }
 
