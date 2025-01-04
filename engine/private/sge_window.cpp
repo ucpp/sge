@@ -115,12 +115,12 @@ namespace SGE
     void Window::CreateWindowHandle(int32 width, int32 height)
     {
         HINSTANCE hInstance = GetModuleHandle(nullptr);
-        DWORD windowStyle = WS_OVERLAPPEDWINDOW;
+        DWORD windowStyle = WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX;
         DWORD windowExStyle = WS_EX_APPWINDOW;
-        RECT windowRect = {0, 0, width, height };
+        RECT windowRect = { 0, 0, width, height };
         AdjustWindowRectEx(&windowRect, windowStyle, false, windowExStyle);
 
-        m_hwnd = CreateWindowEx(windowExStyle, m_title, m_title, WS_OVERLAPPEDWINDOW, 0, 0, width, height, nullptr, nullptr, m_hinstance, this);
+        m_hwnd = CreateWindowEx(windowExStyle, m_title, m_title, windowStyle, 0, 0, width, height, nullptr, nullptr, m_hinstance, this);
         ShowWindow(m_hwnd, SW_SHOW);
         SetForegroundWindow(m_hwnd);
         SetFocus(m_hwnd);
@@ -237,6 +237,11 @@ namespace SGE
         case WM_CLOSE:
         {
             PostQuitMessage(0);
+            return 0;
+        }
+        case WM_KEYDOWN:
+        if (wparam == VK_RETURN && (GetKeyState(VK_MENU) & 0x8000))
+        {
             return 0;
         }
         default:
