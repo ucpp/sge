@@ -18,8 +18,6 @@ namespace SGE
         XMMATRIX model;
         XMMATRIX view;
         XMMATRIX projection;
-        // ONLY FOR TEST!!!
-        float lodLevel;
     };
 }
 

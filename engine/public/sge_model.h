@@ -13,7 +13,7 @@ namespace SGE
     {
     public:
         void Initialize(const std::vector<Mesh>& meshes, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
-        void Update(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, float lodLevel);
+        void Update(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
         void SetPosition(const XMFLOAT3& position) { m_position = position; }

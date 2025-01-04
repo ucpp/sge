@@ -70,9 +70,6 @@ namespace SGE
                 ImGui::Text("Rendering Settings");
                 ImGui::Checkbox("Wireframe Mode", &m_settings->wireframeMode);
 
-                ImGui::Text("LOD Level");
-                ImGui::SliderFloat("##LODLevel", &m_settings->lodLevel, 0.0f, 10.0f, "%.1f");
-
                 ImGui::End();
             }
         }

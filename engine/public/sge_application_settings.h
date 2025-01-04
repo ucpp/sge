@@ -13,7 +13,6 @@ namespace SGE
         bool fullscreen = false;
 
         bool wireframeMode = false;
-        float lodLevel = 0;
     };
 }
 

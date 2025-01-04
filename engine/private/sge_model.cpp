@@ -48,7 +48,7 @@ namespace SGE
 
             resourceInfo.vertexCountOffset = currentIndexOffset;
             resourceInfo.indexCountOffset = currentIndexOffset;
-            resourceInfo.meshIndexCount = mesh.GetIndices().size();
+            resourceInfo.meshIndexCount = static_cast<uint32>(indices.size());
 
             m_meshResourceInfo.push_back(resourceInfo);
 
@@ -101,13 +101,12 @@ namespace SGE
         return scaleMatrix * rotationMatrix * translationMatrix;
     }
 
-    void Model::Update(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix, float lodLevel /* ONLY FOR TEST */)
+    void Model::Update(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
     {
         TransformBuffer transformData = {};
         transformData.model = GetWorldMatrix();
         transformData.view = viewMatrix;
         transformData.projection = projectionMatrix;
-        transformData.lodLevel = lodLevel;
 
         m_transformBuffer->Update(&transformData, sizeof(TransformBuffer));
     }

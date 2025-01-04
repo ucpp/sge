@@ -106,7 +106,7 @@ namespace SGE
 
         commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
 
-        m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()), m_settings->lodLevel);
+        m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()));
 
         LightData lightData = {};
         lightData.directionalLight.direction = { 1.0f, 0.5f, -1.0f };

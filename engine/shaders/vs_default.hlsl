@@ -3,7 +3,6 @@ cbuffer TransformBuffer : register(b0)
     matrix model;
     matrix view;
     matrix projection;
-    float lodLevel;
 }
 
 struct VertexInput

@@ -3,7 +3,6 @@ cbuffer TransformBuffer : register(b0)
     matrix model;
     matrix view;
     matrix projection;
-    float lodLevel;
 }
 
 struct DirectionalLight
@@ -51,7 +50,7 @@ float4 main(PixelInput input) : SV_TARGET
 {
     float3 normal = normalize(input.normal);
     float3 lighting = PhongLighting(normal);
-    float4 diffuseColor = diffuseMap.SampleLevel(sampleWrap, input.texCoords, lodLevel);
+    float4 diffuseColor = diffuseMap.Sample(sampleWrap, input.texCoords);
 
     return float4(lighting, 1.0f) * diffuseColor;
 }
