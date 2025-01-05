@@ -51,15 +51,20 @@ This project is **actively under development**, and its purpose is to experiment
 </details>
 
 <details>
-  <summary><strong>☐ 6. Phong lighting</strong>: Calculate lighting from direct and point lights in the pixel shader (in progress).</summary>
+  <summary><strong>✔ 6. Phong lighting</strong>: Calculate lighting from direct and point lights in the pixel shader.</summary>
 
-  ![Textures](https://github.com/ucpp/sge/blob/master/docs/directional_test.png)
+  ![Textures](https://github.com/ucpp/sge/blob/master/docs/phong.gif)
+
+  [Last commit](https://github.com/ucpp/sge/commit/fff8aa416b0fb9948be084802f2dd173c7df1e0b)
  
+</details>
+<details>
+  <summary><strong>☐ 7. Fog effect</strong>: Add fog either in the pixel shader or as a post-process effect.</summary>
+
 </details>
 
 ---
-  
-**7. Fog effect**: Add fog either in the pixel shader or as a post-process effect.  
+   
 **8. Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.  
 **9. Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
 **10. HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
