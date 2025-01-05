@@ -40,13 +40,6 @@ struct PixelInput
     float3 bitangent : BITANGENT;
 };
 
-float3 PhongLighting(float3 normal)
-{
-    float3 lightDir = normalize(directionalLight.direction);
-    float diff = max(dot(normal, lightDir), 0.0f);
-    return diff * directionalLight.color * directionalLight.intensity;
-}
-
 float4 main(PixelInput input) : SV_TARGET
 {
     float3 normalMapValue = normalMap.Sample(sampleWrap, input.texCoords).xyz * 2.0f - 1.0f;
@@ -54,8 +47,19 @@ float4 main(PixelInput input) : SV_TARGET
     float3x3 TBN = float3x3(input.tangent, input.bitangent, input.normal);
     float3 normal = normalize(mul(normalMapValue, TBN));
 
-    float3 lighting = PhongLighting(normal);
-    float4 diffuseColor = diffuseMap.Sample(sampleWrap, input.texCoords);
+    float3 lightDir = normalize(-directionalLight.direction);
 
-    return float4(lighting, 1.0f) * diffuseColor;
+    float3 viewDir = normalize(cameraPosition - input.position.xyz);
+
+    float diff = max(dot(normal, lightDir), 0.0f);
+    float3 diffuse = diff * directionalLight.color * directionalLight.intensity;
+
+    float3 reflectionDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectionDir), 0.0f), 32.0f); // Shininess exponent (adjust as needed)
+
+    float specularColor = specularMap.Sample(sampleWrap, input.texCoords).r;
+    float3 specular = spec * specularColor * directionalLight.color * directionalLight.intensity;
+
+    float4 diffuseColor = diffuseMap.Sample(sampleWrap, input.texCoords);
+    return float4(diffuse + specular, 1.0f) * diffuseColor;
 }

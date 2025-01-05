@@ -74,13 +74,19 @@ namespace SGE
         m_camera.SetPosition({0.0f, 0.0f, -10.0f});
 
         m_cameraController.SetCamera(&m_camera);
-        m_cameraController.SetMoveSpeed(1000.0f);
+        m_cameraController.SetMoveSpeed(10.0f);
         m_cameraController.SetSensitivity(0.1f);
     }
     
     void Renderer::Update(double deltaTime)
     {
         m_cameraController.Update(deltaTime);
+        
+        float rotationSpeed = 45.0f;
+        float rotationDelta = rotationSpeed * static_cast<float>(deltaTime);
+        XMFLOAT3 currentRotation = m_model->GetRotation();
+        currentRotation.y += rotationDelta;
+        m_model->SetRotation(currentRotation);
     }
 
     void Renderer::Render()
@@ -110,9 +116,9 @@ namespace SGE
         m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()));
 
         LightData lightData = {};
-        lightData.directionalLight.direction = { 1.0f, 0.5f, -1.0f };
+        lightData.directionalLight.direction = { 0.2f, 0.2f, 1.0f };
         lightData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
-        lightData.directionalLight.intensity = 2.0f;
+        lightData.directionalLight.intensity = 1.2f;
         lightData.pointLight.position = { 0.0f, 5.0f, 0.0f };
         lightData.pointLight.color = { 1.0f, 0.0f, 0.0f };
         lightData.pointLight.intensity = 1.0f;

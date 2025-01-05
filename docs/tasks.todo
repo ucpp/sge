@@ -2,10 +2,10 @@
 
 ☐ Deferred lighting
 ☐ Fog effect
-☐ Implement Phong lighting.
+✔ Implement Phong lighting. @done(25-01-05 21:14)
     ✔ Create a buffer to store data for point and directional lights. @done(25-01-04 10:25)
     ✔ Implement directional light calculation for the diffuse map. @done(25-01-04 10:25)
-    ☐ Add support for normal maps in the pixel shader.
+    ✔ Add support for normal maps in the pixel shader. @done(25-01-05 21:14)
 ✔ Add support for compressed textures using BCn compression formats. @done(25-01-04 10:21)
 ✔ Integrate nlohmann/json library for JSON parsing. @done(25-01-02 18:12)
     ✔ Add a configuration file (e.g., config.json) to store application settings. @done(25-01-02 19:06)

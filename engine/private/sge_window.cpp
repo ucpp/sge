@@ -206,30 +206,42 @@ namespace SGE
         m_frameTimer.Reset();
 
         MSG msg;
-        bool done;
+        bool done = false;
 
         ZeroMemory(&msg, sizeof(MSG));
 
-        done = false;
+        double accumulatedTime = 0.0f;
+        const double fixedDeltaTime = 60.0f / 1000.0f;
+
         while (!done)
         {
-            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
             {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
+
+                bool isPressedQuit = m_applicationSettings->isPressedQuit || Input::Get().GetKeyDown(VK_ESCAPE);
+                if (msg.message == WM_QUIT || isPressedQuit)
+                {
+                    done = true;
+                    break;
+                }
             }
 
-            bool isPressedQuit = m_applicationSettings->isPressedQuit || Input::Get().GetKeyDown(VK_ESCAPE);
-            if (msg.message == WM_QUIT || isPressedQuit)
+            if (!done)
             {
-                done = true;
-                break;
-            }
+                double elapsedTime = m_frameTimer.GetElapsedSeconds();
+                accumulatedTime += elapsedTime;
 
-            m_updateEvent.Invoke(m_frameTimer.GetElapsedSeconds());
-            
-            Input::Get().ResetStates();
-            m_frameTimer.Reset();
+                while (accumulatedTime >= fixedDeltaTime)
+                {
+                    m_updateEvent.Invoke(fixedDeltaTime);
+                    accumulatedTime -= fixedDeltaTime;
+                }
+
+                Input::Get().ResetStates();
+                m_frameTimer.Reset();
+            }
         }
     }
 
