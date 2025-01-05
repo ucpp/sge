@@ -10,6 +10,8 @@ struct VertexInput
     float3 position : POSITION;
     float3 normal : NORMAL;
     float2 texCoords : TEXCOORD;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
 };
 
 struct PixelInput
@@ -17,6 +19,8 @@ struct PixelInput
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
     float2 texCoords : TEXCOORD;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
 };
 
 PixelInput main(VertexInput input)
@@ -28,7 +32,10 @@ PixelInput main(VertexInput input)
 
     output.position = mul(viewPos, projection);
 
-    output.normal = normalize(mul(input.normal, (float3x3)model));
+    output.normal = normalize(mul(input.normal, (float3x3)model)); 
+    output.tangent = normalize(mul(input.tangent, (float3x3)model));
+    output.bitangent = normalize(mul(input.bitangent, (float3x3)model));
+
     output.texCoords = input.texCoords;
 
     return output;

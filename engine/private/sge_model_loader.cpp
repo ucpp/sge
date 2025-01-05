@@ -10,7 +10,7 @@ namespace SGE
     {
         Assimp::Importer importer;
 
-        const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate);
+        const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
         if (!scene || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !scene->mRootNode)
         {
@@ -65,6 +65,12 @@ namespace SGE
             else
             {
                 vertex.texCoords = { 0.0f, 0.0f };
+            }
+
+            if (mesh->HasTangentsAndBitangents())
+            {
+                vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+                vertex.bitangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
             }
 
             vertices.push_back(vertex);

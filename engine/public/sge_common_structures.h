@@ -11,6 +11,8 @@ namespace SGE
         XMFLOAT3 position;
         XMFLOAT3 normal;
         XMFLOAT2 texCoords;
+        XMFLOAT3 tangent;
+        XMFLOAT3 bitangent;
     };
 
     struct TransformBuffer

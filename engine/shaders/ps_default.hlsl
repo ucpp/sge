@@ -36,19 +36,24 @@ struct PixelInput
     float4 position : SV_POSITION;
     float3 normal : NORMAL;
     float2 texCoords : TEXCOORD;
+    float3 tangent : TANGENT;
+    float3 bitangent : BITANGENT;
 };
 
 float3 PhongLighting(float3 normal)
 {
     float3 lightDir = normalize(directionalLight.direction);
     float diff = max(dot(normal, lightDir), 0.0f);
-
     return diff * directionalLight.color * directionalLight.intensity;
 }
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    float3 normal = normalize(input.normal);
+    float3 normalMapValue = normalMap.Sample(sampleWrap, input.texCoords).xyz * 2.0f - 1.0f;
+
+    float3x3 TBN = float3x3(input.tangent, input.bitangent, input.normal);
+    float3 normal = normalize(mul(normalMapValue, TBN));
+
     float3 lighting = PhongLighting(normal);
     float4 diffuseColor = diffuseMap.Sample(sampleWrap, input.texCoords);
 

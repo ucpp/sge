@@ -19,7 +19,6 @@ namespace SGE
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize = ImVec2((float)m_window->GetWidth(), (float)m_window->GetHeight());
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         io.IniFilename = "resources/configs/editor_layout.ini";
 
