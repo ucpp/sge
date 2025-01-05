@@ -28,6 +28,7 @@ namespace SGE
         m_window = std::make_unique<Window>(m_settings.get());
         m_window->Create();
         m_window->OnUpdate().Subscribe(this, &Application::Update);
+        m_window->OnResize().Subscribe(this, &Application::ResizeWindow);
 
         m_renderer = std::make_unique<Renderer>();
         m_renderer->Initialize(m_window.get(), m_settings.get());
@@ -46,8 +47,15 @@ namespace SGE
     void Application::Shutdown()
     {
         m_window->OnUpdate().Unsubscribe(this);
+        m_window->OnResize().Unsubscribe(this);
+
         m_renderer->Shutdown();
         m_renderer.reset();
         m_window.reset();
+    }
+
+    void Application::ResizeWindow(uint32 width, uint32 height)
+    {
+        m_renderer->ResizeScreen(width, height);
     }
 }

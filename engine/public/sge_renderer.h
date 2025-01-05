@@ -29,6 +29,8 @@ namespace SGE
         void Render();
         void Shutdown();
 
+        void ResizeScreen(uint32 width, uint32 height);
+
     private:
         void InitializeCamera();
         void PopulateCommandList();

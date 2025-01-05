@@ -29,7 +29,7 @@ namespace SGE
         DescriptorHeap m_descriptorHeap;
 
         bool m_isOpenSettingsWindow = false;
-        bool dockspace_created = false;
+        bool m_isOpenResolutionWindow = false;
     };
 }
 

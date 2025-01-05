@@ -27,6 +27,7 @@ namespace SGE
         inline bool IsFullscreen() const { return m_fullscreen; }
 
         Action<double>& OnUpdate() { return m_updateEvent; }
+        Action<uint32, uint32>& OnResize() { return m_resizeEvent; }
 
     private:
         void RegisterWindowClass();
@@ -41,6 +42,10 @@ namespace SGE
         void Update();
         void Shutdown();
 
+        void SaveWindowPositionAndMonitor();
+        void RestoreWindowPositionAndSize();
+        void RestoreWindowPositionAndSizeFromFullscreen();
+
         static LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
 
     private:
@@ -52,8 +57,12 @@ namespace SGE
         HWND           m_hwnd;
         FrameTimer     m_frameTimer;
         Action<double> m_updateEvent;
+        Action<uint32, uint32> m_resizeEvent;
     
         const struct ApplicationSettings* m_applicationSettings;
+
+        RECT           m_windowPosition;
+        RECT           m_monitorRect;
     };
 }
 

@@ -48,6 +48,10 @@ namespace SGE
         {
             if (ImGui::BeginMenu("File"))
             {
+                if (ImGui::MenuItem("Settings"))
+                {
+                    m_isOpenResolutionWindow = true;
+                }
                 if (ImGui::MenuItem("Quit"))
                 {
                     m_settings->isPressedQuit = true;
@@ -57,7 +61,7 @@ namespace SGE
 
             if (ImGui::BeginMenu("Render"))
             {
-                if (ImGui::MenuItem("Settings"))
+                if (ImGui::MenuItem("Render settings"))
                 {
                     m_isOpenSettingsWindow = true;
                 }
@@ -67,14 +71,48 @@ namespace SGE
             ImGui::EndMainMenuBar();
         }
 
-        
         if (m_isOpenSettingsWindow)
         {
             ImGui::SetNextWindowSize(ImVec2(150, 300), ImGuiCond_Once);
-            if (ImGui::Begin("Settings", &m_isOpenSettingsWindow))
+            if (ImGui::Begin("Render settings", &m_isOpenSettingsWindow))
             {
-                ImGui::Text("Rendering Settings");
+                ImGui::Text("Render settings");
                 ImGui::Checkbox("Wireframe Mode", &m_settings->wireframeMode);
+            }
+            ImGui::End();
+        }
+
+        if (m_isOpenResolutionWindow)
+        {
+            ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_Once);
+            if (ImGui::Begin("Resolution Settings", &m_isOpenResolutionWindow))
+            {
+                ImGui::Text("Select Window Resolution:");
+                static int32 selectedResolution = 0;
+                const char* resolutions[] = {
+                    "640x480",
+                    "800x600",
+                    "1024x768",
+                    "1280x720",
+                    "1366x768",
+                    "1600x900",
+                    "1920x1080",
+                    "2560x1440"
+                };
+                if (ImGui::Combo("Resolution", &selectedResolution, resolutions, IM_ARRAYSIZE(resolutions)))
+                {
+                    // Apply the resolution change
+                    std::string resString = resolutions[selectedResolution];
+                    size_t xPos = resString.find('x');
+                    if (xPos != std::string::npos)
+                    {
+                        int width = std::stoi(resString.substr(0, xPos));
+                        int height = std::stoi(resString.substr(xPos + 1));
+
+                        m_window->SetWindowSize(width, height);
+                    }
+
+                }
             }
             ImGui::End();
         }

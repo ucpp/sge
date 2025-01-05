@@ -63,15 +63,28 @@ namespace SGE
 
     void Window::SetWindowSize(int32 width, int32 height)
     {
+        if (width == 0 || height == 0)
+        {
+            return;
+        }
+
+        if (width == m_width && height == m_height)
+        {
+            LOG_WARN("The window size will not be changed.");
+            return;
+        }
+
+        SaveWindowPositionAndMonitor();
+
         RECT windowRect = { 0, 0, width, height };
         AdjustWindowRectEx(&windowRect, GetWindowLong(m_hwnd, GWL_STYLE), false, GetWindowLong(m_hwnd, GWL_EXSTYLE));
-        
         int32 cx = windowRect.right - windowRect.left;
         int32 cy = windowRect.bottom - windowRect.top;
-        SetWindowPos(m_hwnd, HWND_NOTOPMOST, 0, 0, cx, cy, SWP_NOZORDER | SWP_FRAMECHANGED);
-        
-        m_width = width;
-        m_height = height;
+
+        SetWindowPos(m_hwnd, HWND_NOTOPMOST, m_windowPosition.left, m_windowPosition.top, cx, cy, SWP_NOZORDER | SWP_FRAMECHANGED);
+        RetrieveClientSize();
+
+        m_resizeEvent.Invoke(m_width, m_height);
     }
 
     void Window::SetFullscreen(bool fullscreen)
@@ -83,11 +96,13 @@ namespace SGE
         
         if (fullscreen)
         {
+            SaveWindowPositionAndMonitor();
             EnableFullscreen();
         }
         else
         {
             DisableFullscreen();
+            RestoreWindowPositionAndSize();
         }
     }
     
@@ -117,13 +132,20 @@ namespace SGE
         HINSTANCE hInstance = GetModuleHandle(nullptr);
         DWORD windowStyle = WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX;
         DWORD windowExStyle = WS_EX_APPWINDOW;
+
         RECT windowRect = { 0, 0, width, height };
+
         AdjustWindowRectEx(&windowRect, windowStyle, false, windowExStyle);
 
-        m_hwnd = CreateWindowEx(windowExStyle, m_title, m_title, windowStyle, 0, 0, width, height, nullptr, nullptr, m_hinstance, this);
+        m_hwnd = CreateWindowEx(windowExStyle, m_title, m_title, windowStyle, 0, 0, 
+                                windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, 
+                                nullptr, nullptr, m_hinstance, this);
+
         ShowWindow(m_hwnd, SW_SHOW);
         SetForegroundWindow(m_hwnd);
         SetFocus(m_hwnd);
+
+        RetrieveClientSize();
     }
 
     void Window::RetrieveClientSize()
@@ -214,6 +236,7 @@ namespace SGE
     void Window::Shutdown()
     {
         m_updateEvent.Clear();
+        m_resizeEvent.Clear();
 
         DestroyWindowHandle();
         UnregisterWindowClass();
@@ -248,6 +271,39 @@ namespace SGE
         {
             return Input::Get().MessageHandler(hwnd, umsg, wparam, lparam);
         }
+        }
+    }
+
+    void Window::SaveWindowPositionAndMonitor()
+    {
+        MONITORINFO monitorInfo = {};
+        monitorInfo.cbSize = sizeof(MONITORINFO);
+        HMONITOR monitor = MonitorFromWindow(m_hwnd, MONITOR_DEFAULTTONEAREST);
+        GetMonitorInfo(monitor, &monitorInfo);
+
+        m_monitorRect = monitorInfo.rcMonitor;
+
+        RECT windowRect;
+        GetWindowRect(m_hwnd, &windowRect);
+        m_windowPosition = windowRect;
+    }
+
+    void Window::RestoreWindowPositionAndSize()
+    {
+        if (m_windowPosition.left != 0 && m_windowPosition.top != 0)
+        {
+            SetWindowPos(m_hwnd, HWND_NOTOPMOST, m_windowPosition.left, m_windowPosition.top,
+                         m_windowPosition.right - m_windowPosition.left, 
+                         m_windowPosition.bottom - m_windowPosition.top, 
+                         SWP_NOZORDER | SWP_FRAMECHANGED);
+        }
+    }
+
+    void Window::RestoreWindowPositionAndSizeFromFullscreen()
+    {
+        if (!m_fullscreen)
+        {
+            RestoreWindowPositionAndSize();
         }
     }
 }

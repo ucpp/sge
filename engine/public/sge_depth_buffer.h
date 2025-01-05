@@ -9,13 +9,19 @@ namespace SGE
     {
     public:
         void Initialize(class Device* device, class DescriptorHeap* dsvHeap, uint32 width, uint32 height, uint32 bufferCount);
+        void Resize(uint32 width, uint32 height);
         void Shutdown();
         ID3D12Resource* GetDepthBuffer(uint32 index) const { return m_depthBuffers[index].Get(); }
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetDSVHandle(uint32 index) const;
 
     private:
-        std::vector<ComPtr<ID3D12Resource>> m_depthBuffers;
+        void CreateDepthBuffer(Device* device, uint32 width, uint32 height, uint32 index);
+
+    private:
+        class Device* m_device = nullptr;
         class DescriptorHeap* m_dsvHeap = nullptr;
+        std::vector<ComPtr<ID3D12Resource>> m_depthBuffers;
+        uint32 m_bufferCount;
     };
 }
 

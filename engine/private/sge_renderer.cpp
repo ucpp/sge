@@ -6,6 +6,7 @@
 #include "sge_model_loader.h"
 #include "sge_window.h"
 #include "sge_light.h"
+#include "sge_logger.h"
 
 namespace SGE
 {
@@ -122,8 +123,7 @@ namespace SGE
         ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
-        commandList->RSSetViewports(1, &m_viewportScissors->GetViewport());
-        commandList->RSSetScissorRects(1, &m_viewportScissors->GetScissorRect());
+        m_viewportScissors->Bind(commandList);
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(m_frameIndex);
         commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTarget->GetTarget(m_frameIndex), 
@@ -168,5 +168,26 @@ namespace SGE
     {
         m_editor->Shutdown();
         m_renderTarget->Shutdown();
+    }
+
+    void Renderer::ResizeScreen(uint32 width, uint32 height)
+    {
+        m_renderTarget->Shutdown();
+        m_depthBuffer->Shutdown();
+        DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+        m_device->GetSwapChain()->GetDesc(&swapChainDesc);
+        HRESULT hr = m_device->GetSwapChain()->ResizeBuffers(
+            BufferCount, 
+            width, 
+            height, 
+            swapChainDesc.BufferDesc.Format, 
+            swapChainDesc.Flags
+        );
+
+        m_viewportScissors->Set(width, height);
+        m_renderTarget->Resize(width, height);
+        m_depthBuffer->Resize(width, height);
+    
+        m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
     }
 }
