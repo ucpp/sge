@@ -21,6 +21,7 @@ namespace SGE
         ImGuiIO& io = ImGui::GetIO();
         io.DisplaySize = ImVec2((float)m_window->GetWidth(), (float)m_window->GetHeight());
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        io.IniFilename = "resources/configs/editor_layout.ini";
 
         ImGui_ImplWin32_EnableDpiAwareness();
         ImGui_ImplWin32_Init(m_window->GetHandle());
@@ -121,12 +122,10 @@ namespace SGE
 
     void Editor::ShowDockingExample()
     {
-        ImGui::Begin("Scene hierarchy", nullptr, ImGuiWindowFlags_NoSavedSettings);
-        ImGui::Text("This is the Scene hierarchy!");
+        ImGui::Begin("Scene hierarchy");
         ImGui::End();
 
-        ImGui::Begin("Content browser", nullptr, ImGuiWindowFlags_NoSavedSettings);
-        ImGui::Text("This is the Content browser!");
+        ImGui::Begin("Content browser");
         ImGui::End();
     }
 }
