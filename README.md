@@ -59,23 +59,26 @@ This project is **actively under development**, and its purpose is to experiment
  
 </details>
 <details>
-  <summary><strong>☐ 7. Fog effect</strong>: Add fog either in the pixel shader or as a post-process effect.</summary>
+  <summary><strong>☐ 7. MSAA</strong>: Support multi-sample anti-aliasing (in progress).</summary>
+
+</details>
+<details>
+  <summary><strong>☐ 8. Fog effect</strong>: Add fog either in the pixel shader or as a post-process effect (in progress).</summary>
 
 </details>
 
 ---
-   
-**8. Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.  
-**9. Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
-**10. HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
-**11. Bloom effect**: Implement a post-process bloom effect.  
-**12. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
-**13. Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.  
-**14. SSAO**: Implement screen-space ambient occlusion.  
-**15. SSLR**: Add screen-space local reflections.  
-**16. Load skinned mesh animations**: Import animated models and process on the GPU.  
-**17. Animation blending**: Combine multiple animations (e.g., running and shooting).  
-**18. MSAA**: Support multi-sample anti-aliasing.  
+  
+**9. Deferred lighting**: Implement direct, capsule, point, and spot lights with a deferred pipeline.  
+**10. Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
+**11. HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
+**12. Bloom effect**: Implement a post-process bloom effect.  
+**13. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
+**14. Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.  
+**15. SSAO**: Implement screen-space ambient occlusion.  
+**16. SSLR**: Add screen-space local reflections.  
+**17. Load skinned mesh animations**: Import animated models and process on the GPU.  
+**18. Animation blending**: Combine multiple animations (e.g., running and shooting).    
 **19. Particle system**: Create a system that supports 10,000+ particles.  
 
 ## Project Goals  
