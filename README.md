@@ -67,7 +67,11 @@ This project is **actively under development**, and its purpose is to experiment
 
 </details>
 <details>
-  <summary><strong>☐ 8. Fog effect</strong>: Add fog either in the pixel shader or as a post-process effect (in progress).</summary>
+  <summary><strong>✔ 8. Fog effect</strong>: Add fog either in the pixel shader or as a post-process effect.</summary>
+ 
+  ![Fog](https://github.com/ucpp/sge/blob/master/docs/fog.gif)
+
+  [Last commit](https://github.com/ucpp/sge/commit/e9dd4b4625f0a0aff2d495b8370214d21d88713a)
 
 </details>
 
