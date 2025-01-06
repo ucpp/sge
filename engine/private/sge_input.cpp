@@ -17,10 +17,7 @@ namespace SGE
 
     LRESULT Input::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
     {
-        if (ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam))
-        {
-            return true;
-        }
+        ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam);
 
         switch (umsg)
         {

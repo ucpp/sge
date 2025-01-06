@@ -36,6 +36,9 @@ namespace SGE
         void PopulateCommandList();
         void WaitForPreviousFrame();
         void ExecuteCommandList();
+        void UpdateBuffers();
+
+        ID3D12PipelineState* GetActivePipelineState() const;
 
     private:
         class Window* m_window = nullptr;
@@ -66,6 +69,8 @@ namespace SGE
         DescriptorHeap m_dsvHeap;
 
         std::unique_ptr<ConstantBuffer> m_lightDataBuffer;
+
+        bool m_playAnimation = false;
     };
 }
 

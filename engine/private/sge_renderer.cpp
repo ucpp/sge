@@ -7,6 +7,7 @@
 #include "sge_window.h"
 #include "sge_light.h"
 #include "sge_logger.h"
+#include "sge_input.h"
 
 namespace SGE
 {
@@ -21,14 +22,18 @@ namespace SGE
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
 
         m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, CbvSrvHeapCapacity, true);
-        m_rtvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, BufferCount);
-        m_dsvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, BufferCount);
+
+        bool isMSAAEnabled = m_settings->isMSAAEnabled;
+        uint32 rtvNumDescriptors = BufferCount * (isMSAAEnabled ? 2 : 1);
+
+        m_rtvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtvNumDescriptors);
+        m_dsvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1);
 
         m_renderTarget = std::make_unique<RenderTarget>();
-        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BufferCount);
+        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BufferCount, isMSAAEnabled);
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
-        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, m_window->GetWidth(), m_window->GetHeight(), BufferCount);
+        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, m_window->GetWidth(), m_window->GetHeight(), 1, isMSAAEnabled);
 
         m_vertexShader = std::make_unique<Shader>();
         m_pixelShader = std::make_unique<Shader>();
@@ -41,11 +46,13 @@ namespace SGE
 
         m_pipelineState = std::make_unique<PipelineState>();
         D3D12_GRAPHICS_PIPELINE_STATE_DESC standardDesc = PipelineState::CreateDefaultPSODesc();
+        standardDesc.SampleDesc.Count = isMSAAEnabled ? 4 : 1;
         m_pipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, standardDesc);
 
         m_wireframePipelineState = std::make_unique<PipelineState>();
         D3D12_GRAPHICS_PIPELINE_STATE_DESC descWireframe = PipelineState::CreateDefaultPSODesc();
         descWireframe.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+        descWireframe.SampleDesc.Count = isMSAAEnabled ? 4 : 1;
         m_wireframePipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, descWireframe);
 
         m_fence.Initialize(m_device.get(), 1);
@@ -79,14 +86,22 @@ namespace SGE
     }
     
     void Renderer::Update(double deltaTime)
-    {
+    {   
+        if(Input::Get().GetKeyDown(VK_SPACE))
+        {
+            m_playAnimation = !m_playAnimation;
+        }
+
+        if(m_playAnimation)
+        {
+            float rotationSpeed = 45.0f;
+            float rotationDelta = rotationSpeed * static_cast<float>(deltaTime);
+            XMFLOAT3 currentRotation = m_model->GetRotation();
+            currentRotation.y += rotationDelta;
+            m_model->SetRotation(currentRotation);
+        }
+
         m_cameraController.Update(deltaTime);
-        
-        float rotationSpeed = 45.0f;
-        float rotationDelta = rotationSpeed * static_cast<float>(deltaTime);
-        XMFLOAT3 currentRotation = m_model->GetRotation();
-        currentRotation.y += rotationDelta;
-        m_model->SetRotation(currentRotation);
     }
 
     void Renderer::Render()
@@ -105,37 +120,25 @@ namespace SGE
         ID3D12GraphicsCommandList* commandList = m_device->GetCommandList().Get();
 
         m_device->GetCommandAllocator(m_frameIndex)->Reset();
-        ID3D12PipelineState* activePipelineState = m_settings->wireframeMode 
-        ? m_wireframePipelineState->GetPipelineState() 
-        : m_pipelineState->GetPipelineState();
-
-        commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), activePipelineState);
-
+        commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), GetActivePipelineState());
         commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
 
-        m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()));
-
-        LightData lightData = {};
-        lightData.directionalLight.direction = { 0.2f, 0.2f, 1.0f };
-        lightData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
-        lightData.directionalLight.intensity = 1.2f;
-        lightData.pointLight.position = { 0.0f, 5.0f, 0.0f };
-        lightData.pointLight.color = { 1.0f, 0.0f, 0.0f };
-        lightData.pointLight.intensity = 1.0f;
-        lightData.cameraPosition = m_camera.GetPosition();
-
-        m_lightDataBuffer->Update(&lightData, sizeof(LightData));
+        UpdateBuffers();
 
         ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
 
         m_viewportScissors->Bind(commandList);
 
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(m_frameIndex);
-        commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_renderTarget->GetTarget(m_frameIndex), 
-                                        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
 
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex);
+        bool isMSAAEnabled = m_settings->isMSAAEnabled;
+
+        ID3D12Resource* renderTarget = m_renderTarget->GetTarget(m_frameIndex, isMSAAEnabled);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAAEnabled); 
+
+        commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(renderTarget, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+
         commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, &dsvHandle);
 
         const float clearColor[] = { 0.314f, 0.314f, 0.314f, 1.0f };
@@ -148,12 +151,31 @@ namespace SGE
         m_model->Render(commandList);
         m_editor->Render(commandList);
 
-        commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
-            m_renderTarget->GetTarget(m_frameIndex), 
-            D3D12_RESOURCE_STATE_RENDER_TARGET, 
-            D3D12_RESOURCE_STATE_PRESENT));
+        if (isMSAAEnabled) 
+        {
+            m_renderTarget->Resolve(commandList, m_frameIndex); 
+        }
+
+        ID3D12Resource* presentTarget = m_renderTarget->GetTarget(m_frameIndex);
+        commandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(presentTarget, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
         commandList->Close();
+    }
+
+    void Renderer::UpdateBuffers()
+    {
+        m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()));
+
+        LightData lightData = {};
+        lightData.directionalLight.direction = { 0.2f, 0.2f, 1.0f };
+        lightData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
+        lightData.directionalLight.intensity = 1.2f;
+        lightData.pointLight.position = { 0.0f, 5.0f, 0.0f };
+        lightData.pointLight.color = { 1.0f, 0.0f, 0.0f };
+        lightData.pointLight.intensity = 1.0f;
+        lightData.cameraPosition = m_camera.GetPosition();
+
+        m_lightDataBuffer->Update(&lightData, sizeof(LightData));
     }
 
     void Renderer::WaitForPreviousFrame()
@@ -195,5 +217,10 @@ namespace SGE
         m_depthBuffer->Resize(width, height);
     
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
+    }
+
+    ID3D12PipelineState* Renderer::GetActivePipelineState() const
+    {
+        return m_settings->wireframeMode ? m_wireframePipelineState->GetPipelineState() : m_pipelineState->GetPipelineState();
     }
 }

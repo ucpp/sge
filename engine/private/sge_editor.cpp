@@ -77,6 +77,7 @@ namespace SGE
             {
                 ImGui::Text("Render settings");
                 ImGui::Checkbox("Wireframe Mode", &m_settings->wireframeMode);
+                ImGui::Checkbox("MSAA 4x", &m_settings->isMSAAEnabled);
             }
             ImGui::End();
         }

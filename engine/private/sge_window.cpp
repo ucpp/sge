@@ -237,9 +237,9 @@ namespace SGE
                 {
                     m_updateEvent.Invoke(fixedDeltaTime);
                     accumulatedTime -= fixedDeltaTime;
+                    Input::Get().ResetStates();
                 }
 
-                Input::Get().ResetStates();
                 m_frameTimer.Reset();
             }
         }

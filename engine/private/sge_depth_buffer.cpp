@@ -7,7 +7,7 @@
 
 namespace SGE
 {
-    void DepthBuffer::Initialize(Device* device, DescriptorHeap* dsvHeap, uint32 width, uint32 height, uint32 bufferCount)
+    void DepthBuffer::Initialize(Device* device, DescriptorHeap* dsvHeap, uint32 width, uint32 height, uint32 bufferCount, bool isMSAAEnabled)
     {
         if (!device)
         {
@@ -25,6 +25,7 @@ namespace SGE
         m_depthBuffers.resize(bufferCount);
         m_bufferCount = bufferCount;
         m_device = device;
+        m_isMSAAEnabled = isMSAAEnabled;
 
         for (uint32 i = 0; i < bufferCount; i++)
         {
@@ -65,7 +66,7 @@ namespace SGE
         depthDesc.DepthOrArraySize = 1;
         depthDesc.MipLevels = 1;
         depthDesc.Format = DXGI_FORMAT_D32_FLOAT;
-        depthDesc.SampleDesc.Count = 1;
+        depthDesc.SampleDesc.Count = m_isMSAAEnabled ? 4 : 1;
         depthDesc.SampleDesc.Quality = 0;
         depthDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
         depthDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
@@ -89,7 +90,7 @@ namespace SGE
 
         D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
         dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-        dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+        dsvDesc.ViewDimension = m_isMSAAEnabled ? D3D12_DSV_DIMENSION_TEXTURE2DMS : D3D12_DSV_DIMENSION_TEXTURE2D;
         dsvDesc.Texture2D.MipSlice = 0;
 
         device->GetDevice()->CreateDepthStencilView(m_depthBuffers[index].Get(), &dsvDesc, dsvHandle);
