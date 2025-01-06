@@ -53,13 +53,17 @@ This project is **actively under development**, and its purpose is to experiment
 <details>
   <summary><strong>✔ 6. Phong lighting</strong>: Calculate lighting from direct and point lights in the pixel shader.</summary>
 
-  ![Textures](https://github.com/ucpp/sge/blob/master/docs/phong.gif)
+  ![Phong lighting](https://github.com/ucpp/sge/blob/master/docs/phong.gif)
 
   [Last commit](https://github.com/ucpp/sge/commit/fff8aa416b0fb9948be084802f2dd173c7df1e0b)
  
 </details>
 <details>
-  <summary><strong>☐ 7. MSAA</strong>: Support multi-sample anti-aliasing (in progress).</summary>
+  <summary><strong>✔ 7. MSAA</strong>: Support multi-sample anti-aliasing (in progress).</summary>
+
+  ![MSAA](https://github.com/ucpp/sge/blob/master/docs/msaa.png)
+
+  [Last commit](https://github.com/ucpp/sge/commit/f62c52b29d1cff6fb0d903e2ca63036b8a65547d)
 
 </details>
 <details>

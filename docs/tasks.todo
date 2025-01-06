@@ -2,6 +2,7 @@
 
 ☐ Deferred lighting
 ☐ Fog effect
+✔ Add support for MSAA (Multisample Anti-Aliasing). @done(25-01-06 16:43)
 ✔ Implement Phong lighting. @done(25-01-05 21:14)
     ✔ Create a buffer to store data for point and directional lights. @done(25-01-04 10:25)
     ✔ Implement directional light calculation for the diffuse map. @done(25-01-04 10:25)
