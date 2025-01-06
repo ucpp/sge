@@ -59,7 +59,7 @@ This project is **actively under development**, and its purpose is to experiment
  
 </details>
 <details>
-  <summary><strong>✔ 7. MSAA</strong>: Support multi-sample anti-aliasing (in progress).</summary>
+  <summary><strong>✔ 7. MSAA</strong>: Support multi-sample anti-aliasing.</summary>
 
   ![MSAA](https://github.com/ucpp/sge/blob/master/docs/msaa.png)
 
