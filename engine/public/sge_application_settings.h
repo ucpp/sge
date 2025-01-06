@@ -16,6 +16,7 @@ namespace SGE
         bool wireframeMode = false;
         bool isPressedQuit = false;
         bool isMSAAEnabled = true;
+        bool isFogEnabled = false;
     };
 }
 

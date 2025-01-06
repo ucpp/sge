@@ -5,7 +5,7 @@
 #include "sge_device.h"
 #include "sge_model_loader.h"
 #include "sge_window.h"
-#include "sge_light.h"
+#include "sge_scene_data.h"
 #include "sge_logger.h"
 #include "sge_input.h"
 
@@ -57,8 +57,8 @@ namespace SGE
 
         m_fence.Initialize(m_device.get(), 1);
 
-        m_lightDataBuffer = std::make_unique<ConstantBuffer>();
-        m_lightDataBuffer->Initialize(m_device->GetDevice().Get(), &m_cbvSrvUavHeap, sizeof(LightData), 0);
+        m_sceneDataBuffer = std::make_unique<ConstantBuffer>();
+        m_sceneDataBuffer->Initialize(m_device->GetDevice().Get(), &m_cbvSrvUavHeap, sizeof(SceneData), 0);
 
         m_model = std::make_unique<Model>();
         *m_model = ModelLoader::LoadModel("resources/backpack/backpack.obj", m_device.get(), &m_cbvSrvUavHeap, 1);
@@ -166,16 +166,20 @@ namespace SGE
     {
         m_model->Update(m_camera.GetViewMatrix(), m_camera.GetProjMatrix(m_window->GetWidth(), m_window->GetHeight()));
 
-        LightData lightData = {};
-        lightData.directionalLight.direction = { 0.2f, 0.2f, 1.0f };
-        lightData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
-        lightData.directionalLight.intensity = 1.2f;
-        lightData.pointLight.position = { 0.0f, 5.0f, 0.0f };
-        lightData.pointLight.color = { 1.0f, 0.0f, 0.0f };
-        lightData.pointLight.intensity = 1.0f;
-        lightData.cameraPosition = m_camera.GetPosition();
+        m_sceneData.directionalLight.direction = { 0.2f, 0.2f, 1.0f };
+        m_sceneData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
+        m_sceneData.directionalLight.intensity = 1.2f;
+        m_sceneData.pointLight.position = { 0.0f, 5.0f, 0.0f };
+        m_sceneData.pointLight.color = { 0.0f, 0.0f, 0.0f };
+        m_sceneData.pointLight.intensity = 1.0f;
+        m_sceneData.cameraPosition = m_camera.GetPosition();
+        m_sceneData.fogStart = 3.0f;
+        m_sceneData.fogEnd = 30.0f;
+        m_sceneData.fogColor = XMFLOAT3(0.314f, 0.314f, 0.314f);
+        m_sceneData.fogStrength = m_settings->isFogEnabled ? 1.0f : 0.0f;
+        m_sceneData.fogDensity = 0.1f;
 
-        m_lightDataBuffer->Update(&lightData, sizeof(LightData));
+        m_sceneDataBuffer->Update(&m_sceneData, sizeof(SceneData));
     }
 
     void Renderer::WaitForPreviousFrame()

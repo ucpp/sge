@@ -17,8 +17,9 @@ struct VertexInput
 struct PixelInput
 {
     float4 position : SV_POSITION;
+    float3 worldPosition : TEXCOORD0;
     float3 normal : NORMAL;
-    float2 texCoords : TEXCOORD;
+    float2 texCoords : TEXCOORD1;
     float3 tangent : TANGENT;
     float3 bitangent : BITANGENT;
 };
@@ -28,6 +29,7 @@ PixelInput main(VertexInput input)
     PixelInput output;
 
     float4 modelPos = mul(float4(input.position, 1.0f), model);
+    output.worldPosition = modelPos.xyz;
     float4 viewPos = mul(modelPos, view);
     output.position = mul(viewPos, projection);
 

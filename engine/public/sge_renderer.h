@@ -18,6 +18,7 @@
 #include "sge_shader.h"
 #include "sge_viewport_scissors.h"
 #include "sge_non_copyable.h"
+#include "sge_scene_data.h"
 
 namespace SGE
 {
@@ -68,9 +69,10 @@ namespace SGE
         DescriptorHeap m_rtvHeap;
         DescriptorHeap m_dsvHeap;
 
-        std::unique_ptr<ConstantBuffer> m_lightDataBuffer;
+        std::unique_ptr<ConstantBuffer> m_sceneDataBuffer;
 
         bool m_playAnimation = false;
+        SceneData m_sceneData;
     };
 }
 
