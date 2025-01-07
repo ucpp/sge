@@ -8,6 +8,7 @@
 #include "sge_scene_data.h"
 #include "sge_logger.h"
 #include "sge_input.h"
+#include "sge_shader_manager.h"
 
 namespace SGE
 {
@@ -25,7 +26,6 @@ namespace SGE
 
         InitializeDescriptorHeaps();
         InitializeRenderTargets();
-        InitializeShaders();
         InitializePipelineStates();
         InitializeSceneBuffers();
         InitializeCamera();
@@ -56,23 +56,18 @@ namespace SGE
         m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, m_window->GetWidth(), m_window->GetHeight(), 1, m_settings->isMSAAEnabled);
     }
 
-    void Renderer::InitializeShaders()
+    void Renderer::InitializePipelineStates()
     {
-        m_vertexShader = std::make_unique<Shader>();
-        m_pixelShader = std::make_unique<Shader>();
-        m_vertexShader->Initialize("shaders/vs_default.hlsl", ShaderType::Vertex);
-        m_pixelShader->Initialize("shaders/ps_default.hlsl", ShaderType::Pixel);
+        const Shader& vertexShader = ShaderManager::GetShader("shaders/vs_default.hlsl", ShaderType::Vertex);
+        const Shader& pixelShader = ShaderManager::GetShader("shaders/ps_default.hlsl", ShaderType::Pixel);
 
         m_rootSignature = std::make_unique<RootSignature>();
         m_rootSignature->Initialize(m_device->GetDevice().Get());
-    }
 
-    void Renderer::InitializePipelineStates()
-    {
         m_forwardPipelineState = std::make_unique<PipelineState>();
         D3D12_GRAPHICS_PIPELINE_STATE_DESC standardDesc = PipelineState::CreateDefaultPSODesc();
         standardDesc.SampleDesc.Count = m_settings->isMSAAEnabled ? 4 : 1;
-        m_forwardPipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, standardDesc);
+        m_forwardPipelineState->Initialize(m_device->GetDevice().Get(), vertexShader, pixelShader, *m_rootSignature, standardDesc);
     }
 
     void Renderer::InitializeSceneBuffers()

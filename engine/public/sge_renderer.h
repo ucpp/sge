@@ -35,7 +35,6 @@ namespace SGE
     private:
         void InitializeCamera();
         void InitializeDescriptorHeaps();
-        void InitializeShaders();
         void InitializePipelineStates();
         void InitializeRenderTargets();
         void InitializeSceneBuffers();
@@ -63,8 +62,6 @@ namespace SGE
         std::unique_ptr<RenderTarget> m_renderTarget;
         std::unique_ptr<DepthBuffer> m_depthBuffer;
 
-        std::unique_ptr<Shader> m_vertexShader;
-        std::unique_ptr<Shader> m_pixelShader;
         std::unique_ptr<RootSignature> m_rootSignature;
         std::unique_ptr<PipelineState> m_forwardPipelineState;
 
