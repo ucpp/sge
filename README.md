@@ -78,8 +78,9 @@ This project is **actively under development**, and its purpose is to experiment
   <summary><strong>☐ 9. Deferred lighting</strong>: Implement direct, capsule, point, and spot lights with a deferred pipeline (in progress).</summary>
 
 </details>
+
 ---
-  
+
 **10. Cook-Torrance BRDF and Image-Based Lighting (IBL)**: Add realistic PBR lighting.  
 **11. HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
 **12. Bloom effect**: Implement a post-process bloom effect.  
