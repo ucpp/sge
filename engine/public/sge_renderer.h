@@ -66,8 +66,7 @@ namespace SGE
         std::unique_ptr<Shader> m_vertexShader;
         std::unique_ptr<Shader> m_pixelShader;
         std::unique_ptr<RootSignature> m_rootSignature;
-        std::unique_ptr<PipelineState> m_pipelineState;
-        std::unique_ptr<PipelineState> m_wireframePipelineState;
+        std::unique_ptr<PipelineState> m_forwardPipelineState;
 
         Fence m_fence;
         UINT m_frameIndex;

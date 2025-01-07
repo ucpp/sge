@@ -69,16 +69,10 @@ namespace SGE
 
     void Renderer::InitializePipelineStates()
     {
-        m_pipelineState = std::make_unique<PipelineState>();
+        m_forwardPipelineState = std::make_unique<PipelineState>();
         D3D12_GRAPHICS_PIPELINE_STATE_DESC standardDesc = PipelineState::CreateDefaultPSODesc();
         standardDesc.SampleDesc.Count = m_settings->isMSAAEnabled ? 4 : 1;
-        m_pipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, standardDesc);
-
-        m_wireframePipelineState = std::make_unique<PipelineState>();
-        D3D12_GRAPHICS_PIPELINE_STATE_DESC wireframeDesc = PipelineState::CreateDefaultPSODesc();
-        wireframeDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-        wireframeDesc.SampleDesc.Count = m_settings->isMSAAEnabled ? 4 : 1;
-        m_wireframePipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, wireframeDesc);
+        m_forwardPipelineState->Initialize(m_device->GetDevice().Get(), *m_vertexShader, *m_pixelShader, *m_rootSignature, standardDesc);
     }
 
     void Renderer::InitializeSceneBuffers()
@@ -270,6 +264,6 @@ namespace SGE
 
     ID3D12PipelineState* Renderer::GetActivePipelineState() const
     {
-        return m_settings->wireframeMode ? m_wireframePipelineState->GetPipelineState() : m_pipelineState->GetPipelineState();
+        return m_forwardPipelineState->GetPipelineState();
     }
 }

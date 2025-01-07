@@ -13,7 +13,6 @@ namespace SGE
         bool fullscreen = false;
 
         // editor
-        bool wireframeMode = false;
         bool isPressedQuit = false;
         bool isMSAAEnabled = true;
         bool isFogEnabled = false;
