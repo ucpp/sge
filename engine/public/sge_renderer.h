@@ -34,10 +34,23 @@ namespace SGE
 
     private:
         void InitializeCamera();
-        void PopulateCommandList();
+        void InitializeDescriptorHeaps();
+        void InitializeShaders();
+        void InitializePipelineStates();
+        void InitializeRenderTargets();
+        void InitializeSceneBuffers();
+
+        void UpdateBuffers();
+        void UpdateSceneDataBuffer();
+        void UpdateModelBuffer();
+
+        void BeginFrame();
+        void ClearRenderTargets();
+        void RenderGeometryPass();
+        void RenderImGuiPass();
         void WaitForPreviousFrame();
         void ExecuteCommandList();
-        void UpdateBuffers();
+        void EndFrame();
 
         ID3D12PipelineState* GetActivePipelineState() const;
 
