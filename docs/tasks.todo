@@ -48,6 +48,7 @@
 
 ### Refactoring and improvements
 
+☐ Implement root signature generation
 ☐ Editor improvements
     ✔ Add quit application button functionality. @done(25-01-04 11:32)
 ✔ Implement window resizing functionality. @done(25-01-05 17:25)
