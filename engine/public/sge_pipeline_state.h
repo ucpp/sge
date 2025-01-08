@@ -7,21 +7,29 @@
 
 namespace SGE
 {
+    struct PipelineConfig
+    {
+        std::vector<DXGI_FORMAT> RenderTargetFormats;
+        DXGI_FORMAT DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
+        D3D12_INPUT_LAYOUT_DESC InputLayout = {};
+
+        CD3DX12_RASTERIZER_DESC RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+        CD3DX12_BLEND_DESC BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+        D3D12_DEPTH_STENCIL_DESC DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+
+        uint32 SampleCount = 1;
+        std::string VertexShaderPath;
+        std::string PixelShaderPath;
+    };
+
     class PipelineState
     {
     public:
-
-        void Initialize(
-            ID3D12Device* device, 
-            const Shader& vertexShader, 
-            const Shader& pixelShader, 
-            const RootSignature& rootSignature,
-            const D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc);
-        
+        void Initialize(ID3D12Device* device, const PipelineConfig& config);
         ID3D12PipelineState* GetPipelineState() const { return m_pipelineState.Get(); }
-        const RootSignature& GetRootSignature() const { return m_rootSignature; }
+        ID3D12RootSignature* GetSignature() const { return m_rootSignature.GetSignature(); }
 
-        static D3D12_GRAPHICS_PIPELINE_STATE_DESC CreateDefaultPSODesc();
+        static PipelineConfig CreateDefaultConfig();
 
     private:
         ComPtr<ID3D12PipelineState> m_pipelineState;

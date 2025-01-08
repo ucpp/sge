@@ -1,58 +1,60 @@
 #include "sge_pipeline_state.h"
 
 #include "sge_helpers.h"
+#include "sge_shader.h"
+#include "sge_shader_manager.h"
 
 namespace SGE
 {
-    void PipelineState::Initialize(
-        ID3D12Device* device, 
-        const Shader& vertexShader, 
-        const Shader& pixelShader, 
-        const RootSignature& rootSignature,
-        const D3D12_GRAPHICS_PIPELINE_STATE_DESC& psoDesc)
+    void PipelineState::Initialize(ID3D12Device* device, const PipelineConfig& config)
     {
-        m_rootSignature = rootSignature;
+        
+        const Shader& vertexShader = ShaderManager::GetShader(config.VertexShaderPath, ShaderType::Vertex);
+        const Shader& pixelShader = ShaderManager::GetShader(config.PixelShaderPath, ShaderType::Pixel);
+        m_rootSignature.Initialize(device, vertexShader.GetBlob(), pixelShader.GetBlob());
 
-        D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = psoDesc;
-        D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = 
-        {
-            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-            { "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
-        };
-
-        desc.InputLayout = { inputElementDescs, _countof(inputElementDescs) };
-        desc.pRootSignature = rootSignature.GetSignature();
+        D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
+        desc.InputLayout = config.InputLayout;
+        desc.pRootSignature = m_rootSignature.GetSignature();
         desc.VS = vertexShader.GetShaderBytecode();
         desc.PS = pixelShader.GetShaderBytecode();
+
+        desc.RasterizerState = config.RasterizerState;
+        desc.BlendState = config.BlendState;
+        desc.DepthStencilState = config.DepthStencilState;
+        desc.SampleMask = UINT_MAX;
+
+        desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+        desc.NumRenderTargets = static_cast<uint32>(config.RenderTargetFormats.size());
+
+        for (size_t i = 0; i < config.RenderTargetFormats.size(); ++i)
+        {
+            desc.RTVFormats[i] = config.RenderTargetFormats[i];
+        }
+
+        desc.DSVFormat = config.DepthStencilFormat;
+        desc.SampleDesc.Count = config.SampleCount;
+        desc.SampleDesc.Quality = 0;
 
         HRESULT hr = device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pipelineState));
         Verify(hr, "Failed to create graphics pipeline state.");
     }
-    
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC PipelineState::CreateDefaultPSODesc()
+
+    PipelineConfig PipelineState::CreateDefaultConfig()
     {
-        D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
+        PipelineConfig config{};
 
-        psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-        psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-        psoDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+        config.RenderTargetFormats.push_back(DXGI_FORMAT_R8G8B8A8_UNORM);
 
-        psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-        psoDesc.DepthStencilState.DepthEnable = TRUE;
-        psoDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-        psoDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-        psoDesc.DepthStencilState.StencilEnable = FALSE;
+        static const D3D12_INPUT_ELEMENT_DESC defaultInputLayout[] = {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+        };
+        config.InputLayout = { defaultInputLayout, _countof(defaultInputLayout) };
 
-        psoDesc.SampleMask = UINT_MAX;
-        psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-        psoDesc.NumRenderTargets = 1;
-        psoDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-        psoDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-        psoDesc.SampleDesc.Count = 1;
-
-        return psoDesc;
+        return config;
     }
 }

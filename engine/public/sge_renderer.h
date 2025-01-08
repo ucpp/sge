@@ -51,7 +51,7 @@ namespace SGE
         void ExecuteCommandList();
         void EndFrame();
 
-        ID3D12PipelineState* GetActivePipelineState() const;
+        PipelineState* GetActivePipelineState() const;
 
     private:
         class Window* m_window = nullptr;
@@ -62,7 +62,6 @@ namespace SGE
         std::unique_ptr<RenderTarget> m_renderTarget;
         std::unique_ptr<DepthBuffer> m_depthBuffer;
 
-        std::unique_ptr<RootSignature> m_rootSignature;
         std::unique_ptr<PipelineState> m_forwardPipelineState;
 
         Fence m_fence;

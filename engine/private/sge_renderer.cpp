@@ -58,16 +58,19 @@ namespace SGE
 
     void Renderer::InitializePipelineStates()
     {
-        const Shader& vertexShader = ShaderManager::GetShader("shaders/vs_default.hlsl", ShaderType::Vertex);
-        const Shader& pixelShader = ShaderManager::GetShader("shaders/ps_default.hlsl", ShaderType::Pixel);
-
-        m_rootSignature = std::make_unique<RootSignature>();
-        m_rootSignature->Initialize(m_device->GetDevice().Get());
-
+        PipelineConfig forwardConfig = SGE::PipelineState::CreateDefaultConfig();
+        forwardConfig.RenderTargetFormats = { DXGI_FORMAT_R8G8B8A8_UNORM };
+        forwardConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
+        forwardConfig.SampleCount = m_settings->isMSAAEnabled ? 4 : 1;
+        forwardConfig.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+        forwardConfig.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+        forwardConfig.DepthStencilState.DepthEnable = TRUE;
+        forwardConfig.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+        forwardConfig.VertexShaderPath = "shaders/vs_default.hlsl";
+        forwardConfig.PixelShaderPath = "shaders/ps_default.hlsl";
+        
         m_forwardPipelineState = std::make_unique<PipelineState>();
-        D3D12_GRAPHICS_PIPELINE_STATE_DESC standardDesc = PipelineState::CreateDefaultPSODesc();
-        standardDesc.SampleDesc.Count = m_settings->isMSAAEnabled ? 4 : 1;
-        m_forwardPipelineState->Initialize(m_device->GetDevice().Get(), vertexShader, pixelShader, *m_rootSignature, standardDesc);
+        m_forwardPipelineState->Initialize(m_device->GetDevice().Get(), forwardConfig);
     }
 
     void Renderer::InitializeSceneBuffers()
@@ -130,8 +133,8 @@ namespace SGE
         ID3D12GraphicsCommandList* commandList = m_device->GetCommandList().Get();
 
         m_device->GetCommandAllocator(m_frameIndex)->Reset();
-        commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), GetActivePipelineState());
-        commandList->SetGraphicsRootSignature(m_rootSignature->GetSignature());
+        commandList->Reset(m_device->GetCommandAllocator(m_frameIndex).Get(), GetActivePipelineState()->GetPipelineState());
+        commandList->SetGraphicsRootSignature(GetActivePipelineState()->GetSignature());
 
         ID3D12DescriptorHeap* heaps[] = { m_cbvSrvUavHeap.GetHeap().Get() };
         commandList->SetDescriptorHeaps(_countof(heaps), heaps);
@@ -257,8 +260,8 @@ namespace SGE
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
     }
 
-    ID3D12PipelineState* Renderer::GetActivePipelineState() const
+    PipelineState* Renderer::GetActivePipelineState() const
     {
-        return m_forwardPipelineState->GetPipelineState();
+        return m_forwardPipelineState.get();
     }
 }
