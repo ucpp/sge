@@ -7,8 +7,7 @@
 namespace SGE
 {
     void PipelineState::Initialize(ID3D12Device* device, const PipelineConfig& config)
-    {
-        
+    {       
         const Shader& vertexShader = ShaderManager::GetShader(config.VertexShaderPath, ShaderType::Vertex);
         const Shader& pixelShader = ShaderManager::GetShader(config.PixelShaderPath, ShaderType::Pixel);
         m_rootSignature.Initialize(device, vertexShader.GetBlob(), pixelShader.GetBlob());
@@ -54,6 +53,11 @@ namespace SGE
             { "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         };
         config.InputLayout = { defaultInputLayout, _countof(defaultInputLayout) };
+
+        config.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+        config.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+        config.DepthStencilState.DepthEnable = TRUE;
+        config.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
         return config;
     }

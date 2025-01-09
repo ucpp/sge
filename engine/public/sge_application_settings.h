@@ -16,6 +16,7 @@ namespace SGE
         bool isPressedQuit = false;
         bool isMSAAEnabled = true;
         bool isFogEnabled = false;
+        bool isDefferedRendering = false;
     };
 }
 

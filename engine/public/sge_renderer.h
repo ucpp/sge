@@ -53,6 +53,8 @@ namespace SGE
 
         PipelineState* GetActivePipelineState() const;
 
+        bool IsMSAA() const;
+
     private:
         class Window* m_window = nullptr;
         struct ApplicationSettings* m_settings = nullptr;
@@ -63,6 +65,7 @@ namespace SGE
         std::unique_ptr<DepthBuffer> m_depthBuffer;
 
         std::unique_ptr<PipelineState> m_forwardPipelineState;
+        std::unique_ptr<PipelineState> m_deferredPipelineState;
 
         Fence m_fence;
         UINT m_frameIndex;

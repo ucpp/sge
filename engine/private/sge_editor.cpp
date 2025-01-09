@@ -76,8 +76,11 @@ namespace SGE
             if (ImGui::Begin("Render settings", &m_isOpenSettingsWindow))
             {
                 ImGui::Text("Render settings");
-                ImGui::Checkbox("MSAA 4x", &m_settings->isMSAAEnabled);
-                ImGui::Checkbox("Fog", &m_settings->isFogEnabled);
+                if(!m_settings->isDefferedRendering)
+                {
+                    ImGui::Checkbox("MSAA 4x", &m_settings->isMSAAEnabled);
+                    ImGui::Checkbox("Fog", &m_settings->isFogEnabled);
+                }
             }
             ImGui::End();
         }

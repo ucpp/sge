@@ -42,7 +42,7 @@ namespace SGE
     void Renderer::InitializeDescriptorHeaps()
     {
         m_cbvSrvUavHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, CbvSrvHeapCapacity, true);
-        uint32 rtvNumDescriptors = BufferCount * (m_settings->isMSAAEnabled ? 2 : 1);
+        uint32 rtvNumDescriptors = BufferCount * (IsMSAA() ? 2 : 1);
         m_rtvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtvNumDescriptors);
         m_dsvHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1);
     }
@@ -50,27 +50,38 @@ namespace SGE
     void Renderer::InitializeRenderTargets()
     {
         m_renderTarget = std::make_unique<RenderTarget>();
-        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BufferCount, m_settings->isMSAAEnabled);
+        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BufferCount, IsMSAA());
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
-        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, m_window->GetWidth(), m_window->GetHeight(), 1, m_settings->isMSAAEnabled);
+        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, m_window->GetWidth(), m_window->GetHeight(), 1, IsMSAA());
     }
 
     void Renderer::InitializePipelineStates()
     {
-        PipelineConfig forwardConfig = SGE::PipelineState::CreateDefaultConfig();
+        PipelineConfig forwardConfig = PipelineState::CreateDefaultConfig();
         forwardConfig.RenderTargetFormats = { DXGI_FORMAT_R8G8B8A8_UNORM };
         forwardConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
-        forwardConfig.SampleCount = m_settings->isMSAAEnabled ? 4 : 1;
-        forwardConfig.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-        forwardConfig.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
-        forwardConfig.DepthStencilState.DepthEnable = TRUE;
-        forwardConfig.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+        forwardConfig.SampleCount = IsMSAA() ? 4 : 1;
         forwardConfig.VertexShaderPath = "shaders/vs_default.hlsl";
         forwardConfig.PixelShaderPath = "shaders/ps_default.hlsl";
         
         m_forwardPipelineState = std::make_unique<PipelineState>();
         m_forwardPipelineState->Initialize(m_device->GetDevice().Get(), forwardConfig);
+
+        PipelineConfig deferredConfig = PipelineState::CreateDefaultConfig();
+        deferredConfig.RenderTargetFormats = 
+        {
+            DXGI_FORMAT_R16G16B16A16_FLOAT,
+            DXGI_FORMAT_R16G16B16A16_FLOAT,
+            DXGI_FORMAT_R8G8B8A8_UNORM
+        };
+        deferredConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
+        deferredConfig.SampleCount = 1;
+        deferredConfig.VertexShaderPath = "shaders/vs_deferred.hlsl";
+        deferredConfig.PixelShaderPath = "shaders/ps_deferred.hlsl";
+        
+        m_deferredPipelineState = std::make_unique<PipelineState>();
+        m_deferredPipelineState->Initialize(m_device->GetDevice().Get(), deferredConfig);
     }
 
     void Renderer::InitializeSceneBuffers()
@@ -150,8 +161,7 @@ namespace SGE
     {
         ID3D12GraphicsCommandList* commandList = m_device->GetCommandList().Get();
 
-        bool isMSAAEnabled = m_settings->isMSAAEnabled;
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAAEnabled);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, IsMSAA());
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
 
         const float clearColor[] = { 0.314f, 0.314f, 0.314f, 1.0f };
@@ -180,9 +190,7 @@ namespace SGE
     {
         ID3D12GraphicsCommandList* commandList = m_device->GetCommandList().Get();
 
-        bool isMSAAEnabled = m_settings->isMSAAEnabled;
-
-        if (isMSAAEnabled)
+        if (IsMSAA())
         {
             m_renderTarget->Resolve(commandList, m_frameIndex);
         }
@@ -262,6 +270,11 @@ namespace SGE
 
     PipelineState* Renderer::GetActivePipelineState() const
     {
-        return m_forwardPipelineState.get();
+        return m_settings->isDefferedRendering ? m_deferredPipelineState.get() : m_forwardPipelineState.get();
+    }
+    
+    bool Renderer::IsMSAA() const
+    {
+        return m_settings && m_settings->isMSAAEnabled && !m_settings->isDefferedRendering;
     }
 }
