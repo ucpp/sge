@@ -70,7 +70,7 @@ namespace SGE
         commandList->IASetVertexBuffers(0, 1, &m_vertexBuffer.GetView());
         commandList->IASetIndexBuffer(&m_indexBuffer.GetView());
 
-        commandList->SetGraphicsRootDescriptorTable(0, m_descriptorHeap->GetGPUHandle(m_descriptorIndex));
+        commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(m_descriptorIndex));
 
         for (size_t i = 0; i < m_meshResourceInfo.size(); ++i)
         {
@@ -88,20 +88,20 @@ namespace SGE
         }
     }
 
-    XMMATRIX Model::GetWorldMatrix() const
+    Matrix Model::GetWorldMatrix() const
     {
-        XMMATRIX scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-        XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(
+        Matrix scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
+        Matrix rotationMatrix = XMMatrixRotationRollPitchYaw(
             XMConvertToRadians(m_rotation.x),
             XMConvertToRadians(m_rotation.y),
             XMConvertToRadians(m_rotation.z)
         );
-        XMMATRIX translationMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+        Matrix translationMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 
         return scaleMatrix * rotationMatrix * translationMatrix;
     }
 
-    void Model::Update(const XMMATRIX& viewMatrix, const XMMATRIX& projectionMatrix)
+    void Model::Update(const Matrix& viewMatrix, const Matrix& projectionMatrix)
     {
         TransformBuffer transformData = {};
         transformData.model = GetWorldMatrix();

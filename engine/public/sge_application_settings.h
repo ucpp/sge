@@ -26,11 +26,60 @@ namespace SGE
         bool isPressedQuit = false;
     };
 
+    struct MaterialSettings
+    {
+        std::string id;
+        std::string vertexShaderPath;
+        std::string pixelShaderPath;
+        std::string albedoTexturePath;
+        std::string normalTexturePath;
+        std::string specularTexturePath;
+    };
+
+    struct RenderableAssetSettings
+    {
+        std::string id;
+        std::string meshPath;
+        std::string materialId;
+    };
+
+    struct RenderableInstanceSettings
+    {
+        std::string name;
+        std::string assetId;
+        std::array<float, 3> position;
+        std::array<float, 3> rotation;
+        std::array<float, 3> scale;
+    };
+
+    struct CameraSettings
+    {
+        std::array<float, 3> startPosition;
+        std::array<float, 3> startRotation;
+        float moveSpeed;
+        float sensitivity;
+    };
+
+    struct ProjectAssets
+    {
+        std::vector<MaterialSettings> materials;
+        std::vector<RenderableAssetSettings> renderableAssets;
+    };
+
+    struct SceneSettings
+    {
+        std::string name;
+        CameraSettings mainCamera;
+        std::vector<RenderableInstanceSettings> renderableObjects;
+    };
+
     struct ApplicationSettings
     {
         WindowSettings window;
         EditorSettings editor;
         RenderSettings render;
+        // SceneSettings scene;
+        // ProjectAssets assets;
     };
 }
 

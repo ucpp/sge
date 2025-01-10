@@ -1,4 +1,4 @@
-cbuffer TransformBuffer : register(b0)
+cbuffer TransformBuffer : register(b1)
 {
     matrix model;
     matrix view;
@@ -19,7 +19,7 @@ struct PointLight
     float3 color;
 };
 
-cbuffer SceneData : register(b1)
+cbuffer SceneData : register(b0)
 {
     DirectionalLight directionalLight;
     PointLight pointLight;

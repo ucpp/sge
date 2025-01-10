@@ -7,17 +7,17 @@ namespace SGE
 {
     struct DirectionalLight
     {
-        XMFLOAT3 direction;
+        Vector3 direction;
         float intensity;
-        XMFLOAT3 color;
+        Vector3 color;
         float padding;
     };
 
     struct PointLight
     {
-        XMFLOAT3 position;
+        Vector3 position;
         float intensity;
-        XMFLOAT3 color;
+        Vector3 color;
         float padding;
     };
 
@@ -25,9 +25,9 @@ namespace SGE
     {
         DirectionalLight directionalLight;
         PointLight pointLight;
-        XMFLOAT3 cameraPosition;
+        Vector3 cameraPosition;
         float fogStrength;
-        XMFLOAT3 fogColor;
+        Vector3 fogColor;
         float fogStart;
         float fogEnd;
         float fogDensity;

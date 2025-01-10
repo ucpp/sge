@@ -229,7 +229,7 @@ namespace SGE
         m_frameIndex = GetSwapChain()->GetCurrentBackBufferIndex();
     }
     
-    void RenderContext::SetRootDescriptorTable(uint32_t rootParameterIndex, uint32_t descriptorIndex)
+    void RenderContext::SetRootDescriptorTable(uint32 rootParameterIndex, uint32 descriptorIndex)
     {
         CD3DX12_GPU_DESCRIPTOR_HANDLE handle = m_cbvSrvUavHeap.GetGPUHandle(descriptorIndex);
         GetCommandList()->SetGraphicsRootDescriptorTable(rootParameterIndex, handle);

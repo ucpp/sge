@@ -54,7 +54,7 @@ namespace SGE
         void ClearRenderTargets();
         void PrepareRenderTargetForPresent();
         void SetWindowSize(int32 width, int32 height);
-        void SetRootDescriptorTable(uint32_t rootParameterIndex, uint32_t descriptorIndex);
+        void SetRootDescriptorTable(uint32 rootParameterIndex, uint32 descriptorIndex);
 
     private:
         void InitializeDescriptorHeaps();

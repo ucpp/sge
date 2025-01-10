@@ -27,21 +27,12 @@ namespace SGE
     {
     public:
         void Initialize(class RenderContext* context);
-        void Update(double deltaTime);
         void Render(Scene* scene, Editor* editor);
         void Shutdown();
 
     private:
-        void InitializeCamera();
         void InitializePipelineStates();
-        void InitializeSceneBuffers();
-
-        void UpdateSceneDataBuffer();
-        void UpdateModelBuffer();
-
         void BeginFrame();
-        void RenderGeometryPass();
-        void EndFrame();
 
         PipelineState* GetActivePipelineState() const;
 
@@ -51,13 +42,7 @@ namespace SGE
         std::unique_ptr<PipelineState> m_forwardPipelineState;
         std::unique_ptr<PipelineState> m_deferredPipelineState;
 
-        Fence m_fence;
-
-        Camera m_camera;
-        CameraController m_cameraController;
-
         std::unique_ptr<Model> m_model;
-
         std::unique_ptr<ConstantBuffer> m_sceneDataBuffer;
 
         bool m_playAnimation = false;

@@ -32,13 +32,14 @@ namespace SGE
         m_renderContext = std::make_unique<RenderContext>();
         m_renderContext->Initialize(m_window.get(), m_settings.get());
 
-        m_renderer = std::make_unique<Renderer>();
-        m_renderer->Initialize(m_renderContext.get());
-
         m_editor = std::make_unique<Editor>();
         m_editor->Initialize(m_renderContext.get());
 
         m_scene = std::make_unique<Scene>();
+        m_scene->Initialize(m_renderContext.get());
+
+        m_renderer = std::make_unique<Renderer>();
+        m_renderer->Initialize(m_renderContext.get());
 
         LOG_INFO("Initialization time: {}", timer.GetElapsedSeconds());
 
@@ -47,7 +48,7 @@ namespace SGE
 
     void Application::Update(double deltaTime)
     {
-        m_renderer->Update(deltaTime);
+        m_scene->Update(deltaTime);
         m_renderer->Render(m_scene.get(), m_editor.get());
     }
 
@@ -55,6 +56,7 @@ namespace SGE
     {
         if(m_scene)
         {
+            m_scene->Shutdown();
             m_scene.reset();
         }
 

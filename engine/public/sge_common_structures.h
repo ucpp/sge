@@ -1,25 +1,24 @@
 #ifndef _SGE_COMMON_STRUCTURES_H_
 #define _SGE_COMMON_STRUCTURES_H_
 
-#include <DirectXMath.h>
-using namespace DirectX;
+#include "pch.h"
 
 namespace SGE
 {
     struct Vertex
     {
-        XMFLOAT3 position;
-        XMFLOAT3 normal;
-        XMFLOAT2 texCoords;
-        XMFLOAT3 tangent;
-        XMFLOAT3 bitangent;
+        Vector3 position;
+        Vector3 normal;
+        Vector2 texCoords;
+        Vector3 tangent;
+        Vector3 bitangent;
     };
 
     struct TransformBuffer
     {
-        XMMATRIX model;
-        XMMATRIX view;
-        XMMATRIX projection;
+        Matrix model;
+        Matrix view;
+        Matrix projection;
     };
 }
 
