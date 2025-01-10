@@ -5,44 +5,58 @@
 #include "sge_device.h"
 #include "sge_helpers.h"
 #include "sge_window.h"
+#include "sge_render_context.h"
 
 namespace SGE
 {
-    void Editor::Initialize(Window* window, Device* device, ApplicationSettings* settings)
-    {
-        m_window = window;
-        m_device = device;
-        m_settings = settings;
+    static const std::string PathToSaveFile = "resources/configs/editor_layout.ini";
 
-        m_descriptorHeap.Initialize(m_device->GetDevice().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, true);
+    void Editor::Initialize(RenderContext* context)
+    {
+        Verify(context, "Editor::Initialize failed: context object is null!");
+        m_context = context;
+
+        ID3D12Device* device = m_context->GetD12Device().Get();
+        Verify(device, "Editor::Initialize failed: ID3D12Device is null!");
+        m_descriptorHeap.Initialize(device, D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1, true);
+
+        HWND hwnd = m_context->GetWindowHandle();
+        Verify(hwnd, "Editor::Initialize failed: HWND is null!");
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-        io.IniFilename = "resources/configs/editor_layout.ini";
+        io.IniFilename = PathToSaveFile.c_str();
 
         ImGui_ImplWin32_EnableDpiAwareness();
-        ImGui_ImplWin32_Init(m_window->GetHandle());
-        ImGui_ImplDX12_Init(
-            m_device->GetDevice().Get(),
-            BufferCount,
-            DXGI_FORMAT_R8G8B8A8_UNORM,
-            m_descriptorHeap.GetHeap().Get(),
-            m_descriptorHeap.GetCPUHandle(0),
-            m_descriptorHeap.GetGPUHandle(0)
-        );     
+        ImGui_ImplWin32_Init(hwnd);
+
+        ID3D12DescriptorHeap* heap = m_descriptorHeap.GetHeap().Get();
+        Verify(heap, "Editor::Initialize failed: DescriptorHeap is null!");
+        CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle = m_descriptorHeap.GetCPUHandle(0);
+        CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle = m_descriptorHeap.GetGPUHandle(0);
+        const uint32 numFrames = m_context->GetBackBufferCount();
+
+        ImGui_ImplDX12_Init(device, numFrames, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);     
     }
 
-    void Editor::BuildImGuiFrame()
+    void Editor::BuildFrame()
     {
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
         SetupDockspace();
-        ShowDockingExample();
+        BuildDockingExample();
 
+        BuildMainMenuBar();
+        BuildSettingsWindow();
+        BuildResolutionWindow();
+    }
+
+    void Editor::BuildMainMenuBar()
+    {
         if (ImGui::BeginMainMenuBar())
         {
             if (ImGui::BeginMenu("File"))
@@ -53,7 +67,7 @@ namespace SGE
                 }
                 if (ImGui::MenuItem("Quit"))
                 {
-                    m_settings->isPressedQuit = true;
+                    m_context->GetEditorSettings().isPressedQuit = true;
                 }
                 ImGui::EndMenu();
             }
@@ -69,22 +83,29 @@ namespace SGE
 
             ImGui::EndMainMenuBar();
         }
+    }
 
+    void Editor::BuildSettingsWindow()
+    {
         if (m_isOpenSettingsWindow)
         {
             ImGui::SetNextWindowSize(ImVec2(150, 300), ImGuiCond_Once);
             if (ImGui::Begin("Render settings", &m_isOpenSettingsWindow))
             {
                 ImGui::Text("Render settings");
-                if(!m_settings->isDefferedRendering)
+                RenderSettings& settings = m_context->GetRenderSettings();
+                if (!settings.isDeferredRendering)
                 {
-                    ImGui::Checkbox("MSAA 4x", &m_settings->isMSAAEnabled);
-                    ImGui::Checkbox("Fog", &m_settings->isFogEnabled);
+                    ImGui::Checkbox("MSAA 4x", &settings.isMSAAEnabled);
+                    ImGui::Checkbox("Fog", &settings.isFogEnabled);
                 }
             }
             ImGui::End();
         }
+    }
 
+    void Editor::BuildResolutionWindow()
+    {
         if (m_isOpenResolutionWindow)
         {
             ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_Once);
@@ -92,39 +113,38 @@ namespace SGE
             {
                 ImGui::Text("Select Window Resolution:");
                 static int32 selectedResolution = 0;
-                const char* resolutions[] = {
-                    "640x480",
-                    "800x600",
-                    "1024x768",
-                    "1280x720",
-                    "1366x768",
-                    "1600x900",
-                    "1920x1080",
-                    "2560x1440"
-                };
+                const char* resolutions[] = { "640x480", "800x600", "1280x720", "1366x768", "1600x900", "1920x1080", "2560x1440" };
                 if (ImGui::Combo("Resolution", &selectedResolution, resolutions, IM_ARRAYSIZE(resolutions)))
                 {
-                    // Apply the resolution change
-                    std::string resString = resolutions[selectedResolution];
-                    size_t xPos = resString.find('x');
-                    if (xPos != std::string::npos)
-                    {
-                        int width = std::stoi(resString.substr(0, xPos));
-                        int height = std::stoi(resString.substr(xPos + 1));
-
-                        m_window->SetWindowSize(width, height);
-                    }
-
+                    ApplyResolutionChange(resolutions[selectedResolution]);
                 }
             }
             ImGui::End();
         }
     }
 
-    void Editor::Render(ID3D12GraphicsCommandList* commandList)
+    void Editor::ApplyResolutionChange(const std::string& resolution)
+    {
+        const size_t xPos = resolution.find('x');
+        if (xPos != std::string::npos)
+        {
+            const int32 width = std::stoi(resolution.substr(0, xPos));
+            const int32 height = std::stoi(resolution.substr(xPos + 1));
+
+            m_context->SetWindowSize(width, height);
+        }
+    }
+
+    void Editor::Render()
     {
         ImGui::Render();
-        commandList->SetDescriptorHeaps(1, m_descriptorHeap.GetHeap().GetAddressOf());
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+        Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
+        
+        ComPtr<ID3D12DescriptorHeap> heap = m_descriptorHeap.GetHeap();
+        Verify(heap.Get(), "Editor::Render: DescriptorHeap is null or invalid. Rendering cannot proceed.");
+
+        commandList->SetDescriptorHeaps(1, heap.GetAddressOf());
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
     }
 
@@ -161,7 +181,7 @@ namespace SGE
         ImGui::End();
     }
 
-    void Editor::ShowDockingExample()
+    void Editor::BuildDockingExample()
     {
         ImGui::Begin("Scene hierarchy");
         ImGui::End();

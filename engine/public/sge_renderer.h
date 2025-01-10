@@ -19,66 +19,44 @@
 #include "sge_viewport_scissors.h"
 #include "sge_non_copyable.h"
 #include "sge_scene_data.h"
+#include "sge_scene.h"
 
 namespace SGE
 {
     class Renderer : public NonCopyable
     {
     public:
-        void Initialize(class Window* window, struct ApplicationSettings* settings);
+        void Initialize(class RenderContext* context);
         void Update(double deltaTime);
-        void Render();
+        void Render(Scene* scene, Editor* editor);
         void Shutdown();
-
-        void ResizeScreen(uint32 width, uint32 height);
 
     private:
         void InitializeCamera();
-        void InitializeDescriptorHeaps();
         void InitializePipelineStates();
-        void InitializeRenderTargets();
         void InitializeSceneBuffers();
 
-        void UpdateBuffers();
         void UpdateSceneDataBuffer();
         void UpdateModelBuffer();
 
         void BeginFrame();
-        void ClearRenderTargets();
         void RenderGeometryPass();
-        void RenderImGuiPass();
-        void WaitForPreviousFrame();
-        void ExecuteCommandList();
         void EndFrame();
 
         PipelineState* GetActivePipelineState() const;
 
-        bool IsMSAA() const;
-
     private:
-        class Window* m_window = nullptr;
-        struct ApplicationSettings* m_settings = nullptr;
-
-        std::unique_ptr<Device> m_device;
-        std::unique_ptr<ViewportScissors> m_viewportScissors;
-        std::unique_ptr<RenderTarget> m_renderTarget;
-        std::unique_ptr<DepthBuffer> m_depthBuffer;
+        class RenderContext* m_context = nullptr;
 
         std::unique_ptr<PipelineState> m_forwardPipelineState;
         std::unique_ptr<PipelineState> m_deferredPipelineState;
 
         Fence m_fence;
-        UINT m_frameIndex;
 
         Camera m_camera;
         CameraController m_cameraController;
 
         std::unique_ptr<Model> m_model;
-        std::unique_ptr<Editor> m_editor;
-
-        DescriptorHeap m_cbvSrvUavHeap;
-        DescriptorHeap m_rtvHeap;
-        DescriptorHeap m_dsvHeap;
 
         std::unique_ptr<ConstantBuffer> m_sceneDataBuffer;
 

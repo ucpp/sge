@@ -14,18 +14,23 @@ namespace SGE
     class Editor
     {
     public:
-        void Initialize(class Window* window, class Device* device, struct ApplicationSettings* settings);
-        void BuildImGuiFrame();
-        void Render(ID3D12GraphicsCommandList* commandList);
+        void Initialize(class RenderContext* context);
+        void BuildFrame();
+        void Render();
         void Shutdown();
 
-        void ShowDockingExample();
         void SetupDockspace();
+        void BuildDockingExample();
+
+        void BuildMainMenuBar();
+        void BuildSettingsWindow();
+        void BuildResolutionWindow();
+
+        void ApplyResolutionChange(const std::string& resolution);
 
     private:
-        class Window* m_window = nullptr;
-        class Device* m_device = nullptr;
-        struct ApplicationSettings* m_settings = nullptr;
+        class RenderContext* m_context = nullptr;
+        
         DescriptorHeap m_descriptorHeap;
 
         bool m_isOpenSettingsWindow = false;

@@ -23,15 +23,22 @@ namespace SGE
 
     void Application::Initialize()
     {
-        FrameTimer timer;
+        FrameTimer timer{};
     
         m_window = std::make_unique<Window>(m_settings.get());
         m_window->Create();
         m_window->OnUpdate().Subscribe(this, &Application::Update);
-        m_window->OnResize().Subscribe(this, &Application::ResizeWindow);
+
+        m_renderContext = std::make_unique<RenderContext>();
+        m_renderContext->Initialize(m_window.get(), m_settings.get());
 
         m_renderer = std::make_unique<Renderer>();
-        m_renderer->Initialize(m_window.get(), m_settings.get());
+        m_renderer->Initialize(m_renderContext.get());
+
+        m_editor = std::make_unique<Editor>();
+        m_editor->Initialize(m_renderContext.get());
+
+        m_scene = std::make_unique<Scene>();
 
         LOG_INFO("Initialization time: {}", timer.GetElapsedSeconds());
 
@@ -41,21 +48,38 @@ namespace SGE
     void Application::Update(double deltaTime)
     {
         m_renderer->Update(deltaTime);
-        m_renderer->Render();
+        m_renderer->Render(m_scene.get(), m_editor.get());
     }
 
     void Application::Shutdown()
     {
-        m_window->OnUpdate().Unsubscribe(this);
-        m_window->OnResize().Unsubscribe(this);
+        if(m_scene)
+        {
+            m_scene.reset();
+        }
 
-        m_renderer->Shutdown();
-        m_renderer.reset();
-        m_window.reset();
-    }
+        if(m_editor)
+        {
+            m_editor->Shutdown();
+            m_editor.reset();
+        }
+        
+        if(m_window)
+        {
+            m_window->OnUpdate().Unsubscribe(this);
+            m_window.reset();
+        }
 
-    void Application::ResizeWindow(uint32 width, uint32 height)
-    {
-        m_renderer->ResizeScreen(width, height);
+        if(m_renderer)
+        {
+            m_renderer->Shutdown();
+            m_renderer.reset();
+        }
+        
+        if(m_renderContext)
+        {
+            m_renderContext->Shutdown();
+            m_renderContext.reset();
+        }
     }
 }

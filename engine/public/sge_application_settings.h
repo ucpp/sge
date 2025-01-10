@@ -5,18 +5,32 @@
 
 namespace SGE
 {
-    struct ApplicationSettings
+    struct WindowSettings
     {
-        std::string title = "App";
+        std::string title = "SGE";
         uint32 width = 640;
         uint32 height = 480;
         bool fullscreen = false;
+    };
 
-        // editor
-        bool isPressedQuit = false;
+    struct RenderSettings
+    {
+        std::array<float, 4> backgroundColor = {0.0f, 0.0f, 0.0f, 1.0f}; // RGBA
         bool isMSAAEnabled = true;
         bool isFogEnabled = false;
-        bool isDefferedRendering = false;
+        bool isDeferredRendering = false;
+    };
+
+    struct EditorSettings
+    {
+        bool isPressedQuit = false;
+    };
+
+    struct ApplicationSettings
+    {
+        WindowSettings window;
+        EditorSettings editor;
+        RenderSettings render;
     };
 }
 

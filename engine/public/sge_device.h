@@ -5,11 +5,6 @@
 
 namespace SGE
 {
-    constexpr bool UseWarpDevice = false;
-    constexpr uint32 BufferCount = 2;
-    constexpr uint32 SampleCount = 1;
-    constexpr uint32 CbvSrvHeapCapacity = 256;
-
     class Device
     {
     public:
@@ -33,6 +28,12 @@ namespace SGE
         void CreateSwapChain(HWND hwnd, uint32 width, uint32 height);
         void CreateCommandAllocators();
         void CreateCommandList();
+
+    public:
+        static const bool UseWarpDevice = false;
+        static const uint32 BufferCount = 2;
+        static const uint32 SampleCount = 1;
+        static const uint32 CbvSrvHeapCapacity = 256;
 
     private:
         ComPtr<ID3D12Device> m_device;

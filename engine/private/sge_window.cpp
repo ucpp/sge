@@ -28,10 +28,10 @@ namespace SGE
             return;
         }
 
-        const std::string& title = m_applicationSettings->title;
-        const uint32 width = m_applicationSettings->width;
-        const uint32 height = m_applicationSettings->height;
-        const bool fullscreen = m_applicationSettings->fullscreen;
+        const std::string& title = m_applicationSettings->window.title;
+        const uint32 width = m_applicationSettings->window.width;
+        const uint32 height = m_applicationSettings->window.height;
+        const bool fullscreen = m_applicationSettings->window.fullscreen;
 
         Create(title, width, height, fullscreen);
     }
@@ -220,7 +220,7 @@ namespace SGE
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
 
-                bool isPressedQuit = m_applicationSettings->isPressedQuit || Input::Get().GetKeyDown(VK_ESCAPE);
+                bool isPressedQuit = m_applicationSettings->editor.isPressedQuit || Input::Get().GetKeyDown(VK_ESCAPE);
                 if (msg.message == WM_QUIT || isPressedQuit)
                 {
                     done = true;

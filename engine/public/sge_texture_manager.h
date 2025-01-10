@@ -21,7 +21,7 @@ namespace SGE
 
         static std::unordered_map<std::string, TextureData> m_textureCache;
 
-        static constexpr uint32 TextureHeapStartIndex = CbvSrvHeapCapacity / 2;
+        static constexpr uint32 TextureHeapStartIndex = Device::CbvSrvHeapCapacity / 2;
         static uint32 m_currentTextureIndex;
     };
 }

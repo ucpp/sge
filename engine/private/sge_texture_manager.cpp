@@ -15,7 +15,7 @@ namespace SGE
             return it->second.descriptorIndex;
         }
 
-        if (m_currentTextureIndex >= CbvSrvHeapCapacity)
+        if (m_currentTextureIndex >= Device::CbvSrvHeapCapacity)
         {
             throw std::runtime_error("TextureManager: Descriptor heap capacity exceeded!");
         }
