@@ -1,6 +1,10 @@
+### Daily tasks
+
+☐ Add class RenderPass and 3 inheritors: ForwardPass, GeometryPass, LightingPass.
+☐ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature
+
 ### Roadmap tasks
 
-☐ Deferred lighting
 ✔ Fog effect @done(25-01-06 21:54)
 ✔ Add support for MSAA (Multisample Anti-Aliasing). @done(25-01-06 16:43)
 ✔ Implement Phong lighting. @done(25-01-05 21:14)
@@ -48,8 +52,6 @@
 
 ### Refactoring and improvements
 
-☐ Implement root signature generation
-☐ Editor improvements
     ✔ Add quit application button functionality. @done(25-01-04 11:32)
 ✔ Implement window resizing functionality. @done(25-01-05 17:25)
     ✔ Add a settings window in the editor to allow users to change the window size. @done(25-01-05 17:25)
