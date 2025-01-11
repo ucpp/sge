@@ -133,17 +133,17 @@ namespace SGE
             object->Render(commandList.Get());
         }
         
-        //D3D12_RESOURCE_BARRIER barriers[3];
-        //for (uint32 i = 0; i < targetCount; ++i)
-        //{
-        //    auto resource = m_context->GetGBuffer()->GetRenderTarget(i);
-        //    barriers[i] = CD3DX12_RESOURCE_BARRIER::Transition(
-        //        resource,
-        //        D3D12_RESOURCE_STATE_RENDER_TARGET,
-        //        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-        //    );
-        //}
-        //commandList->ResourceBarrier(targetCount, barriers);
+        D3D12_RESOURCE_BARRIER barriers[3];
+        for (uint32 i = 0; i < targetCount; ++i)
+        {
+            auto resource = m_context->GetGBuffer()->GetRenderTarget(i);
+            barriers[i] = CD3DX12_RESOURCE_BARRIER::Transition(
+                resource,
+                D3D12_RESOURCE_STATE_RENDER_TARGET,
+                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+            );
+        }
+        commandList->ResourceBarrier(targetCount, barriers);
 
         commandList->SetPipelineState(m_lightingPipelineState->GetPipelineState());
         m_context->SetRootSignature(m_lightingPipelineState->GetSignature());
