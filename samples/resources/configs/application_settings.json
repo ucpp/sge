@@ -9,6 +9,6 @@
         "background_color": [0.25, 0.25, 0.25, 1.0],
         "is_msaa_enabled": true,
         "is_fog_enabled": false,
-        "is_deferred_rendering": false
+        "is_deferred_rendering": true
     }
 }

@@ -26,12 +26,13 @@ namespace SGE
 
         InitializeDescriptorHeaps();
         InitializeRenderTargets();
+        InitializeGBuffer();
     }
 
     void RenderContext::InitializeDescriptorHeaps()
     {
         const uint32 cbvSrvUavNumDescriptors = CbvSrvHeapCapacity;
-        const uint32 rtvNumDescriptors = GetBackBufferCount() * (GetRenderSettings().isMSAAEnabled ? 2 : 1);
+        const uint32 rtvNumDescriptors = GetBackBufferCount() * 2 + 3;
         const uint32 dsvNumDescriptors = 1;
 
         m_cbvSrvUavHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, cbvSrvUavNumDescriptors, true);
@@ -48,6 +49,12 @@ namespace SGE
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
         m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, GetScreenWidth(), GetScreenHeight(), 1, isMSAA);
+    }
+
+    void RenderContext::InitializeGBuffer()
+    {
+        m_gBuffer = std::make_unique<GBuffer>();
+        m_gBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), GetCommandList().Get());
     }
 
     void RenderContext::Shutdown()
@@ -189,6 +196,13 @@ namespace SGE
 
         GetCommandList()->ClearRenderTargetView(rtvHandle, settings.backgroundColor.data(), 0, nullptr);
         GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+    }
+
+    void RenderContext::SetRenderTarget()
+    {
+        const RenderSettings& settings = GetRenderSettings();
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, settings.isMSAAEnabled);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
         GetCommandList()->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle); 
     }
 
@@ -225,6 +239,7 @@ namespace SGE
         m_viewportScissors->Set(width, height);
         m_renderTarget->Resize(width, height);
         m_depthBuffer->Resize(width, height);
+        m_gBuffer->Resize(width, height);
     
         m_frameIndex = GetSwapChain()->GetCurrentBackBufferIndex();
     }

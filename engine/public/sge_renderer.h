@@ -20,6 +20,7 @@
 #include "sge_non_copyable.h"
 #include "sge_scene_data.h"
 #include "sge_scene.h"
+#include "sge_gbuffer.h"
 
 namespace SGE
 {
@@ -32,7 +33,9 @@ namespace SGE
 
     private:
         void InitializePipelineStates();
-        void BeginFrame();
+        void ForwardRendering(Scene* scene);
+        void DeferredRendering(Scene* scene);
+        void LightingPass();
 
         PipelineState* GetActivePipelineState() const;
 
@@ -41,12 +44,7 @@ namespace SGE
 
         std::unique_ptr<PipelineState> m_forwardPipelineState;
         std::unique_ptr<PipelineState> m_deferredPipelineState;
-
-        std::unique_ptr<Model> m_model;
-        std::unique_ptr<ConstantBuffer> m_sceneDataBuffer;
-
-        bool m_playAnimation = false;
-        SceneData m_sceneData;
+        std::unique_ptr<PipelineState> m_lightingPipelineState;
     };
 }
 

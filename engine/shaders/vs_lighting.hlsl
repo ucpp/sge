@@ -1,43 +1,25 @@
-cbuffer TransformBuffer : register(b1)
-{
-    matrix model;
-    matrix view;
-    matrix projection;
-}
-
 struct VertexInput
 {
-    float3 position : POSITION;
-    float3 normal : NORMAL;
-    float2 texCoords : TEXCOORD;
-    float3 tangent : TANGENT;
-    float3 bitangent : BITANGENT;
+    uint vertexID : SV_VertexID;
 };
 
 struct PixelInput
 {
     float4 position : SV_POSITION;
-    float3 worldPosition : TEXCOORD0;
-    float3 normal : NORMAL;
-    float2 texCoords : TEXCOORD1;
-    float3 tangent : TANGENT;
-    float3 bitangent : BITANGENT;
+    float2 texCoords : TEXCOORD0;
 };
 
 PixelInput main(VertexInput input)
 {
     PixelInput output;
 
-    float4 modelPos = mul(float4(input.position, 1.0f), model);
-    output.worldPosition = modelPos.xyz;
-    float4 viewPos = mul(modelPos, view);
-    output.position = mul(viewPos, projection);
+    float2 positions[6] = {
+        float2(-1.0, -1.0), float2(-1.0, 1.0), float2(1.0, -1.0),
+        float2(1.0, -1.0), float2(-1.0, 1.0), float2(1.0, 1.0),
+    };
 
-    output.normal = normalize(mul(input.normal, (float3x3)model)); 
-    output.tangent = normalize(mul(input.tangent, (float3x3)model));
-    output.bitangent = normalize(mul(input.bitangent, (float3x3)model));
-
-    output.texCoords = input.texCoords;
+    output.position = float4(positions[input.vertexID], 0.0, 1.0);
+    output.texCoords = float2((positions[input.vertexID].x + 1.0) * 0.5, (1.0 - positions[input.vertexID].y) * 0.5);
 
     return output;
 }
