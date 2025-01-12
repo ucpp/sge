@@ -1,7 +1,8 @@
 ### Daily tasks
 
-☐ Add class RenderPass and 3 inheritors: ForwardPass, GeometryPass, LightingPass.
-☐ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature
+✔ Add class RenderPass and 3 inheritors: ForwardPass, GeometryPass, LightingPass. @done(25-01-12 12:55)
+☐ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature.
+☐ Fix problems with resources states translation.
 
 ### Roadmap tasks
 

@@ -40,6 +40,27 @@ namespace SGE
             DXGI_FORMAT_R32_FLOAT          // Depth
         };
 
+        D3D12_CLEAR_VALUE clearValues[3] = {};
+
+        // Albedo + Metallic (DXGI_FORMAT_R16G16B16A16_FLOAT)
+        clearValues[0].Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+        clearValues[0].Color[0] = 0.0f; // Albedo (R)
+        clearValues[0].Color[1] = 0.0f; // Albedo (G)
+        clearValues[0].Color[2] = 0.0f; // Albedo (B)
+        clearValues[0].Color[3] = 1.0f; // Metallic (A)
+
+        // Normal + Roughness (DXGI_FORMAT_R10G10B10A2_UNORM)
+        clearValues[1].Format = DXGI_FORMAT_R10G10B10A2_UNORM;
+        clearValues[1].Color[0] = 0.5f; // Normal X
+        clearValues[1].Color[1] = 0.5f; // Normal Y
+        clearValues[1].Color[2] = 1.0f; // Normal Z
+        clearValues[1].Color[3] = 0.0f; // Roughness
+
+        // Depth (DXGI_FORMAT_R32_FLOAT)
+        clearValues[2].Format = DXGI_FORMAT_R32_FLOAT;
+        clearValues[2].DepthStencil.Depth = 1.0f;
+        clearValues[2].DepthStencil.Stencil = 0;
+
         for (uint32 i = 0; i < _countof(formats); ++i)
         {
             D3D12_RESOURCE_DESC texDesc = {};
@@ -60,7 +81,7 @@ namespace SGE
                 D3D12_HEAP_FLAG_NONE,
                 &texDesc,
                 D3D12_RESOURCE_STATE_RENDER_TARGET,
-                nullptr,
+                &clearValues[i],
                 IID_PPV_ARGS(&renderTarget)
             );
             Verify(hr, "Failed to create GBuffer render target.");

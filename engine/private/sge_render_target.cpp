@@ -60,6 +60,13 @@ namespace SGE
                 texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
                 texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
+                D3D12_CLEAR_VALUE clearValue = {};
+                clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+                clearValue.Color[0] = 0.0f; // R
+                clearValue.Color[1] = 0.0f; // G
+                clearValue.Color[2] = 0.0f; // B
+                clearValue.Color[3] = 1.0f; // A
+
                 CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
 
                 hr = m_device->GetDevice()->CreateCommittedResource(
@@ -67,7 +74,7 @@ namespace SGE
                     D3D12_HEAP_FLAG_NONE,
                     &texDesc,
                     D3D12_RESOURCE_STATE_PRESENT,
-                    nullptr,
+                    &clearValue,
                     IID_PPV_ARGS(&m_msaaTargets[i]));
                 Verify(hr, "Failed to create MSAA render target.");
 

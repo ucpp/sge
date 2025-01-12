@@ -145,7 +145,6 @@ namespace SGE
 
     void RenderContext::ResetCommandList(ID3D12PipelineState* pipelineState)
     {
-        Verify(pipelineState, "RenderContext::ResetCommandList: Provided pipeline state object is null.");
         Verify(m_device, "RenderContext::ResetCommandList: Device is not initialized or invalid.");
         
         ComPtr<ID3D12CommandAllocator> allocator = m_device->GetCommandAllocator(m_frameIndex);

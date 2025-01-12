@@ -3,6 +3,7 @@
 #include "sge_logger.h"
 #include "sge_frame_timer.h"
 #include "sge_config.h"
+#include "sge_editor.h"
 
 namespace SGE
 {
