@@ -41,6 +41,7 @@ namespace SGE
 
             CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(i);
             m_device->GetDevice()->CreateRenderTargetView(m_normalTargets[i].Get(), nullptr, rtvHandle);
+            m_states.push_back(D3D12_RESOURCE_STATE_COMMON);
 
             if (m_isMSAAEnabled)
             {
@@ -122,6 +123,19 @@ namespace SGE
         }
 
         return {};
+    }
+
+    D3D12_RESOURCE_STATES RenderTarget::GetCurrentState(uint32 index) const
+    {
+        return m_states[index];
+    }
+
+    void RenderTarget::SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index)
+    {
+        if(m_states.size() > index)
+        {
+            m_states[index] = state;
+        }
     }
 
     void RenderTarget::Resize(uint32 width, uint32 height)

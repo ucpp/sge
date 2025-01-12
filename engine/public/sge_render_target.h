@@ -15,7 +15,9 @@ namespace SGE
 
         ID3D12Resource* GetTarget(uint32 index, bool isMSAA = false) const { return isMSAA ? m_msaaTargets[index].Get() : m_normalTargets[index].Get(); }
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(uint32 index, bool isMSAA) const;
-
+        D3D12_RESOURCE_STATES GetCurrentState(uint32 index) const;
+        void SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index);
+        
     private:
         void CreateRenderTargets();
 
@@ -24,6 +26,7 @@ namespace SGE
         class DescriptorHeap* m_rtvHeap = nullptr;
         std::vector<ComPtr<ID3D12Resource>> m_normalTargets;
         std::vector<ComPtr<ID3D12Resource>> m_msaaTargets;
+        std::vector<D3D12_RESOURCE_STATES> m_states;
         uint32 m_bufferCount = 0;
         bool m_isMSAAEnabled = false;
     };

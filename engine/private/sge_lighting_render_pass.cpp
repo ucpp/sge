@@ -24,19 +24,27 @@ namespace SGE
     
     void LightingRenderPass::Render(Scene* scene)
     {
-        uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
-        D3D12_RESOURCE_BARRIER barriers[3];
-        for (uint32 i = 0; i < targetCount; ++i)
-        {
-            auto resource = m_context->GetGBuffer()->GetRenderTarget(i);
-            barriers[i] = CD3DX12_RESOURCE_BARRIER::Transition(
-                resource,
-                D3D12_RESOURCE_STATE_RENDER_TARGET,
-                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-            );
-        }
         auto commandList = m_context->GetCommandList();
-        commandList->ResourceBarrier(targetCount, barriers);
+        
+        uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
+        std::vector<CD3DX12_RESOURCE_BARRIER> barriers;
+        for(uint32 i = 0; i < targetCount; ++i)
+        {
+            if(m_context->GetGBuffer()->GetCurrentState(i) != D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE)
+            {
+                CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+                    m_context->GetGBuffer()->GetRenderTarget(i),
+                    m_context->GetGBuffer()->GetCurrentState(i),
+                    D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+                );  
+                m_context->GetGBuffer()->SetCurrentState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, i);
+                barriers.push_back(barrier);
+            }
+        }
+        if(barriers.size() > 0)
+        {
+            commandList->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
+        }
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());

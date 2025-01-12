@@ -192,8 +192,14 @@ namespace SGE
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, settings.isMSAAEnabled);
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
-
-        GetCommandList()->ClearRenderTargetView(rtvHandle, settings.backgroundColor.data(), 0, nullptr);
+        if(m_renderTarget->GetCurrentState(m_frameIndex) != D3D12_RESOURCE_STATE_RENDER_TARGET)
+        {
+            GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+                m_renderTarget->GetTarget(m_frameIndex), m_renderTarget->GetCurrentState(m_frameIndex), D3D12_RESOURCE_STATE_RENDER_TARGET));
+            m_renderTarget->SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_frameIndex);
+        }
+        float color[4] = { 0.0, 0.0, 0.0, 0.0};
+        GetCommandList()->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
         GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
     }
 
@@ -215,7 +221,11 @@ namespace SGE
 
         ID3D12Resource* presentTarget = m_renderTarget->GetTarget(m_frameIndex);
         Verify(presentTarget, "RenderContext::PrepareRenderTargetForPresent: Present target is invalid.");
-        GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(presentTarget, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+        if(m_renderTarget->GetCurrentState(m_frameIndex) != D3D12_RESOURCE_STATE_PRESENT)
+        {
+            GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(presentTarget, m_renderTarget->GetCurrentState(m_frameIndex), D3D12_RESOURCE_STATE_PRESENT));
+            m_renderTarget->SetCurrentState(D3D12_RESOURCE_STATE_PRESENT, m_frameIndex);
+        }
     }
 
     void RenderContext::SetWindowSize(int32 width, int32 height)

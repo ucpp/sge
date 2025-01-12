@@ -37,18 +37,32 @@ namespace SGE
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
 
+        std::vector<CD3DX12_RESOURCE_BARRIER> barriers;
+        for(uint32 i = 0; i < targetCount; ++i)
+        {
+            if(m_context->GetGBuffer()->GetCurrentState(i) != D3D12_RESOURCE_STATE_RENDER_TARGET)
+            {
+                CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+                    m_context->GetGBuffer()->GetRenderTarget(i),
+                    m_context->GetGBuffer()->GetCurrentState(i),
+                    D3D12_RESOURCE_STATE_RENDER_TARGET
+                );  
+                m_context->GetGBuffer()->SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET, i);
+                barriers.push_back(barrier);
+            }
+        }
+        if(barriers.size() > 0)
+        {
+            commandList->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
+        }
+
         for (uint32 i = 0; i < targetCount; ++i)
         {
-            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-                m_context->GetGBuffer()->GetRenderTarget(i),
-                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                D3D12_RESOURCE_STATE_RENDER_TARGET
-            );
-            commandList->ResourceBarrier(1, &barrier);
             rtvHandles[i] = m_context->GetGBuffer()->GetRTVHandle(i);
-            commandList->ClearRenderTargetView(rtvHandles[i], m_context->GetRenderSettings().backgroundColor.data(), 0, nullptr);
+            float color[4] = { 0.0, 0.0, 0.0, 0.0};
+            commandList->ClearRenderTargetView(rtvHandles[i], color, 0, nullptr);
         }
-        commandList->OMSetRenderTargets(targetCount, rtvHandles, FALSE, &dsvHandle);
+        commandList->OMSetRenderTargets(targetCount, rtvHandles, false, &dsvHandle);
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         for (const auto& object : scene->GetRenderableObjects())

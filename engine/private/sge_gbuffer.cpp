@@ -47,13 +47,13 @@ namespace SGE
         clearValues[0].Color[0] = 0.0f; // Albedo (R)
         clearValues[0].Color[1] = 0.0f; // Albedo (G)
         clearValues[0].Color[2] = 0.0f; // Albedo (B)
-        clearValues[0].Color[3] = 1.0f; // Metallic (A)
+        clearValues[0].Color[3] = 0.0f; // Metallic (A)
 
         // Normal + Roughness (DXGI_FORMAT_R10G10B10A2_UNORM)
         clearValues[1].Format = DXGI_FORMAT_R10G10B10A2_UNORM;
-        clearValues[1].Color[0] = 0.5f; // Normal X
-        clearValues[1].Color[1] = 0.5f; // Normal Y
-        clearValues[1].Color[2] = 1.0f; // Normal Z
+        clearValues[1].Color[0] = 0.0f; // Normal X
+        clearValues[1].Color[1] = 0.0f; // Normal Y
+        clearValues[1].Color[2] = 0.0f; // Normal Z
         clearValues[1].Color[3] = 0.0f; // Roughness
 
         // Depth (DXGI_FORMAT_R32_FLOAT)
@@ -86,20 +86,21 @@ namespace SGE
             );
             Verify(hr, "Failed to create GBuffer render target.");
 
+            m_states.push_back(D3D12_RESOURCE_STATE_RENDER_TARGET);
             m_renderTargets.push_back(renderTarget);
 
             const uint32 startIndex = Device::BufferCount * 2;
             CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(startIndex + static_cast<uint32>(m_renderTargets.size() - 1));
             m_device->GetDevice()->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
 
-            D3D12_RESOURCE_BARRIER barrier = {};
-            barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-            barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-            barrier.Transition.pResource = renderTarget.Get();
-            barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-            barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-            barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-            commandList->ResourceBarrier(1, &barrier);
+            //D3D12_RESOURCE_BARRIER barrier = {};
+            //barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+            //barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+            //barrier.Transition.pResource = renderTarget.Get();
+            //barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+            //barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+            //barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+            //commandList->ResourceBarrier(1, &barrier);
 
             // Create SRV for the same resource
             const uint32 startSrvIndex = Device::CbvSrvHeapCapacity - 10;
@@ -131,5 +132,18 @@ namespace SGE
     {
         const uint32 startIndex = Device::CbvSrvHeapCapacity - 10;
         return m_srvHeap->GetGPUHandle(startIndex + index);
+    }
+    
+    D3D12_RESOURCE_STATES GBuffer::GetCurrentState(uint32 index) const
+    {
+        return m_states[index];
+    }
+
+    void GBuffer::SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index)
+    {
+        if(m_states.size() > index)
+        {
+            m_states[index] = state;
+        }
     }
 }

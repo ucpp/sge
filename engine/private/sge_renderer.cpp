@@ -32,9 +32,8 @@ namespace SGE
         Verify(scene, "Renderer::Render: Scene is null");
         Verify(editor, "Renderer::Render: Editor is null");
 
-        m_context->ResetCommandList(m_forwardPass->GetPSO()->GetPipelineState());
-        m_context->SetRootSignature(m_forwardPass->GetPSO()->GetSignature());
-        
+        m_context->ResetCommandList(nullptr);
+
         m_context->BindDescriptorHeaps();
         m_context->BindViewportScissors();
         m_context->ClearRenderTargets();
