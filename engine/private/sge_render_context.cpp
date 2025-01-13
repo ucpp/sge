@@ -233,6 +233,7 @@ namespace SGE
         Verify(m_depthBuffer, "RenderContext::SetWindowSize: Depth buffer is not initialized or invalid.");
         m_renderTarget->Shutdown();
         m_depthBuffer->Shutdown();
+        m_gBuffer->Shutdown();
 
         DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
         GetSwapChain()->GetDesc(&swapChainDesc);

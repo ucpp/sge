@@ -110,8 +110,6 @@ namespace SGE
             return;
         }
 
-        Shutdown();
-
         m_depthBuffers.resize(m_bufferCount);
         for (uint32 i = 0; i < m_bufferCount; i++)
         {

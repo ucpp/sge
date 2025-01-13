@@ -16,7 +16,6 @@ namespace SGE
     void GBuffer::Resize(uint32 width, uint32 height)
     {
         Verify(m_commandList, "GBuffer::Resize: CommandList is invalid.");
-        Shutdown();
         CreateRenderTargets(width, height, m_commandList);
     }
 
@@ -30,6 +29,7 @@ namespace SGE
             }
         }
         m_renderTargets.clear();
+        m_states.clear();
     }
 
     void GBuffer::CreateRenderTargets(uint32 width, uint32 height, ID3D12GraphicsCommandList* commandList)

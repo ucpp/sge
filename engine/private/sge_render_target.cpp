@@ -106,6 +106,8 @@ namespace SGE
         }
 
         m_msaaTargets.clear();
+
+        m_states.clear();
     }
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(uint32 index, bool isMSAA) const
@@ -146,7 +148,6 @@ namespace SGE
             return;
         }
 
-        Shutdown();
         CreateRenderTargets();
     }
 

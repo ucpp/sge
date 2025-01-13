@@ -32,6 +32,8 @@ namespace SGE
         Verify(scene, "Renderer::Render: Scene is null");
         Verify(editor, "Renderer::Render: Editor is null");
 
+        editor->BuildFrame();
+
         m_context->ResetCommandList(nullptr);
 
         m_context->BindDescriptorHeaps();
@@ -48,7 +50,6 @@ namespace SGE
             m_forwardPass->Render(scene);
         }
         
-        editor->BuildFrame();
         editor->Render();
 
         m_context->PrepareRenderTargetForPresent();
