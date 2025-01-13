@@ -89,22 +89,11 @@ namespace SGE
             m_states.push_back(D3D12_RESOURCE_STATE_RENDER_TARGET);
             m_renderTargets.push_back(renderTarget);
 
-            const uint32 startIndex = Device::BufferCount * 2;
-            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(startIndex + static_cast<uint32>(m_renderTargets.size() - 1));
+            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(GBUFFER_START_RTV_HEAP_INDEX + static_cast<uint32>(m_renderTargets.size() - 1));
             m_device->GetDevice()->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
 
-            //D3D12_RESOURCE_BARRIER barrier = {};
-            //barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-            //barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-            //barrier.Transition.pResource = renderTarget.Get();
-            //barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-            //barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-            //barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-            //commandList->ResourceBarrier(1, &barrier);
-
             // Create SRV for the same resource
-            const uint32 startSrvIndex = Device::CbvSrvHeapCapacity - 10;
-            CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = m_srvHeap->GetCPUHandle(startSrvIndex + static_cast<uint32>(m_renderTargets.size() - 1));
+            CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = m_srvHeap->GetCPUHandle(GBUFFER_START_SRV_HEAP_INDEX + static_cast<uint32>(m_renderTargets.size() - 1));
             D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
             srvDesc.Format = formats[i];
             srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -118,20 +107,17 @@ namespace SGE
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE GBuffer::GetRTVHandle(uint32 index) const
     {
-        const uint32 startIndex = Device::BufferCount * 2;
-        return m_rtvHeap->GetCPUHandle(startIndex + index);
+        return m_rtvHeap->GetCPUHandle(GBUFFER_START_RTV_HEAP_INDEX + index);
     }
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE GBuffer::GetSRVHandle(uint32 index) const
     {
-        const uint32 startIndex = Device::CbvSrvHeapCapacity - 10;
-        return m_srvHeap->GetCPUHandle(startIndex + index);
+        return m_srvHeap->GetCPUHandle(GBUFFER_START_SRV_HEAP_INDEX + index);
     }
 
     CD3DX12_GPU_DESCRIPTOR_HANDLE GBuffer::GetSRVGPUHandle(uint32 index) const
     {
-        const uint32 startIndex = Device::CbvSrvHeapCapacity - 10;
-        return m_srvHeap->GetGPUHandle(startIndex + index);
+        return m_srvHeap->GetGPUHandle(GBUFFER_START_SRV_HEAP_INDEX + index);
     }
     
     D3D12_RESOURCE_STATES GBuffer::GetCurrentState(uint32 index) const

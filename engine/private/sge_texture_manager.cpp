@@ -5,7 +5,7 @@
 namespace SGE
 {
     std::unordered_map<std::string, TextureManager::TextureData> TextureManager::m_textureCache;
-    uint32 TextureManager::m_currentTextureIndex = TextureHeapStartIndex;
+    uint32 TextureManager::m_currentTextureIndex = TEXTURES_START_HEAP_INDEX;
 
     uint32 TextureManager::GetTextureIndex(const std::string& texturePath, Device* device, DescriptorHeap* descriptorHeap)
     {
@@ -15,7 +15,7 @@ namespace SGE
             return it->second.descriptorIndex;
         }
 
-        if (m_currentTextureIndex >= Device::CbvSrvHeapCapacity)
+        if (m_currentTextureIndex >= CBV_SRV_HEAP_CAPACITY)
         {
             throw std::runtime_error("TextureManager: Descriptor heap capacity exceeded!");
         }

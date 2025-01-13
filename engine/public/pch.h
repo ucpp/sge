@@ -37,5 +37,6 @@ using namespace SimpleMath;
 using namespace Microsoft::WRL;
 
 #include "sge_types.h"
+#include "sge_constants.h"
 
 #endif //!_SGE_PCH_H

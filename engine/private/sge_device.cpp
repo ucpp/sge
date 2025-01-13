@@ -53,7 +53,7 @@ namespace SGE
     {
         HRESULT hr = S_OK;
 
-        if (UseWarpDevice)
+        if (USE_WARP_DEVICE)
         {
             ComPtr<IDXGIAdapter> warpAdapter;
             hr = m_dxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&warpAdapter));
@@ -146,8 +146,8 @@ namespace SGE
     void Device::CreateSwapChain(HWND hwnd, uint32 width, uint32 height)
     {
         DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-        swapChainDesc.BufferCount = BufferCount;
-        swapChainDesc.SampleDesc.Count = SampleCount;
+        swapChainDesc.BufferCount = BUFFER_COUNT;
+        swapChainDesc.SampleDesc.Count = 1;
         swapChainDesc.Width = width;
         swapChainDesc.Height = height;
         swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -165,7 +165,7 @@ namespace SGE
     
     void Device::CreateCommandAllocators()
     {
-        for (uint32 i = 0; i < BufferCount; ++i)
+        for (uint32 i = 0; i < BUFFER_COUNT; ++i)
         {
             HRESULT hr = m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocators[i]));
             Verify(hr, "Failed to create command allocator.");

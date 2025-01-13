@@ -30,7 +30,7 @@ namespace SGE
         GBuffer* GetGBuffer() { return m_gBuffer.get(); }
         Fence* GetFence() { return &m_fence; }
 
-        uint32 GetBackBufferCount() const { return BufferCount; }
+        //uint32 GetBackBufferCount() const { return BUFFER_COUNT; }
         
         ComPtr<IDXGISwapChain3> GetSwapChain() const;
         ComPtr<ID3D12Device> GetD12Device() const;
@@ -80,9 +80,6 @@ namespace SGE
 
         Fence m_fence;
         uint32 m_frameIndex;
-
-        const uint32 BufferCount = Device::BufferCount;
-        const uint32 CbvSrvHeapCapacity = Device::CbvSrvHeapCapacity;
     };
 }
 

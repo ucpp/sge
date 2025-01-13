@@ -2,7 +2,7 @@
 
 ☐ Implement direct, point, and spot lights with a deferred pipeline.
 ☐ Load model with pbr textures and expand signature and shaders.
-☐ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature.
+✔ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature. @done(25-01-13 16:36)
 ☐ Fix forward rendering pass with msaa and resources states transitions.
 ☐ Encapsulate barrier handling in the separate helper.
 ☐ Remove depth map from gbuffer and use default.

@@ -36,9 +36,8 @@ namespace SGE
         Verify(heap, "Editor::Initialize failed: DescriptorHeap is null!");
         CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle = m_descriptorHeap.GetCPUHandle(0);
         CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle = m_descriptorHeap.GetGPUHandle(0);
-        const uint32 numFrames = m_context->GetBackBufferCount();
 
-        ImGui_ImplDX12_Init(device, numFrames, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);     
+        ImGui_ImplDX12_Init(device, BUFFER_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);     
     }
 
     void Editor::BuildFrame()

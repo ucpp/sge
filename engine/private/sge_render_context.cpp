@@ -31,13 +31,9 @@ namespace SGE
 
     void RenderContext::InitializeDescriptorHeaps()
     {
-        const uint32 cbvSrvUavNumDescriptors = CbvSrvHeapCapacity;
-        const uint32 rtvNumDescriptors = GetBackBufferCount() * 2 + 3;
-        const uint32 dsvNumDescriptors = 1;
-
-        m_cbvSrvUavHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, cbvSrvUavNumDescriptors, true);
-        m_rtvHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, rtvNumDescriptors);
-        m_dsvHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, dsvNumDescriptors);
+        m_cbvSrvUavHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, CBV_SRV_HEAP_CAPACITY, true);
+        m_rtvHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, RTV_HEAP_CAPACITY);
+        m_dsvHeap.Initialize(GetD12Device().Get(), D3D12_DESCRIPTOR_HEAP_TYPE_DSV, DSV_HEAP_CAPACITY);
     }
 
     void RenderContext::InitializeRenderTargets()
@@ -45,7 +41,7 @@ namespace SGE
         const bool isMSAA = GetRenderSettings().isMSAAEnabled;
 
         m_renderTarget = std::make_unique<RenderTarget>();
-        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, GetBackBufferCount(), isMSAA);
+        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BUFFER_COUNT, isMSAA);
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
         m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, GetScreenWidth(), GetScreenHeight(), 1, isMSAA);
@@ -242,7 +238,7 @@ namespace SGE
         GetSwapChain()->GetDesc(&swapChainDesc);
         DXGI_FORMAT format = swapChainDesc.BufferDesc.Format;
 
-        HRESULT hr = GetSwapChain()->ResizeBuffers(GetBackBufferCount(), width, height, format, swapChainDesc.Flags);
+        HRESULT hr = GetSwapChain()->ResizeBuffers(BUFFER_COUNT, width, height, format, swapChainDesc.Flags);
         Verify(hr, "RenderContext::SetWindowSize: GetSwapChain->ResizeBuffers failed.");
 
         m_viewportScissors->Set(width, height);

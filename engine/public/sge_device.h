@@ -30,9 +30,6 @@ namespace SGE
         void CreateCommandList();
 
     public:
-        static const bool UseWarpDevice = false;
-        static const uint32 BufferCount = 2;
-        static const uint32 SampleCount = 1;
         static const uint32 CbvSrvHeapCapacity = 256;
 
     private:
@@ -41,7 +38,7 @@ namespace SGE
         ComPtr<IDXGISwapChain3> m_swapChain;
         ComPtr<IDXGIFactory4> m_dxgiFactory;
         ComPtr<ID3D12GraphicsCommandList> m_commandList;
-        ComPtr<ID3D12CommandAllocator> m_commandAllocators[BufferCount];
+        ComPtr<ID3D12CommandAllocator> m_commandAllocators[BUFFER_COUNT];
 
         uint32 m_dxgiFactoryCreationFlags;
     };

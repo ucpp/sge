@@ -79,7 +79,7 @@ namespace SGE
                     IID_PPV_ARGS(&m_msaaTargets[i]));
                 Verify(hr, "Failed to create MSAA render target.");
 
-                CD3DX12_CPU_DESCRIPTOR_HANDLE rtvMSAAHandle = m_rtvHeap->GetCPUHandle(i + Device::BufferCount);
+                CD3DX12_CPU_DESCRIPTOR_HANDLE rtvMSAAHandle = m_rtvHeap->GetCPUHandle(i + BUFFER_COUNT);
                 m_device->GetDevice()->CreateRenderTargetView(m_msaaTargets[i].Get(), nullptr, rtvMSAAHandle); 
             }
         }
@@ -112,14 +112,8 @@ namespace SGE
     {
         if (m_rtvHeap)
         {
-            if (isMSAA)
-            {
-                return m_rtvHeap->GetCPUHandle(index + Device::BufferCount);
-            }
-            else
-            {
-                return m_rtvHeap->GetCPUHandle(index);
-            }
+            uint32 resolvedIndex = isMSAA ? index + BUFFER_COUNT : index;
+            return m_rtvHeap->GetCPUHandle(resolvedIndex);
         }
 
         return {};
