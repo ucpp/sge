@@ -38,19 +38,19 @@ namespace SGE
 
     void RenderContext::InitializeRenderTargets()
     {
-        const bool isMSAA = GetRenderSettings().isMSAAEnabled;
+        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
 
         m_renderTarget = std::make_unique<RenderTarget>();
         m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BUFFER_COUNT, isMSAA);
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
-        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, GetScreenWidth(), GetScreenHeight(), 1, isMSAA);
+        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), 1, isMSAA);
     }
 
     void RenderContext::InitializeGBuffer()
     {
         m_gBuffer = std::make_unique<GBuffer>();
-        m_gBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), GetCommandList().Get());
+        m_gBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight());
     }
 
     void RenderContext::Shutdown()
@@ -185,8 +185,8 @@ namespace SGE
         const RenderSettings& settings = GetRenderSettings();
         Verify(m_renderTarget, "RenderContext::ClearRenderTargets: Render target is not initialized or invalid.");
         Verify(m_depthBuffer, "RenderContext::ClearRenderTargets: Depth buffer is not initialized or invalid.");
-
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, settings.isMSAAEnabled);
+        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAA);
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
         if(m_renderTarget->GetCurrentState(m_frameIndex) != D3D12_RESOURCE_STATE_RENDER_TARGET)
         {
@@ -194,15 +194,22 @@ namespace SGE
                 m_renderTarget->GetTarget(m_frameIndex), m_renderTarget->GetCurrentState(m_frameIndex), D3D12_RESOURCE_STATE_RENDER_TARGET));
             m_renderTarget->SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_frameIndex);
         }
-        float color[4] = { 0.0, 0.0, 0.0, 0.0};
-        GetCommandList()->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+        if(m_depthBuffer->GetCurrentState(0) != D3D12_RESOURCE_STATE_DEPTH_WRITE)
+        {
+            GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(
+                m_depthBuffer->GetDepthBuffer(0), m_depthBuffer->GetCurrentState(0), D3D12_RESOURCE_STATE_DEPTH_WRITE));
+            m_depthBuffer->SetCurrentState(D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
+        }
+
+        GetCommandList()->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
         GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
     }
 
     void RenderContext::SetRenderTarget()
     {
         const RenderSettings& settings = GetRenderSettings();
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, settings.isMSAAEnabled);
+        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAA);
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
         GetCommandList()->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle); 
     }
@@ -210,7 +217,8 @@ namespace SGE
     void RenderContext::PrepareRenderTargetForPresent()
     {
         Verify(m_renderTarget, "RenderContext::PrepareRenderTargetForPresent: Render target is not initialized or invalid.");
-        if (GetRenderSettings().isMSAAEnabled)
+        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        if (isMSAA)
         {
             m_renderTarget->Resolve(GetCommandList().Get(), m_frameIndex);
         }

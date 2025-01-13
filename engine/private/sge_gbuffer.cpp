@@ -3,20 +3,18 @@
 
 namespace SGE
 {
-    void GBuffer::Initialize(Device* device, DescriptorHeap* rtvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height, ID3D12GraphicsCommandList* commandList)
+    void GBuffer::Initialize(Device* device, DescriptorHeap* rtvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height)
     {
         m_device = device;
         m_rtvHeap = rtvHeap;
         m_srvHeap = srvHeap;
-        m_commandList = commandList;
 
-        CreateRenderTargets(width, height, commandList);
+        CreateRenderTargets(width, height);
     }
 
     void GBuffer::Resize(uint32 width, uint32 height)
     {
-        Verify(m_commandList, "GBuffer::Resize: CommandList is invalid.");
-        CreateRenderTargets(width, height, m_commandList);
+        CreateRenderTargets(width, height);
     }
 
     void GBuffer::Shutdown()
@@ -32,34 +30,29 @@ namespace SGE
         m_states.clear();
     }
 
-    void GBuffer::CreateRenderTargets(uint32 width, uint32 height, ID3D12GraphicsCommandList* commandList)
+    void GBuffer::CreateRenderTargets(uint32 width, uint32 height)
     {
-        DXGI_FORMAT formats[] = {
+        DXGI_FORMAT formats[] = 
+        {
             DXGI_FORMAT_R16G16B16A16_FLOAT, // Albedo + Metallic
-            DXGI_FORMAT_R10G10B10A2_UNORM, // Normal + Roughness
-            DXGI_FORMAT_R32_FLOAT          // Depth
+            DXGI_FORMAT_R10G10B10A2_UNORM   // Normal + Roughness
         };
 
-        D3D12_CLEAR_VALUE clearValues[3] = {};
+        D3D12_CLEAR_VALUE clearValues[2] = {};
 
         // Albedo + Metallic (DXGI_FORMAT_R16G16B16A16_FLOAT)
         clearValues[0].Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
         clearValues[0].Color[0] = 0.0f; // Albedo (R)
         clearValues[0].Color[1] = 0.0f; // Albedo (G)
         clearValues[0].Color[2] = 0.0f; // Albedo (B)
-        clearValues[0].Color[3] = 0.0f; // Metallic (A)
+        clearValues[0].Color[3] = 1.0f; // Metallic (A)
 
         // Normal + Roughness (DXGI_FORMAT_R10G10B10A2_UNORM)
         clearValues[1].Format = DXGI_FORMAT_R10G10B10A2_UNORM;
         clearValues[1].Color[0] = 0.0f; // Normal X
         clearValues[1].Color[1] = 0.0f; // Normal Y
         clearValues[1].Color[2] = 0.0f; // Normal Z
-        clearValues[1].Color[3] = 0.0f; // Roughness
-
-        // Depth (DXGI_FORMAT_R32_FLOAT)
-        clearValues[2].Format = DXGI_FORMAT_R32_FLOAT;
-        clearValues[2].DepthStencil.Depth = 1.0f;
-        clearValues[2].DepthStencil.Stencil = 0;
+        clearValues[1].Color[3] = 1.0f; // Roughness
 
         for (uint32 i = 0; i < _countof(formats); ++i)
         {

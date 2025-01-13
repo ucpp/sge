@@ -27,6 +27,7 @@ namespace SGE
         std::vector<ComPtr<ID3D12Resource>> m_normalTargets;
         std::vector<ComPtr<ID3D12Resource>> m_msaaTargets;
         std::vector<D3D12_RESOURCE_STATES> m_states;
+        std::vector<D3D12_RESOURCE_STATES> m_msaaStates;
         uint32 m_bufferCount = 0;
         bool m_isMSAAEnabled = false;
     };

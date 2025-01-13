@@ -31,8 +31,13 @@ namespace SGE
 
     void RenderTarget::CreateRenderTargets()
     {
+        m_normalTargets.clear();
+        m_msaaTargets.clear();
         m_normalTargets.resize(m_bufferCount);
         m_msaaTargets.resize(m_bufferCount);
+
+        m_states.clear();
+        m_msaaStates.clear();
 
         for (uint32 i = 0; i < m_bufferCount; i++)
         {
@@ -41,6 +46,7 @@ namespace SGE
 
             CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(i);
             m_device->GetDevice()->CreateRenderTargetView(m_normalTargets[i].Get(), nullptr, rtvHandle);
+            m_normalTargets[i]->SetName(L"Normal Render Target");
             m_states.push_back(D3D12_RESOURCE_STATE_COMMON);
 
             if (m_isMSAAEnabled)
@@ -78,7 +84,9 @@ namespace SGE
                     &clearValue,
                     IID_PPV_ARGS(&m_msaaTargets[i]));
                 Verify(hr, "Failed to create MSAA render target.");
+                m_msaaTargets[i]->SetName(L"Normal Render Target");
 
+                m_msaaStates.push_back(D3D12_RESOURCE_STATE_COMMON);
                 CD3DX12_CPU_DESCRIPTOR_HANDLE rtvMSAAHandle = m_rtvHeap->GetCPUHandle(i + BUFFER_COUNT);
                 m_device->GetDevice()->CreateRenderTargetView(m_msaaTargets[i].Get(), nullptr, rtvMSAAHandle); 
             }
@@ -157,12 +165,16 @@ namespace SGE
         {
             return;
         }
-
-        CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-            m_msaaTargets[index].Get(),
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_RESOLVE_SOURCE);
-        commandList->ResourceBarrier(1, &barrier);
+ 
+        if(m_msaaStates[index] != D3D12_RESOURCE_STATE_RESOLVE_SOURCE)
+        {
+            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+                m_msaaTargets[index].Get(),
+                m_msaaStates[index],
+                D3D12_RESOURCE_STATE_RESOLVE_SOURCE);
+            commandList->ResourceBarrier(1, &barrier);
+            m_msaaStates[index] = D3D12_RESOURCE_STATE_RESOLVE_SOURCE;
+        }
 
         commandList->ResolveSubresource(
             m_normalTargets[index].Get(),
@@ -171,10 +183,14 @@ namespace SGE
             0,
             DXGI_FORMAT_R8G8B8A8_UNORM);
 
-        barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-            m_msaaTargets[index].Get(),
-            D3D12_RESOURCE_STATE_RESOLVE_SOURCE,
-            D3D12_RESOURCE_STATE_RENDER_TARGET);
-        commandList->ResourceBarrier(1, &barrier);
+        if(m_msaaStates[index] != D3D12_RESOURCE_STATE_RENDER_TARGET)
+        {
+            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+                m_msaaTargets[index].Get(),
+                m_msaaStates[index],
+                D3D12_RESOURCE_STATE_RENDER_TARGET);
+            commandList->ResourceBarrier(1, &barrier);
+            m_msaaStates[index] = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        }
     }
 }

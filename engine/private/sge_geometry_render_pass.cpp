@@ -15,8 +15,7 @@ namespace SGE
         pipelineConfig.RenderTargetFormats = 
         {
             DXGI_FORMAT_R16G16B16A16_FLOAT, // Albedo + Metallic
-            DXGI_FORMAT_R10G10B10A2_UNORM,  // Normal + Roughness
-            DXGI_FORMAT_R32_FLOAT           // Depth
+            DXGI_FORMAT_R10G10B10A2_UNORM   // Normal + Roughness
         };
         pipelineConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
         pipelineConfig.SampleCount = 1;
@@ -34,7 +33,7 @@ namespace SGE
         
         auto commandList = m_context->GetCommandList();
         uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[3];
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
 
         std::vector<CD3DX12_RESOURCE_BARRIER> barriers;
@@ -51,6 +50,18 @@ namespace SGE
                 barriers.push_back(barrier);
             }
         }
+
+        if(m_context->GetDepthBuffer()->GetCurrentState(0) != D3D12_RESOURCE_STATE_DEPTH_WRITE)
+        {
+            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+                m_context->GetDepthBuffer()->GetDepthBuffer(0),
+                m_context->GetDepthBuffer()->GetCurrentState(0),
+                D3D12_RESOURCE_STATE_DEPTH_WRITE
+            );  
+            m_context->GetGBuffer()->SetCurrentState(D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
+            barriers.push_back(barrier);
+        }
+
         if(barriers.size() > 0)
         {
             commandList->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
@@ -59,8 +70,7 @@ namespace SGE
         for (uint32 i = 0; i < targetCount; ++i)
         {
             rtvHandles[i] = m_context->GetGBuffer()->GetRTVHandle(i);
-            float color[4] = { 0.0, 0.0, 0.0, 0.0};
-            commandList->ClearRenderTargetView(rtvHandles[i], color, 0, nullptr);
+            commandList->ClearRenderTargetView(rtvHandles[i], CLEAR_COLOR, 0, nullptr);
         }
         commandList->OMSetRenderTargets(targetCount, rtvHandles, false, &dsvHandle);
 

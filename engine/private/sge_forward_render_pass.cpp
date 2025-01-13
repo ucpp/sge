@@ -14,7 +14,9 @@ namespace SGE
         PipelineConfig pipelineConfig = PipelineState::CreateDefaultConfig();
         pipelineConfig.RenderTargetFormats = { DXGI_FORMAT_R8G8B8A8_UNORM };
         pipelineConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
-        pipelineConfig.SampleCount = m_context->GetRenderSettings().isMSAAEnabled ? 4 : 1;
+
+        const bool isMSAA = m_context->GetRenderSettings().isMSAAEnabled && !m_context->GetRenderSettings().isDeferredRendering;
+        pipelineConfig.SampleCount = isMSAA ? 4 : 1;
         pipelineConfig.VertexShaderPath = "shaders/vs_forward_pass.hlsl";
         pipelineConfig.PixelShaderPath = "shaders/ps_forward_pass.hlsl";
         

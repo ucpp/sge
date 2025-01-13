@@ -41,6 +41,19 @@ namespace SGE
                 barriers.push_back(barrier);
             }
         }
+        /*
+        if(m_context->GetDepthBuffer()->GetCurrentState(0) != D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE)
+        {
+            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+                m_context->GetDepthBuffer()->GetDepthBuffer(0),
+                m_context->GetDepthBuffer()->GetCurrentState(0),
+                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+            );  
+            m_context->GetGBuffer()->SetCurrentState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, 0);
+            barriers.push_back(barrier);
+        }
+        */
+
         if(barriers.size() > 0)
         {
             commandList->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
@@ -53,7 +66,7 @@ namespace SGE
         m_context->SetRootDescriptorTable(0, 0);
         commandList->SetGraphicsRootDescriptorTable(2, m_context->GetGBuffer()->GetSRVGPUHandle(0));
         commandList->SetGraphicsRootDescriptorTable(3, m_context->GetGBuffer()->GetSRVGPUHandle(1));
-        commandList->SetGraphicsRootDescriptorTable(4, m_context->GetGBuffer()->GetSRVGPUHandle(2));
+        commandList->SetGraphicsRootDescriptorTable(4, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
 
         commandList->DrawInstanced(6, 1, 0, 0);
     }

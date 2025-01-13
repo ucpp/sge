@@ -10,7 +10,7 @@ namespace SGE
     class GBuffer
     {
     public:
-        void Initialize(Device* device, DescriptorHeap* rtvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height, ID3D12GraphicsCommandList* commandList);
+        void Initialize(Device* device, DescriptorHeap* rtvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height);
         void Resize(uint32 width, uint32 height);
         void Shutdown();
 
@@ -24,13 +24,13 @@ namespace SGE
         uint32 GetTargetCount() const { return static_cast<uint32>(m_renderTargets.size()); }
 
     private:
-        void CreateRenderTargets(uint32 width, uint32 height, ID3D12GraphicsCommandList* commandList);
+        void CreateRenderTargets(uint32 width, uint32 height);
 
     private:
         Device* m_device = nullptr;
         DescriptorHeap* m_rtvHeap = nullptr;
         DescriptorHeap* m_srvHeap = nullptr;
-        ID3D12GraphicsCommandList* m_commandList = nullptr;
+
         std::vector<ComPtr<ID3D12Resource>> m_renderTargets;
         std::vector<CD3DX12_GPU_DESCRIPTOR_HANDLE> m_srvGpuHandles;
         std::vector<D3D12_RESOURCE_STATES> m_states;

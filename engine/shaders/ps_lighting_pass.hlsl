@@ -48,6 +48,11 @@ float3 calculateDirectionalLight(float3 normal, float3 albedo, DirectionalLight 
     return albedo * light.color * diff * light.intensity;
 }
 
+float linearDepth(float depth, float nearPlane, float farPlane)
+{
+    return 1.0f - nearPlane / (farPlane - depth * (farPlane - nearPlane));
+}
+
 LightingOutput main(PixelInput input)
 {
     LightingOutput output;
@@ -55,8 +60,9 @@ LightingOutput main(PixelInput input)
     float4 albedoMetallic = g_AlbedoMetallic.Sample(sampleWrap, input.texCoords);
     float4 normalRoughness = g_NormalRoughness.Sample(sampleWrap, input.texCoords);
     float depth = g_Depth.Sample(sampleWrap, input.texCoords);
-
-    output.color = albedoMetallic;
-
+    
+    float linearDepthValue = linearDepth(depth, 0.3f, 125.0f);
+    output.color = float4(linearDepthValue, linearDepthValue, linearDepthValue, 1.0f);
+    
     return output;
 }
