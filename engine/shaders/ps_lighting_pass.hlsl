@@ -1,6 +1,6 @@
 Texture2D<float4> g_AlbedoMetallic : register(t0);  // Albedo + Metallic
 Texture2D<float4> g_NormalRoughness : register(t1); // Normal + Roughness
-Texture2D<float> g_Depth : register(t2);           // Depth
+Texture2D<float> g_Depth : register(t2);            // Depth
 
 SamplerState sampleWrap : register(s0);
 
@@ -60,9 +60,15 @@ LightingOutput main(PixelInput input)
     float4 albedoMetallic = g_AlbedoMetallic.Sample(sampleWrap, input.texCoords);
     float4 normalRoughness = g_NormalRoughness.Sample(sampleWrap, input.texCoords);
     float depth = g_Depth.Sample(sampleWrap, input.texCoords);
-    
-    float linearDepthValue = linearDepth(depth, 0.3f, 125.0f);
-    output.color = float4(linearDepthValue, linearDepthValue, linearDepthValue, 1.0f);
+
+    float3 albedo = albedoMetallic.rgb;
+    float metallic = albedoMetallic.a;
+    float3 normal = normalize(normalRoughness.xyz * 2.0f - 1.0f);
+    float roughness = normalRoughness.w;
+
+    float3 lightColor = calculateDirectionalLight(normal, albedo, directionalLight);
+
+    output.color = float4(lightColor, 1.0f);
     
     return output;
 }
