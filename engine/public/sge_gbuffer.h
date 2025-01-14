@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "sge_device.h"
 #include "sge_descriptor_heap.h"
+#include "sge_resource.h"
 
 namespace SGE
 {
@@ -14,12 +15,10 @@ namespace SGE
         void Resize(uint32 width, uint32 height);
         void Shutdown();
 
-        ID3D12Resource* GetRenderTarget(uint32 index) const { return m_renderTargets[index].Get(); }
+        Resource* GetResource(uint32 index) const { return m_renderTargets[index].get(); }
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(uint32 index) const;
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetSRVHandle(uint32 index) const;
         CD3DX12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle(uint32 index) const;
-        D3D12_RESOURCE_STATES GetCurrentState(uint32 index) const;
-        void SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index);
         
         uint32 GetTargetCount() const { return static_cast<uint32>(m_renderTargets.size()); }
 
@@ -31,9 +30,8 @@ namespace SGE
         DescriptorHeap* m_rtvHeap = nullptr;
         DescriptorHeap* m_srvHeap = nullptr;
 
-        std::vector<ComPtr<ID3D12Resource>> m_renderTargets;
+        std::vector<std::unique_ptr<Resource>> m_renderTargets;
         std::vector<CD3DX12_GPU_DESCRIPTOR_HANDLE> m_srvGpuHandles;
-        std::vector<D3D12_RESOURCE_STATES> m_states;
     };
 }
 

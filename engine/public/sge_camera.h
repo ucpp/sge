@@ -35,10 +35,14 @@ namespace SGE
         float GetFov() const;
         float GetPitch() const;
         float GetYaw() const;
+        float GetNear() const { return m_nearPlane; }
+        float GetFar() const { return m_farPlane; }
 
         Matrix GetViewMatrix() const;
         Matrix GetProjMatrix(int width, int height) const;
         Matrix GetOrthoProjMatrix(float width, float height) const;
+        Matrix Camera::GetViewProjMatrix(int width, int height) const;
+        Matrix Camera::GetInvViewProjMatrix(int width, int height) const;
 
         std::array<Matrix, 6> GetCubeViewMatrices() const;
 

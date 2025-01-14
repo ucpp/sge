@@ -36,18 +36,16 @@ namespace SGE
         m_normalTargets.resize(m_bufferCount);
         m_msaaTargets.resize(m_bufferCount);
 
-        m_states.clear();
-        m_msaaStates.clear();
-
         for (uint32 i = 0; i < m_bufferCount; i++)
         {
-            HRESULT hr = m_device->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&m_normalTargets[i]));
+            ComPtr<ID3D12Resource> rtResource;
+            HRESULT hr = m_device->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&rtResource));
             Verify(hr, "Failed to get buffer from SwapChain.");
+            m_normalTargets[i] = std::make_unique<Resource>(rtResource.Get(), D3D12_RESOURCE_STATE_COMMON);
 
             CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(i);
-            m_device->GetDevice()->CreateRenderTargetView(m_normalTargets[i].Get(), nullptr, rtvHandle);
-            m_normalTargets[i]->SetName(L"Normal Render Target");
-            m_states.push_back(D3D12_RESOURCE_STATE_COMMON);
+            m_device->GetDevice()->CreateRenderTargetView(m_normalTargets[i]->Get(), nullptr, rtvHandle);
+            m_normalTargets[i]->Get()->SetName(L"Normal Render Target");
 
             if (m_isMSAAEnabled)
             {
@@ -75,47 +73,28 @@ namespace SGE
                 clearValue.Color[3] = 1.0f; // A
 
                 CD3DX12_HEAP_PROPERTIES heapProperties(D3D12_HEAP_TYPE_DEFAULT);
-
+                ComPtr<ID3D12Resource> msaaResource;
                 hr = m_device->GetDevice()->CreateCommittedResource(
                     &heapProperties,
                     D3D12_HEAP_FLAG_NONE,
                     &texDesc,
                     D3D12_RESOURCE_STATE_PRESENT,
                     &clearValue,
-                    IID_PPV_ARGS(&m_msaaTargets[i]));
+                    IID_PPV_ARGS(&msaaResource));
                 Verify(hr, "Failed to create MSAA render target.");
-                m_msaaTargets[i]->SetName(L"Normal Render Target");
+                m_msaaTargets[i] = std::make_unique<Resource>(msaaResource.Get(), D3D12_RESOURCE_STATE_PRESENT);
+                m_msaaTargets[i]->Get()->SetName(L"Normal Render Target");
 
-                m_msaaStates.push_back(D3D12_RESOURCE_STATE_COMMON);
                 CD3DX12_CPU_DESCRIPTOR_HANDLE rtvMSAAHandle = m_rtvHeap->GetCPUHandle(i + BUFFER_COUNT);
-                m_device->GetDevice()->CreateRenderTargetView(m_msaaTargets[i].Get(), nullptr, rtvMSAAHandle); 
+                m_device->GetDevice()->CreateRenderTargetView(m_msaaTargets[i]->Get(), nullptr, rtvMSAAHandle); 
             }
         }
     }
 
     void RenderTarget::Shutdown()
     {
-        for (auto& normalTarget : m_normalTargets)
-        {
-            if (normalTarget)
-            {
-                normalTarget.Reset();
-            }
-        }
-
         m_normalTargets.clear();
-
-        for (auto& msaaTarget : m_msaaTargets)
-        {
-            if (msaaTarget)
-            {
-                msaaTarget.Reset();
-            }
-        }
-
         m_msaaTargets.clear();
-
-        m_states.clear();
     }
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE RenderTarget::GetRTVHandle(uint32 index, bool isMSAA) const
@@ -127,19 +106,6 @@ namespace SGE
         }
 
         return {};
-    }
-
-    D3D12_RESOURCE_STATES RenderTarget::GetCurrentState(uint32 index) const
-    {
-        return m_states[index];
-    }
-
-    void RenderTarget::SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index)
-    {
-        if(m_states.size() > index)
-        {
-            m_states[index] = state;
-        }
     }
 
     void RenderTarget::Resize(uint32 width, uint32 height)
@@ -166,31 +132,8 @@ namespace SGE
             return;
         }
  
-        if(m_msaaStates[index] != D3D12_RESOURCE_STATE_RESOLVE_SOURCE)
-        {
-            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-                m_msaaTargets[index].Get(),
-                m_msaaStates[index],
-                D3D12_RESOURCE_STATE_RESOLVE_SOURCE);
-            commandList->ResourceBarrier(1, &barrier);
-            m_msaaStates[index] = D3D12_RESOURCE_STATE_RESOLVE_SOURCE;
-        }
-
-        commandList->ResolveSubresource(
-            m_normalTargets[index].Get(),
-            0,
-            m_msaaTargets[index].Get(),
-            0,
-            DXGI_FORMAT_R8G8B8A8_UNORM);
-
-        if(m_msaaStates[index] != D3D12_RESOURCE_STATE_RENDER_TARGET)
-        {
-            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-                m_msaaTargets[index].Get(),
-                m_msaaStates[index],
-                D3D12_RESOURCE_STATE_RENDER_TARGET);
-            commandList->ResourceBarrier(1, &barrier);
-            m_msaaStates[index] = D3D12_RESOURCE_STATE_RENDER_TARGET;
-        }
+        m_msaaTargets[index]->TransitionState(D3D12_RESOURCE_STATE_RESOLVE_SOURCE, commandList);
+        commandList->ResolveSubresource(m_normalTargets[index]->Get(), 0, m_msaaTargets[index]->Get(), 0, DXGI_FORMAT_R8G8B8A8_UNORM);
+        m_msaaTargets[index]->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, commandList);
     }
 }

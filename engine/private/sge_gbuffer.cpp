@@ -19,15 +19,7 @@ namespace SGE
 
     void GBuffer::Shutdown()
     {
-        for (auto& target : m_renderTargets)
-        {
-            if (target)
-            {
-                target.Reset();
-            }
-        }
         m_renderTargets.clear();
-        m_states.clear();
     }
 
     void GBuffer::CreateRenderTargets(uint32 width, uint32 height)
@@ -54,6 +46,7 @@ namespace SGE
         clearValues[1].Color[2] = 0.0f; // Normal Z
         clearValues[1].Color[3] = 1.0f; // Roughness
 
+        m_renderTargets.clear();
         for (uint32 i = 0; i < _countof(formats); ++i)
         {
             D3D12_RESOURCE_DESC texDesc = {};
@@ -79,8 +72,7 @@ namespace SGE
             );
             Verify(hr, "Failed to create GBuffer render target.");
 
-            m_states.push_back(D3D12_RESOURCE_STATE_RENDER_TARGET);
-            m_renderTargets.push_back(renderTarget);
+            m_renderTargets.emplace_back(std::make_unique<Resource>(renderTarget.Get(), D3D12_RESOURCE_STATE_RENDER_TARGET));
 
             CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_rtvHeap->GetCPUHandle(GBUFFER_START_RTV_HEAP_INDEX + static_cast<uint32>(m_renderTargets.size() - 1));
             m_device->GetDevice()->CreateRenderTargetView(renderTarget.Get(), nullptr, rtvHandle);
@@ -111,18 +103,5 @@ namespace SGE
     CD3DX12_GPU_DESCRIPTOR_HANDLE GBuffer::GetSRVGPUHandle(uint32 index) const
     {
         return m_srvHeap->GetGPUHandle(GBUFFER_START_SRV_HEAP_INDEX + index);
-    }
-    
-    D3D12_RESOURCE_STATES GBuffer::GetCurrentState(uint32 index) const
-    {
-        return m_states[index];
-    }
-
-    void GBuffer::SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index)
-    {
-        if(m_states.size() > index)
-        {
-            m_states[index] = state;
-        }
     }
 }

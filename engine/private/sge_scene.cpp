@@ -49,7 +49,22 @@ namespace SGE
 
         m_sceneData.directionalLight.direction = { 0.2f, 0.2f, 1.0f };
         m_sceneData.directionalLight.color = { 1.0f, 1.0f, 1.0f };
-        m_sceneData.directionalLight.intensity = 1.2f;
+        m_sceneData.directionalLight.intensity = 1.0f;
+
+        for (uint32 i = 0; i < MAX_POINT_LIGHTS; ++i)
+        {
+            m_sceneData.pointLights[i].position = { 
+                -10.0f + static_cast<float>(rand() % 200) / 10.0f, 
+                0.0f + static_cast<float>(rand() % 60) / 10.0f,
+                -10.0f + static_cast<float>(rand() % 200) / 10.0f 
+            };
+            m_sceneData.pointLights[i].color = { 
+                static_cast<float>(rand() % 100) / 100.0f,
+                static_cast<float>(rand() % 100) / 100.0f,
+                static_cast<float>(rand() % 100) / 100.0f
+            };
+            m_sceneData.pointLights[i].intensity = 1.0f;
+        }
 
         m_sceneData.cameraPosition = m_mainCamera.GetPosition();
 
@@ -58,6 +73,11 @@ namespace SGE
         m_sceneData.fogColor = {0.314f, 0.314f, 0.314f};
         m_sceneData.fogStrength = m_context->GetRenderSettings().isFogEnabled ? 1.0f : 0.0f;
         m_sceneData.fogDensity = 0.1f;
+
+        m_sceneData.zNear = m_mainCamera.GetNear();
+        m_sceneData.zFar = m_mainCamera.GetFar();
+
+        m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
     }
 
     void Scene::InitializeRenderableObjects()
@@ -78,7 +98,19 @@ namespace SGE
     {
         m_sceneData.cameraPosition = m_mainCamera.GetPosition();
         m_sceneData.fogStrength = m_context->GetRenderSettings().isFogEnabled ? 1.0f : 0.0f;
+        m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
         m_sceneDataBuffer->Update(&m_sceneData, sizeof(SceneData));
+
+        static const float fadeSpeeds[MAX_POINT_LIGHTS] = { 0.5f, 0.8f, 1.0f, 0.4f, 0.6f };
+        static double accumulatedTime = 0.0f;
+        accumulatedTime += deltaTime;
+
+        for (uint32 i = 0; i < MAX_POINT_LIGHTS; ++i)
+        {
+            float intensityMin = 0.0f;
+            float intensityMax = 3.0f;
+            m_sceneData.pointLights[i].intensity = intensityMin + (intensityMax - intensityMin) * (sin(accumulatedTime * fadeSpeeds[i]) * 0.5f + 0.5f);
+        }
     }
     
     void Scene::UpdateRenderableObjects(double deltaTime)

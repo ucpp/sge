@@ -30,6 +30,8 @@ namespace SGE
         GBuffer* GetGBuffer() { return m_gBuffer.get(); }
         Fence* GetFence() { return &m_fence; }
 
+        uint32 GetFrameIndex() const { return m_frameIndex; }
+
         //uint32 GetBackBufferCount() const { return BUFFER_COUNT; }
         
         ComPtr<IDXGISwapChain3> GetSwapChain() const;
@@ -54,7 +56,7 @@ namespace SGE
         void WaitForPreviousFrame();
         void PresentFrame();
         void ClearRenderTargets();
-        void SetRenderTarget();
+        void SetRenderTarget(bool includeDepth = true);
         void PrepareRenderTargetForPresent();
         void SetWindowSize(int32 width, int32 height);
         void SetRootDescriptorTable(uint32 rootParameterIndex, uint32 descriptorIndex);

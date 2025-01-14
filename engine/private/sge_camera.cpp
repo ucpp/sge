@@ -129,6 +129,17 @@ namespace SGE
         return XMMatrixTranspose(XMMatrixPerspectiveFovRH(fovAngleY, aspectRatio, m_nearPlane, m_farPlane));
     }
 
+    Matrix Camera::GetViewProjMatrix(int width, int height) const
+    {
+        return GetViewMatrix() * GetProjMatrix(width, height);
+    }
+
+    Matrix Camera::GetInvViewProjMatrix(int width, int height) const
+    {
+        Matrix viewProj = GetViewProjMatrix(width, height);
+        return viewProj.Invert();
+    }
+
     Matrix Camera::GetOrthoProjMatrix(float width, float height) const
     {
         return XMMatrixTranspose(XMMatrixOrthographicRH(width, height, m_nearPlane, m_farPlane));

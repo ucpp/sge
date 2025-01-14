@@ -24,14 +24,16 @@ namespace SGE
     struct SceneData
     {
         DirectionalLight directionalLight;
-        PointLight pointLight;
+        PointLight pointLights[MAX_POINT_LIGHTS];
         Vector3 cameraPosition;
         float fogStrength;
         Vector3 fogColor;
         float fogStart;
         float fogEnd;
         float fogDensity;
-        float padding[2];
+        float zNear;
+        float zFar;
+        Matrix invViewProj;
     };
 }
 

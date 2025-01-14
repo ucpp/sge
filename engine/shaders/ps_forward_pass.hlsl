@@ -29,6 +29,9 @@ cbuffer SceneData : register(b0)
     float fogStart;
     float fogEnd;
     float fogDensity;
+    float zNear;
+    float zFar;
+    matrix invViewProj;
 };
 
 Texture2D diffuseMap : register(t0);

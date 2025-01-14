@@ -4,6 +4,8 @@ Texture2D<float> g_Depth : register(t2);            // Depth
 
 SamplerState sampleWrap : register(s0);
 
+static const uint MAX_POINT_LIGHTS = 3;
+
 struct DirectionalLight
 {
     float3 direction;
@@ -21,13 +23,16 @@ struct PointLight
 cbuffer SceneData : register(b0)
 {
     DirectionalLight directionalLight;
-    PointLight pointLight;
+    PointLight pointLights[MAX_POINT_LIGHTS];
     float3 cameraPosition;
     float fogStrength;
     float3 fogColor;
     float fogStart;
     float fogEnd;
     float fogDensity;
+    float zNear;
+    float zFar;
+    matrix invViewProj;
 };
 
 struct PixelInput
@@ -48,9 +53,26 @@ float3 calculateDirectionalLight(float3 normal, float3 albedo, DirectionalLight 
     return albedo * light.color * diff * light.intensity;
 }
 
-float linearDepth(float depth, float nearPlane, float farPlane)
+float3 calculatePointLight(float3 worldPos, float3 normal, float3 albedo, PointLight light)
 {
-    return 1.0f - nearPlane / (farPlane - depth * (farPlane - nearPlane));
+    float3 lightDir = light.position - worldPos;
+    float distance = length(lightDir);
+    lightDir = normalize(lightDir);
+
+    float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    return albedo * light.color * diff * light.intensity * attenuation;
+}
+
+float3 ReconstructWorldPos(float2 uv, float depth, float4x4 invViewProj, float zNear, float zFar)
+{
+    float zLinear = zNear * zFar / (zFar + depth * (zNear - zFar));
+    float4 clipPos = float4(uv * 2.0 - 1.0, zLinear, 1.0);
+    float4 worldPos = mul(invViewProj, clipPos);
+    worldPos /= worldPos.w;
+
+    return worldPos.xyz;
 }
 
 LightingOutput main(PixelInput input)
@@ -66,9 +88,14 @@ LightingOutput main(PixelInput input)
     float3 normal = normalize(normalRoughness.xyz * 2.0f - 1.0f);
     float roughness = normalRoughness.w;
 
-    float3 lightColor = calculateDirectionalLight(normal, albedo, directionalLight);
+    float3 worldPos = ReconstructWorldPos(input.texCoords, depth, invViewProj, zNear, zFar);
 
-    output.color = float4(lightColor, 1.0f);
-    
+    float3 finalColor = calculateDirectionalLight(normal, albedo, directionalLight);
+    for (uint i = 0; i < MAX_POINT_LIGHTS; ++i)
+    {
+        finalColor += calculatePointLight(worldPos, normal, albedo, pointLights[i]);
+    }
+
+    output.color = float4(finalColor, 1.0f);
     return output;
 }

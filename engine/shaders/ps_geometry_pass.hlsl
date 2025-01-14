@@ -34,6 +34,9 @@ cbuffer SceneData : register(b0)
     float fogStart;
     float fogEnd;
     float fogDensity;
+    float zNear;
+    float zFar;
+    matrix invViewProj;
 };
 
 struct PixelInput
@@ -50,7 +53,6 @@ struct GBufferOutput
 {
     float4 AlbedoMetallic : SV_Target0;
     float4 NormalRoughness : SV_Target1;
-    float Depth : SV_Target2;
 };
 
 float3 EncodeNormalToRGB(float3 normal)
@@ -71,7 +73,6 @@ GBufferOutput main(PixelInput input)
 
     output.AlbedoMetallic = float4(albedo, metallic);
     output.NormalRoughness = float4(EncodeNormalToRGB(normal), 0.0);
-    output.Depth = input.position.z / input.position.w;
 
     return output;
 }

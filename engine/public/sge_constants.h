@@ -21,6 +21,8 @@ namespace SGE
     constexpr uint32 TEXTURES_START_HEAP_INDEX = CBV_SRV_HEAP_CAPACITY - SRV_HEAP_CAPACITY;
 
     constexpr float CLEAR_COLOR[4] = { 0.0, 0.0, 0.0, 1.0 };
+
+    constexpr uint32 MAX_POINT_LIGHTS = 5;
 }
 
 #endif // !_SGE_CONSTANTS_H_

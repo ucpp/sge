@@ -2,6 +2,7 @@
 #define _SGE_RENDER_TARGET_H_
 
 #include "pch.h"
+#include "sge_resource.h"
 
 namespace SGE
 {
@@ -13,21 +14,18 @@ namespace SGE
         void Shutdown();
         void Resolve(ID3D12GraphicsCommandList* commandList, uint32 index);
 
-        ID3D12Resource* GetTarget(uint32 index, bool isMSAA = false) const { return isMSAA ? m_msaaTargets[index].Get() : m_normalTargets[index].Get(); }
+        Resource* GetResource(uint32 index, bool isMSAA = false) const { return isMSAA ? m_msaaTargets[index].get(): m_normalTargets[index].get(); }
         CD3DX12_CPU_DESCRIPTOR_HANDLE GetRTVHandle(uint32 index, bool isMSAA) const;
-        D3D12_RESOURCE_STATES GetCurrentState(uint32 index) const;
-        void SetCurrentState(D3D12_RESOURCE_STATES state, uint32 index);
-        
+
     private:
         void CreateRenderTargets();
 
     private:
         class Device* m_device = nullptr;
         class DescriptorHeap* m_rtvHeap = nullptr;
-        std::vector<ComPtr<ID3D12Resource>> m_normalTargets;
-        std::vector<ComPtr<ID3D12Resource>> m_msaaTargets;
-        std::vector<D3D12_RESOURCE_STATES> m_states;
-        std::vector<D3D12_RESOURCE_STATES> m_msaaStates;
+        std::vector<std::unique_ptr<Resource>> m_normalTargets;
+        std::vector<std::unique_ptr<Resource>> m_msaaTargets;
+
         uint32 m_bufferCount = 0;
         bool m_isMSAAEnabled = false;
     };

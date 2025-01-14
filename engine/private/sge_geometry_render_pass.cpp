@@ -30,37 +30,19 @@ namespace SGE
     {
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
+        m_context->SetRenderTarget();
         
         auto commandList = m_context->GetCommandList();
         uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
         D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
 
         std::vector<CD3DX12_RESOURCE_BARRIER> barriers;
         for(uint32 i = 0; i < targetCount; ++i)
         {
-            if(m_context->GetGBuffer()->GetCurrentState(i) != D3D12_RESOURCE_STATE_RENDER_TARGET)
-            {
-                CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-                    m_context->GetGBuffer()->GetRenderTarget(i),
-                    m_context->GetGBuffer()->GetCurrentState(i),
-                    D3D12_RESOURCE_STATE_RENDER_TARGET
-                );  
-                m_context->GetGBuffer()->SetCurrentState(D3D12_RESOURCE_STATE_RENDER_TARGET, i);
-                barriers.push_back(barrier);
-            }
+            m_context->GetGBuffer()->GetResource(i)->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, barriers);
         }
 
-        if(m_context->GetDepthBuffer()->GetCurrentState(0) != D3D12_RESOURCE_STATE_DEPTH_WRITE)
-        {
-            CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-                m_context->GetDepthBuffer()->GetDepthBuffer(0),
-                m_context->GetDepthBuffer()->GetCurrentState(0),
-                D3D12_RESOURCE_STATE_DEPTH_WRITE
-            );  
-            m_context->GetGBuffer()->SetCurrentState(D3D12_RESOURCE_STATE_DEPTH_WRITE, 0);
-            barriers.push_back(barrier);
-        }
+        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, barriers);
 
         if(barriers.size() > 0)
         {
@@ -72,6 +54,7 @@ namespace SGE
             rtvHandles[i] = m_context->GetGBuffer()->GetRTVHandle(i);
             commandList->ClearRenderTargetView(rtvHandles[i], CLEAR_COLOR, 0, nullptr);
         }
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
         commandList->OMSetRenderTargets(targetCount, rtvHandles, false, &dsvHandle);
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
