@@ -4,7 +4,7 @@
 ☐ Load model with pbr textures and expand signature and shaders.
 ✔ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature. @done(25-01-13 16:36)
 ☐ Fix forward rendering pass with msaa and resources states transitions.
-☐ Encapsulate barrier handling in the separate helper.
+✔ Encapsulate barrier handling in the separate helper. @done(25-01-14 21:23)
 ✔ Remove depth map from gbuffer and use default. @done(25-01-13 23:07)
 ✔ Add class RenderPass and 3 inheritors: ForwardPass, GeometryPass, LightingPass. @done(25-01-12 12:55)
 ✔ Fix problems with resources states translation. @done(25-01-12 18:57)
