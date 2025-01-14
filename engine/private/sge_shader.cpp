@@ -1,6 +1,7 @@
 #include "sge_shader.h"
 
 #include "sge_helpers.h"
+#include "sge_logger.h"
 
 namespace SGE
 {
@@ -19,6 +20,7 @@ namespace SGE
         std::string target = ShaderTypeToTarget(type);
         std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
 
+        ComPtr<ID3DBlob> errorBlob;
         HRESULT hr = D3DCompileFromFile(
             wFilePath.c_str(),
             nullptr,
@@ -28,10 +30,23 @@ namespace SGE
             compileFlags,
             0,
             &m_blob,
-            nullptr
+            &errorBlob
         );
+        
+        if (FAILED(hr))
+        {
+            if (errorBlob)
+            {
+                std::string errorMessage(static_cast<char*>(errorBlob->GetBufferPointer()), errorBlob->GetBufferSize());
+                LOG_ERROR("Shader compilation error in file {}:\n {}", filePath, errorMessage);
+            }
+            else
+            {
+                LOG_ERROR("Shader compilation failed with no error message.");
+            }
 
-        Verify(hr, "Failed to compile shader");
+            Verify(hr, "Failed to compile shader");
+        }
     }
 
     D3D12_SHADER_BYTECODE Shader::GetShaderBytecode() const

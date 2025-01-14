@@ -4,7 +4,8 @@ Texture2D<float> g_Depth : register(t2);            // Depth
 
 SamplerState sampleWrap : register(s0);
 
-static const uint MAX_POINT_LIGHTS = 3;
+static const uint MAX_POINT_LIGHTS = 6;
+static const uint MAX_SPOT_LIGHTS = 1;
 
 struct DirectionalLight
 {
@@ -20,10 +21,21 @@ struct PointLight
     float3 color;
 };
 
+struct SpotLight
+{
+    float3 position;
+    float intensity;
+    float3 direction;
+    float innerConeCos;
+    float3 color;
+    float outerConeCos;
+};
+
 cbuffer SceneData : register(b0)
 {
     DirectionalLight directionalLight;
     PointLight pointLights[MAX_POINT_LIGHTS];
+    SpotLight spotLights[MAX_SPOT_LIGHTS];
     float3 cameraPosition;
     float fogStrength;
     float3 fogColor;
@@ -63,6 +75,23 @@ float3 calculatePointLight(float3 worldPos, float3 normal, float3 albedo, PointL
     float diff = max(dot(normal, lightDir), 0.0);
 
     return albedo * light.color * diff * light.intensity * attenuation;
+}
+
+float3 calculateSpotLight(float3 worldPos, float3 normal, float3 albedo, SpotLight light)
+{
+    float3 lightDir = normalize(light.position - worldPos);
+    float distance = length(light.position - worldPos);
+
+    float attenuation = 1.0 / (1.0 + 0.14 * distance + 0.07 * (distance * distance));
+
+    float3 spotDirection = normalize(-light.direction);
+    float theta = dot(lightDir, spotDirection);
+    float epsilon = light.innerConeCos - light.outerConeCos;
+    float intensity = smoothstep(light.outerConeCos, light.innerConeCos, theta);
+
+    float diff = max(dot(normal, lightDir), 0.0);
+
+    return albedo * light.color * diff * light.intensity * attenuation * intensity;
 }
 
 float3 ReconstructWorldPos(float2 uv, float depth, float4x4 invViewProj, float zNear, float zFar)

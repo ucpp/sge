@@ -3,6 +3,9 @@ Texture2D normalMap : register(t1);
 Texture2D specularMap : register(t2);
 SamplerState sampleWrap : register(s0);
 
+static const uint MAX_POINT_LIGHTS = 2;
+static const uint MAX_SPOT_LIGHTS = 1;
+
 cbuffer TransformBuffer : register(b1)
 {
     matrix model;
@@ -24,10 +27,21 @@ struct PointLight
     float3 color;
 };
 
+struct SpotLight
+{
+    float3 position;
+    float intensity;
+    float3 direction;
+    float innerConeCos;
+    float3 color;
+    float outerConeCos;
+};
+
 cbuffer SceneData : register(b0)
 {
     DirectionalLight directionalLight;
-    PointLight pointLight;
+    PointLight pointLights[MAX_POINT_LIGHTS];
+    SpotLight spotLights[MAX_SPOT_LIGHTS];
     float3 cameraPosition;
     float fogStrength;
     float3 fogColor;

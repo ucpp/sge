@@ -66,6 +66,17 @@ namespace SGE
             m_sceneData.pointLights[i].intensity = 1.0f;
         }
 
+        for (uint32 i = 0; i < MAX_SPOT_LIGHTS; ++i)
+        {
+            m_sceneData.spotLights[i].position = { 0.0f, 0.0f, -1.0f };
+            m_sceneData.spotLights[i].direction = { 0.0f, 1.0f, 0.0f };
+
+            m_sceneData.spotLights[i].innerConeCos = cos(XMConvertToRadians(15.0f));
+            m_sceneData.spotLights[i].outerConeCos = cos(XMConvertToRadians(30.0f));
+            m_sceneData.spotLights[i].color = { 0.0f, 1.0f, 0.0f };
+            m_sceneData.spotLights[i].intensity = 2.0f;
+        }
+
         m_sceneData.cameraPosition = m_mainCamera.GetPosition();
 
         m_sceneData.fogStart = 3.0f;
@@ -86,6 +97,7 @@ namespace SGE
         const std::string path = "resources/backpack/backpack.obj";
         *model = ModelLoader::LoadModel(path, m_context->GetDevice(), m_context->GetCbvSrvUavHeap(), 1);
         model->SetRotation({ 0.0f, 180.0f, 0.0f });
+ 
         m_renderableObjects.push_back(std::move(model));
     }
     
@@ -101,9 +113,9 @@ namespace SGE
         m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
         m_sceneDataBuffer->Update(&m_sceneData, sizeof(SceneData));
 
-        static const float fadeSpeeds[MAX_POINT_LIGHTS] = { 0.5f, 0.8f, 1.0f, 0.4f, 0.6f };
-        static double accumulatedTime = 0.0f;
-        accumulatedTime += deltaTime;
+        static const float fadeSpeeds[MAX_POINT_LIGHTS] = { 0.5f, 1.0f };
+        static float accumulatedTime = 0.0f;
+        accumulatedTime += static_cast<float>(deltaTime);
 
         for (uint32 i = 0; i < MAX_POINT_LIGHTS; ++i)
         {

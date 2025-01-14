@@ -21,10 +21,21 @@ namespace SGE
         float padding;
     };
 
+    struct SpotLight
+    {
+        Vector3 position;
+        float intensity;
+        Vector3 direction;
+        float innerConeCos;
+        Vector3 color;
+        float outerConeCos;
+    };
+
     struct SceneData
     {
         DirectionalLight directionalLight;
         PointLight pointLights[MAX_POINT_LIGHTS];
+        SpotLight spotLights[MAX_SPOT_LIGHTS];
         Vector3 cameraPosition;
         float fogStrength;
         Vector3 fogColor;

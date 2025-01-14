@@ -22,7 +22,8 @@ namespace SGE
 
     constexpr float CLEAR_COLOR[4] = { 0.0, 0.0, 0.0, 1.0 };
 
-    constexpr uint32 MAX_POINT_LIGHTS = 5;
+    constexpr uint32 MAX_POINT_LIGHTS = 6;
+    constexpr uint32 MAX_SPOT_LIGHTS = 1;
 }
 
 #endif // !_SGE_CONSTANTS_H_
