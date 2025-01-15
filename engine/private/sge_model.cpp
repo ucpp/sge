@@ -104,7 +104,7 @@ namespace SGE
     void Model::Update(const Matrix& viewMatrix, const Matrix& projectionMatrix)
     {
         TransformBuffer transformData = {};
-        transformData.model = GetWorldMatrix();
+        transformData.model = GetWorldMatrix().Transpose();
         transformData.view = viewMatrix;
         transformData.projection = projectionMatrix;
 

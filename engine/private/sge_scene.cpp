@@ -97,6 +97,7 @@ namespace SGE
         const std::string path = "resources/backpack/backpack.obj";
         *model = ModelLoader::LoadModel(path, m_context->GetDevice(), m_context->GetCbvSrvUavHeap(), 1);
         model->SetRotation({ 0.0f, 180.0f, 0.0f });
+        model->SetPosition({ 0.0f, 0.0f, 10.0f });
  
         m_renderableObjects.push_back(std::move(model));
     }
