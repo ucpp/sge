@@ -31,8 +31,19 @@ namespace SGE
             KeyUp(static_cast<uint32>(wparam));
             return 0;
         case WM_MOUSEMOVE:
-            MouseMove(LOWORD(lparam), HIWORD(lparam));
+        {
+            int x = LOWORD(lparam);
+            int y = HIWORD(lparam);
+
+            RECT clientRect;
+            GetClientRect(hwnd, &clientRect);
+
+            if (x >= 0 && x < clientRect.right && y >= 0 && y < clientRect.bottom)
+            {
+               MouseMove(x, y);
+            }
             return 0;
+        }
         case WM_LBUTTONDOWN:
             MouseButtonDown(MouseButton::Left);
             return 0;
