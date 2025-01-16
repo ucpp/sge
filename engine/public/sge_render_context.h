@@ -46,6 +46,8 @@ namespace SGE
         EditorSettings& GetEditorSettings() const;
         WindowSettings& GetWindowSettings() const;
         RenderSettings& GetRenderSettings() const;
+        ProjectAssets& GetAssetsSettings() const;
+        SceneSettings& GetSceneSettings() const;
 
         void ExecuteCommandList();
         void CloseCommandList();

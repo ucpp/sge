@@ -128,6 +128,18 @@ namespace SGE
         return m_settings->render;
     }
 
+    ProjectAssets& RenderContext::GetAssetsSettings() const
+    {
+        Verify(m_settings, "RenderContext::GetAssetsSettings failed: settings are not initialized.");
+        return m_settings->project;
+    }
+
+    SceneSettings& RenderContext::GetSceneSettings() const
+    {
+        Verify(m_settings, "RenderContext::GetSceneSettings failed: settings are not initialized.");
+        return m_settings->scene;
+    }
+
     void RenderContext::ExecuteCommandList()
     {
         ID3D12CommandList* ppCommandLists[] = { GetCommandList().Get() };

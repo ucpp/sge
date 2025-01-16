@@ -8,6 +8,7 @@
 #include "imgui_impl_win32.h"
 #include "imgui_internal.h"
 #include "sge_descriptor_heap.h"
+#include "sge_application_settings.h"
 
 namespace SGE
 {
@@ -30,11 +31,11 @@ namespace SGE
 
     private:
         class RenderContext* m_context = nullptr;
-        
-        DescriptorHeap m_descriptorHeap;
 
         bool m_isOpenSettingsWindow = false;
         bool m_isOpenResolutionWindow = false;
+
+        std::unordered_map<AssetType, ImTextureID> m_icons;
     };
 }
 

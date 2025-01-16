@@ -10,5 +10,64 @@
         "is_msaa_enabled": false,
         "is_fog_enabled": false,
         "is_deferred_rendering": true
+    },
+    "project": {
+        "assets": [
+            {
+                "name" : "Point Light",
+                "type" : 2
+            },
+            {
+                "name" : "Base Material",
+                "type" : 1
+            },
+            {
+                "name" : "Backpack",
+                "type" : 0
+            },
+            {
+                "name" : "Cube",
+                "type" : 0
+            },
+            {
+                "name" : "Teapot",
+                "type" : 0
+            },
+            {
+                "name" : "Tank",
+                "type" : 0
+            },
+            {
+                "name" : "Barrel",
+                "type" : 0
+            },
+            {
+                "name" : "Cat",
+                "type" : 0
+            },
+            {
+                "name" : "Dog",
+                "type" : 0
+            }
+        ]
+    },
+    "scene" : {
+        "objects" : [
+            {
+                "name" : "Main Camera"
+            },
+            {
+                "name" : "Directional light"
+            },
+            {
+                "name" : "Point Light 1"
+            },
+            {
+                "name" : "Point Light 2"
+            },
+            {
+                "name" : "backpack"
+            }
+        ]
     }
 }
