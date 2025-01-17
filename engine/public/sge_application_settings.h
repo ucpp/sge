@@ -33,6 +33,14 @@ namespace SGE
         Light      = 2
     };
 
+    enum class ObjectType
+    {
+        Camera           = 0,
+        Mesh             = 1,
+        PointLight       = 2,
+        DirectionalLight = 3
+    };
+
     struct AssetBase
     {
         std::string name;
@@ -47,6 +55,7 @@ namespace SGE
     struct SceneObject
     {
         std::string name;
+        ObjectType type;
     };
 
     struct SceneSettings

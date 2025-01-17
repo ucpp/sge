@@ -46,6 +46,16 @@ namespace SGE
         m_icons.emplace(AssetType::StaticMesh, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIconIndex).ptr);
         m_icons.emplace(AssetType::Material, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(materialIconIndex).ptr);
         m_icons.emplace(AssetType::Light, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(lightIconIndex).ptr);
+
+        uint32 cameraIcon16 = TextureManager::GetTextureIndex("resources/editor/camera_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 meshIcon16 = TextureManager::GetTextureIndex("resources/editor/mesh_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 directionalIcon16 = TextureManager::GetTextureIndex("resources/editor/directional_light_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 pointLightIcon16 = TextureManager::GetTextureIndex("resources/editor/point_light_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+
+        m_objectIcons.emplace(ObjectType::Camera, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(cameraIcon16).ptr);
+        m_objectIcons.emplace(ObjectType::DirectionalLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(directionalIcon16).ptr);
+        m_objectIcons.emplace(ObjectType::PointLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(pointLightIcon16).ptr);
+        m_objectIcons.emplace(ObjectType::Mesh, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIcon16).ptr);
     }
 
     void Editor::BuildFrame()
@@ -190,6 +200,7 @@ namespace SGE
     {
         static uint32 selectedObjectIndex = 0;
         ImGui::Begin("Scene hierarchy");
+        const ImVec2 smallIconSize = ImVec2(16, 16);
         const SceneSettings& sceneSettings = m_context->GetSceneSettings();
         if (!sceneSettings.objects.empty())
         {
@@ -199,6 +210,9 @@ namespace SGE
             for (size_t i = 0; i < sceneSettings.objects.size(); ++i)
             {
                 bool isSelected = selectedObjectIndex == i;
+                ObjectType objType = sceneSettings.objects[i].type;
+                ImGui::Image(m_objectIcons[objType], smallIconSize);
+                ImGui::SameLine();
                 if (ImGui::Selectable(sceneSettings.objects[i].name.c_str(), isSelected))
                 {
                     selectedObjectIndex = static_cast<uint32>(i);

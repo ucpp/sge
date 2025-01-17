@@ -54,19 +54,24 @@
     "scene" : {
         "objects" : [
             {
-                "name" : "Main Camera"
+                "name" : "Main Camera",
+                "type" : 0
             },
             {
-                "name" : "Directional light"
+                "name" : "Directional light",
+                "type" : 3
             },
             {
-                "name" : "Point Light 1"
+                "name" : "Point Light 1",
+                "type" : 2
             },
             {
-                "name" : "Point Light 2"
+                "name" : "Point Light 2",
+                "type" : 2
             },
             {
-                "name" : "backpack"
+                "name" : "backpack",
+                "type" : 1
             }
         ]
     }

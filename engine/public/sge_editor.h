@@ -36,6 +36,7 @@ namespace SGE
         bool m_isOpenResolutionWindow = false;
 
         std::unordered_map<AssetType, ImTextureID> m_icons;
+        std::unordered_map<ObjectType, ImTextureID> m_objectIcons;
     };
 }
 
