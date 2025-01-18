@@ -14,7 +14,7 @@ namespace SGE
         PipelineConfig pipelineConfig = PipelineState::CreateDefaultConfig();
         pipelineConfig.RenderTargetFormats = 
         {
-            DXGI_FORMAT_R16G16B16A16_FLOAT, // Albedo + Metallic
+            DXGI_FORMAT_R8G8B8A8_UNORM, // Albedo + Metallic
             DXGI_FORMAT_R10G10B10A2_UNORM   // Normal + Roughness
         };
         pipelineConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;

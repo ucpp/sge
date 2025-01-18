@@ -26,14 +26,14 @@ namespace SGE
     {
         DXGI_FORMAT formats[] = 
         {
-            DXGI_FORMAT_R16G16B16A16_FLOAT, // Albedo + Metallic
+            DXGI_FORMAT_R8G8B8A8_UNORM, // Albedo + Metallic
             DXGI_FORMAT_R10G10B10A2_UNORM   // Normal + Roughness
         };
 
         D3D12_CLEAR_VALUE clearValues[2] = {};
 
-        // Albedo + Metallic (DXGI_FORMAT_R16G16B16A16_FLOAT)
-        clearValues[0].Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+        // Albedo + Metallic (DXGI_FORMAT_R8G8B8A8_UNORM)
+        clearValues[0].Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         clearValues[0].Color[0] = 0.0f; // Albedo (R)
         clearValues[0].Color[1] = 0.0f; // Albedo (G)
         clearValues[0].Color[2] = 0.0f; // Albedo (B)
