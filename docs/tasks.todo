@@ -1,69 +1,9 @@
 ### Daily tasks
 
-☐ Implement direct, point, and spot lights with a deferred pipeline.
-☐ Load model with pbr textures and expand signature and shaders.
-✔ Reorganize constants and separate starting indexes in descriptors as well as indexes in the root signature. @done(25-01-13 16:36)
-☐ Fix forward rendering pass with msaa and resources states transitions.
-✔ Encapsulate barrier handling in the separate helper. @done(25-01-14 21:23)
-✔ Remove depth map from gbuffer and use default. @done(25-01-13 23:07)
-✔ Add class RenderPass and 3 inheritors: ForwardPass, GeometryPass, LightingPass. @done(25-01-12 12:55)
-✔ Fix problems with resources states translation. @done(25-01-12 18:57)
+[Day 29/1000 - 19/01/2025]
+☐ Add support for includes in shaders
+☐ Extract common structures into a separate source file.
 
-### Roadmap tasks
-
-✔ Fog effect @done(25-01-06 21:54)
-✔ Add support for MSAA (Multisample Anti-Aliasing). @done(25-01-06 16:43)
-✔ Implement Phong lighting. @done(25-01-05 21:14)
-    ✔ Create a buffer to store data for point and directional lights. @done(25-01-04 10:25)
-    ✔ Implement directional light calculation for the diffuse map. @done(25-01-04 10:25)
-    ✔ Add support for normal maps in the pixel shader. @done(25-01-05 21:14)
-✔ Add support for compressed textures using BCn compression formats. @done(25-01-04 10:21)
-✔ Integrate nlohmann/json library for JSON parsing. @done(25-01-02 18:12)
-    ✔ Add a configuration file (e.g., config.json) to store application settings. @done(25-01-02 19:06)
-    ✔ Implement functionality to read the configuration file during application startup and apply settings (e.g., window size, rendering options). @done(25-01-02 19:07)
-✔ Integrate DirectXTex library to handle texture loading and mipmap generation. @done(24-12-30 22:25)
-✔ Extend model loading to retain paths to associated textures. @done(24-12-31 12:58)
-✔ Implement a Texture class to manage texture data, including mipmap levels, using DirectXTex. @done(25-01-02 22:10)
-✔ Update shaders to accept diffuse, normal, specular, and gloss maps (and possibly other textures). @done(25-01-02 22:10)
-✔ Add editor functionality to switch between mipmap levels during rendering. @done(25-01-02 22:09)
-✔ Implement basic model data loading. @done(24-12-28 20:02)
-✔ Add a Mesh class to represent individual meshes. @done(24-12-28 19:59)
-✔ Add a Model class to encapsulate multiple meshes. @done(24-12-28 20:00)
-✔ Integrate model loading and rendering into the Renderer class. @done(24-12-28 20:02)
-✔ Integrate the assimp library for meshes loading. @done(24-12-27 21:57)
-✔ Add a Camera class to manage camera properties and view transformations. @done(24-12-27 18:46)
-✔ Implement a CameraController class to handle camera input and movement. @done(24-12-27 18:46)
-✔ Compute rendering adjustments based on the projection, view, and model matrices. @done(24-12-27 18:46)
-✔ Add RenderTarget class implementation. @done(24-12-26 19:24)
-✔ Add a ConstantBuffer class to manage constant buffer resources. @done(24-12-26 19:22)
-✔ Implement a PipelineState class to encapsulate pipeline state creation and management. @done(24-12-26 19:21)
-✔ Add a Shader class to handle shaders. @done(24-12-25 19:30)
-✔ Create a RootSignature class to configure and manage the root signature. @done(24-12-26 19:19)
-✔ Integrate ConstantBuffer, PipelineState, Shader, and RootSignature into the Renderer class. @done(24-12-26 19:25)
-✔ Add a Fence class to manage synchronization. @done(24-12-25 18:11)
-✔ Create a VertexBuffer class for managing vertex buffer resources. @done(24-12-25 18:12)
-✔ Implement an IndexBuffer class to handle index buffer resources. @done(24-12-25 18:13)
-✔ Implement the Timer class to manage time intervals. @done(24-12-24 21:34)
-✔ Implement an event manager with the ability to subscribe, unsubscribe, and invoke events. @done(24-12-24 21:37)
-✔ Implement the ViewportScissors class to manage viewport and scissor rect for rendering. @done(24-12-24 22:05)
-✔ Implement the DescriptorHeap class to manage Direct3D descriptor heaps. @done(24-12-24 23:14)
-✔ Set up the base for a rendering class. @done(24-12-24 21:39)
-✔ Add a Device class to manage the D3D12 device and swap chain. @done(24-12-23 22:22)
-✔ Add an Input class to handle keyboard and mouse input. @done(24-12-23 22:22)
-✔ Implement the Singleton pattern for the Logger class. @done(24-12-23 22:22)
-✔ Add a Window class with a WinAPI implementation for window creation. @done(24-12-23 22:22)
-✔ Add a Logger class for logging to both file and console. @done(24-12-23 22:22)
-✔ Add Verify functions for value and HRESULT validation. @done(24-12-23 22:22)
-✔ Set up the basic CMake configuration and a minimal stub for the engine library. @done(24-12-23 22:22)
-
-### Refactoring and improvements
-
-    ✔ Add quit application button functionality. @done(25-01-04 11:32)
-✔ Implement window resizing functionality. @done(25-01-05 17:25)
-    ✔ Add a settings window in the editor to allow users to change the window size. @done(25-01-05 17:25)
-    ✔ Modify the Renderer class to handle dynamic resizing of the window and adjust rendering accordingly. @done(25-01-05 17:25)
-✔ Extend Logger to support string formatting @done(25-01-04 11:23)
-✔ Replace built-in types with custom types defined in the Types class @done(24-12-31 12:37)
-✔ Make the Application class non-copyable and use unique_ptr for window management. @done(24-12-23 22:22)
-✔ Change the naming of LogLevel enum values to follow the camel case style. @done(24-12-23 22:30)
-✔ Refactor the ImGui functionality from the Renderer class into a separate Editor class. @done(24-12-28 22:51)
+[Day 30/1000 - 20/01/2025]
+☐ Split the configuration file into separate files: for the scene, assets, and settings.
+☐ Add a save scene button.
