@@ -102,7 +102,6 @@ This project is **actively under development**, and its purpose is to experiment
 **20. Transparency**: Implement transparency rendering with proper sorting and blending techniques.  
 **21. TAA/FXAA**: Add temporal anti-aliasing (TAA) and fast approximate anti-aliasing (FXAA) as post-process options.
 
-
 ## Project Goals  
 
 The SGE project is designed to:  
@@ -115,3 +114,7 @@ This repository is a personal learning project, but feel free to report issues o
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Credits  
+- Editor icons in this project were taken from Unreal Engine Editor.
+- Backpack model by Berk Gedik, from [Sketchfab](https://sketchfab.com/3d-models/survival-guitar-backpack-low-poly-799f8c4511f84fab8c3f12887f7e6b36).
