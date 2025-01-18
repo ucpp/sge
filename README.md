@@ -97,6 +97,9 @@ This project is **actively under development**, and its purpose is to experiment
 **17. Load skinned mesh animations**: Import animated models and process on the GPU.  
 **18. Animation blending**: Combine multiple animations (e.g., running and shooting).    
 **19. Particle system**: Create a system that supports 10,000+ particles.  
+**20. Transparency**: Implement transparency rendering with proper sorting and blending techniques.
+**21. TAA/FXAA**: Add temporal anti-aliasing (TAA) and fast approximate anti-aliasing (FXAA) as post-process options.
+
 
 ## Project Goals  
 
