@@ -1,67 +1,11 @@
+#include "transform_buffer.hlsl"
+#include "pixel_input.hlsl"
+#include "scene_data.hlsl"
+
 Texture2D diffuseMap : register(t0);
 Texture2D normalMap : register(t1);
 Texture2D specularMap : register(t2);
 SamplerState sampleWrap : register(s0);
-
-static const uint MAX_POINT_LIGHTS = 2;
-static const uint MAX_SPOT_LIGHTS = 1;
-
-cbuffer TransformBuffer : register(b1)
-{
-    matrix model;
-    matrix view;
-    matrix projection;
-}
-
-struct DirectionalLight
-{
-    float3 direction;
-    float intensity;
-    float3 color;
-};
-
-struct PointLight
-{
-    float3 position;
-    float intensity;
-    float3 color;
-};
-
-struct SpotLight
-{
-    float3 position;
-    float intensity;
-    float3 direction;
-    float innerConeCos;
-    float3 color;
-    float outerConeCos;
-};
-
-cbuffer SceneData : register(b0)
-{
-    DirectionalLight directionalLight;
-    PointLight pointLights[MAX_POINT_LIGHTS];
-    SpotLight spotLights[MAX_SPOT_LIGHTS];
-    float3 cameraPosition;
-    float fogStrength;
-    float3 fogColor;
-    float fogStart;
-    float fogEnd;
-    float fogDensity;
-    float zNear;
-    float zFar;
-    matrix invViewProj;
-};
-
-struct PixelInput
-{
-    float4 position : SV_POSITION;
-    float3 worldPosition : TEXCOORD0;
-    float3 normal : NORMAL;
-    float2 texCoords : TEXCOORD1;
-    float3 tangent : TANGENT;
-    float3 bitangent : BITANGENT;
-};
 
 struct GBufferOutput
 {

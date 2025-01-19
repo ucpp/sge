@@ -1,9 +1,14 @@
 ### Daily tasks
 
 [Day 29/1000 - 19/01/2025]
-☐ Add support for includes in shaders
-☐ Extract common structures into a separate source file.
+✔ Add support for includes in shaders. @done(25-01-19 13:34)
+✔ Extract common structures into a separate source file. @done(25-01-19 13:34)
+✔ Add mouse wheel input to adjust camera FOV. @done(25-01-19 13:35)
 
 [Day 30/1000 - 20/01/2025]
 ☐ Split the configuration file into separate files: for the scene, assets, and settings.
 ☐ Add a save scene button.
+
+[Day 31/1000 - 21/01/2025]
+☐ Implement a mechanism to link the selected object in the scene hierarchy to the properties window.
+☐ Add camera settings through the editor and implement serialization/deserialization.

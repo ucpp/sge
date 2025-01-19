@@ -2,6 +2,7 @@
 
 #include "sge_helpers.h"
 #include "sge_logger.h"
+#include "sge_shader_include_handler.h"
 
 namespace SGE
 {
@@ -20,11 +21,14 @@ namespace SGE
         std::string target = ShaderTypeToTarget(type);
         std::wstring wFilePath = std::wstring(filePath.begin(), filePath.end());
 
+        std::string includeDirectory = GetDirectoryFromFilePath(filePath);
+        ShaderIncludeHandler includeHandler(includeDirectory);
         ComPtr<ID3DBlob> errorBlob;
+    
         HRESULT hr = D3DCompileFromFile(
             wFilePath.c_str(),
             nullptr,
-            nullptr,
+            &includeHandler,
             EntryPoint,
             target.c_str(),
             compileFlags,
@@ -64,5 +68,15 @@ namespace SGE
             case ShaderType::Geometry: return "gs_5_0";
             default: throw std::invalid_argument("Unsupported shader type.");
         }
+    }
+
+    std::string Shader::GetDirectoryFromFilePath(const std::string& filePath) const
+    {
+        size_t lastSlash = filePath.find_last_of("/\\");
+        if (lastSlash == std::string::npos)
+        {
+            return "";
+        }
+        return filePath.substr(0, lastSlash);
     }
 }

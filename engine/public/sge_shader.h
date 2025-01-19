@@ -25,6 +25,7 @@ namespace SGE
 
     private:
         std::string ShaderTypeToTarget(ShaderType type) const;
+        std::string GetDirectoryFromFilePath(const std::string& filePath) const;
 
     private:
         ComPtr<ID3DBlob> m_blob;
