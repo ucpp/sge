@@ -31,6 +31,12 @@ namespace SGE
             m_camera->SetPosition(m_camera->GetPosition() - m_camera->GetRight() * velocity);
         }
 
+        const int32 delta = Input::Get().GetMouseWheelDelta();
+        float currentFov = m_camera->GetFov();
+        currentFov -= delta * m_sensitivity;
+        currentFov = std::clamp(currentFov, MIN_FOV, MAX_FOV);
+        m_camera->SetFov(currentFov);
+
         // Rotation
         if (Input::Get().GetMouseButton(static_cast<unsigned int>(MouseButton::Right)))
         {

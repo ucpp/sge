@@ -21,6 +21,8 @@ namespace SGE
         Vector2 m_lastMousePosition = {0.0f, 0.0f};
 
         static constexpr float MAX_PITCH = 89.0f; 
+        static constexpr float MIN_FOV = 30.0f;
+        static constexpr float MAX_FOV = 120.0f;
     };
 }
 
