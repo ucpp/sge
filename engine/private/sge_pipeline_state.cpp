@@ -6,10 +6,15 @@
 
 namespace SGE
 {
-    void PipelineState::Initialize(ID3D12Device* device, const PipelineConfig& config)
+    void PipelineState::Initialize(ID3D12Device* device, const PipelineConfig& config, bool reload)
     {       
-        const Shader& vertexShader = ShaderManager::GetShader(config.VertexShaderPath, ShaderType::Vertex);
-        const Shader& pixelShader = ShaderManager::GetShader(config.PixelShaderPath, ShaderType::Pixel);
+        if (reload)
+        {
+            m_pipelineState.Reset();
+        }
+
+        const Shader& vertexShader = ShaderManager::GetShader(config.VertexShaderPath, ShaderType::Vertex, reload);
+        const Shader& pixelShader = ShaderManager::GetShader(config.PixelShaderPath, ShaderType::Pixel, reload);
         m_rootSignature.Initialize(device, vertexShader.GetBlob(), pixelShader.GetBlob());
 
         D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};

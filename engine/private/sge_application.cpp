@@ -44,6 +44,10 @@ namespace SGE
 
         LOG_INFO("Initialization time: {}", timer.GetElapsedSeconds());
 
+        m_shaderMonitor = std::make_unique<DirectoryMonitor>("shaders");
+        m_shaderMonitor->OnDirectoryChanged().Subscribe(this, &Application::ShaderDirectoryChanged);
+        m_shaderMonitor->Start();
+
         m_window->StartUpdateLoop();
     }
 
@@ -55,6 +59,11 @@ namespace SGE
 
     void Application::Shutdown()
     {
+        if (m_shaderMonitor)
+        {
+            m_shaderMonitor->Stop();
+        }
+
         if(m_scene)
         {
             m_scene->Shutdown();
@@ -84,5 +93,11 @@ namespace SGE
             m_renderContext->Shutdown();
             m_renderContext.reset();
         }
+    }
+    
+    void Application::ShaderDirectoryChanged()
+    {
+        LOG_INFO("Shader directory changed, reloading shaders...");
+        m_renderer->ReloadShaders();
     }
 }

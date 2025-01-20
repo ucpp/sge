@@ -18,12 +18,21 @@ namespace SGE
         pipelineConfig.VertexShaderPath = "shaders/vs_lighting_pass.hlsl";
         pipelineConfig.PixelShaderPath = "shaders/ps_lighting_pass.hlsl";
         
-        m_pipelineState = std::make_unique<PipelineState>();
-        m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig);
+        if (!m_pipelineState || m_reloadRequested)
+        {
+            m_pipelineState = std::make_unique<PipelineState>();
+            m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig, m_reloadRequested);
+        }
     }
     
     void LightingRenderPass::Render(Scene* scene)
     {
+        if (m_reloadRequested)
+        {
+            Initialize(m_context);
+            m_reloadRequested = false;
+        }
+
         auto commandList = m_context->GetCommandList();
         uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
         std::vector<CD3DX12_RESOURCE_BARRIER> barriers;

@@ -25,7 +25,7 @@ namespace SGE
     class PipelineState
     {
     public:
-        void Initialize(ID3D12Device* device, const PipelineConfig& config);
+        void Initialize(ID3D12Device* device, const PipelineConfig& config, bool reload = false);
         ID3D12PipelineState* GetPipelineState() const { return m_pipelineState.Get(); }
         ID3D12RootSignature* GetSignature() const { return m_rootSignature.GetSignature(); }
 

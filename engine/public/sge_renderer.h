@@ -17,6 +17,8 @@ namespace SGE
         void Render(Scene* scene, Editor* editor);
         void Shutdown();
 
+        void ReloadShaders();
+
     private:
         class RenderContext* m_context = nullptr;
 

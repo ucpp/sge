@@ -79,4 +79,12 @@ namespace SGE
             m_lightingPass.reset();
         }
     }
+    
+    void Renderer::ReloadShaders()
+    {
+        m_context->WaitForPreviousFrame();
+        m_forwardPass->Reload();
+        m_geometryPass->Reload();
+        m_lightingPass->Reload();
+    }
 }

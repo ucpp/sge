@@ -9,7 +9,7 @@ namespace SGE
     class ShaderManager
     {
     public:
-        static const Shader& GetShader(const std::string& shaderPath, ShaderType type);
+        static const Shader& GetShader(const std::string& shaderPath, ShaderType type, bool reload = false);
 
     private:
         static std::unordered_map<std::string, std::unique_ptr<Shader>> m_shaderCache;

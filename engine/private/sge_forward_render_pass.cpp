@@ -20,12 +20,21 @@ namespace SGE
         pipelineConfig.VertexShaderPath = "shaders/vs_forward_pass.hlsl";
         pipelineConfig.PixelShaderPath = "shaders/ps_forward_pass.hlsl";
         
-        m_pipelineState = std::make_unique<PipelineState>();
-        m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig);
+        if (!m_pipelineState || m_reloadRequested)
+        {
+            m_pipelineState = std::make_unique<PipelineState>();
+            m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig, m_reloadRequested);
+        }
     }
     
     void ForwardRenderPass::Render(Scene* scene)
     {
+        if (m_reloadRequested)
+        {
+            Initialize(m_context);
+            m_reloadRequested = false;
+        }
+
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 

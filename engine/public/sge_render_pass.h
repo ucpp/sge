@@ -16,9 +16,12 @@ namespace SGE
 
         PipelineState* GetPSO() const { return m_pipelineState.get(); }
 
+        void Reload() { m_reloadRequested = true; }
+
     protected:
         class RenderContext* m_context = nullptr;
         std::unique_ptr<PipelineState> m_pipelineState;
+        bool m_reloadRequested = false;
     };
 }
 

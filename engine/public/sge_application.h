@@ -8,6 +8,7 @@
 #include "sge_non_copyable.h"
 #include "sge_render_context.h"
 #include "sge_application_settings.h"
+#include "sge_directory_monitor.h"
 
 namespace SGE
 {
@@ -22,7 +23,7 @@ namespace SGE
         void Update(double deltaTime);
         void Shutdown();
 
-        void ResizeWindow(uint32 width, uint32 height);
+        void ShaderDirectoryChanged();
 
     private:
         std::unique_ptr<Window> m_window;
@@ -31,6 +32,7 @@ namespace SGE
         std::unique_ptr<ApplicationSettings> m_settings;
         std::unique_ptr<Editor> m_editor;
         std::unique_ptr<Scene> m_scene;
+        std::unique_ptr<DirectoryMonitor> m_shaderMonitor;
     };
 }
 
