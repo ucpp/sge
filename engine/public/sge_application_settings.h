@@ -8,9 +8,19 @@ namespace SGE
     struct WindowSettings
     {
         std::string title = "SGE";
-        uint32 width = 640;
-        uint32 height = 480;
+        int32 selectedResolution = 0;
         bool fullscreen = false;
+        std::vector<std::string> resolutions;
+
+        const char** GetResolutions();
+        void UpdateResolutionCStrings();
+
+
+        uint32_t GetWidth() const;
+        uint32_t GetHeight() const;
+
+    private:
+        std::vector<const char*> resolutionCStrings;
     };
 
     struct RenderSettings

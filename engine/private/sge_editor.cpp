@@ -128,28 +128,25 @@ namespace SGE
             ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_Once);
             if (ImGui::Begin("Resolution Settings", &m_isOpenResolutionWindow))
             {
+                WindowSettings& windowSettings = m_context->GetWindowSettings();
                 ImGui::Text("Select Window Resolution:");
-                static int32 selectedResolution = 0;
-                const char* resolutions[] = { "640x480", "800x600", "1280x720", "1366x768", "1600x900", "1920x1080", "2560x1440" };
-                if (ImGui::Combo("Resolution", &selectedResolution, resolutions, IM_ARRAYSIZE(resolutions)))
+                const int32 size = static_cast<int32>(windowSettings.resolutions.size());
+                if (ImGui::Combo("Resolution", &windowSettings.selectedResolution, windowSettings.GetResolutions(), size))
                 {
-                    ApplyResolutionChange(resolutions[selectedResolution]);
+                    ApplyResolutionChange();
                 }
             }
             ImGui::End();
         }
     }
 
-    void Editor::ApplyResolutionChange(const std::string& resolution)
+    void Editor::ApplyResolutionChange()
     {
-        const size_t xPos = resolution.find('x');
-        if (xPos != std::string::npos)
-        {
-            const int32 width = std::stoi(resolution.substr(0, xPos));
-            const int32 height = std::stoi(resolution.substr(xPos + 1));
+        WindowSettings& windowSettings = m_context->GetWindowSettings();
+        const int32 width = windowSettings.GetWidth();
+        const int32 height = windowSettings.GetHeight();
 
-            m_context->SetWindowSize(width, height);
-        }
+        m_context->SetWindowSize(width, height);
     }
 
     void Editor::Render()

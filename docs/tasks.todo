@@ -9,6 +9,7 @@
 ✔ Add shader hot-reloading. @done(25-01-20 21:50)
 
 [Day 31/1000 - 21/01/2025]
+✔ Improve screen resolution management. @done(25-01-21 19:01)
 ☐ Split the configuration file into separate files: for the scene, assets, and settings.
 ☐ Add a save scene button.
 

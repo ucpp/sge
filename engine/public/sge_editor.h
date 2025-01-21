@@ -27,7 +27,7 @@ namespace SGE
         void BuildSettingsWindow();
         void BuildResolutionWindow();
 
-        void ApplyResolutionChange(const std::string& resolution);
+        void ApplyResolutionChange();
 
     private:
         class RenderContext* m_context = nullptr;

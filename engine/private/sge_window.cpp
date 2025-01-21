@@ -29,8 +29,8 @@ namespace SGE
         }
 
         const std::string& title = m_applicationSettings->window.title;
-        const uint32 width = m_applicationSettings->window.width;
-        const uint32 height = m_applicationSettings->window.height;
+        const uint32 width = m_applicationSettings->window.GetWidth();
+        const uint32 height = m_applicationSettings->window.GetHeight();
         const bool fullscreen = m_applicationSettings->window.fullscreen;
 
         Create(title, width, height, fullscreen);

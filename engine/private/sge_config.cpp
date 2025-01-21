@@ -6,9 +6,9 @@ namespace SGE
     {
         j = nlohmann::json{
             { "title", settings.title },
-            { "width", settings.width },
-            { "height", settings.height },
-            { "fullscreen", settings.fullscreen }
+            { "selected_resolution", settings.selectedResolution },
+            { "fullscreen", settings.fullscreen },
+            { "resolutions", settings.resolutions }
         };
     }
 
@@ -35,9 +35,11 @@ namespace SGE
     void from_json(const nlohmann::json& j, WindowSettings& settings)
     {
         j.at("title").get_to(settings.title);
-        j.at("width").get_to(settings.width);
-        j.at("height").get_to(settings.height);
+        j.at("selected_resolution").get_to(settings.selectedResolution);
         j.at("fullscreen").get_to(settings.fullscreen);
+        j.at("resolutions").get_to(settings.resolutions);
+
+        settings.UpdateResolutionCStrings();
     }
 
     void from_json(const nlohmann::json& j, RenderSettings& settings)
