@@ -98,7 +98,7 @@ namespace SGE
                 }
                 if(ImGui::MenuItem("Save as"))
                 {
-                    if (m_fileDialog->SaveAs(L"json", L"JSON Files\0*.json\0All Files\0*.*\0"))
+                    if (m_fileDialog->SaveAs(L"json", L"JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0"))
                     {
                         std::string savePath = m_fileDialog->GetSavePath();
                         Config::Save<ApplicationSettings>(savePath, m_context->GetSettings());

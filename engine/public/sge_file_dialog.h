@@ -10,7 +10,7 @@ namespace SGE
     {
     public:
         explicit FileDialog(HWND ownerWindow = nullptr);
-        bool SaveAs(const std::wstring& defaultExt = L"json", const std::wstring& filter = L"All Files\0*.*\0");
+        bool SaveAs(const LPCWSTR& defaultExt = L"json", const LPCWSTR& filter = L"All Files\0*.*\0");
         std::string GetSavePath() const;
 
     private:

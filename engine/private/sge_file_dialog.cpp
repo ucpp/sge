@@ -4,17 +4,17 @@ namespace SGE
 {
     FileDialog::FileDialog(HWND ownerWindow) : m_hwndOwner(ownerWindow) {}
 
-    bool FileDialog::SaveAs(const std::wstring& defaultExt, const std::wstring& filter)
+    bool FileDialog::SaveAs(const LPCWSTR& defaultExt, const LPCWSTR& filter)
     {
         wchar_t savePath[MAX_PATH] = {};
         OPENFILENAME ofn = {};
         ofn.lStructSize = sizeof(OPENFILENAME);
         ofn.hwndOwner = m_hwndOwner;
-        ofn.lpstrFilter = filter.c_str();
+        ofn.lpstrFilter = filter;
         ofn.lpstrFile = savePath;
         ofn.nMaxFile = MAX_PATH;
         ofn.Flags = OFN_OVERWRITEPROMPT;
-        ofn.lpstrDefExt = defaultExt.c_str();
+        ofn.lpstrDefExt = defaultExt;
 
         if (GetSaveFileName(&ofn))
         {
