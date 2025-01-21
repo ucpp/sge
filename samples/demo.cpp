@@ -1,11 +1,12 @@
 #include "sge_logger.h"
 #include "sge_application.h"
+#include "sge_application_settings.h"
 
 int main()
 {
     try
     {
-        SGE::Application app("resources/configs/application_settings.json");
+        SGE::Application app(SGE::DEFAULT_SETTINGS_PATH);
         app.Run();
     }
     catch(const std::exception& e)

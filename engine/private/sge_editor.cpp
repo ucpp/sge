@@ -7,10 +7,22 @@
 #include "sge_window.h"
 #include "sge_render_context.h"
 #include "sge_texture_manager.h"
+#include "sge_config.h"
+
+#include <commdlg.h>
 
 namespace SGE
 {
     static const std::string PathToSaveFile = "resources/configs/editor_layout.ini";
+
+    std::string ConvertWcharToUtf8(const wchar_t* wcharStr)
+    {
+        int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wcharStr, -1, nullptr, 0, nullptr, nullptr);
+        std::vector<char> utf8Str(sizeNeeded);
+        WideCharToMultiByte(CP_UTF8, 0, wcharStr, -1, utf8Str.data(), sizeNeeded, nullptr, nullptr);
+        
+        return std::string(utf8Str.begin(), utf8Str.end());
+    }
 
     void Editor::Initialize(RenderContext* context)
     {
@@ -22,6 +34,8 @@ namespace SGE
 
         HWND hwnd = m_context->GetWindowHandle();
         Verify(hwnd, "Editor::Initialize failed: HWND is null!");
+
+        m_fileDialog = std::make_unique<FileDialog>(hwnd);
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -78,6 +92,32 @@ namespace SGE
         {
             if (ImGui::BeginMenu("File"))
             {
+                if(ImGui::MenuItem("Save"))
+                {
+                    Config::Save<ApplicationSettings>(DEFAULT_SETTINGS_PATH, m_context->GetSettings());
+                }
+                if(ImGui::MenuItem("Save as"))
+                {
+                    if (m_fileDialog->SaveAs(L"json", L"JSON Files\0*.json\0All Files\0*.*\0"))
+                    {
+                        std::string savePath = m_fileDialog->GetSavePath();
+                        Config::Save<ApplicationSettings>(savePath, m_context->GetSettings());
+                        LOG_INFO("Settings saved to: {}", savePath);
+                    }
+                    else
+                    {
+                        DWORD error = CommDlgExtendedError();
+                        if (error != 0)
+                        {
+                            LOG_ERROR("Error in Save As dialog: {}", error);
+                        }
+                        else
+                        {
+                            LOG_INFO("Save As canceled.");
+                        }
+                    }
+                }
+
                 if (ImGui::MenuItem("Settings"))
                 {
                     m_isOpenResolutionWindow = true;

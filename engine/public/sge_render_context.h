@@ -43,6 +43,7 @@ namespace SGE
         uint32 GetScreenWidth() const;
         uint32 GetScreenHeight() const;
 
+        ApplicationSettings& GetSettings() const;
         EditorSettings& GetEditorSettings() const;
         WindowSettings& GetWindowSettings() const;
         RenderSettings& GetRenderSettings() const;

@@ -9,6 +9,7 @@
 #include "imgui_internal.h"
 #include "sge_descriptor_heap.h"
 #include "sge_application_settings.h"
+#include "sge_file_dialog.h"
 
 namespace SGE
 {
@@ -37,6 +38,8 @@ namespace SGE
 
         std::unordered_map<AssetType, ImTextureID> m_icons;
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;
+
+        std::unique_ptr<FileDialog> m_fileDialog;
     };
 }
 

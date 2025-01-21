@@ -110,6 +110,12 @@ namespace SGE
         return m_window->GetHeight();
     }
 
+    ApplicationSettings& RenderContext::GetSettings() const
+    {
+        Verify(m_settings, "RenderContext::GetSettings failed: settings are not initialized.");
+        return *m_settings;
+    }
+
     EditorSettings& RenderContext::GetEditorSettings() const
     {
         Verify(m_settings, "RenderContext::GetEditorSettings failed: settings are not initialized.");

@@ -81,6 +81,8 @@ namespace SGE
         ProjectAssets project;
         SceneSettings scene;
     };
+
+    const std::string DEFAULT_SETTINGS_PATH = "resources/configs/application_settings.json";
 }
 
 #endif // !_SGE_APPLICATION_SETTINGS_H_
