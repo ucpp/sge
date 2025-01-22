@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "json.hpp"
+#include "imgui.h"
 
 namespace SGE
 {
@@ -21,6 +22,7 @@ namespace SGE
 
         virtual void ToJson(nlohmann::json& j) const;
         virtual void FromJson(const nlohmann::json& j);
+        virtual void DrawEditor();
 
     public:
         std::string name;
@@ -32,11 +34,12 @@ namespace SGE
     public:
         void ToJson(nlohmann::json& j) const override;
         void FromJson(const nlohmann::json& j) override;
+        void DrawEditor() override;
 
     public:
         float position[3] = {0.0f, 0.0f, 0.0f};
         float rotation[3] = {0.0f, 0.0f, 0.0f};
-        float scale[3] = {0.0f, 0.0f, 0.0f};
+        float scale[3] = {1.0f, 1.0f, 1.0f};
     };
 
     class CameraData : public TransformData
@@ -45,6 +48,7 @@ namespace SGE
         CameraData();
         void ToJson(nlohmann::json& j) const override;
         void FromJson(const nlohmann::json& j) override;
+        void DrawEditor() override;
 
     public:
         float fov;
@@ -58,9 +62,10 @@ namespace SGE
         MeshData();
         void ToJson(nlohmann::json& j) const override;
         void FromJson(const nlohmann::json& j) override;
+        void DrawEditor() override;
     
     public:
-        std::string path;
+        std::string assetId;
         std::string materialId;
     };
 
@@ -70,6 +75,7 @@ namespace SGE
         PointLightData();
         void ToJson(nlohmann::json& j) const override;
         void FromJson(const nlohmann::json& j) override;
+        void DrawEditor() override;
 
     public:
         float position[3];
@@ -83,6 +89,7 @@ namespace SGE
         DirectionalLightData();
         void ToJson(nlohmann::json& j) const override;
         void FromJson(const nlohmann::json& j) override;
+        void DrawEditor() override;
     
     public:
         float direction[3];
@@ -101,6 +108,11 @@ namespace SGE
 
     std::unique_ptr<SceneObjectBase> CreateObject(ObjectType type);
     void ParseVector3(const nlohmann::json& j, const std::string& key, float* target);
+
+    bool InputTextStdString(const std::string& label, std::string& str, ImGuiInputTextFlags flags = 0);
+    bool DragFloat3(const std::string& label, float* values, ImGuiInputTextFlags flags = 0);
+    bool ColorEdit3(const std::string& label, float* color, ImGuiInputTextFlags flags = 0);
+    bool DragFloat(const std::string& label, float* value, ImGuiInputTextFlags flags = 0);
 }
 
 #endif // !_SGE_SCENE_SETTINGS_H_

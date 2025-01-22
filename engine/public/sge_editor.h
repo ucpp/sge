@@ -40,6 +40,8 @@ namespace SGE
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;
 
         std::unique_ptr<FileDialog> m_fileDialog;
+
+        uint32 m_selectedObjectIndex = 0;
     };
 }
 

@@ -235,7 +235,6 @@ namespace SGE
 
     void Editor::BuildDockingExample()
     {
-        static uint32 selectedObjectIndex = 0;
         ImGui::Begin("Scene hierarchy");
         const ImVec2 smallIconSize = ImVec2(16, 16);
         const SceneSettings& sceneSettings = m_context->GetSceneSettings();
@@ -246,13 +245,13 @@ namespace SGE
 
             for (size_t i = 0; i < sceneSettings.objects.size(); ++i)
             {
-                bool isSelected = selectedObjectIndex == i;
+                bool isSelected = m_selectedObjectIndex == i;
                 ObjectType objType = sceneSettings.objects[i]->type;
                 ImGui::Image(m_objectIcons[objType], smallIconSize);
                 ImGui::SameLine();
                 if (ImGui::Selectable(sceneSettings.objects[i]->name.c_str(), isSelected))
                 {
-                    selectedObjectIndex = static_cast<uint32>(i);
+                    m_selectedObjectIndex = static_cast<uint32>(i);
                 }
             }
 
@@ -305,28 +304,15 @@ namespace SGE
         ImGui::End();
 
         ImGui::Begin("Properties");
-        float width = ImGui::GetContentRegionAvail().x;
-
-        static char objectName[128] = "";
-        ImGui::Text("Name:");
-        ImGui::SetNextItemWidth(width - 8.0f);
-        ImGui::InputText("##name", objectName, IM_ARRAYSIZE(objectName), ImGuiInputTextFlags_EnterReturnsTrue);
-
-        static float position[3] = { 0.0f, 0.0f, 0.0f };
-        ImGui::Text("Position:");
-        ImGui::SetNextItemWidth(width - 8.0f);
-        ImGui::InputFloat3("##position", position, "%.2f");
-
-        static float rotation[3] = { 0.0f, 0.0f, 0.0f };
-        ImGui::Text("Rotation:");
-        ImGui::SetNextItemWidth(width - 8.0f);
-        ImGui::InputFloat3("##rotation", rotation, "%.2f");
-
-        static float scale[3] = { 1.0f, 1.0f, 1.0f };
-        ImGui::Text("Scale:");
-        ImGui::SetNextItemWidth(width - 8.0f);
-        ImGui::InputFloat3("##scale", scale, "%.2f");
-
+        if (m_selectedObjectIndex != -1 && m_selectedObjectIndex < sceneSettings.objects.size())
+        {     
+            SceneObjectBase* selectedObject = sceneSettings.objects[m_selectedObjectIndex].get();
+            selectedObject->DrawEditor();
+        }
+        else
+        {
+            ImGui::Text("No object selected.");
+        }
         ImGui::End();
     }
 }

@@ -1,7 +1,7 @@
 {
     "window": {
         "title": "SGE Editor",
-        "selected_resolution": 0,
+        "selected_resolution": 2,
         "fullscreen": false,
         "resolutions": [
             "640x480", 
@@ -97,7 +97,7 @@
                 "position": [0.0, 0.0, 0.0],
                 "rotation": [0.0, 0.0, 0.0],
                 "scale": [1.0, 1.0, 1.0],
-                "path": "models/backpack.obj",
+                "asset_id": "backpack.obj",
                 "material_id": "default"
             }
         ]

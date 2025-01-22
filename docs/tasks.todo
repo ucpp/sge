@@ -13,5 +13,11 @@
 ✔ Add a save project functionality. @done(25-01-21 20:07)
 
 [Day 32/1000 - 22/01/2025]
-☐ Implement a mechanism to link the selected object in the scene hierarchy to the properties window.
+✔ Add draw editor of properties for the selected object in the scene. @done(25-01-22 22:55)
 ✔ Implement scene data structures and add serialization/deserialization support. @done(25-01-22 21:41)
+
+[Day 33/1000 - 23/01/2025]
+☐ Add scene initialization according to the scene data.
+☐ Add synchronization of scene objects and data.
+
+[Day 34/1000 - 24/01/2025]
