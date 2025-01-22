@@ -247,10 +247,10 @@ namespace SGE
             for (size_t i = 0; i < sceneSettings.objects.size(); ++i)
             {
                 bool isSelected = selectedObjectIndex == i;
-                ObjectType objType = sceneSettings.objects[i].type;
+                ObjectType objType = sceneSettings.objects[i]->type;
                 ImGui::Image(m_objectIcons[objType], smallIconSize);
                 ImGui::SameLine();
-                if (ImGui::Selectable(sceneSettings.objects[i].name.c_str(), isSelected))
+                if (ImGui::Selectable(sceneSettings.objects[i]->name.c_str(), isSelected))
                 {
                     selectedObjectIndex = static_cast<uint32>(i);
                 }

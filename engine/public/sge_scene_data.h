@@ -1,5 +1,5 @@
-#ifndef _SGE_LIGHT_H_
-#define _SGE_LIGHT_H_
+#ifndef _SGE_SCENE_DATA_H_
+#define _SGE_SCENE_DATA_H_
 
 #include "pch.h"
 
@@ -48,4 +48,4 @@ namespace SGE
     };
 }
 
-#endif // !_SGE_LIGHT_H_
+#endif // !_SGE_SCENE_DATA_H_

@@ -86,32 +86,4 @@ namespace SGE
     {
         j.at("assets").get_to(projectAssets.assets);
     }
-    
-    void to_json(nlohmann::json& j, const SceneObject& settings)
-    {
-        j = nlohmann::json{
-            {"name", settings.name},
-            {"type", static_cast<int>(settings.type)}
-        };
-    }
-    
-    void from_json(const nlohmann::json& j, SceneObject& settings)
-    {
-        j.at("name").get_to(settings.name);
-        int32 typeInt;
-        j.at("type").get_to(typeInt);
-        settings.type = static_cast<ObjectType>(typeInt);
-    }
-    
-    void to_json(nlohmann::json& j, const SceneSettings& settings)
-    {
-        j = nlohmann::json{
-            {"objects", settings.objects}
-        };
-    }
-    
-    void from_json(const nlohmann::json& j, SceneSettings& settings)
-    {
-        j.at("objects").get_to(settings.objects);
-    }
 }

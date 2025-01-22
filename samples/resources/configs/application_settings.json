@@ -59,27 +59,47 @@
         ]
     },
     "scene" : {
-        "objects" : [
+        "objects": [
             {
-                "name" : "Main Camera",
-                "type" : 0
+                "name": "Main Camera",
+                "type": 0,
+                "position": [0.0, 0.0, 10.0],
+                "rotation": [0.0, 0.0, 0.0],
+                "scale": [1.0, 1.0, 1.0],
+                "fov": 45.0,
+                "near_plane": 0.1,
+                "far_plane": 100.0
             },
             {
-                "name" : "Directional light",
-                "type" : 3
+                "name": "Directional light",
+                "type": 3,
+                "direction": [0.0, -1.0, 0.0],
+                "color": [1.0, 1.0, 1.0],
+                "intensity": 1.0
             },
             {
-                "name" : "Point Light 1",
-                "type" : 2
+                "name": "Point Light 1",
+                "type": 2,
+                "position": [5.0, 5.0, 5.0],
+                "color": [1.0, 1.0, 1.0],
+                "intensity": 1.0
             },
             {
-                "name" : "Point Light 2",
-                "type" : 2
+                "name": "Point Light 2",
+                "type": 2,
+                "position": [-5.0, 5.0, 5.0],
+                "color": [1.0, 1.0, 1.0],
+                "intensity": 1.0
             },
             {
-                "name" : "backpack",
-                "type" : 1
+                "name": "backpack",
+                "type": 1,
+                "position": [0.0, 0.0, 0.0],
+                "rotation": [0.0, 0.0, 0.0],
+                "scale": [1.0, 1.0, 1.0],
+                "path": "models/backpack.obj",
+                "material_id": "default"
             }
         ]
-    }
+    }    
 }

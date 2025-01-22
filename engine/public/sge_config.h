@@ -91,11 +91,6 @@ namespace SGE
     void from_json(const nlohmann::json& j, AssetBase& settings);
     void to_json(nlohmann::json& j, const ProjectAssets& settings);
     void from_json(const nlohmann::json& j, ProjectAssets& settings);
-
-    void to_json(nlohmann::json& j, const SceneObject& settings);
-    void from_json(const nlohmann::json& j, SceneObject& settings);
-    void to_json(nlohmann::json& j, const SceneSettings& settings);
-    void from_json(const nlohmann::json& j, SceneSettings& settings);
 }
 
 #endif // !_SGE_CONFIG_H_

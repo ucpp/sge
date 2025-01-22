@@ -14,4 +14,4 @@
 
 [Day 32/1000 - 22/01/2025]
 ☐ Implement a mechanism to link the selected object in the scene hierarchy to the properties window.
-☐ Add camera settings through the editor and implement serialization/deserialization.
+✔ Implement scene data structures and add serialization/deserialization support. @done(25-01-22 21:41)

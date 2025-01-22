@@ -2,6 +2,7 @@
 #define _SGE_APPLICATION_SETTINGS_H_
 
 #include "pch.h"
+#include "sge_scene_settings.h"
 
 namespace SGE
 {
@@ -14,7 +15,6 @@ namespace SGE
 
         const char** GetResolutions();
         void UpdateResolutionCStrings();
-
 
         uint32_t GetWidth() const;
         uint32_t GetHeight() const;
@@ -43,14 +43,6 @@ namespace SGE
         Light      = 2
     };
 
-    enum class ObjectType
-    {
-        Camera           = 0,
-        Mesh             = 1,
-        PointLight       = 2,
-        DirectionalLight = 3
-    };
-
     struct AssetBase
     {
         std::string name;
@@ -60,17 +52,6 @@ namespace SGE
     struct ProjectAssets
     {
         std::vector<AssetBase> assets;
-    };
-
-    struct SceneObject
-    {
-        std::string name;
-        ObjectType type;
-    };
-
-    struct SceneSettings
-    {
-        std::vector<SceneObject> objects;
     };
 
     struct ApplicationSettings
