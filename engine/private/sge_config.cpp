@@ -37,7 +37,7 @@ namespace SGE
     {
         j = nlohmann::json
         {
-            {"assets", settings.isEnable}
+            {"is_enable", settings.isEnable}
         };
     }
 

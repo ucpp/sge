@@ -10,12 +10,19 @@ namespace SGE
     public:
         void Update(double deltaTime);
 
-        void SetCamera(class Camera* camera) { m_camera = camera; }
+        void SetCamera(class CameraData* cameraData) { m_cameraData = cameraData; }
         void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
         void SetSensitivity(float sensitivity) { m_sensitivity = sensitivity; }
 
     private:
-        class Camera* m_camera = nullptr;
+        void HandleMovement(double deltaTime);
+        void HandleRotation();
+        void HandleFovAdjustment();
+
+        Vector3 CalculateForwardVector(float pitch, float yaw) const;
+        void UpdatePosition(Vector3 direction, float velocity);
+
+        class CameraData* m_cameraData = nullptr;
         float m_moveSpeed = 10.0f;
         float m_sensitivity = 0.1f;
         Vector2 m_lastMousePosition = {0.0f, 0.0f};

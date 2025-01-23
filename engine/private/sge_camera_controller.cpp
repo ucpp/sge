@@ -1,43 +1,51 @@
 #include "sge_camera_controller.h"
 
 #include "sge_input.h"
-#include "sge_camera.h"
+#include "sge_scene_settings.h"
 
 namespace SGE
 {
     void CameraController::Update(double deltaTime)
     {
-        if (m_camera == nullptr)
+        if (m_cameraData == nullptr)
         {
             return;
         }
 
+        HandleMovement(deltaTime);
+        HandleRotation();
+        HandleFovAdjustment();
+    }
+
+    void CameraController::HandleMovement(double deltaTime)
+    {
         float velocity = m_moveSpeed * static_cast<float>(deltaTime);
 
-        if (Input::Get().GetKey('S')) 
-        {
-            m_camera->SetPosition(m_camera->GetPosition() - m_camera->GetForward() * velocity);
-        }
-        if (Input::Get().GetKey('W')) 
-        {
-            m_camera->SetPosition(m_camera->GetPosition() - m_camera->GetBackward() * velocity);
-        }
-        if (Input::Get().GetKey('A')) 
-        {
-            m_camera->SetPosition(m_camera->GetPosition() - m_camera->GetLeft() * velocity);
-        }
-        if (Input::Get().GetKey('D')) 
-        {
-            m_camera->SetPosition(m_camera->GetPosition() - m_camera->GetRight() * velocity);
-        }
+        Vector3 forward = CalculateForwardVector(m_cameraData->rotation[0], m_cameraData->rotation[1]);
+        Vector3 up(0, 1, 0);
+        Vector3 right = forward.Cross(up);
+        right.Normalize();
 
-        const int32 delta = Input::Get().GetMouseWheelDelta();
-        float currentFov = m_camera->GetFov();
-        currentFov -= delta * m_sensitivity;
-        currentFov = std::clamp(currentFov, MIN_FOV, MAX_FOV);
-        m_camera->SetFov(currentFov);
+        if (Input::Get().GetKey('S'))
+        {
+            UpdatePosition(-forward, velocity);
+        }
+        if (Input::Get().GetKey('W'))
+        {
+            UpdatePosition(forward, velocity);
+        }
+        if (Input::Get().GetKey('A'))
+        {
+            UpdatePosition(-right, velocity);
+        }
+        if (Input::Get().GetKey('D'))
+        {
+            UpdatePosition(right, velocity);
+        }
+    }
 
-        // Rotation
+    void CameraController::HandleRotation()
+    {
         if (Input::Get().GetMouseButton(static_cast<unsigned int>(MouseButton::Right)))
         {
             float mouseX = static_cast<float>(Input::Get().GetMouseX());
@@ -47,17 +55,15 @@ namespace SGE
 
             m_lastMousePosition = Vector2(mouseX, mouseY);
 
-            float yaw = m_camera->GetYaw() + deltaX * m_sensitivity;
-            float pitch = m_camera->GetPitch() - deltaY * m_sensitivity;
+            m_cameraData->rotation[1] += deltaX * m_sensitivity; // Yaw
+            m_cameraData->rotation[0] -= deltaY * m_sensitivity; // Pitch
 
-            pitch = std::clamp(pitch, -MAX_PITCH, MAX_PITCH);
-            yaw = fmodf(yaw, 360.0f);
-            if (yaw > 180.0f)
-                yaw -= 360.0f;
-            else if (yaw < -180.0f)
-                yaw += 360.0f;
-
-            m_camera->SetRotation(pitch, yaw);
+            m_cameraData->rotation[0] = std::clamp(m_cameraData->rotation[0], -MAX_PITCH, MAX_PITCH);
+            m_cameraData->rotation[1] = fmodf(m_cameraData->rotation[1], 360.0f);
+            if (m_cameraData->rotation[1] > 180.0f)
+                m_cameraData->rotation[1] -= 360.0f;
+            else if (m_cameraData->rotation[1] < -180.0f)
+                m_cameraData->rotation[1] += 360.0f;
         }
         else
         {
@@ -65,5 +71,31 @@ namespace SGE
             float mouseY = static_cast<float>(Input::Get().GetMouseY());
             m_lastMousePosition = Vector2(mouseX, mouseY);
         }
+    }
+
+    void CameraController::HandleFovAdjustment()
+    {
+        const int32 delta = Input::Get().GetMouseWheelDelta();
+        m_cameraData->fov -= delta * m_sensitivity;
+        m_cameraData->fov = std::clamp(m_cameraData->fov, MIN_FOV, MAX_FOV);
+    }
+
+    Vector3 CameraController::CalculateForwardVector(float pitch, float yaw) const
+    {
+        float pitchInRadians = DirectX::XMConvertToRadians(pitch);
+        float yawInRadians = DirectX::XMConvertToRadians(yaw);
+
+        return Vector3(
+            cosf(pitchInRadians) * cosf(yawInRadians),
+            sinf(pitchInRadians),
+            cosf(pitchInRadians) * sinf(yawInRadians)
+        );
+    }
+
+    void CameraController::UpdatePosition(Vector3 direction, float velocity)
+    {
+        m_cameraData->position[0] += direction.x * velocity;
+        m_cameraData->position[1] += direction.y * velocity;
+        m_cameraData->position[2] += direction.z * velocity;
     }
 }

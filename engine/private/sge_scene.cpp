@@ -4,6 +4,7 @@
 #include "sge_model.h"
 #include "sge_model_loader.h"
 #include "sge_input.h"
+#include "sge_data_adapters.h"
 
 namespace SGE
 {
@@ -31,15 +32,11 @@ namespace SGE
     
     void Scene::InitializeCamera()
     {
-        Vector3 target(0.0f, 0.0f, 0.0f);
-        Vector3 position(0.0f, 0.0f, -10.0f);
-
-        m_mainCamera.SetTarget(target);
-        m_mainCamera.SetPosition(position);
-
-        m_cameraController.SetCamera(&m_mainCamera);
+        CameraData* cameraData = m_context->GetSceneSettings().GetCameraData();
+        m_cameraController.SetCamera(cameraData);
         m_cameraController.SetMoveSpeed(10.0f);
         m_cameraController.SetSensitivity(0.1f);
+        DataToCamera(cameraData, &m_mainCamera);
     }
 
     void Scene::InitializeSceneData()
@@ -105,6 +102,9 @@ namespace SGE
     void Scene::UpdateCamera(double deltaTime)
     {
         m_cameraController.Update(deltaTime);
+
+        CameraData* cameraData = m_context->GetSceneSettings().GetCameraData();
+        DataToCamera(cameraData, &m_mainCamera);
     }
     
     void Scene::UpdateSceneData(double deltaTime)

@@ -1,108 +1,161 @@
 {
-    "window": {
-        "title": "SGE Editor",
-        "selected_resolution": 2,
-        "fullscreen": false,
-        "resolutions": [
-            "640x480", 
-            "800x600", 
-            "1280x720", 
-            "1366x768", 
-            "1600x900", 
-            "1920x1080"
-        ]
-    },
     "editor": {
-        "is_enable" : true
-    },
-    "render": {
-        "background_color": [0.25, 0.25, 0.25, 1.0],
-        "is_msaa_enabled": false,
-        "is_fog_enabled": false,
-        "is_deferred_rendering": true
+        "is_enable": true
     },
     "project": {
         "assets": [
             {
-                "name" : "Point Light",
-                "type" : 2
+                "name": "Point Light",
+                "type": 2
             },
             {
-                "name" : "Base Material",
-                "type" : 1
+                "name": "Base Material",
+                "type": 1
             },
             {
-                "name" : "Backpack",
-                "type" : 0
+                "name": "Backpack",
+                "type": 0
             },
             {
-                "name" : "Cube",
-                "type" : 0
+                "name": "Cube",
+                "type": 0
             },
             {
-                "name" : "Teapot",
-                "type" : 0
+                "name": "Teapot",
+                "type": 0
             },
             {
-                "name" : "Tank",
-                "type" : 0
+                "name": "Tank",
+                "type": 0
             },
             {
-                "name" : "Barrel",
-                "type" : 0
+                "name": "Barrel",
+                "type": 0
             },
             {
-                "name" : "Cat",
-                "type" : 0
+                "name": "Cat",
+                "type": 0
             },
             {
-                "name" : "Dog",
-                "type" : 0
+                "name": "Dog",
+                "type": 0
             }
         ]
     },
-    "scene" : {
+    "render": {
+        "background_color": [
+            0.25,
+            0.25,
+            0.25,
+            1.0
+        ],
+        "is_deferred_rendering": true,
+        "is_fog_enabled": false,
+        "is_msaa_enabled": false
+    },
+    "scene": {
         "objects": [
             {
-                "name": "Main Camera",
-                "type": 0,
-                "position": [0.0, 0.0, 10.0],
-                "rotation": [0.0, 0.0, 0.0],
-                "scale": [1.0, 1.0, 1.0],
+                "far_plane": 100.0,
                 "fov": 45.0,
-                "near_plane": 0.1,
-                "far_plane": 100.0
+                "name": "Main Camera",
+                "near_plane": 0.10000000149011612,
+                "position": [
+                    1.2112901210784912,
+                    -0.499983012676239,
+                    1.7240192890167236
+                ],
+                "rotation": [
+                    3.700000524520874,
+                    99.79998779296875,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "type": 0
             },
             {
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "direction": [
+                    0.0,
+                    -1.0,
+                    0.0
+                ],
+                "intensity": 1.0,
                 "name": "Directional light",
-                "type": 3,
-                "direction": [0.0, -1.0, 0.0],
-                "color": [1.0, 1.0, 1.0],
-                "intensity": 1.0
+                "type": 3
             },
             {
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "intensity": 1.0,
                 "name": "Point Light 1",
-                "type": 2,
-                "position": [5.0, 5.0, 5.0],
-                "color": [1.0, 1.0, 1.0],
-                "intensity": 1.0
+                "position": [
+                    5.0,
+                    5.0,
+                    5.0
+                ],
+                "type": 2
             },
             {
+                "color": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "intensity": 1.0,
                 "name": "Point Light 2",
-                "type": 2,
-                "position": [-5.0, 5.0, 5.0],
-                "color": [1.0, 1.0, 1.0],
-                "intensity": 1.0
+                "position": [
+                    -5.0,
+                    5.0,
+                    5.0
+                ],
+                "type": 2
             },
             {
-                "name": "backpack",
-                "type": 1,
-                "position": [0.0, 0.0, 0.0],
-                "rotation": [0.0, 0.0, 0.0],
-                "scale": [1.0, 1.0, 1.0],
                 "asset_id": "backpack.obj",
-                "material_id": "default"
+                "material_id": "default",
+                "name": "backpack",
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "type": 1
             }
         ]
-    }    
+    },
+    "window": {
+        "fullscreen": false,
+        "resolutions": [
+            "640x480",
+            "800x600",
+            "1280x720",
+            "1366x768",
+            "1600x900",
+            "1920x1080"
+        ],
+        "selected_resolution": 2,
+        "title": "SGE Editor"
+    }
 }

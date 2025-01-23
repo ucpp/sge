@@ -99,8 +99,15 @@ namespace SGE
 
     class SceneSettings
     {
+        friend void from_json(const nlohmann::json& j, SceneSettings& settings);
+    public:
+        CameraData* GetCameraData() const { return m_mainCamera; }
+
     public:
         std::vector<std::unique_ptr<SceneObjectBase>> objects;
+
+    private:
+        CameraData* m_mainCamera = nullptr;
     };
 
     void to_json(nlohmann::json& j, const SceneSettings& settings);
@@ -112,7 +119,7 @@ namespace SGE
     bool InputTextStdString(const std::string& label, std::string& str, ImGuiInputTextFlags flags = 0);
     bool DragFloat3(const std::string& label, float* values, ImGuiInputTextFlags flags = 0);
     bool ColorEdit3(const std::string& label, float* color, ImGuiInputTextFlags flags = 0);
-    bool DragFloat(const std::string& label, float* value, ImGuiInputTextFlags flags = 0);
+    bool DragFloat(const std::string& label, float* value, float min = -FLT_MAX, float max = FLT_MAX, ImGuiInputTextFlags flags = 0);
 }
 
 #endif // !_SGE_SCENE_SETTINGS_H_

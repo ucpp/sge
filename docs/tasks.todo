@@ -18,7 +18,8 @@
 
 [Day 33/1000 - 23/01/2025]
 ✔ Implement a toggleable enabled/disabled state for the editor. @done(25-01-23 20:01)
-☐ Add scene initialization according to the scene data.
-☐ Add synchronization of scene objects and data.
+✔ Add camera initialization and synchronization according to the camera data. @done(25-01-23 22:36)
 
 [Day 34/1000 - 24/01/2025]
+☐ Add scene initialization according to the scene data.
+☐ Add synchronization of scene objects and data.

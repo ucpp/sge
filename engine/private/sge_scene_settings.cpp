@@ -73,8 +73,8 @@ namespace SGE
     {
         TransformData::DrawEditor();
         DragFloat("FOV:", &fov);
-        DragFloat("Near Plane:", &nearPlane);
-        DragFloat("Far Plane:", &farPlane);
+        DragFloat("Near Plane:", &nearPlane, 0.1f, 10.0f);
+        DragFloat("Far Plane:", &farPlane, 10.1f, 1000.0f);
     }
 
     MeshData::MeshData()
@@ -187,6 +187,11 @@ namespace SGE
                 auto obj = CreateObject(type);
                 obj->FromJson(objJson);
                 settings.objects.push_back(std::move(obj));
+
+                if(!settings.m_mainCamera && type == ObjectType::Camera)
+                {
+                    settings.m_mainCamera = dynamic_cast<CameraData*>(settings.objects.back().get());
+                }
             }
         }
     }
@@ -277,7 +282,7 @@ namespace SGE
         return result;
     }
 
-    bool DragFloat(const std::string& label, float* value, ImGuiInputTextFlags flags)
+    bool DragFloat(const std::string& label, float* value, float min, float max, ImGuiInputTextFlags flags)
     {
         float width = ImGui::GetWindowSize().x;
         float x = ImGui::GetCursorPosX();
