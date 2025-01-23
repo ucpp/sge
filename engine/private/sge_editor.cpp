@@ -74,6 +74,11 @@ namespace SGE
 
     void Editor::BuildFrame()
     {
+        if(!m_isEnable)
+        {
+            return;
+        }
+
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
@@ -84,6 +89,36 @@ namespace SGE
         BuildMainMenuBar();
         BuildSettingsWindow();
         BuildResolutionWindow();
+    }
+
+    void Editor::Render()
+    {
+        if(!m_isEnable)
+        {
+            return;
+        }
+
+        ImGui::Render();
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+        Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
+        
+        ComPtr<ID3D12DescriptorHeap> heap = m_context->GetCbvSrvUavHeap()->GetHeap();
+        Verify(heap.Get(), "Editor::Render: DescriptorHeap is null or invalid. Rendering cannot proceed.");
+
+        commandList->SetDescriptorHeaps(1, heap.GetAddressOf());
+        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+    }
+
+    void Editor::Shutdown()
+    {
+        ImGui_ImplDX12_Shutdown();
+        ImGui_ImplWin32_Shutdown();
+        ImGui::DestroyContext();
+    }
+
+    void Editor::SetActive(bool isActive)
+    {
+        m_isEnable = isActive;
     }
 
     void Editor::BuildMainMenuBar()
@@ -187,26 +222,6 @@ namespace SGE
         const int32 height = windowSettings.GetHeight();
 
         m_context->SetWindowSize(width, height);
-    }
-
-    void Editor::Render()
-    {
-        ImGui::Render();
-        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
-        Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
-        
-        ComPtr<ID3D12DescriptorHeap> heap = m_context->GetCbvSrvUavHeap()->GetHeap();
-        Verify(heap.Get(), "Editor::Render: DescriptorHeap is null or invalid. Rendering cannot proceed.");
-
-        commandList->SetDescriptorHeaps(1, heap.GetAddressOf());
-        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
-    }
-
-    void Editor::Shutdown()
-    {
-        ImGui_ImplDX12_Shutdown();
-        ImGui_ImplWin32_Shutdown();
-        ImGui::DestroyContext();
     }
 
     void Editor::SetupDockspace()

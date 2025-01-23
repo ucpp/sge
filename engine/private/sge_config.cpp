@@ -28,7 +28,16 @@ namespace SGE
             { "window", settings.window },
             { "render", settings.render },
             { "project", settings.project },
-            { "scene", settings.scene }
+            { "scene", settings.scene },
+            { "editor", settings.editor }
+        };
+    }
+
+    void to_json(nlohmann::json& j, const EditorSettings& settings)
+    {
+        j = nlohmann::json
+        {
+            {"assets", settings.isEnable}
         };
     }
 
@@ -56,6 +65,12 @@ namespace SGE
         j.at("render").get_to(settings.render);
         j.at("project").get_to(settings.project);
         j.at("scene").get_to(settings.scene);
+        j.at("editor").get_to(settings.editor);
+    }
+
+    void from_json(const nlohmann::json& j, EditorSettings& settings)
+    {
+        j.at("is_enable").get_to(settings.isEnable);
     }
 
     void to_json(nlohmann::json& j, const AssetBase& asset)

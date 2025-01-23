@@ -20,7 +20,9 @@ namespace SGE
         void BuildFrame();
         void Render();
         void Shutdown();
+        void SetActive(bool isActive);
 
+    private:
         void SetupDockspace();
         void BuildDockingExample();
 
@@ -42,6 +44,8 @@ namespace SGE
         std::unique_ptr<FileDialog> m_fileDialog;
 
         uint32 m_selectedObjectIndex = 0;
+
+        bool m_isEnable = true;
     };
 }
 

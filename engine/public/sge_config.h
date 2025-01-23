@@ -82,10 +82,12 @@ namespace SGE
     void to_json(nlohmann::json& j, const WindowSettings& settings);
     void to_json(nlohmann::json& j, const RenderSettings& settings);
     void to_json(nlohmann::json& j, const ApplicationSettings& settings);
+    void to_json(nlohmann::json& j, const EditorSettings& settings);
 
     void from_json(const nlohmann::json& j, WindowSettings& settings);
     void from_json(const nlohmann::json& j, RenderSettings& settings);
     void from_json(const nlohmann::json& j, ApplicationSettings& settings);
+    void from_json(const nlohmann::json& j, EditorSettings& settings);
 
     void to_json(nlohmann::json& j, const AssetBase& settings);
     void from_json(const nlohmann::json& j, AssetBase& settings);

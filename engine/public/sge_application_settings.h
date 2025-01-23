@@ -33,6 +33,7 @@ namespace SGE
 
     struct EditorSettings
     {
+        bool isEnable = true;
         bool isPressedQuit = false;
     };
 

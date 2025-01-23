@@ -12,6 +12,9 @@
             "1920x1080"
         ]
     },
+    "editor": {
+        "is_enable" : true
+    },
     "render": {
         "background_color": [0.25, 0.25, 0.25, 1.0],
         "is_msaa_enabled": false,

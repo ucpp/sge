@@ -22,6 +22,7 @@ namespace SGE
         void Initialize();
         void Update(double deltaTime);
         void Shutdown();
+        void HandleInput();
 
         void ShaderDirectoryChanged();
 

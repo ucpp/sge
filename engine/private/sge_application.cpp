@@ -4,6 +4,7 @@
 #include "sge_frame_timer.h"
 #include "sge_config.h"
 #include "sge_editor.h"
+#include "sge_input.h"
 
 namespace SGE
 {
@@ -55,6 +56,8 @@ namespace SGE
     {
         m_scene->Update(deltaTime);
         m_renderer->Render(m_scene.get(), m_editor.get());
+
+        HandleInput();
     }
 
     void Application::Shutdown()
@@ -94,7 +97,17 @@ namespace SGE
             m_renderContext.reset();
         }
     }
-    
+
+    void Application::HandleInput()
+    {
+        if(Input::Get().GetKeyDown('0'))
+        {
+            EditorSettings& settings = m_renderContext->GetEditorSettings();
+            settings.isEnable = !settings.isEnable;
+            m_editor->SetActive(settings.isEnable);
+        }
+    }
+
     void Application::ShaderDirectoryChanged()
     {
         LOG_INFO("Shader directory changed, reloading shaders...");
