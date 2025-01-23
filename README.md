@@ -108,7 +108,23 @@ The SGE project is designed to:
 - Learn DirectX 12 fundamentals and advanced features.  
 - Implement modern rendering techniques used in game engines.  
 - Build a foundation for further exploration of game engine development.  
- 
+
+##  Controls
+### Camera Controls
+- **Movement**:
+  - `W`: Move forward.
+  - `S`: Move backward.
+  - `A`: Move left.
+  - `D`: Move right.
+- **Zoom**:
+  - Use the mouse wheel to adjust the field of view (FOV).
+- **Rotation**:
+  - Hold the right mouse button and move the mouse to rotate the camera.
+### Editor Controls
+- **Toggle Editor**:
+  - `0`: Toggle the editor UI on/off.
+---
+  
 ## Contribution
 This repository is a personal learning project, but feel free to report issues or suggest improvements!
 
