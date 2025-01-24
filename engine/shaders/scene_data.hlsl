@@ -39,4 +39,6 @@ cbuffer SceneData : register(b0)
     float  zNear;
     float  zFar;
     matrix invViewProj;
+    uint activePointLightsCount;
+    uint activeSpotLightsCount;
 };

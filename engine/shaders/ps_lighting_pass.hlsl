@@ -79,7 +79,7 @@ LightingOutput main(PixelInput input)
     float3 worldPos = ReconstructWorldPos(input.texCoords, depth, invViewProj, zNear, zFar);
 
     float3 finalColor = calculateDirectionalLight(normal, albedo, directionalLight);
-    for (uint i = 0; i < MAX_POINT_LIGHTS; ++i)
+    for (uint i = 0; i < activePointLightsCount; ++i)
     {
         finalColor += calculatePointLight(worldPos, normal, albedo, pointLights[i]);
     }

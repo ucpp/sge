@@ -316,4 +316,21 @@ namespace SGE
 
         return m_mainCamera;
     }
+    
+    DirectionalLightData* SceneSettings::GetDirectionalLight()
+    {
+        if (!m_directionalLight)
+        {
+            for (const auto& obj : objects)
+            {
+                if (auto directionalLight = dynamic_cast<DirectionalLightData*>(obj.get()))
+                {
+                    m_directionalLight = directionalLight;
+                    break;
+                }
+            }
+        }
+
+        return m_directionalLight;
+    }
 }

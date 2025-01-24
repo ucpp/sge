@@ -104,12 +104,14 @@ namespace SGE
         friend void from_json(const nlohmann::json& j, SceneSettings& settings);
     public:
         CameraData* GetCameraData();
+        DirectionalLightData* GetDirectionalLight();
 
     public:
         std::vector<std::unique_ptr<SceneObjectBase>> objects;
 
     private:
         CameraData* m_mainCamera = nullptr;
+        DirectionalLightData* m_directionalLight = nullptr;
     };
 
     void to_json(nlohmann::json& j, const SceneSettings& settings);
