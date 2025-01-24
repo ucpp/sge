@@ -33,10 +33,8 @@ namespace SGE
     void Scene::InitializeCamera()
     {
         CameraData* cameraData = m_context->GetSceneSettings().GetCameraData();
-        m_cameraController.SetCamera(cameraData);
-        m_cameraController.SetMoveSpeed(10.0f);
-        m_cameraController.SetSensitivity(0.1f);
-        DataToCamera(cameraData, &m_mainCamera);
+        m_cameraController.Initialize(cameraData);
+        SyncData(cameraData, &m_mainCamera);
     }
 
     void Scene::InitializeSceneData()
@@ -104,7 +102,7 @@ namespace SGE
         m_cameraController.Update(deltaTime);
 
         CameraData* cameraData = m_context->GetSceneSettings().GetCameraData();
-        DataToCamera(cameraData, &m_mainCamera);
+        SyncData(cameraData, &m_mainCamera);
     }
     
     void Scene::UpdateSceneData(double deltaTime)

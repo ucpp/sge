@@ -6,7 +6,7 @@
 
 namespace SGE
 {
-    void DataToCamera(CameraData* data, Camera* camera)
+    void SyncData(CameraData* data, Camera* camera)
     {
         if (camera == nullptr)
         {

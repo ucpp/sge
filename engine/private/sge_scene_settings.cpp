@@ -59,6 +59,8 @@ namespace SGE
         j["fov"] = fov;
         j["near_plane"] = nearPlane;
         j["far_plane"] = farPlane;
+        j["move_speed"] = moveSpeed;
+        j["sensitivity"] = sensitivity;
     }
 
     void CameraData::FromJson(const nlohmann::json& j)
@@ -67,6 +69,8 @@ namespace SGE
         j.at("fov").get_to(fov);
         j.at("near_plane").get_to(nearPlane);
         j.at("far_plane").get_to(farPlane);
+        j.at("move_speed").get_to(moveSpeed);
+        j.at("sensitivity").get_to(sensitivity);
     }
 
     void CameraData::DrawEditor()
@@ -75,6 +79,8 @@ namespace SGE
         DragFloat("FOV:", &fov);
         DragFloat("Near Plane:", &nearPlane, 0.1f, 10.0f);
         DragFloat("Far Plane:", &farPlane, 10.1f, 1000.0f);
+        DragFloat("Move speed:", &moveSpeed, 0.0f, 1000.0f);
+        DragFloat("Sensitivity:", &sensitivity, 0.0f, 100.0f);
     }
 
     MeshData::MeshData()
@@ -288,7 +294,7 @@ namespace SGE
         ImGui::SetCursorPosX(x + width / 2 - 16);
 
         ImGui::PushItemWidth(width / 2);
-        bool result = ImGui::DragFloat(("##" + label).c_str(), value, 0.1f, -FLT_MAX, FLT_MAX, "%.1f", flags);
+        bool result = ImGui::DragFloat(("##" + label).c_str(), value, 0.1f, min, max, "%.1f", flags);
         ImGui::PopItemWidth();
 
         return result;

@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void DataToCamera(class CameraData* data, class Camera* camera);
+    void SyncData(class CameraData* data, class Camera* camera);
 }
 
 #endif // !_SGE_DATA_ADAPTERS_H_

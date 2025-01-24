@@ -54,6 +54,8 @@ namespace SGE
         float fov;
         float nearPlane; 
         float farPlane;
+        float moveSpeed;
+        float sensitivity;
     };
 
     class MeshData : public TransformData

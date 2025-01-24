@@ -1,16 +1,33 @@
 #include "sge_camera_controller.h"
 
 #include "sge_input.h"
+#include "sge_logger.h"
 #include "sge_scene_settings.h"
 
 namespace SGE
 {
+    void CameraController::Initialize(CameraData* cameraData)
+    {
+        if(cameraData == nullptr)
+        {
+            LOG_ERROR("CameraController::Initialize camera data is null");
+            return;
+        }
+
+        m_cameraData = cameraData;
+        m_moveSpeed = cameraData->moveSpeed;
+        m_sensitivity = cameraData->sensitivity;
+    }
+
     void CameraController::Update(double deltaTime)
     {
         if (m_cameraData == nullptr)
         {
             return;
         }
+
+        m_moveSpeed = m_cameraData->moveSpeed;
+        m_sensitivity = m_cameraData->sensitivity;
 
         HandleMovement(deltaTime);
         HandleRotation();

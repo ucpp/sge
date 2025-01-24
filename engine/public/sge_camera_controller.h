@@ -8,11 +8,8 @@ namespace SGE
     class CameraController final
     {
     public:
+        void Initialize(class CameraData* cameraData);
         void Update(double deltaTime);
-
-        void SetCamera(class CameraData* cameraData) { m_cameraData = cameraData; }
-        void SetMoveSpeed(float speed) { m_moveSpeed = speed; }
-        void SetSensitivity(float sensitivity) { m_sensitivity = sensitivity; }
 
     private:
         void HandleMovement(double deltaTime);
