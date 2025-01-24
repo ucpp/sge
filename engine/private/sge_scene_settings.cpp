@@ -187,11 +187,6 @@ namespace SGE
                 auto obj = CreateObject(type);
                 obj->FromJson(objJson);
                 settings.objects.push_back(std::move(obj));
-
-                if(!settings.m_mainCamera && type == ObjectType::Camera)
-                {
-                    settings.m_mainCamera = dynamic_cast<CameraData*>(settings.objects.back().get());
-                }
             }
         }
     }
@@ -297,5 +292,22 @@ namespace SGE
         ImGui::PopItemWidth();
 
         return result;
+    }
+    
+    CameraData* SceneSettings::GetCameraData()
+    {
+        if (!m_mainCamera)
+        {
+            for (const auto& obj : objects)
+            {
+                if (auto cameraData = dynamic_cast<CameraData*>(obj.get()))
+                {
+                    m_mainCamera = cameraData;
+                    break;
+                }
+            }
+        }
+
+        return m_mainCamera;
     }
 }

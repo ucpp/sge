@@ -101,7 +101,7 @@ namespace SGE
     {
         friend void from_json(const nlohmann::json& j, SceneSettings& settings);
     public:
-        CameraData* GetCameraData() const { return m_mainCamera; }
+        CameraData* GetCameraData();
 
     public:
         std::vector<std::unique_ptr<SceneObjectBase>> objects;
