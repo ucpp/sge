@@ -3,8 +3,10 @@
 #include "sge_render_context.h"
 #include "sge_model.h"
 #include "sge_model_loader.h"
+#include "sge_material.h"
 #include "sge_input.h"
 #include "sge_data_adapters.h"
+#include "sge_material_manager.h"
 
 namespace SGE
 {
@@ -14,20 +16,20 @@ namespace SGE
 
         InitializeCamera();
         InitializeSceneData();
-        InitializeRenderableObjects();
+        InstantiateModels();
     }
     
     void Scene::Update(double deltaTime)
     {
         UpdateCamera(deltaTime);
         UpdateSceneData(deltaTime);
-        UpdateRenderableObjects(deltaTime);
+        UpdateModels(deltaTime);
     }
     
     void Scene::Shutdown()
     {
         m_sceneData = {};
-        m_renderableObjects.clear();
+        m_modelInstances.clear();
     }
     
     void Scene::InitializeCamera()
@@ -45,31 +47,53 @@ namespace SGE
         DirectionalLightData* directionalLightData = m_context->GetSceneSettings().GetDirectionalLight();
         SyncData(directionalLightData, &m_sceneData.directionalLight);
 
+        InitializeFog();
+        
         m_sceneData.cameraPosition = m_mainCamera.GetPosition();
+        m_sceneData.zNear = m_mainCamera.GetNear();
+        m_sceneData.zFar = m_mainCamera.GetFar();
+        m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+    }
 
+    void Scene::InstantiateModels()
+    {
+        const ProjectAssets& projectAssets = m_context->GetAssetsSettings();
+
+        for (const auto& obj : m_context->GetSceneSettings().objects)
+        {
+            if (obj->type != ObjectType::Model)
+            {
+                continue;
+            }
+
+            if (const auto* modelData = dynamic_cast<const ModelData*>(obj.get()))
+            {
+                const std::string& assetName = modelData->assetId; 
+                const std::string& materialName = modelData->materialId;
+
+                const ModelAssetSettings& modelAsset = projectAssets.GetModel(assetName);
+                const MaterialAssetSettings& materialAsset = projectAssets.GetMaterial(materialName);
+
+                bool isModelLoaded = ModelLoader::LoadModel(modelAsset);
+                ModelInstance* instance = ModelLoader::Instantiate(modelAsset, m_context);
+                Material* material = MaterialManager::LoadMaterial(materialAsset, m_context); 
+                instance->SetMaterial(material);
+                SyncData(modelData, instance); 
+
+                m_modelInstances[modelData] = instance;
+            }
+        }
+    }
+
+    void Scene::InitializeFog()
+    {
         m_sceneData.fogStart = 3.0f;
         m_sceneData.fogEnd = 30.0f;
         m_sceneData.fogColor = {0.314f, 0.314f, 0.314f};
         m_sceneData.fogStrength = m_context->GetRenderSettings().isFogEnabled ? 1.0f : 0.0f;
         m_sceneData.fogDensity = 0.1f;
-
-        m_sceneData.zNear = m_mainCamera.GetNear();
-        m_sceneData.zFar = m_mainCamera.GetFar();
-
-        m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
     }
 
-    void Scene::InitializeRenderableObjects()
-    {
-        auto model = std::make_unique<Model>();
-        const std::string path = "resources/backpack/backpack.obj";
-        *model = ModelLoader::LoadModel(path, m_context->GetDevice(), m_context->GetCbvSrvUavHeap(), 1);
-        model->SetRotation({ 0.0f, 180.0f, 0.0f });
-        model->SetPosition({ 0.0f, 0.0f, 10.0f });
- 
-        m_renderableObjects.push_back(std::move(model));
-    }
-    
     void Scene::UpdateCamera(double deltaTime)
     {
         m_cameraController.Update(deltaTime);
@@ -89,13 +113,15 @@ namespace SGE
         m_sceneDataBuffer->Update(&m_sceneData, sizeof(SceneData));
     }
     
-    void Scene::UpdateRenderableObjects(double deltaTime)
+    void Scene::UpdateModels(double deltaTime)
     {
         const Matrix& view = m_mainCamera.GetViewMatrix();
         const Matrix& proj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
-        for(auto& object : m_renderableObjects)
+
+        for (const auto& pair : m_modelInstances)
         {
-            object->Update(view, proj);
+            SyncData(pair.first, pair.second);
+            pair.second->Update(view, proj); 
         }
     }
 }

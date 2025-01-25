@@ -4,15 +4,11 @@
 #include <vector>
 #include "sge_types.h"
 #include "sge_common_structures.h"
-#include "sge_material_data.h"
 
 namespace SGE
 {
     struct MeshResourceInfo
     {
-        uint32 diffuseTextureIndex;
-        uint32 normalTextureIndex;
-        uint32 specularTextureIndex;
         uint32 meshIndexCount;
         uint32 vertexCountOffset;
         uint32 indexCountOffset;
@@ -21,21 +17,20 @@ namespace SGE
     class Mesh
     {
     public:
-        Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32>& indices, const MaterialData& material)
+        Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32>& indices)
             : m_vertices(vertices)
-            , m_indices(indices)
-            , m_material(material) {}
+            , m_indices(indices) {}
+
+        void UpdateInfo(const MeshResourceInfo& info) { m_info = info; }
 
         const std::vector<Vertex>& GetVertices() const { return m_vertices; }
         const std::vector<uint32>& GetIndices() const { return m_indices; }
-        const MaterialData& GetMaterial() const { return m_material; }
-
-        void Initialize(class Device* device, class DescriptorHeap* descriptorHeap);
+        const MeshResourceInfo& GetInfo() const { return m_info; }
 
     private:
         std::vector<Vertex> m_vertices;
         std::vector<uint32> m_indices;
-        MaterialData m_material;
+        MeshResourceInfo m_info;
     };
 }
 

@@ -57,7 +57,7 @@ namespace SGE
         uint32 materialIconIndex = TextureManager::GetTextureIndex("resources/editor/material_icon.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
         uint32 lightIconIndex = TextureManager::GetTextureIndex("resources/editor/light_icon.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
 
-        m_icons.emplace(AssetType::StaticMesh, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIconIndex).ptr);
+        m_icons.emplace(AssetType::Model, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIconIndex).ptr);
         m_icons.emplace(AssetType::Material, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(materialIconIndex).ptr);
         m_icons.emplace(AssetType::Light, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(lightIconIndex).ptr);
 
@@ -69,7 +69,7 @@ namespace SGE
         m_objectIcons.emplace(ObjectType::Camera, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(cameraIcon16).ptr);
         m_objectIcons.emplace(ObjectType::DirectionalLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(directionalIcon16).ptr);
         m_objectIcons.emplace(ObjectType::PointLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(pointLightIcon16).ptr);
-        m_objectIcons.emplace(ObjectType::Mesh, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIcon16).ptr);
+        m_objectIcons.emplace(ObjectType::Model, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIcon16).ptr);
     }
 
     void Editor::BuildFrame()
@@ -285,24 +285,25 @@ namespace SGE
         float yOffset = 0.0f;
         float textHeight = ImGui::GetTextLineHeightWithSpacing() * 2.0f;
 
-        for (const auto& asset : assetsSettings.assets)
+        for (const auto& pair : assetsSettings.assets)
         {
+            const auto& asset = pair.second; 
             ImGui::SetCursorPos(ImVec2(xOffset, yOffset));
 
             ImGui::BeginGroup();
 
-            std::string buttonId = "##" + asset.name;
+            std::string buttonId = "##" + asset->name;
 
-            AssetType type = asset.type;
+            AssetType type = asset->type;
             ImTextureID iconTexture = m_icons[type];
 
             if (ImGui::ImageButton(buttonId.c_str(), iconTexture, iconSize))
             {
-                std::cout << "Clicked on asset: " << asset.name << std::endl;
+                std::cout << "Clicked on asset: " << asset->name << std::endl;
             }
 
             ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + iconSize.x);
-            ImGui::TextWrapped(asset.name.c_str());
+            ImGui::TextWrapped(asset->name.c_str());
             ImGui::PopTextWrapPos();
 
             ImGui::EndGroup();

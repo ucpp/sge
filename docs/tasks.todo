@@ -21,5 +21,12 @@
 ✔ Add camera initialization and synchronization according to the camera data. @done(25-01-23 22:36)
 
 [Day 34/1000 - 24/01/2025]
-☐ Add scene initialization according to the scene data.
-☐ Add synchronization of scene objects and data.
+✔ Add camera movement properties to the settings. @done(25-01-24 22:10)
+✔ Add directional light initialization and synchronization according to the data. @done(25-01-24 22:10)
+
+[Day 35/1000 - 25/01/2025]
+✔ Refactoring of the model loading and management system (draft version). @done(25-01-25 21:40)
+
+[Day 36/1000 - 26/01/2025]
+☐ Add lights initialization and synchronization according to the lights data.
+☐ Refactoring of the model loading and management system.

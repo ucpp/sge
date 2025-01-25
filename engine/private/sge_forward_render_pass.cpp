@@ -42,9 +42,9 @@ namespace SGE
         m_context->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         m_context->SetRootDescriptorTable(0, 0);
 
-        for(const auto& object : scene->GetRenderableObjects())
+        for(auto& pair : scene->GetModels())
         {
-            object->Render(m_context->GetCommandList().Get());
+            pair.second->Render(m_context->GetCommandList().Get());
         }
     }
     

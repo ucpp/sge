@@ -73,32 +73,37 @@ namespace SGE
         j.at("is_enable").get_to(settings.isEnable);
     }
 
-    void to_json(nlohmann::json& j, const AssetBase& asset)
+    void to_json(nlohmann::json& j, const ProjectAssets& settings)
     {
-        j = nlohmann::json{
-            {"name", asset.name},
-            {"type", static_cast<int>(asset.type)}
-        };
+        nlohmann::json assetsJson = nlohmann::json::array();
+        for (const auto& pair : settings.assets)
+        {
+            const auto& asset = pair.second;
+            nlohmann::json assetJson;
+            asset->ToJson(assetJson);
+            assetsJson.push_back(assetJson);
+        }
+        j["assets"] = assetsJson;
     }
 
-    void from_json(const nlohmann::json& j, AssetBase& asset)
+    void from_json(const nlohmann::json& j, ProjectAssets& settings)
     {
-        j.at("name").get_to(asset.name);
-        
-        int32 typeInt;
-        j.at("type").get_to(typeInt);
-        asset.type = static_cast<AssetType>(typeInt);
-    }
+        settings.assets.clear();
+        if (j.contains("assets"))
+        {
+            const auto& assetsJson = j.at("assets");
+            for (const auto& assetJson : assetsJson)
+            {
+                int32_t typeInt;
+                assetJson.at("type").get_to(typeInt);
+                auto type = static_cast<AssetType>(typeInt);
 
-    void to_json(nlohmann::json& j, const ProjectAssets& projectAssets)
-    {
-        j = nlohmann::json{
-            {"assets", projectAssets.assets}
-        };
-    }
+                std::unique_ptr<AssetBase> asset;
+                asset = CreateObject(type);
 
-    void from_json(const nlohmann::json& j, ProjectAssets& projectAssets)
-    {
-        j.at("assets").get_to(projectAssets.assets);
+                asset->FromJson(assetJson);
+                settings.assets[asset->name] = std::move(asset);
+            }
+        }
     }
 }

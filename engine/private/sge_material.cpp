@@ -1,0 +1,22 @@
+#include "sge_material.h"
+
+#include "sge_texture_manager.h"
+
+namespace SGE
+{
+    void Material::Initialize(const MaterialAssetSettings& materialAsset, RenderContext* context)
+    {
+        m_albedoTextureIndex = TextureManager::GetTextureIndex(materialAsset.albedoTexturePath, context->GetDevice(), context->GetCbvSrvUavHeap());
+        m_normalTextureIndex = TextureManager::GetTextureIndex(materialAsset.normalTexturePath, context->GetDevice(), context->GetCbvSrvUavHeap());
+        m_metallicTextureIndex = TextureManager::GetTextureIndex(materialAsset.metallicTexturePath, context->GetDevice(), context->GetCbvSrvUavHeap());
+        m_roughnessTextureIndex = TextureManager::GetTextureIndex(materialAsset.roughnessTexturePath, context->GetDevice(), context->GetCbvSrvUavHeap());
+    }
+    
+    void Material::Bind(ID3D12GraphicsCommandList* commandList, DescriptorHeap* heap)
+    {
+        commandList->SetGraphicsRootDescriptorTable(2, heap->GetGPUHandle(m_albedoTextureIndex));
+        commandList->SetGraphicsRootDescriptorTable(3, heap->GetGPUHandle(m_normalTextureIndex));
+        commandList->SetGraphicsRootDescriptorTable(4, heap->GetGPUHandle(m_metallicTextureIndex));
+        // commandList->SetGraphicsRootDescriptorTable(5, heap->GetGPUHandle(m_roughnessTextureIndex));
+    }
+}

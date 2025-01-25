@@ -1,18 +1,21 @@
-#ifndef _SGE_MODEL_H_
-#define _SGE_MODEL_H_
+#ifndef _SGE_MODEL_INSTANCE_H_
+#define _SGE_MODEL_INSTANCE_H_
 
 #include <vector>
 #include "sge_mesh.h"
 #include "sge_index_buffer.h"
 #include "sge_vertex_buffer.h"
 #include "sge_constant_buffer.h"
+#include "sge_model_asset.h"
+#include "sge_material.h"
 
 namespace SGE
 {
-    class Model
+    class ModelInstance
     {
     public:
-        void Initialize(const std::vector<Mesh>& meshes, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
+        void Initialize(ModelAsset* asset, class Device* device, class DescriptorHeap* descriptorHeap, uint32 instanceIndex);
+        void SetMaterial(Material* material);
         void Update(const Matrix& viewMatrix, const Matrix& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
@@ -20,26 +23,27 @@ namespace SGE
         void SetRotation(const Vector3& rotation) { m_rotation = rotation; }
         void SetScale(const Vector3& scale) { m_scale = scale; }
 
-        Vector3 GetPosition() const { return m_position; }
-        Vector3 GetRotation() const { return m_rotation; }
-        Vector3 GetScale() const { return m_scale; }
+        const Vector3& GetPosition() const { return m_position; }
+        const Vector3& GetRotation() const { return m_rotation; }
+        const Vector3& GetScale() const { return m_scale; }
 
+    private:
         Matrix GetWorldMatrix() const;
 
     private:
+        ModelAsset*     m_asset = nullptr;
+        Material*       m_material = nullptr;
         DescriptorHeap* m_descriptorHeap = nullptr;
-        VertexBuffer m_vertexBuffer;
-        IndexBuffer m_indexBuffer;
-        uint32 m_indexCount = 0;
-        uint32 m_descriptorIndex = 0;
+        VertexBuffer    m_vertexBuffer;
+        IndexBuffer     m_indexBuffer;
+        ConstantBuffer  m_transformBuffer;
 
         Vector3 m_position = { 0.0f, 0.0f, 0.0f };
         Vector3 m_rotation = { 0.0f, 0.0f, 0.0f };
-        Vector3 m_scale = { 1.0f, 1.0f, 1.0f };
+        Vector3 m_scale    = { 1.0f, 1.0f, 1.0f };
 
-        std::unique_ptr<ConstantBuffer> m_transformBuffer;
-        std::vector<MeshResourceInfo> m_meshResourceInfo;
+        uint32 m_instanceIndex = 0;
     };
 }
 
-#endif // !_SGE_MODEL_H_
+#endif // !_SGE_MODEL_INSTANCE_H_

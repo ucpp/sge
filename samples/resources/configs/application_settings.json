@@ -5,39 +5,20 @@
     "project": {
         "assets": [
             {
-                "name": "Point Light",
+                "name": "PointLight",
                 "type": 2
             },
             {
-                "name": "Base Material",
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "name": "default",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds",
                 "type": 1
             },
             {
-                "name": "Backpack",
-                "type": 0
-            },
-            {
-                "name": "Cube",
-                "type": 0
-            },
-            {
-                "name": "Teapot",
-                "type": 0
-            },
-            {
-                "name": "Tank",
-                "type": 0
-            },
-            {
-                "name": "Barrel",
-                "type": 0
-            },
-            {
-                "name": "Cat",
-                "type": 0
-            },
-            {
-                "name": "Dog",
+                "name": "Backpack.obj",
+                "path": "resources/backpack/backpack.obj",
                 "type": 0
             }
         ]
@@ -56,10 +37,9 @@
     "scene": {
         "objects": [
             {
-                "move_speed": 10.0,
-                "sensitivity": 0.1,
                 "far_plane": 100.0,
                 "fov": 45.0,
+                "move_speed": 10.0,
                 "name": "Main Camera",
                 "near_plane": 0.10000000149011612,
                 "position": [
@@ -68,8 +48,8 @@
                     1.7240192890167236
                 ],
                 "rotation": [
-                    3.700000524520874,
-                    99.79998779296875,
+                    1.7000006437301636,
+                    98.89999389648438,
                     0.0
                 ],
                 "scale": [
@@ -77,6 +57,7 @@
                     1.0,
                     1.0
                 ],
+                "sensitivity": 0.10000000149011612,
                 "type": 0
             },
             {
@@ -86,9 +67,9 @@
                     1.0
                 ],
                 "direction": [
-                    0.0,
                     -1.0,
-                    0.0
+                    -0.4000000059604645,
+                    2.0
                 ],
                 "intensity": 1.0,
                 "name": "Directional light",
@@ -125,17 +106,17 @@
                 "type": 2
             },
             {
-                "asset_id": "backpack.obj",
+                "asset_id": "Backpack.obj",
                 "material_id": "default",
                 "name": "backpack",
                 "position": [
                     0.0,
                     0.0,
-                    0.0
+                    10.399999618530273
                 ],
                 "rotation": [
-                    0.0,
-                    0.0,
+                    3.200000047683716,
+                    162.39999389648438,
                     0.0
                 ],
                 "scale": [

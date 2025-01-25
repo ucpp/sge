@@ -10,7 +10,7 @@ namespace SGE
     enum class ObjectType
     {
         Camera           = 0,
-        Mesh             = 1,
+        Model            = 1,
         PointLight       = 2,
         DirectionalLight = 3
     };
@@ -58,10 +58,10 @@ namespace SGE
         float sensitivity;
     };
 
-    class MeshData : public TransformData
+    class ModelData : public TransformData
     {
     public:
-        MeshData();
+        ModelData();
         void ToJson(nlohmann::json& j) const override;
         void FromJson(const nlohmann::json& j) override;
         void DrawEditor() override;

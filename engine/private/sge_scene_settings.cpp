@@ -83,26 +83,26 @@ namespace SGE
         DragFloat("Sensitivity:", &sensitivity, 0.0f, 100.0f);
     }
 
-    MeshData::MeshData()
+    ModelData::ModelData()
     {
-        type = ObjectType::Mesh;
+        type = ObjectType::Model;
     }
 
-    void MeshData::ToJson(nlohmann::json &j) const
+    void ModelData::ToJson(nlohmann::json &j) const
     {
         TransformData::ToJson(j);
         j["asset_id"] = assetId;
         j["material_id"] = materialId;
     }
 
-    void MeshData::FromJson(const nlohmann::json &j)
+    void ModelData::FromJson(const nlohmann::json &j)
     {
         TransformData::FromJson(j);
         j.at("asset_id").get_to(assetId);
         j.at("material_id").get_to(materialId);
     }
 
-    void MeshData::DrawEditor()
+    void ModelData::DrawEditor()
     {
         TransformData::DrawEditor();
         InputTextStdString("Asset ID:", assetId);
@@ -203,8 +203,8 @@ namespace SGE
         {
             case ObjectType::Camera:
                 return std::make_unique<CameraData>();
-            case ObjectType::Mesh:
-                return std::make_unique<MeshData>();
+            case ObjectType::Model:
+                return std::make_unique<ModelData>();
             case ObjectType::PointLight:
                 return std::make_unique<PointLightData>();
             case ObjectType::DirectionalLight:

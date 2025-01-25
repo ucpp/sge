@@ -18,23 +18,24 @@ namespace SGE
         void Update(double deltaTime);
         void Shutdown();
 
-        const std::vector<std::unique_ptr<Model>>& GetRenderableObjects() const { return m_renderableObjects; }
+        const std::map<const ModelData*, ModelInstance*>& GetModels() const { return m_modelInstances; }
 
     private:
         void InitializeCamera();
         void InitializeSceneData();
-        void InitializeRenderableObjects();
+        void InstantiateModels();
+        void InitializeFog();
 
         void UpdateCamera(double deltaTime);
         void UpdateSceneData(double deltaTime);
-        void UpdateRenderableObjects(double deltaTime);
+        void UpdateModels(double deltaTime);
 
     private:
         class RenderContext* m_context = nullptr;
         
         Camera m_mainCamera;
         CameraController m_cameraController;
-        std::vector<std::unique_ptr<Model>> m_renderableObjects;
+        std::map<const ModelData*, ModelInstance*> m_modelInstances;
 
         std::unique_ptr<ConstantBuffer> m_sceneDataBuffer;
         SceneData m_sceneData;

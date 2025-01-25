@@ -67,9 +67,9 @@ namespace SGE
         commandList->OMSetRenderTargets(targetCount, rtvHandles, false, &dsvHandle);
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        for (const auto& object : scene->GetRenderableObjects())
+        for(auto& pair : scene->GetModels())
         {
-            object->Render(commandList.Get());
+            pair.second->Render(m_context->GetCommandList().Get());
         }
     }
     

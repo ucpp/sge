@@ -39,20 +39,62 @@ namespace SGE
 
     enum class AssetType
     {
-        StaticMesh = 0,
+        Model = 0,
         Material   = 1,
         Light      = 2
     };
 
-    struct AssetBase
+    class AssetBase
     {
+    public:
+        virtual ~AssetBase() = default;
+        virtual void ToJson(nlohmann::json& j) const;
+        virtual void FromJson(const nlohmann::json& j);
+    
+    public:
         std::string name;
         AssetType type;
     };
 
-    struct ProjectAssets
+    class ModelAssetSettings : public AssetBase
     {
-        std::vector<AssetBase> assets;
+    public:
+        ModelAssetSettings();
+        void ToJson(nlohmann::json& j) const override;
+        void FromJson(const nlohmann::json& j) override;
+    
+    public:
+        std::string path;
+    };
+
+    class MaterialAssetSettings : public AssetBase
+    {
+    public:
+        MaterialAssetSettings();
+        void ToJson(nlohmann::json& j) const override;
+        void FromJson(const nlohmann::json& j) override;
+
+    public:
+        std::string albedoTexturePath;
+        std::string metallicTexturePath;
+        std::string normalTexturePath;
+        std::string roughnessTexturePath;
+    };
+
+    class LightAssetSettings : public AssetBase 
+    {
+    public:
+        LightAssetSettings();
+    }; 
+
+    class ProjectAssets
+    {
+    public:
+        const MaterialAssetSettings& GetMaterial(const std::string& id) const;
+        const ModelAssetSettings& GetModel(const std::string& id) const;
+
+    public:
+        std::unordered_map<std::string, std::unique_ptr<AssetBase>> assets;
     };
 
     struct ApplicationSettings
@@ -63,6 +105,8 @@ namespace SGE
         ProjectAssets project;
         SceneSettings scene;
     };
+
+    std::unique_ptr<AssetBase> CreateObject(AssetType type);
 
     const std::string DEFAULT_SETTINGS_PATH = "resources/configs/application_settings.json";
 }

@@ -2,7 +2,9 @@
 #define _SGE_MODEL_LOADER_H_
 
 #include <string>
+#include "sge_render_context.h"
 #include "sge_model.h"
+#include "sge_model_asset.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -13,12 +15,18 @@ namespace SGE
     class ModelLoader
     {
     public:
-        static Model LoadModel(const std::string& filePath, class Device* device, class DescriptorHeap* descriptorHeap, uint32 descriptorIndex);
+        static bool LoadModel(const ModelAssetSettings& assetSettings);
+        static ModelInstance* Instantiate(const ModelAssetSettings& assetSettings, RenderContext* context);
 
     private:
         static void ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, const std::string& modelPath);
         static Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& modelPath);
-        static std::string BuildTexturePath(const std::string& modelPath, const std::string& textureRelativePath);
+        static bool HasAsset(const std::string& assetName);
+
+    private:
+        static std::unordered_map<std::string, std::unique_ptr<ModelAsset>> m_modelAssets;
+        static std::unordered_map<uint32, std::unique_ptr<ModelInstance>> m_modelInstances;
+        static uint32 m_currentModelInstanceIndex;
     };
 }
 

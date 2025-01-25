@@ -89,8 +89,6 @@ namespace SGE
     void from_json(const nlohmann::json& j, ApplicationSettings& settings);
     void from_json(const nlohmann::json& j, EditorSettings& settings);
 
-    void to_json(nlohmann::json& j, const AssetBase& settings);
-    void from_json(const nlohmann::json& j, AssetBase& settings);
     void to_json(nlohmann::json& j, const ProjectAssets& settings);
     void from_json(const nlohmann::json& j, ProjectAssets& settings);
 }

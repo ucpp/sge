@@ -1,85 +1,40 @@
 #include "sge_model.h"
 
+#include "sge_helpers.h"
 #include "sge_device.h"
 #include "sge_descriptor_heap.h"
 #include "sge_texture_manager.h"
 
 namespace SGE
 {
-    void Model::Initialize(const std::vector<Mesh>& meshes, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void ModelInstance::Initialize(ModelAsset* asset, Device* device, DescriptorHeap* descriptorHeap, uint32 instanceIndex)
     {
+        Verify(asset, "ModelInstance::Initialize asset is null.");
+        
+        m_asset = asset;
         m_descriptorHeap = descriptorHeap;
-        m_descriptorIndex = descriptorIndex;
-
-        size_t totalVertexCount = 0;
-        size_t totalIndexCount = 0;
-
-        for (const auto& mesh : meshes)
-        {
-            totalVertexCount += mesh.GetVertices().size();
-            totalIndexCount += mesh.GetIndices().size();
-        }
-
-        std::vector<Vertex> allVertices;
-        std::vector<uint32> allIndices;
-        allVertices.reserve(totalVertexCount);
-        allIndices.reserve(totalIndexCount);
-
-        uint32 currentIndexOffset = 0;
-
-        for (const auto& mesh : meshes)
-        {
-            const auto& vertices = mesh.GetVertices();
-            const auto& indices = mesh.GetIndices();
-
-            allVertices.insert(allVertices.end(), vertices.begin(), vertices.end());
-
-            for (const auto& index : indices)
-            {
-                allIndices.push_back(index + currentIndexOffset);
-            }
-
-            MaterialData materialData = mesh.GetMaterial();
-            MeshResourceInfo resourceInfo;
-
-            resourceInfo.diffuseTextureIndex = TextureManager::GetTextureIndex(materialData.diffuseTexturePath, device, descriptorHeap);
-            resourceInfo.normalTextureIndex = TextureManager::GetTextureIndex(materialData.normalTexturePath, device, descriptorHeap);
-            resourceInfo.specularTextureIndex = TextureManager::GetTextureIndex(materialData.specularTexturePath, device, descriptorHeap);
-
-            resourceInfo.vertexCountOffset = currentIndexOffset;
-            resourceInfo.indexCountOffset = currentIndexOffset;
-            resourceInfo.meshIndexCount = static_cast<uint32>(indices.size());
-
-            m_meshResourceInfo.push_back(resourceInfo);
-
-            currentIndexOffset += static_cast<uint32>(vertices.size());
-        }
-
-        std::reverse(allIndices.begin(), allIndices.end());
-
-        m_vertexBuffer.Initialize(device, std::move(allVertices));
-        m_indexBuffer.Initialize(device, std::move(allIndices));
-        m_indexCount = static_cast<uint32>(allIndices.size());
-
-        m_transformBuffer = std::make_unique<ConstantBuffer>();
-        m_transformBuffer->Initialize(device->GetDevice().Get(), descriptorHeap, sizeof(TransformBuffer), descriptorIndex);
+        m_instanceIndex = instanceIndex;
+        m_vertexBuffer.Initialize(device, asset->GetVertices());
+        m_indexBuffer.Initialize(device, asset->GetIndices());
+        m_transformBuffer.Initialize(device->GetDevice().Get(), descriptorHeap, sizeof(TransformBuffer), m_instanceIndex);
     }
 
-    void Model::Render(ID3D12GraphicsCommandList* commandList) const
+    void ModelInstance::SetMaterial(Material* material)
+    {
+        m_material = material;
+    }
+
+    void ModelInstance::Render(ID3D12GraphicsCommandList* commandList) const
     {
         commandList->IASetVertexBuffers(0, 1, &m_vertexBuffer.GetView());
         commandList->IASetIndexBuffer(&m_indexBuffer.GetView());
+        commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(m_instanceIndex));
+        m_material->Bind(commandList, m_descriptorHeap);
 
-        commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(m_descriptorIndex));
-
-        for (size_t i = 0; i < m_meshResourceInfo.size(); ++i)
+        const std::vector<Mesh>& meshes = m_asset->GetMeshes();
+        for (size_t i = 0; i < meshes.size(); ++i)
         {
-            const auto& resourceInfo = m_meshResourceInfo[i];
-
-            commandList->SetGraphicsRootDescriptorTable(2, m_descriptorHeap->GetGPUHandle(resourceInfo.diffuseTextureIndex));
-            commandList->SetGraphicsRootDescriptorTable(3, m_descriptorHeap->GetGPUHandle(resourceInfo.normalTextureIndex));
-            commandList->SetGraphicsRootDescriptorTable(4, m_descriptorHeap->GetGPUHandle(resourceInfo.specularTextureIndex));
-
+            const auto& resourceInfo = meshes[i].GetInfo();
             uint32 meshIndexCount = resourceInfo.meshIndexCount;
             uint32 vertexOffset = resourceInfo.vertexCountOffset;
             uint32 indexOffset = resourceInfo.indexCountOffset;
@@ -88,7 +43,7 @@ namespace SGE
         }
     }
 
-    Matrix Model::GetWorldMatrix() const
+    Matrix ModelInstance::GetWorldMatrix() const
     {
         Matrix scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
         Matrix rotationMatrix = XMMatrixRotationRollPitchYaw(
@@ -101,13 +56,13 @@ namespace SGE
         return scaleMatrix * rotationMatrix * translationMatrix;
     }
 
-    void Model::Update(const Matrix& viewMatrix, const Matrix& projectionMatrix)
+    void ModelInstance::Update(const Matrix& viewMatrix, const Matrix& projectionMatrix)
     {
         TransformBuffer transformData = {};
         transformData.model = GetWorldMatrix().Transpose();
         transformData.view = viewMatrix;
         transformData.projection = projectionMatrix;
 
-        m_transformBuffer->Update(&transformData, sizeof(TransformBuffer));
+        m_transformBuffer.Update(&transformData, sizeof(TransformBuffer));
     }
 }

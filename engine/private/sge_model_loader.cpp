@@ -2,28 +2,54 @@
 
 #include "sge_device.h"
 #include "sge_descriptor_heap.h"
+#include "sge_model_asset.h"
 #include <filesystem>
 
 namespace SGE
 {
-    Model ModelLoader::LoadModel(const std::string& filePath, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
-    {
-        Assimp::Importer importer;
+    std::unordered_map<std::string, std::unique_ptr<ModelAsset>> ModelLoader::m_modelAssets;
+    std::unordered_map<uint32, std::unique_ptr<ModelInstance>> ModelLoader::m_modelInstances;
+    uint32 ModelLoader::m_currentModelInstanceIndex = 0;
 
-        const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+    bool ModelLoader::LoadModel(const ModelAssetSettings& assetSettings)
+    {
+        if(HasAsset(assetSettings.name))
+        {
+            return true;
+        }
+
+        Assimp::Importer importer{};
+        const aiScene* scene = importer.ReadFile(assetSettings.path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
         if (!scene || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !scene->mRootNode)
         {
-            throw std::runtime_error("Failed to load model: " + std::string(importer.GetErrorString()));
+            return false;
         }
 
         std::vector<Mesh> meshes;
-        ProcessNode(scene->mRootNode, scene, meshes, filePath);
+        ProcessNode(scene->mRootNode, scene, meshes, assetSettings.path);
 
-        Model model;
-        model.Initialize(meshes, device, descriptorHeap, descriptorIndex);
+        std::unique_ptr<ModelAsset> asset = std::make_unique<ModelAsset>();
+        asset->Initialize(meshes);
+        m_modelAssets[assetSettings.name] = std::move(asset);
 
-        return model;
+        return true;
+    }
+
+    ModelInstance* ModelLoader::Instantiate(const ModelAssetSettings& assetSettings, RenderContext* context)
+    {
+        if(HasAsset(assetSettings.name))
+        {
+            ++m_currentModelInstanceIndex;
+            std::unique_ptr<ModelInstance> modelInstance = std::make_unique<ModelInstance>();
+            modelInstance->Initialize(m_modelAssets[assetSettings.name].get(), context->GetDevice(), context->GetCbvSrvUavHeap(), m_currentModelInstanceIndex);
+
+            m_modelInstances[m_currentModelInstanceIndex] = std::move(modelInstance);
+
+            return m_modelInstances[m_currentModelInstanceIndex].get();
+        }
+
+        return nullptr;
     }
 
     void ModelLoader::ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, const std::string& modelPath)
@@ -85,34 +111,12 @@ namespace SGE
             }
         }
 
-        MaterialData material = {};
-        if (scene->mMaterials)
-        {
-            aiMaterial* aiMat = scene->mMaterials[mesh->mMaterialIndex];
-            aiString path;
-
-            if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &path) == AI_SUCCESS)
-            {
-                material.diffuseTexturePath = BuildTexturePath(modelPath, path.C_Str());
-            }
-            if (aiMat->GetTexture(aiTextureType_HEIGHT, 0, &path) == AI_SUCCESS)
-            {
-                material.normalTexturePath = BuildTexturePath(modelPath, path.C_Str());
-            }
-            if (aiMat->GetTexture(aiTextureType_SPECULAR, 0, &path) == AI_SUCCESS)
-            {
-                material.specularTexturePath = BuildTexturePath(modelPath, path.C_Str());
-            }
-        }
-
-        return Mesh(std::move(vertices), std::move(indices), material);
+        return Mesh(std::move(vertices), std::move(indices));
     }
 
-    std::string ModelLoader::BuildTexturePath(const std::string& modelPath, const std::string& textureRelativePath)
+    bool ModelLoader::HasAsset(const std::string& assetName)
     {
-        std::filesystem::path modelDir = std::filesystem::path(modelPath).parent_path();
-        std::filesystem::path texturePath = modelDir / textureRelativePath;
-
-        return texturePath.string();
+        auto it = m_modelAssets.find(assetName);
+        return it != m_modelAssets.end() && it->second;
     }
 }
