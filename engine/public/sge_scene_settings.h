@@ -121,6 +121,7 @@ namespace SGE
     void ParseVector3(const nlohmann::json& j, const std::string& key, float* target);
 
     bool InputTextStdString(const std::string& label, std::string& str, ImGuiInputTextFlags flags = 0);
+    bool DragRotation3(const std::string& label, float* values, ImGuiInputTextFlags flags = 0);
     bool DragFloat3(const std::string& label, float* values, ImGuiInputTextFlags flags = 0);
     bool ColorEdit3(const std::string& label, float* color, ImGuiInputTextFlags flags = 0);
     bool DragFloat(const std::string& label, float* value, float min = -FLT_MAX, float max = FLT_MAX, ImGuiInputTextFlags flags = 0);

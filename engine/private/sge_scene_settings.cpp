@@ -44,7 +44,7 @@ namespace SGE
     {
         SceneObjectBase::DrawEditor();
         DragFloat3("Position:", position);
-        DragFloat3("Rotation:", rotation);
+        DragRotation3("Rotation:", rotation);
         DragFloat3("Scale:", scale);
     }
 
@@ -247,6 +247,25 @@ namespace SGE
         }
 
         return result;
+    }
+
+    bool DragRotation3(const std::string& label, float* values, ImGuiInputTextFlags flags)
+    {
+        bool changed = DragFloat3(label, values, flags);
+
+        if (changed)
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                // [0, 360]
+                while (values[i] >= 360.0f)
+                    values[i] -= 360.0f;
+                while (values[i] < 0.0f)
+                    values[i] += 360.0f;
+            }
+        }
+
+        return changed;
     }
 
     bool DragFloat3(const std::string& label, float* values, ImGuiInputTextFlags flags)
