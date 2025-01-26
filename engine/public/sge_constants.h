@@ -25,6 +25,9 @@ namespace SGE
 
     constexpr uint32 MAX_POINT_LIGHTS = 6;
     constexpr uint32 MAX_SPOT_LIGHTS = 1;
+
+
+    constexpr const char* SHADERS_DIRECTORY = "shaders";
 }
 
 #endif // !_SGE_CONSTANTS_H_
