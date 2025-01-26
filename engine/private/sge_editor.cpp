@@ -53,18 +53,18 @@ namespace SGE
 
         ImGui_ImplDX12_Init(device, BUFFER_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);    
 
-        uint32 meshIconIndex = TextureManager::GetTextureIndex("resources/editor/mesh_icon.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 materialIconIndex = TextureManager::GetTextureIndex("resources/editor/material_icon.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 lightIconIndex = TextureManager::GetTextureIndex("resources/editor/light_icon.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 meshIconIndex = TextureManager::GetTextureIndex("resources/editor/mesh_icon.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 materialIconIndex = TextureManager::GetTextureIndex("resources/editor/material_icon.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 lightIconIndex = TextureManager::GetTextureIndex("resources/editor/light_icon.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
 
         m_icons.emplace(AssetType::Model, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIconIndex).ptr);
         m_icons.emplace(AssetType::Material, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(materialIconIndex).ptr);
         m_icons.emplace(AssetType::Light, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(lightIconIndex).ptr);
 
-        uint32 cameraIcon16 = TextureManager::GetTextureIndex("resources/editor/camera_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 meshIcon16 = TextureManager::GetTextureIndex("resources/editor/mesh_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 directionalIcon16 = TextureManager::GetTextureIndex("resources/editor/directional_light_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 pointLightIcon16 = TextureManager::GetTextureIndex("resources/editor/point_light_16.png", m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 cameraIcon16 = TextureManager::GetTextureIndex("resources/editor/camera_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 meshIcon16 = TextureManager::GetTextureIndex("resources/editor/mesh_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 directionalIcon16 = TextureManager::GetTextureIndex("resources/editor/directional_light_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        uint32 pointLightIcon16 = TextureManager::GetTextureIndex("resources/editor/point_light_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
 
         m_objectIcons.emplace(ObjectType::Camera, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(cameraIcon16).ptr);
         m_objectIcons.emplace(ObjectType::DirectionalLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(directionalIcon16).ptr);

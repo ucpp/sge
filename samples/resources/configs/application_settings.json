@@ -21,11 +21,11 @@
                 "type": 1
             },
             {
-                "albedo_texture_path": "resources/stones/albedo.png",
-                "metallic_texture_path": "resources/stones/albedo.png",
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
                 "name": "stones",
                 "normal_texture_path": "resources/stones/normal.png",
-                "roughness_texture_path": "resources/stones/roughness.png",
+                "roughness_texture_path": "",
                 "type": 1
             },
             {
@@ -64,6 +64,22 @@
                 "name": "plastic",
                 "normal_texture_path": "resources/plastic/normal.png",
                 "roughness_texture_path": "resources/plastic/roughness.png",
+                "type": 1
+            },
+            {
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "name": "empty",
+                "normal_texture_path": "",
+                "roughness_texture_path": "",
+                "type": 1
+            },
+            {
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "name": "backpack_norm",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "",
                 "type": 1
             },
             {
@@ -167,7 +183,7 @@
             },
             {
                 "asset_id": "cube",
-                "material_id": "marbel",
+                "material_id": "stones",
                 "name": "cube",
                 "position": [
                     -2.200000047683716,
@@ -209,7 +225,7 @@
             },
             {
                 "asset_id": "backpack.obj",
-                "material_id": "backpack",
+                "material_id": "backpack_norm",
                 "name": "backpack",
                 "position": [
                     -0.800000011920929,

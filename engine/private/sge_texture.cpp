@@ -95,5 +95,89 @@ namespace SGE
         D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = descriptorHeap->GetCPUHandle(descriptorIndex);
 
         device->GetDevice()->CreateShaderResourceView(m_resource.Get(), &srvDesc, srvHandle);
+
+        m_descriptorIndex = descriptorIndex;
+    }
+
+    void Texture::CreateSinglePixelTexture(uint32 color, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    {
+        D3D12_RESOURCE_DESC textureDesc = {};
+        textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+        textureDesc.Width = 1;
+        textureDesc.Height = 1;
+        textureDesc.DepthOrArraySize = 1;
+        textureDesc.MipLevels = 1;
+        textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        textureDesc.SampleDesc.Count = 1;
+        textureDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+
+        Verify(device->GetDevice()->CreateCommittedResource(
+            &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+            D3D12_HEAP_FLAG_NONE,
+            &textureDesc,
+            D3D12_RESOURCE_STATE_COPY_DEST,
+            nullptr,
+            IID_PPV_ARGS(&m_resource)));
+
+        Verify(device->GetDevice()->CreateCommittedResource(
+            &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+            D3D12_HEAP_FLAG_NONE,
+            &CD3DX12_RESOURCE_DESC::Buffer(GetRequiredIntermediateSize(m_resource.Get(), 0, 1)),
+            D3D12_RESOURCE_STATE_GENERIC_READ,
+            nullptr,
+            IID_PPV_ARGS(&m_resourceUpload)));
+
+        uint32 pixelData = color;
+        D3D12_SUBRESOURCE_DATA subresourceData = {};
+        subresourceData.pData = &pixelData;
+        subresourceData.RowPitch = sizeof(uint32);
+        subresourceData.SlicePitch = subresourceData.RowPitch;
+
+        UpdateSubresources(
+            device->GetCommandList().Get(),
+            m_resource.Get(),
+            m_resourceUpload.Get(),
+            0,
+            0,
+            1,
+            &subresourceData);
+
+        CD3DX12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+            m_resource.Get(),
+            D3D12_RESOURCE_STATE_COPY_DEST,
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        device->GetCommandList()->ResourceBarrier(1, &barrier);
+
+        D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+        srvDesc.Format = textureDesc.Format;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        srvDesc.Texture2D.MipLevels = 1;
+        srvDesc.Texture2D.MostDetailedMip = 0;
+
+        D3D12_CPU_DESCRIPTOR_HANDLE srvHandle = descriptorHeap->GetCPUHandle(descriptorIndex);
+        device->GetDevice()->CreateShaderResourceView(m_resource.Get(), &srvDesc, srvHandle);
+
+        m_descriptorIndex = descriptorIndex;
+    }
+
+    void Texture::CreateDefaultAlbedo(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    {
+        CreateSinglePixelTexture(0xFFFFFFFF, device, descriptorHeap, descriptorIndex); // white
+    }
+
+    void Texture::CreateDefaultMetallic(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    {
+        CreateSinglePixelTexture(0x000000FF, device, descriptorHeap, descriptorIndex); // black
+    }
+
+    void Texture::CreateDefaultRoughness(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    {
+        CreateSinglePixelTexture(0xFFFFFFFF, device, descriptorHeap, descriptorIndex); // white
+    }
+
+    void Texture::CreateDefaultNormal(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    {
+        CreateSinglePixelTexture(0x8080FFFF, device, descriptorHeap, descriptorIndex); // (128, 128, 255)
     }
 }

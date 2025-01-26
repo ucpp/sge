@@ -28,5 +28,8 @@
 ✔ Refactoring of the model loading and management system (draft version). @done(25-01-25 21:40)
 
 [Day 36/1000 - 26/01/2025]
+✔ Add fallback to default texture creation when texture is missing. @done(25-01-26 22:30)
+
+[Day 37/1000 - 27/01/2025]
 ☐ Add lights initialization and synchronization according to the lights data.
 ☐ Refactoring of the model loading and management system.
