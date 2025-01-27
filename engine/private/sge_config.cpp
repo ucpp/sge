@@ -8,7 +8,8 @@ namespace SGE
             { "title", settings.title },
             { "selected_resolution", settings.selectedResolution },
             { "fullscreen", settings.fullscreen },
-            { "resolutions", settings.resolutions }
+            { "resolutions", settings.resolutions },
+            { "target_fps", settings.targetFPS }
         };
     }
 
@@ -47,6 +48,7 @@ namespace SGE
         j.at("selected_resolution").get_to(settings.selectedResolution);
         j.at("fullscreen").get_to(settings.fullscreen);
         j.at("resolutions").get_to(settings.resolutions);
+        j.at("target_fps").get_to(settings.targetFPS);
 
         settings.UpdateResolutionCStrings();
     }

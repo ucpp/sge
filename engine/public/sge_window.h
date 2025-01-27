@@ -16,7 +16,7 @@ namespace SGE
 
         void Create();
         void Create(const std::string& title, int32 width, int32 height, bool fullscreen);
-        void StartUpdateLoop();
+        bool ProcessMessages();
 
         void SetWindowSize(int32 width, int32 height);
         void SetFullscreen(bool fullscreen);
@@ -26,7 +26,6 @@ namespace SGE
         inline int32 GetHeight() const { return m_height; }
         inline bool IsFullscreen() const { return m_fullscreen; }
 
-        Action<double>& OnUpdate() { return m_updateEvent; }
         Action<uint32, uint32>& OnResize() { return m_resizeEvent; }
 
     private:
@@ -55,8 +54,6 @@ namespace SGE
         bool           m_fullscreen;
         HINSTANCE      m_hinstance;
         HWND           m_hwnd;
-        FrameTimer     m_frameTimer;
-        Action<double> m_updateEvent;
         Action<uint32, uint32> m_resizeEvent;
     
         const struct ApplicationSettings* m_applicationSettings;

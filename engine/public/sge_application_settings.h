@@ -12,6 +12,7 @@ namespace SGE
         int32 selectedResolution = 0;
         bool fullscreen = false;
         std::vector<std::string> resolutions;
+        uint32 targetFPS = 30;
 
         const char** GetResolutions();
         void UpdateResolutionCStrings();

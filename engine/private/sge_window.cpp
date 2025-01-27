@@ -56,9 +56,20 @@ namespace SGE
         LOG_INFO("Window created with parameters: title = {}, width = {}, height = {}", title, width, height);
     }
 
-    void Window::StartUpdateLoop()
+    bool Window::ProcessMessages()
     {
-        Update();
+        MSG msg;
+        ZeroMemory(&msg, sizeof(MSG));
+        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+            if (msg.message == WM_QUIT)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     void Window::SetWindowSize(int32 width, int32 height)
@@ -201,53 +212,8 @@ namespace SGE
         LOG_INFO("Window class unregistered successfully.");
     }
 
-    void Window::Update()
-    {
-        m_frameTimer.Reset();
-
-        MSG msg;
-        bool done = false;
-
-        ZeroMemory(&msg, sizeof(MSG));
-
-        double accumulatedTime = 0.0f;
-        const double fixedDeltaTime = 60.0f / 1000.0f;
-
-        while (!done)
-        {
-            while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-
-                bool isPressedQuit = m_applicationSettings->editor.isPressedQuit || Input::Get().GetKeyDown(VK_ESCAPE);
-                if (msg.message == WM_QUIT || isPressedQuit)
-                {
-                    done = true;
-                    break;
-                }
-            }
-
-            if (!done)
-            {
-                double elapsedTime = m_frameTimer.GetElapsedSeconds();
-                accumulatedTime += elapsedTime;
-
-                while (accumulatedTime >= fixedDeltaTime)
-                {
-                    m_updateEvent.Invoke(fixedDeltaTime);
-                    accumulatedTime -= fixedDeltaTime;
-                    Input::Get().ResetStates();
-                }
-
-                m_frameTimer.Reset();
-            }
-        }
-    }
-
     void Window::Shutdown()
     {
-        m_updateEvent.Clear();
         m_resizeEvent.Clear();
 
         DestroyWindowHandle();

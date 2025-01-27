@@ -31,7 +31,7 @@ namespace SGE
     void Application::Run()
     {
         Initialize();
-        StartEngine();
+        MainLoop();
     }
 
     void Application::Initialize()
@@ -39,8 +39,6 @@ namespace SGE
         FrameTimer timer{};
     
         m_window->Create();
-        m_window->OnUpdate().Subscribe(this, &Application::Update);
-        
         m_renderContext->Initialize(m_window.get(), m_settings.get());
         m_editor->Initialize(m_renderContext.get());
         m_scene->Initialize(m_renderContext.get());
@@ -49,20 +47,57 @@ namespace SGE
         LOG_INFO("Initialization time: {}", timer.GetElapsedSeconds());
 
         m_shaderMonitor->OnDirectoryChanged().Subscribe(this, &Application::ShaderDirectoryChanged);
-    }
-
-    void Application::StartEngine()
-    {
         m_shaderMonitor->Start();
-        m_window->StartUpdateLoop();
     }
 
-    void Application::Update(double deltaTime)
+    void Application::MainLoop()
     {
-        m_scene->Update(deltaTime);
-        m_renderer->Render(m_scene.get(), m_editor.get());
+        const double fixedDeltaTime = 1.0 / m_settings->window.targetFPS;
+        FrameTimer timer{};
+        m_isRunning = true;
+        double accumulatedTime = 0.0;
 
-        HandleInput();
+        while (m_isRunning)
+        {
+            double elapsedTime = timer.GetElapsedSeconds();
+            timer.Reset();
+
+            accumulatedTime += elapsedTime;
+
+            m_isRunning &= m_window->ProcessMessages();
+            m_isRunning &= !m_settings->editor.isPressedQuit;
+
+            while (accumulatedTime >= fixedDeltaTime)
+            {
+                HandleInput();
+                m_scene->Update(fixedDeltaTime);
+                accumulatedTime -= fixedDeltaTime;
+            }
+
+            m_renderer->Render(m_scene.get(), m_editor.get());
+            Input::Get().ResetStates();
+        }
+    }
+
+    void Application::HandleInput()
+    {
+        if(Input::Get().GetKeyDown(VK_ESCAPE))
+        {
+            m_isRunning = false;
+        }
+
+        if(Input::Get().GetKeyDown('0'))
+        {
+            EditorSettings& settings = m_renderContext->GetEditorSettings();
+            settings.isEnable = !settings.isEnable;
+            m_editor->SetActive(settings.isEnable);
+        }
+    }
+
+    void Application::ShaderDirectoryChanged()
+    {
+        LOG_INFO("Shader directory changed, reloading shaders...");
+        m_renderer->ReloadShaders();
     }
 
     void Application::Shutdown()
@@ -83,11 +118,6 @@ namespace SGE
             m_editor->Shutdown();
         }
 
-        if(m_window)
-        {
-            m_window->OnUpdate().Unsubscribe(this);
-        }
-
         if(m_renderer)
         {
             m_renderer->Shutdown();
@@ -97,21 +127,5 @@ namespace SGE
         {
             m_renderContext->Shutdown();
         }
-    }
-
-    void Application::HandleInput()
-    {
-        if(Input::Get().GetKeyDown('0'))
-        {
-            EditorSettings& settings = m_renderContext->GetEditorSettings();
-            settings.isEnable = !settings.isEnable;
-            m_editor->SetActive(settings.isEnable);
-        }
-    }
-
-    void Application::ShaderDirectoryChanged()
-    {
-        LOG_INFO("Shader directory changed, reloading shaders...");
-        m_renderer->ReloadShaders();
     }
 }

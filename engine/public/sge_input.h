@@ -31,6 +31,8 @@ namespace SGE
         inline int32 GetMouseY() const { return m_mouseY; }
         inline int32 GetMouseWheelDelta() const { return m_mouseWheelDelta; }
 
+        void ResetStates();
+
     private:
         LRESULT CALLBACK MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam);
 
@@ -41,8 +43,6 @@ namespace SGE
         inline void MouseButtonDown(MouseButton button) { m_mouseButtons[static_cast<int32>(button)] = true; }
         inline void MouseButtonUp(MouseButton button) { m_mouseButtons[static_cast<int32>(button)] = false; }
         inline void MouseWheel(int32 delta) { m_mouseWheelDelta += delta; }
-
-        void ResetStates();
 
     private:
         int32 m_mouseX = 0;

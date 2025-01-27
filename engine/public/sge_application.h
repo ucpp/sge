@@ -24,12 +24,13 @@ namespace SGE
 
     private:
         void Initialize();
-        void StartEngine();
-        void Update(double deltaTime);
-        void Shutdown();
+        void MainLoop();
         void HandleInput();
         void ShaderDirectoryChanged();
+        void Shutdown();
 
+    private:
+        bool                                 m_isRunning;
         std::unique_ptr<ApplicationSettings> m_settings;
         std::unique_ptr<Window>              m_window;
         std::unique_ptr<RenderContext>       m_renderContext;

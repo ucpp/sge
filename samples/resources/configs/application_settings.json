@@ -257,6 +257,7 @@
             "1920x1080"
         ],
         "selected_resolution": 2,
-        "title": "SGE Editor"
+        "title": "SGE Editor",
+        "target_fps" : 30
     }
 }
