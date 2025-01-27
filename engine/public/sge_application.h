@@ -19,7 +19,6 @@ namespace SGE
     {
     public:
         explicit Application(const std::string& configPath);
-        ~Application();
         void Run();
 
     private:
@@ -28,6 +27,8 @@ namespace SGE
         void HandleInput();
         void ShaderDirectoryChanged();
         void Shutdown();
+        void Update(double deltaTime);
+        void Render();
 
     private:
         bool                                 m_isRunning;

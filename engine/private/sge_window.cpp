@@ -60,15 +60,23 @@ namespace SGE
     {
         MSG msg;
         ZeroMemory(&msg, sizeof(MSG));
-        while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+
+        DWORD result = MsgWaitForMultipleObjects(0, nullptr, FALSE, 1, QS_ALLINPUT);
+
+        if (result == WAIT_OBJECT_0)
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-            if (msg.message == WM_QUIT)
+            while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
             {
-                return false;
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+
+                if (msg.message == WM_QUIT)
+                {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 

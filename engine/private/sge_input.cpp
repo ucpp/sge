@@ -17,15 +17,15 @@ namespace SGE
 
     LRESULT Input::MessageHandler(HWND hwnd, UINT umsg, WPARAM wparam, LPARAM lparam)
     {
-        ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam);
-
+        if(ImGui_ImplWin32_WndProcHandler(hwnd, umsg, wparam, lparam))
+        {
+            return 1;
+        }
+ 
         switch (umsg)
         {
         case WM_KEYDOWN:
-            if ((lparam & 0x40000000) == 0) // Ignore repeated keydown events
-            {
-                KeyDown(static_cast<uint32>(wparam));
-            }
+            KeyDown(static_cast<uint32>(wparam));
             return 0;
         case WM_KEYUP:
             KeyUp(static_cast<uint32>(wparam));

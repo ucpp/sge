@@ -17,27 +17,21 @@ namespace SGE
     , m_renderer(std::make_unique<Renderer>())
     , m_shaderMonitor(std::make_unique<DirectoryMonitor>(SHADERS_DIRECTORY))
     {
-        if (!Config::Load(configPath, *m_settings))
-        {
-            LOG_ERROR("Failed to load settings from {}", configPath);
-        }
-    }
-
-    Application::~Application()
-    {
-        Shutdown();
+        bool configLoaded = Config::Load(configPath, *m_settings);
+        Verify(configLoaded, "Failed to load settings");
     }
 
     void Application::Run()
     {
         Initialize();
         MainLoop();
+        Shutdown();
     }
 
     void Application::Initialize()
     {
         FrameTimer timer{};
-    
+        
         m_window->Create();
         m_renderContext->Initialize(m_window.get(), m_settings.get());
         m_editor->Initialize(m_renderContext.get());
@@ -59,6 +53,8 @@ namespace SGE
 
         while (m_isRunning)
         {
+            Input::Get().ResetStates();
+
             double elapsedTime = timer.GetElapsedSeconds();
             timer.Reset();
 
@@ -67,16 +63,25 @@ namespace SGE
             m_isRunning &= m_window->ProcessMessages();
             m_isRunning &= !m_settings->editor.isPressedQuit;
 
+            HandleInput();
             while (accumulatedTime >= fixedDeltaTime)
             {
-                HandleInput();
-                m_scene->Update(fixedDeltaTime);
+                Update(fixedDeltaTime);
                 accumulatedTime -= fixedDeltaTime;
             }
 
-            m_renderer->Render(m_scene.get(), m_editor.get());
-            Input::Get().ResetStates();
+            Render();
         }
+    }
+
+    void Application::Update(double deltaTime)
+    {
+        m_scene->Update(deltaTime);
+    }
+
+    void Application::Render()
+    {
+        m_renderer->Render(m_scene.get(), m_editor.get());
     }
 
     void Application::HandleInput()
