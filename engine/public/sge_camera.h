@@ -41,8 +41,8 @@ namespace SGE
         Matrix GetViewMatrix() const;
         Matrix GetProjMatrix(int width, int height) const;
         Matrix GetOrthoProjMatrix(float width, float height) const;
-        Matrix Camera::GetViewProjMatrix(int width, int height) const;
-        Matrix Camera::GetInvViewProjMatrix(int width, int height) const;
+        Matrix GetViewProjMatrix(int width, int height) const;
+        Matrix GetInvViewProjMatrix(int width, int height) const;
 
         std::array<Matrix, 6> GetCubeViewMatrices() const;
 
