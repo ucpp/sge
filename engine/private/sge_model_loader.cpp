@@ -11,15 +11,15 @@ namespace SGE
     std::unordered_map<uint32, std::unique_ptr<ModelInstance>> ModelLoader::m_modelInstances;
     uint32 ModelLoader::m_currentModelInstanceIndex = 0;
 
-    bool ModelLoader::LoadModel(const ModelAssetSettings& assetSettings)
+    bool ModelLoader::LoadModel(const ModelAssetData& assetData)
     {
-        if(HasAsset(assetSettings.name))
+        if(HasAsset(assetData.name))
         {
             return true;
         }
 
         Assimp::Importer importer{};
-        const aiScene* scene = importer.ReadFile(assetSettings.path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+        const aiScene* scene = importer.ReadFile(assetData.path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
         if (!scene || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !scene->mRootNode)
         {
@@ -27,22 +27,22 @@ namespace SGE
         }
 
         std::vector<Mesh> meshes;
-        ProcessNode(scene->mRootNode, scene, meshes, assetSettings.path);
+        ProcessNode(scene->mRootNode, scene, meshes, assetData.path);
 
         std::unique_ptr<ModelAsset> asset = std::make_unique<ModelAsset>();
         asset->Initialize(meshes);
-        m_modelAssets[assetSettings.name] = std::move(asset);
+        m_modelAssets[assetData.name] = std::move(asset);
 
         return true;
     }
 
-    ModelInstance* ModelLoader::Instantiate(const ModelAssetSettings& assetSettings, RenderContext* context)
+    ModelInstance* ModelLoader::Instantiate(const ModelAssetData& assetData, RenderContext* context)
     {
-        if(HasAsset(assetSettings.name))
+        if(HasAsset(assetData.name))
         {
             ++m_currentModelInstanceIndex;
             std::unique_ptr<ModelInstance> modelInstance = std::make_unique<ModelInstance>();
-            modelInstance->Initialize(m_modelAssets[assetSettings.name].get(), context->GetDevice(), context->GetCbvSrvUavHeap(), m_currentModelInstanceIndex);
+            modelInstance->Initialize(m_modelAssets[assetData.name].get(), context->GetDevice(), context->GetCbvSrvUavHeap(), m_currentModelInstanceIndex);
 
             m_modelInstances[m_currentModelInstanceIndex] = std::move(modelInstance);
 

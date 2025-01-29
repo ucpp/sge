@@ -7,6 +7,7 @@ namespace SGE
 
     float2::float2() noexcept : x(0), y(0) {}
     float2::float2(float x, float y) noexcept : x(x), y(y) {}
+    float* float2::data() noexcept { return &x; }
 
     float float2::length() const noexcept
     {
@@ -89,8 +90,24 @@ namespace SGE
         return !(*this == other);
     }
 
+    float2 float2::operator-() const noexcept
+    {
+        return float2(-x, -y);
+    }
+
     float3::float3() noexcept : x(0), y(0), z(0) {}
     float3::float3(float x, float y, float z) noexcept : x(x), y(y), z(z) {}
+    float* float3::data() noexcept { return &x; }
+
+    float& float3::operator[](size_t index) noexcept
+    {
+        return components[index];
+    }
+
+    const float& float3::operator[](size_t index) const noexcept
+    {
+        return components[index];
+    }
 
     float float3::length() const noexcept
     {
@@ -195,6 +212,11 @@ namespace SGE
     bool float3::operator!=(const float3& other) const noexcept
     {
         return !(*this == other);
+    }
+
+    float3 float3::operator-() const noexcept
+    {
+        return float3(-x, -y, -z);
     }
 
     float2 operator+(const float2& lhs, const float2& rhs)

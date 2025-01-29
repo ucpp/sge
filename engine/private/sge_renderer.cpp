@@ -40,7 +40,7 @@ namespace SGE
         m_context->BindViewportScissors();
         m_context->ClearRenderTargets();
 
-        if(m_context->GetRenderSettings().isDeferredRendering)
+        if(m_context->GetRenderData().isDeferredRendering)
         {
             m_geometryPass->Render(scene);
             m_lightingPass->Render(scene);

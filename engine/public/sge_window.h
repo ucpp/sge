@@ -4,6 +4,7 @@
 #include "pch.h"
 
 #include "sge_frame_timer.h"
+#include "sge_data_structures.h"
 #include "sge_action.h"
 
 namespace SGE
@@ -11,7 +12,7 @@ namespace SGE
     class Window
     {
     public:
-        Window(const struct ApplicationSettings* applicationSettings);
+        Window(const class ApplicationData* appData);
         virtual ~Window();
 
         void Create();
@@ -56,7 +57,7 @@ namespace SGE
         HWND           m_hwnd;
         Action<uint32, uint32> m_resizeEvent;
     
-        const struct ApplicationSettings* m_applicationSettings;
+        const class ApplicationData* m_appData;
 
         RECT           m_windowPosition;
         RECT           m_monitorRect;

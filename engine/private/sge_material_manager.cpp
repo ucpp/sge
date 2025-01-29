@@ -4,17 +4,17 @@ namespace SGE
 {
     std::unordered_map<std::string, std::unique_ptr<Material>> MaterialManager::m_materials;
 
-    Material* MaterialManager::LoadMaterial(const MaterialAssetSettings& materialSettings, RenderContext* context)
+    Material* MaterialManager::LoadMaterial(const MaterialAssetData& materialAssetData, RenderContext* context)
     {
-        if(!HasMaterial(materialSettings.name))
+        if(!HasMaterial(materialAssetData.name))
         {
             std::unique_ptr<Material> material = std::make_unique<Material>();
-            material->Initialize(materialSettings, context);
+            material->Initialize(materialAssetData, context);
 
-            m_materials[materialSettings.name] = std::move(material);
+            m_materials[materialAssetData.name] = std::move(material);
         }
 
-        return m_materials[materialSettings.name].get();
+        return m_materials[materialAssetData.name].get();
     }
     
     bool MaterialManager::HasMaterial(const std::string& materialName)

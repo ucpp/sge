@@ -3,17 +3,17 @@
 namespace SGE
 {
     Camera::Camera() 
-        : m_position(0.0f, 0.0f, -10.0f),
-          m_pitch(0.0f),
-          m_yaw(0.0f),
-          m_fov(DEFAULT_FOV),
-          m_nearPlane(DEFAULT_NEAR_PLANE),
-          m_farPlane(DEFAULT_FAR_PLANE)
+    : m_position(0.0f, 0.0f, -10.0f)
+    , m_pitch(0.0f)
+    , m_yaw(0.0f)
+    , m_fov(DEFAULT_FOV)
+    , m_nearPlane(DEFAULT_NEAR_PLANE)
+    , m_farPlane(DEFAULT_FAR_PLANE)
     {
         SetRotation(m_pitch, m_yaw);
     }
 
-    void Camera::Initialize(const Vector3& position, float pitch, float yaw, float fov, float nearPlane, float farPlane)
+    void Camera::Initialize(const float3& position, float pitch, float yaw, float fov, float nearPlane, float farPlane)
     {
         m_position = position;
         m_pitch = pitch;
@@ -25,7 +25,7 @@ namespace SGE
         SetRotation(pitch, yaw);
     }
 
-    void Camera::SetPosition(const Vector3& position)
+    void Camera::SetPosition(const float3& position)
     {
         m_position = position;
     }
@@ -38,27 +38,27 @@ namespace SGE
         float pitchInRadians = m_pitch * DEG_TO_RAD;
         float yawInRadians = m_yaw * DEG_TO_RAD;
 
-        m_direction = Vector3(
+        m_direction = float3(
             cosf(pitchInRadians) * cosf(yawInRadians), // X
             sinf(pitchInRadians),                      // Y
             cosf(pitchInRadians) * sinf(yawInRadians)  // Z
         );
 
-        m_direction.Normalize();
+        m_direction = m_direction.normalized();
         Recalculate();
     }
 
-    void Camera::SetDirection(const Vector3& direction)
+    void Camera::SetDirection(const float3& direction)
     {
         m_direction = direction;
-        m_direction = m_direction / m_direction.Length();
+        m_direction = m_direction / m_direction.length();
         Recalculate();
     }
 
-    void Camera::SetTarget(const Vector3& target)
+    void Camera::SetTarget(const float3& target)
     {
         m_direction = (target - m_position);
-        m_direction.Normalize();
+        m_direction = m_direction.normalized();
 
         m_yaw = atan2f(m_direction.z, m_direction.x);
         m_pitch = asinf(m_direction.y);
@@ -84,36 +84,33 @@ namespace SGE
         m_farPlane = farPlane;
     }
 
-    Vector3 Camera::GetPosition() const { return m_position; }
-
-    Vector3 Camera::GetForward() const { return m_direction; }
-
-    Vector3 Camera::GetRight() const { return m_right; }
-
-    Vector3 Camera::GetLeft() const { return -m_right; }
-
-    Vector3 Camera::GetUp() const { return m_up; }
-
-    Vector3 Camera::GetBackward() const { return -m_direction; }
+    float3 Camera::GetPosition() const { return m_position; }
+    float3 Camera::GetForward() const { return m_direction; }
+    float3 Camera::GetRight() const { return m_right; }
+    float3 Camera::GetLeft() const { return -m_right; }
+    float3 Camera::GetUp() const { return m_up; }
+    float3 Camera::GetBackward() const { return -m_direction; }
 
     float Camera::GetFov() const { return m_fov; }
-
     float Camera::GetPitch() const { return m_pitch; }
-
     float Camera::GetYaw() const { return m_yaw; }
 
     void Camera::Recalculate()
     {
-        m_right = m_worldUp.Cross(m_direction);
-        m_right = m_right / m_right.Length();
+        m_right = m_worldUp.cross(m_direction);
+        m_right = m_right / m_right.length();
 
-        m_up = m_direction.Cross(m_right);
-        m_up = m_up / m_up.Length();
+        m_up = m_direction.cross(m_right);
+        m_up = m_up / m_up.length();
     }
 
     Matrix Camera::GetViewMatrix() const
     {
-        return XMMatrixTranspose(Matrix::CreateLookAt(m_position, m_position + m_direction, m_up));
+        float3 pos = m_position + m_direction;
+        Vector3 eyePos = { m_position.x, m_position.y, m_position.z };
+        Vector3 focusPos = { pos.x, pos.y, pos.z };
+        Vector3 upDir = { m_up.x, m_up.y, m_up.z };
+        return XMMatrixTranspose(XMMatrixLookAtRH(eyePos, focusPos, upDir));
     }
 
     Matrix Camera::GetProjMatrix(int width, int height) const
@@ -147,7 +144,7 @@ namespace SGE
 
     std::array<Matrix, 6> Camera::GetCubeViewMatrices() const
     {
-        static const Vector3 directions[6] = {
+        static const float3 directions[6] = {
             { 1.0f,  0.0f,  0.0f },  // +X
             {-1.0f,  0.0f,  0.0f },  // -X
             { 0.0f,  1.0f,  0.0f },  // +Y
@@ -156,7 +153,7 @@ namespace SGE
             { 0.0f,  0.0f, -1.0f }   // -Z
         };
 
-        static const Vector3 ups[6] = {
+        static const float3 ups[6] = {
             { 0.0f,  1.0f,  0.0f },  // +X
             { 0.0f,  1.0f,  0.0f },  // -X
             { 0.0f,  0.0f, -1.0f },  // +Y
@@ -168,7 +165,11 @@ namespace SGE
         std::array<Matrix, 6> matrices;
         for (int32 i = 0; i < 6; ++i)
         {
-            matrices[i] = XMMatrixLookAtRH(m_position, m_position + directions[i], ups[i]);
+            float3 pos = m_position + directions[i];
+            Vector3 eyePos = { m_position.x, m_position.y, m_position.z };
+            Vector3 focusPos = { pos.x, pos.y, pos.z };
+            Vector3 upDir = { ups[i].x, ups[i].y, ups[i].z };
+            matrices[i] = XMMatrixLookAtRH(eyePos, focusPos, upDir);
         }
         return matrices;
     }

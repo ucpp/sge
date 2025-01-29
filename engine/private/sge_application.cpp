@@ -9,15 +9,15 @@
 namespace SGE
 {
     Application::Application(const std::string& configPath)
-    : m_settings(std::make_unique<ApplicationSettings>())
-    , m_window(std::make_unique<Window>(m_settings.get()))
+    : m_appData(std::make_unique<ApplicationData>())
+    , m_window(std::make_unique<Window>(m_appData.get()))
     , m_renderContext(std::make_unique<RenderContext>())
     , m_editor(std::make_unique<Editor>())
     , m_scene(std::make_unique<Scene>())
     , m_renderer(std::make_unique<Renderer>())
     , m_shaderMonitor(std::make_unique<DirectoryMonitor>(SHADERS_DIRECTORY))
     {
-        bool configLoaded = Config::Load(configPath, *m_settings);
+        bool configLoaded = Config::Load(configPath, *m_appData);
         Verify(configLoaded, "Failed to load settings");
     }
 
@@ -33,7 +33,7 @@ namespace SGE
         FrameTimer timer{};
         
         m_window->Create();
-        m_renderContext->Initialize(m_window.get(), m_settings.get());
+        m_renderContext->Initialize(m_window.get(), m_appData.get());
         m_editor->Initialize(m_renderContext.get());
         m_scene->Initialize(m_renderContext.get());
         m_renderer->Initialize(m_renderContext.get());
@@ -46,7 +46,7 @@ namespace SGE
 
     void Application::MainLoop()
     {
-        const double fixedDeltaTime = 1.0 / m_settings->window.targetFPS;
+        const double fixedDeltaTime = 1.0 / m_appData->windowData.targetFPS;
         FrameTimer timer{};
         m_isRunning = true;
         double accumulatedTime = 0.0;
@@ -61,7 +61,7 @@ namespace SGE
             accumulatedTime += elapsedTime;
 
             m_isRunning &= m_window->ProcessMessages();
-            m_isRunning &= !m_settings->editor.isPressedQuit;
+            m_isRunning &= !m_appData->windowData.isPressedQuit;
 
             HandleInput();
             while (accumulatedTime >= fixedDeltaTime)
@@ -93,9 +93,9 @@ namespace SGE
 
         if(Input::Get().GetKeyDown('0'))
         {
-            EditorSettings& settings = m_renderContext->GetEditorSettings();
-            settings.isEnable = !settings.isEnable;
-            m_editor->SetActive(settings.isEnable);
+            WindowData& windowData = m_renderContext->GetWindowData();
+            windowData.isEditorEnable = !windowData.isEditorEnable;
+            m_editor->SetActive(windowData.isEditorEnable);
         }
     }
 

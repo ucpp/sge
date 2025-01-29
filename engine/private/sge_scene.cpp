@@ -15,51 +15,51 @@ namespace SGE
         m_context = context;
 
         InitializeCamera();
-        InitializeSceneData();
+        InitializeFrameData();
         InstantiateModels();
     }
     
     void Scene::Update(double deltaTime)
     {
         UpdateCamera(deltaTime);
-        UpdateSceneData(deltaTime);
+        UpdateFrameData(deltaTime);
         UpdateModels(deltaTime);
     }
     
     void Scene::Shutdown()
     {
-        m_sceneData = {};
+        m_frameData = {};
         m_modelInstances.clear();
     }
     
     void Scene::InitializeCamera()
     {
-        CameraData* cameraData = m_context->GetSceneSettings().GetCameraData();
+        CameraData* cameraData = m_context->GetSceneData().GetCameraData();
         m_cameraController.Initialize(cameraData);
         SyncData(cameraData, &m_mainCamera);
     }
 
-    void Scene::InitializeSceneData()
+    void Scene::InitializeFrameData()
     {
-        m_sceneDataBuffer = std::make_unique<ConstantBuffer>();
-        m_sceneDataBuffer->Initialize(m_context->GetD12Device().Get(), m_context->GetCbvSrvUavHeap(), sizeof(SceneData), 0);
+        m_frameDataBuffer = std::make_unique<ConstantBuffer>();
+        m_frameDataBuffer->Initialize(m_context->GetD12Device().Get(), m_context->GetCbvSrvUavHeap(), sizeof(FrameData), 0);
 
-        DirectionalLightData* directionalLightData = m_context->GetSceneSettings().GetDirectionalLight();
-        SyncData(directionalLightData, &m_sceneData.directionalLight);
+        DirectionalLightData* directionalLightData = m_context->GetSceneData().GetDirectionalLight();
+        SyncData(directionalLightData, &m_frameData.directionalLight);
 
         InitializeFog();
         
-        m_sceneData.cameraPosition = m_mainCamera.GetPosition();
-        m_sceneData.zNear = m_mainCamera.GetNear();
-        m_sceneData.zFar = m_mainCamera.GetFar();
-        m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        m_frameData.cameraPosition = m_mainCamera.GetPosition();
+        m_frameData.zNear = m_mainCamera.GetNear();
+        m_frameData.zFar = m_mainCamera.GetFar();
+        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
     }
 
     void Scene::InstantiateModels()
     {
-        const ProjectAssets& projectAssets = m_context->GetAssetsSettings();
+        const AssetsData& assetsData = m_context->GetAssetsData();
 
-        for (const auto& obj : m_context->GetSceneSettings().objects)
+        for (const auto& obj : m_context->GetSceneData().objects)
         {
             if (obj->type != ObjectType::Model)
             {
@@ -71,8 +71,8 @@ namespace SGE
                 const std::string& assetName = modelData->assetId; 
                 const std::string& materialName = modelData->materialId;
 
-                const ModelAssetSettings& modelAsset = projectAssets.GetModel(assetName);
-                const MaterialAssetSettings& materialAsset = projectAssets.GetMaterial(materialName);
+                const ModelAssetData& modelAsset = assetsData.GetModel(assetName);
+                const MaterialAssetData& materialAsset = assetsData.GetMaterial(materialName);
 
                 bool isModelLoaded = ModelLoader::LoadModel(modelAsset);
                 ModelInstance* instance = ModelLoader::Instantiate(modelAsset, m_context);
@@ -87,30 +87,30 @@ namespace SGE
 
     void Scene::InitializeFog()
     {
-        m_sceneData.fogStart = 3.0f;
-        m_sceneData.fogEnd = 30.0f;
-        m_sceneData.fogColor = {0.314f, 0.314f, 0.314f};
-        m_sceneData.fogStrength = m_context->GetRenderSettings().isFogEnabled ? 1.0f : 0.0f;
-        m_sceneData.fogDensity = 0.1f;
+        m_frameData.fogStart = 3.0f;
+        m_frameData.fogEnd = 30.0f;
+        m_frameData.fogColor = {0.314f, 0.314f, 0.314f};
+        m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
+        m_frameData.fogDensity = 0.1f;
     }
 
     void Scene::UpdateCamera(double deltaTime)
     {
         m_cameraController.Update(deltaTime);
 
-        CameraData* cameraData = m_context->GetSceneSettings().GetCameraData();
+        CameraData* cameraData = m_context->GetSceneData().GetCameraData();
         SyncData(cameraData, &m_mainCamera);
     }
     
-    void Scene::UpdateSceneData(double deltaTime)
+    void Scene::UpdateFrameData(double deltaTime)
     {
-        DirectionalLightData* directionalLightData = m_context->GetSceneSettings().GetDirectionalLight();
-        SyncData(directionalLightData, &m_sceneData.directionalLight);
+        DirectionalLightData* directionalLightData = m_context->GetSceneData().GetDirectionalLight();
+        SyncData(directionalLightData, &m_frameData.directionalLight);
 
-        m_sceneData.cameraPosition = m_mainCamera.GetPosition();
-        m_sceneData.fogStrength = m_context->GetRenderSettings().isFogEnabled ? 1.0f : 0.0f;
-        m_sceneData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
-        m_sceneDataBuffer->Update(&m_sceneData, sizeof(SceneData));
+        m_frameData.cameraPosition = m_mainCamera.GetPosition();
+        m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
+        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));
     }
     
     void Scene::UpdateModels(double deltaTime)

@@ -1,7 +1,6 @@
 #include "sge_data_adapters.h"
 
-#include "sge_scene_settings.h"
-#include "sge_scene_data.h"
+#include "sge_data_structures.h"
 #include "sge_camera.h"
 #include "sge_logger.h"
 #include "sge_model.h"
@@ -22,8 +21,8 @@ namespace SGE
             return;
         }
 
-        camera->SetPosition(Vector3(data->position[0], data->position[1], data->position[2]));
-        camera->SetRotation(data->rotation[0], data->rotation[1]);
+        camera->SetPosition(data->position);
+        camera->SetRotation(data->rotation.x, data->rotation.y);
 
         camera->SetFov(data->fov);
         camera->SetNearPlane(data->nearPlane);
@@ -45,8 +44,8 @@ namespace SGE
         }
 
         directionalLight->intensity = data->intensity;
-        directionalLight->direction = { data->direction[0], data->direction[1], data->direction[2] };
-        directionalLight->color = { data->color[0], data->color[1], data->color[2] };
+        directionalLight->direction = data->direction;
+        directionalLight->color = data->color;
     }
     
     void SyncData(const ModelData* data, ModelInstance* model)
@@ -63,8 +62,8 @@ namespace SGE
             return;
         }
 
-        model->SetPosition(Vector3(data->position[0], data->position[1], data->position[2]));
-        model->SetRotation(Vector3(data->rotation[0], data->rotation[1], data->rotation[2]));
-        model->SetScale(Vector3(data->scale[0], data->scale[1], data->scale[2]));
+        model->SetPosition(data->position);
+        model->SetRotation(data->rotation);
+        model->SetScale(data->scale);
     }
 }

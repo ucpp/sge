@@ -5,6 +5,7 @@
 #include "sge_render_context.h"
 #include "sge_model.h"
 #include "sge_model_asset.h"
+#include "sge_data_structures.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -15,8 +16,8 @@ namespace SGE
     class ModelLoader
     {
     public:
-        static bool LoadModel(const ModelAssetSettings& assetSettings);
-        static ModelInstance* Instantiate(const ModelAssetSettings& assetSettings, RenderContext* context);
+        static bool LoadModel(const ModelAssetData& assetData);
+        static ModelInstance* Instantiate(const ModelAssetData& assetSettings, RenderContext* context);
 
     private:
         static void ProcessNode(aiNode* node, const aiScene* scene, std::vector<Mesh>& meshes, const std::string& modelPath);

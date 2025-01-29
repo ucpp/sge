@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 
-#include "sge_application_settings.h"
 #include "sge_directory_monitor.h"
 #include "sge_editor.h"
 #include "sge_non_copyable.h"
@@ -32,7 +31,7 @@ namespace SGE
 
     private:
         bool                                 m_isRunning;
-        std::unique_ptr<ApplicationSettings> m_settings;
+        std::unique_ptr<ApplicationData>     m_appData;
         std::unique_ptr<Window>              m_window;
         std::unique_ptr<RenderContext>       m_renderContext;
         std::unique_ptr<Editor>              m_editor;

@@ -2,7 +2,7 @@
 #define _SGE_MATERIAL_MANAGER_H_
 
 #include "pch.h"
-#include "sge_application_settings.h"
+#include "sge_data_structures.h"
 #include "sge_material.h"
 
 namespace SGE
@@ -10,7 +10,7 @@ namespace SGE
     class MaterialManager
     {
     public:
-        static Material* LoadMaterial(const MaterialAssetSettings& materialSettings, RenderContext* context);
+        static Material* LoadMaterial(const MaterialAssetData& materialAssetData, RenderContext* context);
 
     private:
         static bool HasMaterial(const std::string& materialName);

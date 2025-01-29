@@ -2,10 +2,9 @@
 #define _SGE_CONFIG_H_
 
 #include "pch.h"
-#include "json.hpp"
-#include "sge_application_settings.h"
 #include "sge_helpers.h"
 #include "sge_logger.h"
+#include "sge_data_structures.h"
 #include <type_traits>
 
 namespace SGE
@@ -14,13 +13,13 @@ namespace SGE
     struct has_to_json : std::false_type {};
 
     template <typename T>
-    struct has_to_json<T, std::void_t<decltype(to_json(std::declval<nlohmann::json&>(), std::declval<T>()))>> : std::true_type {};
+    struct has_to_json<T, std::void_t<decltype(to_json(std::declval<njson&>(), std::declval<T>()))>> : std::true_type {};
 
     template <typename T, typename = void>
     struct has_from_json : std::false_type {};
 
     template <typename T>
-    struct has_from_json<T, std::void_t<decltype(from_json(std::declval<const nlohmann::json&>(), std::declval<T&>()))>> : std::true_type {};
+    struct has_from_json<T, std::void_t<decltype(from_json(std::declval<const njson&>(), std::declval<T&>()))>> : std::true_type {};
 
     template <typename T>
     struct IsSerializable : std::integral_constant<bool, has_to_json<T>::value && has_from_json<T>::value> {};
@@ -37,7 +36,7 @@ namespace SGE
             Verify(inputFile, "Failed to open config file: " + filePath);
             Verify(inputFile.peek() != std::ifstream::traits_type::eof(), "Config file is empty: " + filePath);
 
-            nlohmann::json jsonData;
+            njson jsonData;
             try
             {
                 inputFile >> jsonData;
@@ -62,7 +61,7 @@ namespace SGE
             std::ofstream outputFile(filePath);
             Verify(outputFile, "Failed to open config file: " + filePath);
 
-            nlohmann::json jsonData = data;
+            njson jsonData = data;
             try
             {
                 outputFile << jsonData.dump(4);
@@ -78,19 +77,6 @@ namespace SGE
             return true;
         }
     };
-
-    void to_json(nlohmann::json& j, const WindowSettings& settings);
-    void to_json(nlohmann::json& j, const RenderSettings& settings);
-    void to_json(nlohmann::json& j, const ApplicationSettings& settings);
-    void to_json(nlohmann::json& j, const EditorSettings& settings);
-
-    void from_json(const nlohmann::json& j, WindowSettings& settings);
-    void from_json(const nlohmann::json& j, RenderSettings& settings);
-    void from_json(const nlohmann::json& j, ApplicationSettings& settings);
-    void from_json(const nlohmann::json& j, EditorSettings& settings);
-
-    void to_json(nlohmann::json& j, const ProjectAssets& settings);
-    void from_json(const nlohmann::json& j, ProjectAssets& settings);
 }
 
 #endif // !_SGE_CONFIG_H_

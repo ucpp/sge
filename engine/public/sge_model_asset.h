@@ -3,7 +3,6 @@
 
 #include "pch.h"
 #include "sge_mesh.h"
-#include "sge_application_settings.h"
 
 namespace SGE
 {

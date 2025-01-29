@@ -9,15 +9,15 @@
 #include "sge_depth_buffer.h"
 #include "sge_fence.h"
 #include "sge_viewport_scissors.h"
-#include "sge_application_settings.h"
 #include "sge_gbuffer.h"
+#include "sge_data_structures.h"
 
 namespace SGE
 {
     class RenderContext : public NonCopyable
     {
     public:
-        void Initialize(class Window* window, ApplicationSettings* settings);
+        void Initialize(class Window* window, ApplicationData* appData);
         void Shutdown();
 
         Device* GetDevice() { return m_device.get(); }
@@ -32,8 +32,6 @@ namespace SGE
 
         uint32 GetFrameIndex() const { return m_frameIndex; }
 
-        //uint32 GetBackBufferCount() const { return BUFFER_COUNT; }
-        
         ComPtr<IDXGISwapChain3> GetSwapChain() const;
         ComPtr<ID3D12Device> GetD12Device() const;
         ComPtr<ID3D12GraphicsCommandList> GetCommandList() const;
@@ -43,12 +41,11 @@ namespace SGE
         uint32 GetScreenWidth() const;
         uint32 GetScreenHeight() const;
 
-        ApplicationSettings& GetSettings() const;
-        EditorSettings& GetEditorSettings() const;
-        WindowSettings& GetWindowSettings() const;
-        RenderSettings& GetRenderSettings() const;
-        ProjectAssets& GetAssetsSettings() const;
-        SceneSettings& GetSceneSettings() const;
+        ApplicationData& GetApplicationData() const;
+        WindowData& GetWindowData() const;
+        RenderData& GetRenderData() const;
+        AssetsData& GetAssetsData() const;
+        SceneData& GetSceneData() const;
 
         void ExecuteCommandList();
         void CloseCommandList();
@@ -71,7 +68,7 @@ namespace SGE
 
     private:
         class Window* m_window = nullptr;
-        ApplicationSettings* m_settings = nullptr;
+        ApplicationData* m_appicationData = nullptr;
 
         std::unique_ptr<Device> m_device;
         std::unique_ptr<ViewportScissors> m_viewportScissors;

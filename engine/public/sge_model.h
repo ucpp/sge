@@ -19,13 +19,13 @@ namespace SGE
         void Update(const Matrix& viewMatrix, const Matrix& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
-        void SetPosition(const Vector3& position) { m_position = position; }
-        void SetRotation(const Vector3& rotation) { m_rotation = rotation; }
-        void SetScale(const Vector3& scale) { m_scale = scale; }
+        void SetPosition(const float3& position) { m_position = position; }
+        void SetRotation(const float3& rotation) { m_rotation = rotation; }
+        void SetScale(const float3& scale) { m_scale = scale; }
 
-        const Vector3& GetPosition() const { return m_position; }
-        const Vector3& GetRotation() const { return m_rotation; }
-        const Vector3& GetScale() const { return m_scale; }
+        const float3& GetPosition() const { return m_position; }
+        const float3& GetRotation() const { return m_rotation; }
+        const float3& GetScale() const { return m_scale; }
 
     private:
         Matrix GetWorldMatrix() const;
@@ -38,9 +38,9 @@ namespace SGE
         IndexBuffer     m_indexBuffer;
         ConstantBuffer  m_transformBuffer;
 
-        Vector3 m_position = { 0.0f, 0.0f, 0.0f };
-        Vector3 m_rotation = { 0.0f, 0.0f, 0.0f };
-        Vector3 m_scale    = { 1.0f, 1.0f, 1.0f };
+        float3 m_position = { 0.0f, 0.0f, 0.0f };
+        float3 m_rotation = { 0.0f, 0.0f, 0.0f };
+        float3 m_scale    = { 1.0f, 1.0f, 1.0f };
 
         uint32 m_instanceIndex = 0;
     };

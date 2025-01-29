@@ -4,7 +4,7 @@
 
 namespace SGE
 {
-    void Material::Initialize(const MaterialAssetSettings& materialAsset, RenderContext* context)
+    void Material::Initialize(const MaterialAssetData& materialAsset, RenderContext* context)
     {
         m_albedoTextureIndex = TextureManager::GetTextureIndex(materialAsset.albedoTexturePath, TextureType::Albedo, context->GetDevice(), context->GetCbvSrvUavHeap());
         m_normalTextureIndex = TextureManager::GetTextureIndex(materialAsset.normalTexturePath, TextureType::Normal, context->GetDevice(), context->GetCbvSrvUavHeap());

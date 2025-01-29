@@ -1,252 +1,7 @@
 {
-    "editor": {
-        "is_enable": true
-    },
-    "project": {
-        "assets": [
-            {
-                "albedo_texture_path": "resources/bricks/albedo.png",
-                "metallic_texture_path": "resources/bricks/albedo.png",
-                "name": "bricks",
-                "normal_texture_path": "resources/bricks/normal.png",
-                "roughness_texture_path": "resources/bricks/roughness.png",
-                "type": 1
-            },
-            {
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "name": "backpack",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds",
-                "type": 1
-            },
-            {
-                "albedo_texture_path": "",
-                "metallic_texture_path": "",
-                "name": "stones",
-                "normal_texture_path": "resources/stones/normal.png",
-                "roughness_texture_path": "",
-                "type": 1
-            },
-            {
-                "name": "PointLight",
-                "type": 2
-            },
-            {
-                "name": "ball",
-                "path": "resources/models/ball.obj",
-                "type": 0
-            },
-            {
-                "name": "backpack.obj",
-                "path": "resources/backpack/backpack.obj",
-                "type": 0
-            },
-            {
-                "albedo_texture_path": "resources/metal/albedo.png",
-                "metallic_texture_path": "resources/metal/metalness.png",
-                "name": "metal",
-                "normal_texture_path": "resources/metal/normal.png",
-                "roughness_texture_path": "resources/metal/roughness.png",
-                "type": 1
-            },
-            {
-                "albedo_texture_path": "resources/marbel/albedo.png",
-                "metallic_texture_path": "resources/marbel/albedo.png",
-                "name": "marbel",
-                "normal_texture_path": "resources/marbel/normal.png",
-                "roughness_texture_path": "resources/marbel/roughness.png",
-                "type": 1
-            },
-            {
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "resources/plastic/albedo.png",
-                "name": "plastic",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png",
-                "type": 1
-            },
-            {
-                "albedo_texture_path": "",
-                "metallic_texture_path": "",
-                "name": "empty",
-                "normal_texture_path": "",
-                "roughness_texture_path": "",
-                "type": 1
-            },
-            {
-                "albedo_texture_path": "",
-                "metallic_texture_path": "",
-                "name": "backpack_norm",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "",
-                "type": 1
-            },
-            {
-                "name": "cube",
-                "path": "resources/models/cube.obj",
-                "type": 0
-            },
-            {
-                "name": "sphere",
-                "path": "resources/models/sphere.obj",
-                "type": 0
-            },
-            {
-                "name": "plane",
-                "path": "resources/models/plane.obj",
-                "type": 0
-            }
-        ]
-    },
-    "render": {
-        "background_color": [
-            0.25,
-            0.25,
-            0.25,
-            1.0
-        ],
-        "is_deferred_rendering": true,
-        "is_fog_enabled": false,
-        "is_msaa_enabled": false
-    },
-    "scene": {
-        "objects": [
-            {
-                "far_plane": 100.0,
-                "fov": 30.0,
-                "move_speed": 10.0,
-                "name": "Main Camera",
-                "near_plane": 0.10000000149011612,
-                "position": [
-                    -1.4021751880645752,
-                    2.724936008453369,
-                    -9.933971405029297
-                ],
-                "rotation": [
-                    -17.700008392333984,
-                    88.59994506835938,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "sensitivity": 0.10000000149011612,
-                "type": 0
-            },
-            {
-                "color": [
-                    0.6421568393707275,
-                    0.6421568393707275,
-                    0.6421568393707275
-                ],
-                "direction": [
-                    1.2999999523162842,
-                    -1.100000023841858,
-                    1.100000023841858
-                ],
-                "intensity": 1.2999999523162842,
-                "name": "Directional light",
-                "type": 3
-            },
-            {
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "intensity": 1.0,
-                "name": "Point Light 1",
-                "position": [
-                    5.0,
-                    5.0,
-                    5.0
-                ],
-                "type": 2
-            },
-            {
-                "color": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "intensity": 1.0,
-                "name": "Point Light 2",
-                "position": [
-                    -5.0,
-                    5.0,
-                    5.0
-                ],
-                "type": 2
-            },
-            {
-                "asset_id": "cube",
-                "material_id": "stones",
-                "name": "cube",
-                "position": [
-                    -2.200000047683716,
-                    0.4000000059604645,
-                    -3.0999999046325684
-                ],
-                "rotation": [
-                    0.0,
-                    302.0,
-                    0.0
-                ],
-                "scale": [
-                    0.4000000059604645,
-                    0.4000000059604645,
-                    0.4000000059604645
-                ],
-                "type": 1
-            },
-            {
-                "asset_id": "plane",
-                "material_id": "stones",
-                "name": "plane",
-                "position": [
-                    -0.800000011920929,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.5,
-                    1.0,
-                    2.0
-                ],
-                "type": 1
-            },
-            {
-                "asset_id": "backpack.obj",
-                "material_id": "backpack_norm",
-                "name": "backpack",
-                "position": [
-                    -0.800000011920929,
-                    0.800000011920929,
-                    -2.799999952316284
-                ],
-                "rotation": [
-                    347.20001220703125,
-                    215.5,
-                    0.30000001192092896
-                ],
-                "scale": [
-                    0.5,
-                    0.5,
-                    0.5
-                ],
-                "type": 1
-            }
-        ]
-    },
-    "window": {
+    "window_data": {
+        "title": "SGE Editor",
+        "selected_resolution": 2,
         "fullscreen": false,
         "resolutions": [
             "640x480",
@@ -256,8 +11,246 @@
             "1600x900",
             "1920x1080"
         ],
-        "selected_resolution": 2,
-        "title": "SGE Editor",
-        "target_fps" : 30
+        "target_fps": 60,
+        "is_editor_enable": true
+    },
+    "render_data": {
+        "v_sync": false,
+        "is_msaa_enabled": false,
+        "is_fog_enabled": false,
+        "is_deferred_rendering": true
+    },
+    "assets_data": {
+        "assets": [
+            {
+                "name": "backpack.obj",
+                "type": 0,
+                "path": "resources/backpack/backpack.obj"
+            },
+            {
+                "name": "ball",
+                "type": 0,
+                "path": "resources/models/ball.obj"
+            },
+            {
+                "name": "cube",
+                "type": 0,
+                "path": "resources/models/cube.obj"
+            },
+            {
+                "name": "sphere",
+                "type": 0,
+                "path": "resources/models/sphere.obj"
+            },
+            {
+                "name": "plane",
+                "type": 0,
+                "path": "resources/models/plane.obj"
+            },
+            {
+                "name": "bricks",
+                "type": 1,
+                "albedo_texture_path": "resources/bricks/albedo.png",
+                "metallic_texture_path": "resources/bricks/albedo.png",
+                "normal_texture_path": "resources/bricks/normal.png",
+                "roughness_texture_path": "resources/bricks/roughness.png"
+            },
+            {
+                "name": "backpack",
+                "type": 1,
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
+            },
+            {
+                "name": "stones",
+                "type": 1,
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/stones/normal.png",
+                "roughness_texture_path": ""
+            },
+            {
+                "name": "plastic",
+                "type": 1,
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
+            },
+            {
+                "name": "metal",
+                "type": 1,
+                "albedo_texture_path": "resources/metal/albedo.png",
+                "metallic_texture_path": "resources/metal/metalness.png",
+                "normal_texture_path": "resources/metal/normal.png",
+                "roughness_texture_path": "resources/metal/roughness.png"
+            },
+            {
+                "name": "marbel",
+                "type": 1,
+                "albedo_texture_path": "resources/marbel/albedo.png",
+                "metallic_texture_path": "resources/marbel/albedo.png",
+                "normal_texture_path": "resources/marbel/normal.png",
+                "roughness_texture_path": "resources/marbel/roughness.png"
+            },
+            {
+                "name": "backpack_norm",
+                "type": 1,
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": ""
+            },
+            {
+                "name": "empty",
+                "type": 1,
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "normal_texture_path": "",
+                "roughness_texture_path": ""
+            },
+            {
+                "name": "PointLight",
+                "type": 2
+            }
+        ]
+    },
+    "scene_data": {
+        "objects": [
+            {
+                "name": "Main Camera",
+                "type": 0,
+                "position": [
+                    "-1.402",
+                    "2.725",
+                    "-9.934"
+                ],
+                "rotation": [
+                    "-17.7",
+                    "88.6",
+                    "0.0"
+                ],
+                "scale": [
+                    "1.0",
+                    "1.0",
+                    "1.0"
+                ],
+                "fov": "30.0",
+                "near_plane": "0.1",
+                "far_plane": "100.0",
+                "move_speed": "10.0",
+                "sensitivity": "0.1"
+            },
+            {
+                "name": "Directional light",
+                "type": 3,
+                "direction": [
+                    "1.3",
+                    "-1.1",
+                    "1.1"
+                ],
+                "color": [
+                    "0.642",
+                    "0.642",
+                    "0.642"
+                ],
+                "intensity": "1.29"
+            },
+            {
+                "name": "Point Light 1",
+                "type": 2,
+                "position": [
+                    "5.0",
+                    "5.0",
+                    "5.0"
+                ],
+                "color": [
+                    "1.0",
+                    "1.0",
+                    "1.0"
+                ],
+                "intensity": "1.0"
+            },
+            {
+                "name": "Point Light 2",
+                "type": 2,
+                "position": [
+                    "-5.0",
+                    "5.0",
+                    "5.0"
+                ],
+                "color": [
+                    "1.0",
+                    "1.0",
+                    "1.0"
+                ],
+                "intensity": "1.0"
+            },
+            {
+                "name": "cube",
+                "type": 1,
+                "position": [
+                    "-2.2",
+                    "0.4",
+                    "-3.1"
+                ],
+                "rotation": [
+                    "0.0",
+                    "302.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "0.4",
+                    "0.4",
+                    "0.4"
+                ],
+                "asset_id": "cube",
+                "material_id": "stones"
+            },
+            {
+                "name": "plane",
+                "type": 1,
+                "position": [
+                    "-0.8",
+                    "0.0",
+                    "0.0"
+                ],
+                "rotation": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "1.5",
+                    "1.0",
+                    "2.0"
+                ],
+                "asset_id": "plane",
+                "material_id": "stones"
+            },
+            {
+                "name": "backpack",
+                "type": 1,
+                "position": [
+                    "-0.8",
+                    "0.8",
+                    "-2.8"
+                ],
+                "rotation": [
+                    "347.2",
+                    "215.5",
+                    "0.3"
+                ],
+                "scale": [
+                    "0.5",
+                    "0.5",
+                    "0.5"
+                ],
+                "asset_id": "backpack.obj",
+                "material_id": "backpack_norm"
+            }
+        ]
     }
 }

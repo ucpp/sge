@@ -10,27 +10,27 @@ namespace SGE
     public:
         Camera();
 
-        void Initialize(const Vector3& position = { 0.0f, 0.0f, 10.0f }, 
+        void Initialize(const float3& position = { 0.0f, 0.0f, 10.0f }, 
                         float pitch = 0.0f, 
                         float yaw = 90.0f, 
                         float fov = DEFAULT_FOV,
                         float nearPlane = DEFAULT_NEAR_PLANE, 
                         float farPlane = DEFAULT_FAR_PLANE);
 
-        void SetPosition(const Vector3& position);
+        void SetPosition(const float3& position);
         void SetRotation(float pitch, float yaw);
-        void SetDirection(const Vector3& direction);
-        void SetTarget(const Vector3& target);
+        void SetDirection(const float3& direction);
+        void SetTarget(const float3& target);
         void SetFov(float fov);
         void SetNearPlane(float nearPlane);
         void SetFarPlane(float farPlane);
 
-        Vector3 GetPosition() const;
-        Vector3 GetForward() const;
-        Vector3 GetRight() const;
-        Vector3 GetLeft() const;
-        Vector3 GetUp() const;
-        Vector3 GetBackward() const;
+        float3 GetPosition() const;
+        float3 GetForward() const;
+        float3 GetRight() const;
+        float3 GetLeft() const;
+        float3 GetUp() const;
+        float3 GetBackward() const;
         
         float GetFov() const;
         float GetPitch() const;
@@ -49,11 +49,11 @@ namespace SGE
     private:
         void Recalculate();
 
-        Vector3 m_position;
-        Vector3 m_direction;
-        Vector3 m_up;
-        Vector3 m_right;
-        const Vector3 m_worldUp = { 0.0f, 1.0f, 0.0f };
+        float3 m_position;
+        float3 m_direction;
+        float3 m_up;
+        float3 m_right;
+        const float3 m_worldUp = { 0.0f, 1.0f, 0.0f };
 
         float m_fov;
         float m_pitch;

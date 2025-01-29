@@ -8,8 +8,8 @@
 #include "imgui_impl_win32.h"
 #include "imgui_internal.h"
 #include "sge_descriptor_heap.h"
-#include "sge_application_settings.h"
 #include "sge_file_dialog.h"
+#include "sge_data_structures.h"
 
 namespace SGE
 {

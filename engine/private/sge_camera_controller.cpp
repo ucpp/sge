@@ -2,7 +2,6 @@
 
 #include "sge_input.h"
 #include "sge_logger.h"
-#include "sge_scene_settings.h"
 
 namespace SGE
 {
@@ -36,12 +35,12 @@ namespace SGE
 
     void CameraController::HandleMovement(double deltaTime)
     {
-        float velocity = m_moveSpeed * static_cast<float>(deltaTime);
+        const float velocity = m_moveSpeed * static_cast<float>(deltaTime);
 
-        Vector3 forward = CalculateForwardVector(m_cameraData->rotation[0], m_cameraData->rotation[1]);
-        Vector3 up(0, 1, 0);
-        Vector3 right = forward.Cross(up);
-        right.Normalize();
+        const float3 forward = CalculateForwardVector(m_cameraData->rotation[0], m_cameraData->rotation[1]);
+        const float3 up(0, 1, 0);
+        const float3 right = forward.cross(up);
+        right.normalized();
 
         if (Input::Get().GetKey('S'))
         {
@@ -70,7 +69,7 @@ namespace SGE
             float deltaX = mouseX - m_lastMousePosition.x;
             float deltaY = mouseY - m_lastMousePosition.y;
 
-            m_lastMousePosition = Vector2(mouseX, mouseY);
+            m_lastMousePosition = float2(mouseX, mouseY);
 
             m_cameraData->rotation[1] += deltaX * m_sensitivity; // Yaw
             m_cameraData->rotation[0] -= deltaY * m_sensitivity; // Pitch
@@ -86,7 +85,7 @@ namespace SGE
         {
             float mouseX = static_cast<float>(Input::Get().GetMouseX());
             float mouseY = static_cast<float>(Input::Get().GetMouseY());
-            m_lastMousePosition = Vector2(mouseX, mouseY);
+            m_lastMousePosition = float2(mouseX, mouseY);
         }
     }
 
@@ -97,22 +96,20 @@ namespace SGE
         m_cameraData->fov = std::clamp(m_cameraData->fov, MIN_FOV, MAX_FOV);
     }
 
-    Vector3 CameraController::CalculateForwardVector(float pitch, float yaw) const
+    float3 CameraController::CalculateForwardVector(float pitch, float yaw) const
     {
         float pitchInRadians = DirectX::XMConvertToRadians(pitch);
         float yawInRadians = DirectX::XMConvertToRadians(yaw);
 
-        return Vector3(
+        return float3(
             cosf(pitchInRadians) * cosf(yawInRadians),
             sinf(pitchInRadians),
             cosf(pitchInRadians) * sinf(yawInRadians)
         );
     }
 
-    void CameraController::UpdatePosition(Vector3 direction, float velocity)
+    void CameraController::UpdatePosition(float3 direction, float velocity)
     {
-        m_cameraData->position[0] += direction.x * velocity;
-        m_cameraData->position[1] += direction.y * velocity;
-        m_cameraData->position[2] += direction.z * velocity;
+        m_cameraData->position += direction * velocity;
     }
 }

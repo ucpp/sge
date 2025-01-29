@@ -1,19 +1,18 @@
 #include "sge_window.h"
 
-#include "sge_application_settings.h"
 #include "sge_input.h"
 #include "sge_logger.h"
 
 namespace SGE
 {
-    Window::Window(const ApplicationSettings* applicationSettings)
+    Window::Window(const ApplicationData* appData)
     : m_title(nullptr)
     , m_width(0)
     , m_height(0)
     , m_fullscreen(false)
     , m_hinstance(nullptr)
     , m_hwnd(nullptr)
-    , m_applicationSettings(applicationSettings) { }
+    , m_appData(appData) { }
     
     Window::~Window()
     {
@@ -22,16 +21,16 @@ namespace SGE
 
     void Window::Create()
     {
-        if(m_applicationSettings == nullptr)
+        if(m_appData == nullptr)
         {
-            LOG_ERROR("Failed to create the window: Application settings are null.");
+            LOG_ERROR("Failed to create the window: Application data are null.");
             return;
         }
 
-        const std::string& title = m_applicationSettings->window.title;
-        const uint32 width = m_applicationSettings->window.GetWidth();
-        const uint32 height = m_applicationSettings->window.GetHeight();
-        const bool fullscreen = m_applicationSettings->window.fullscreen;
+        const std::string& title = m_appData->windowData.title;
+        const uint32 width = m_appData->windowData.GetWidth();
+        const uint32 height = m_appData->windowData.GetHeight();
+        const bool fullscreen = m_appData->windowData.fullscreen;
 
         Create(title, width, height, fullscreen);
     }

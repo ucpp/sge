@@ -8,7 +8,7 @@ namespace SGE
     class Device
     {
     public:
-        void Initialize(HWND hwnd, uint32 width, uint32 height);
+        void Initialize(HWND hwnd, uint32 width, uint32 height, bool vsyncEnabled = true);
 
         ComPtr<ID3D12Device> GetDevice() const { return m_device; }
         ComPtr<ID3D12CommandQueue> GetCommandQueue() const { return m_commandQueue; }
@@ -25,7 +25,7 @@ namespace SGE
         bool IsValidAdapter(ComPtr<IDXGIAdapter1>& adapter);
 
         void CreateCommandQueue();
-        void CreateSwapChain(HWND hwnd, uint32 width, uint32 height);
+        void CreateSwapChain(HWND hwnd, uint32 width, uint32 height, bool vsyncEnabled);
         void CreateCommandAllocators();
         void CreateCommandList();
 

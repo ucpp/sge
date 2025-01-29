@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "sge_types.h"
-#include "sge_common_structures.h"
+#include "sge_data_structures.h"
 
 namespace SGE
 {

@@ -5,7 +5,7 @@
 
 namespace SGE
 {
-    void Device::Initialize(HWND hwnd, uint32 width, uint32 height)
+    void Device::Initialize(HWND hwnd, uint32 width, uint32 height, bool vsyncEnabled)
     {
         HRESULT hr = DXGIDeclareAdapterRemovalSupport();
         Verify(hr,"Failed to declare adapter removal support.");
@@ -14,7 +14,7 @@ namespace SGE
         CreateDXGIFactory();
         CreateGraphicsDevice();
         CreateCommandQueue();
-        CreateSwapChain(hwnd, width, height);
+        CreateSwapChain(hwnd, width, height, vsyncEnabled);
         CreateCommandAllocators();
         CreateCommandList();
     }
@@ -143,7 +143,7 @@ namespace SGE
         Verify(hr, "Failed to create command queue.");
     }
     
-    void Device::CreateSwapChain(HWND hwnd, uint32 width, uint32 height)
+    void Device::CreateSwapChain(HWND hwnd, uint32 width, uint32 height, bool vsyncEnabled)
     {
         DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
         swapChainDesc.BufferCount = BUFFER_COUNT;
@@ -153,7 +153,11 @@ namespace SGE
         swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+        
+        if (!vsyncEnabled)
+        {
+            swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+        }
 
         ComPtr<IDXGISwapChain1> swapChain1;
         HRESULT hr = m_dxgiFactory->CreateSwapChainForHwnd(m_commandQueue.Get(), hwnd, &swapChainDesc, nullptr, nullptr, &swapChain1);

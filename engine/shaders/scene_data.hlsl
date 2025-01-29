@@ -25,7 +25,7 @@ struct SpotLight
     float  outerConeCos;
 };
 
-cbuffer SceneData : register(b0)
+cbuffer FrameData : register(b0)
 {
     DirectionalLight directionalLight;
     PointLight pointLights[MAX_POINT_LIGHTS];

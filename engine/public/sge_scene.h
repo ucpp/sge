@@ -4,8 +4,7 @@
 #include "pch.h"
 #include "sge_camera.h"
 #include "sge_camera_controller.h"
-#include "sge_application_settings.h"
-#include "sge_scene_data.h"
+#include "sge_data_structures.h"
 #include "sge_constant_buffer.h"
 #include "sge_model.h"
 
@@ -22,12 +21,12 @@ namespace SGE
 
     private:
         void InitializeCamera();
-        void InitializeSceneData();
+        void InitializeFrameData();
         void InstantiateModels();
         void InitializeFog();
 
         void UpdateCamera(double deltaTime);
-        void UpdateSceneData(double deltaTime);
+        void UpdateFrameData(double deltaTime);
         void UpdateModels(double deltaTime);
 
     private:
@@ -37,8 +36,8 @@ namespace SGE
         CameraController m_cameraController;
         std::map<const ModelData*, ModelInstance*> m_modelInstances;
 
-        std::unique_ptr<ConstantBuffer> m_sceneDataBuffer;
-        SceneData m_sceneData;
+        std::unique_ptr<ConstantBuffer> m_frameDataBuffer;
+        FrameData m_frameData;
     };
 }
 

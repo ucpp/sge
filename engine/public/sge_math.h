@@ -16,6 +16,7 @@ namespace SGE
 
         float2() noexcept;
         float2(float x, float y) noexcept;
+        float* data() noexcept;
 
         static const float2 Zero;
 
@@ -34,6 +35,7 @@ namespace SGE
         float2& operator/=(float scalar) noexcept;
         bool operator==(const float2& other) const noexcept;
         bool operator!=(const float2& other) const noexcept;
+        float2 operator-() const noexcept;
     };
 
     inline float2 operator+(const float2& lhs, const float2& rhs);
@@ -49,11 +51,15 @@ namespace SGE
         {
             struct { float x, y, z; };
             struct { float r, g, b; };
-            float data[3];
+            float components[3];
         };
 
         float3() noexcept;
         float3(float x, float y, float z) noexcept;
+        float* data() noexcept;
+
+        float& operator[](size_t index) noexcept;
+        const float& operator[](size_t index) const noexcept;
 
         static const float3 Zero;
 
@@ -74,6 +80,7 @@ namespace SGE
         float3& operator/=(float scalar) noexcept;
         bool operator==(const float3& other) const noexcept;
         bool operator!=(const float3& other) const noexcept;
+        float3 operator-() const noexcept;
     };
 
     inline float3 operator+(const float3& lhs, const float3& rhs);

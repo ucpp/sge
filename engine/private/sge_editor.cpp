@@ -1,6 +1,5 @@
 #include "sge_editor.h"
 
-#include "sge_application_settings.h"
 #include "sge_descriptor_heap.h"
 #include "sge_device.h"
 #include "sge_helpers.h"
@@ -8,6 +7,7 @@
 #include "sge_render_context.h"
 #include "sge_texture_manager.h"
 #include "sge_config.h"
+#include "sge_data_structures.h"
 
 #include <commdlg.h>
 
@@ -129,14 +129,14 @@ namespace SGE
             {
                 if(ImGui::MenuItem("Save"))
                 {
-                    Config::Save<ApplicationSettings>(DEFAULT_SETTINGS_PATH, m_context->GetSettings());
+                    Config::Save<ApplicationData>(DEFAULT_SETTINGS_PATH, m_context->GetApplicationData());
                 }
                 if(ImGui::MenuItem("Save as"))
                 {
                     if (m_fileDialog->SaveAs(L"json", L"JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0"))
                     {
                         std::string savePath = m_fileDialog->GetSavePath();
-                        Config::Save<ApplicationSettings>(savePath, m_context->GetSettings());
+                        Config::Save<ApplicationData>(savePath, m_context->GetApplicationData());
                         LOG_INFO("Settings saved to: {}", savePath);
                     }
                     else
@@ -159,7 +159,7 @@ namespace SGE
                 }
                 if (ImGui::MenuItem("Quit"))
                 {
-                    m_context->GetEditorSettings().isPressedQuit = true;
+                    m_context->GetWindowData().isPressedQuit = true;
                 }
                 ImGui::EndMenu();
             }
@@ -185,11 +185,11 @@ namespace SGE
             if (ImGui::Begin("Render settings", &m_isOpenSettingsWindow))
             {
                 ImGui::Text("Render settings");
-                RenderSettings& settings = m_context->GetRenderSettings();
-                if (!settings.isDeferredRendering)
+                RenderData& renderData = m_context->GetRenderData();
+                if (!renderData.isDeferredRendering)
                 {
-                    ImGui::Checkbox("MSAA 4x", &settings.isMSAAEnabled);
-                    ImGui::Checkbox("Fog", &settings.isFogEnabled);
+                    ImGui::Checkbox("MSAA 4x", &renderData.isMSAAEnabled);
+                    ImGui::Checkbox("Fog", &renderData.isFogEnabled);
                 }
             }
             ImGui::End();
@@ -203,10 +203,10 @@ namespace SGE
             ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_Once);
             if (ImGui::Begin("Resolution Settings", &m_isOpenResolutionWindow))
             {
-                WindowSettings& windowSettings = m_context->GetWindowSettings();
+                WindowData& windowData = m_context->GetWindowData();
                 ImGui::Text("Select Window Resolution:");
-                const int32 size = static_cast<int32>(windowSettings.resolutions.size());
-                if (ImGui::Combo("Resolution", &windowSettings.selectedResolution, windowSettings.GetResolutions(), size))
+                const int32 size = static_cast<int32>(windowData.resolutions.size());
+                if (ImGui::Combo("Resolution", &windowData.selectedResolution, windowData.GetResolutions(), size))
                 {
                     ApplyResolutionChange();
                 }
@@ -217,9 +217,9 @@ namespace SGE
 
     void Editor::ApplyResolutionChange()
     {
-        WindowSettings& windowSettings = m_context->GetWindowSettings();
-        const int32 width = windowSettings.GetWidth();
-        const int32 height = windowSettings.GetHeight();
+        WindowData& windowData = m_context->GetWindowData();
+        const int32 width = windowData.GetWidth();
+        const int32 height = windowData.GetHeight();
 
         m_context->SetWindowSize(width, height);
     }
@@ -252,7 +252,7 @@ namespace SGE
     {
         ImGui::Begin("Scene hierarchy");
         const ImVec2 smallIconSize = ImVec2(16, 16);
-        const SceneSettings& sceneSettings = m_context->GetSceneSettings();
+        const SceneData& sceneSettings = m_context->GetSceneData();
         if (!sceneSettings.objects.empty())
         {
             float availableHeight = ImGui::GetContentRegionAvail().y;
@@ -275,7 +275,7 @@ namespace SGE
         ImGui::End();
 
         ImGui::Begin("Content browser");
-        const ProjectAssets& assetsSettings = m_context->GetAssetsSettings();
+        const AssetsData& assetsSettings = m_context->GetAssetsData();
         ImGui::BeginChild("AssetScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
 
         const float padding = 20.0f;
@@ -285,34 +285,35 @@ namespace SGE
         float yOffset = 0.0f;
         float textHeight = ImGui::GetTextLineHeightWithSpacing() * 2.0f;
 
-        for (const auto& pair : assetsSettings.assets)
+        for (const auto& [type, assetMap] : assetsSettings.assets)
         {
-            const auto& asset = pair.second; 
-            ImGui::SetCursorPos(ImVec2(xOffset, yOffset));
-
-            ImGui::BeginGroup();
-
-            std::string buttonId = "##" + asset->name;
-
-            AssetType type = asset->type;
-            ImTextureID iconTexture = m_icons[type];
-
-            if (ImGui::ImageButton(buttonId.c_str(), iconTexture, iconSize))
+            for (const auto& [id, asset] : assetMap)
             {
-                std::cout << "Clicked on asset: " << asset->name << std::endl;
-            }
+                ImGui::SetCursorPos(ImVec2(xOffset, yOffset));
 
-            ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + iconSize.x);
-            ImGui::TextWrapped(asset->name.c_str());
-            ImGui::PopTextWrapPos();
+                ImGui::BeginGroup();
 
-            ImGui::EndGroup();
+                std::string buttonId = "##" + asset->name;
 
-            xOffset += iconSize.x + padding;
-            if (xOffset + iconSize.x > availableWidth)
-            {
-                xOffset = 0.0f;
-                yOffset += iconSize.y + textHeight + padding;
+                ImTextureID iconTexture = m_icons[type];
+
+                if (ImGui::ImageButton(buttonId.c_str(), iconTexture, iconSize))
+                {
+                    std::cout << "Clicked on asset: " << asset->name << std::endl;
+                }
+
+                ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + iconSize.x);
+                ImGui::TextWrapped(asset->name.c_str());
+                ImGui::PopTextWrapPos();
+
+                ImGui::EndGroup();
+
+                xOffset += iconSize.x + padding;
+                if (xOffset + iconSize.x > availableWidth)
+                {
+                    xOffset = 0.0f;
+                    yOffset += iconSize.y + textHeight + padding;
+                }
             }
         }
 
@@ -322,7 +323,7 @@ namespace SGE
         ImGui::Begin("Properties");
         if (m_selectedObjectIndex != -1 && m_selectedObjectIndex < sceneSettings.objects.size())
         {     
-            SceneObjectBase* selectedObject = sceneSettings.objects[m_selectedObjectIndex].get();
+            ObjectDataBase* selectedObject = sceneSettings.objects[m_selectedObjectIndex].get();
             selectedObject->DrawEditor();
         }
         else

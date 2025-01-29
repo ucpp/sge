@@ -39,4 +39,15 @@ using namespace Microsoft::WRL;
 #include "sge_types.h"
 #include "sge_constants.h"
 
+#include "json.hpp"
+
+#define ORDERED_JSON 1
+#if ORDERED_JSON
+using njson = nlohmann::ordered_json;
+#else
+using njson = nlohmann::json;
+#endif
+
+#include "sge_math.h"
+
 #endif //!_SGE_PCH_H

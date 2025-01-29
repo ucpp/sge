@@ -2,7 +2,7 @@
 
 #include "sge_helpers.h"
 #include "sge_device.h"
-#include "sge_common_structures.h"
+#include "sge_data_structures.h"
 
 namespace SGE
 {

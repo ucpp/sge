@@ -28,6 +28,7 @@ namespace SGE
 
 
     constexpr const char* SHADERS_DIRECTORY = "shaders";
+    constexpr const char* DEFAULT_SETTINGS_PATH = "resources/configs/application_settings.json";
 }
 
 #endif // !_SGE_CONSTANTS_H_

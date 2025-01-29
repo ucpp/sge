@@ -1,6 +1,5 @@
 #include "sge_logger.h"
 #include "sge_application.h"
-#include "sge_application_settings.h"
 
 int main()
 {

@@ -1,15 +1,15 @@
 #include "sge_render_context.h"
-#include "sge_application_settings.h"
+
 #include "sge_helpers.h"
 #include "sge_window.h"
 
 namespace SGE
 {
-    void RenderContext::Initialize(Window* window, ApplicationSettings* settings)
+    void RenderContext::Initialize(Window* window, ApplicationData* appData)
     {
         Verify(window, "RenderContext::Initialize failed: window object is null!");
         m_window = window;
-        m_settings = settings;
+        m_appicationData = appData;
         
         HWND hwnd = m_window->GetHandle();
         Verify(hwnd, "RenderContext::Initialize failed: HWND is null!");
@@ -17,7 +17,7 @@ namespace SGE
         uint32 width = GetScreenWidth();
         uint32 height = GetScreenHeight();
         m_device = std::make_unique<Device>();
-        m_device->Initialize(hwnd, width, height);
+        m_device->Initialize(hwnd, width, height, appData->renderData.vSync);
 
         m_frameIndex = m_device->GetSwapChain()->GetCurrentBackBufferIndex();
         m_viewportScissors = std::make_unique<ViewportScissors>(width, height);
@@ -38,7 +38,7 @@ namespace SGE
 
     void RenderContext::InitializeRenderTargets()
     {
-        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        const bool isMSAA = GetRenderData().isMSAAEnabled && !GetRenderData().isDeferredRendering;
 
         m_renderTarget = std::make_unique<RenderTarget>();
         m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BUFFER_COUNT, isMSAA);
@@ -110,40 +110,34 @@ namespace SGE
         return m_window->GetHeight();
     }
 
-    ApplicationSettings& RenderContext::GetSettings() const
+    ApplicationData& RenderContext::GetApplicationData() const
     {
-        Verify(m_settings, "RenderContext::GetSettings failed: settings are not initialized.");
-        return *m_settings;
+        Verify(m_appicationData, "RenderContext::GetApplicationData failed: m_appicationData are not initialized.");
+        return *m_appicationData;
     }
 
-    EditorSettings& RenderContext::GetEditorSettings() const
+    WindowData& RenderContext::GetWindowData() const
     {
-        Verify(m_settings, "RenderContext::GetEditorSettings failed: settings are not initialized.");
-        return m_settings->editor;
+        Verify(m_appicationData, "RenderContext::GetWindowData failed: m_appicationData are not initialized.");
+        return m_appicationData->windowData;
     }
 
-    WindowSettings& RenderContext::GetWindowSettings() const
+    RenderData& RenderContext::GetRenderData() const
     {
-        Verify(m_settings, "RenderContext::GetWindowSettings failed: settings are not initialized.");
-        return m_settings->window;
+        Verify(m_appicationData, "RenderContext::GetRenderData failed: m_appicationData are not initialized.");
+        return m_appicationData->renderData;
     }
 
-    RenderSettings& RenderContext::GetRenderSettings() const
+    AssetsData& RenderContext::GetAssetsData() const
     {
-        Verify(m_settings, "RenderContext::GetRenderSettings failed: settings are not initialized.");
-        return m_settings->render;
+        Verify(m_appicationData, "RenderContext::GetAssetsData failed: m_appicationData are not initialized.");
+        return m_appicationData->assetsData;
     }
 
-    ProjectAssets& RenderContext::GetAssetsSettings() const
+    SceneData& RenderContext::GetSceneData() const
     {
-        Verify(m_settings, "RenderContext::GetAssetsSettings failed: settings are not initialized.");
-        return m_settings->project;
-    }
-
-    SceneSettings& RenderContext::GetSceneSettings() const
-    {
-        Verify(m_settings, "RenderContext::GetSceneSettings failed: settings are not initialized.");
-        return m_settings->scene;
+        Verify(m_appicationData, "RenderContext::GetSceneData failed: m_appicationData are not initialized.");
+        return m_appicationData->sceneData;
     }
 
     void RenderContext::ExecuteCommandList()
@@ -195,7 +189,9 @@ namespace SGE
 
     void RenderContext::PresentFrame()
     {
-        GetSwapChain()->Present(1, 0);
+        const uint32 syncInterval = GetRenderData().vSync ? 1 : 0;
+        const uint32 presentFlags = GetRenderData().vSync ? 0 : DXGI_PRESENT_ALLOW_TEARING;
+        GetSwapChain()->Present(syncInterval, presentFlags);
     }
 
     void RenderContext::ClearRenderTargets()
@@ -203,8 +199,8 @@ namespace SGE
         Verify(m_renderTarget, "RenderContext::ClearRenderTargets: Render target is not initialized or invalid.");
         Verify(m_depthBuffer, "RenderContext::ClearRenderTargets: Depth buffer is not initialized or invalid.");
 
-        const RenderSettings& settings = GetRenderSettings();
-        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        const RenderData& renderData = GetRenderData();
+        const bool isMSAA = renderData.isMSAAEnabled && !renderData.isDeferredRendering;
         
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAA);
         m_renderTarget->GetResource(m_frameIndex, isMSAA)->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, GetCommandList().Get());
@@ -218,8 +214,8 @@ namespace SGE
 
     void RenderContext::SetRenderTarget(bool includeDepth)
     {
-        const RenderSettings& settings = GetRenderSettings();
-        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        const RenderData& renderData = GetRenderData();
+        const bool isMSAA = renderData.isMSAAEnabled && !renderData.isDeferredRendering;
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAA);
         if(includeDepth)
         {
@@ -236,7 +232,8 @@ namespace SGE
     void RenderContext::PrepareRenderTargetForPresent()
     {
         Verify(m_renderTarget, "RenderContext::PrepareRenderTargetForPresent: Render target is not initialized or invalid.");
-        const bool isMSAA = GetRenderSettings().isMSAAEnabled && !GetRenderSettings().isDeferredRendering;
+        const RenderData& renderData = GetRenderData();
+        const bool isMSAA = renderData.isMSAAEnabled && !renderData.isDeferredRendering;
         if (isMSAA)
         {
             m_renderTarget->Resolve(GetCommandList().Get(), m_frameIndex);
