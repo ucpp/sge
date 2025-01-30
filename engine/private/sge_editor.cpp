@@ -253,20 +253,26 @@ namespace SGE
         ImGui::Begin("Scene hierarchy");
         const ImVec2 smallIconSize = ImVec2(16, 16);
         const SceneData& sceneSettings = m_context->GetSceneData();
+
         if (!sceneSettings.objects.empty())
         {
             float availableHeight = ImGui::GetContentRegionAvail().y;
             ImGui::BeginChild("ObjectsList", ImVec2(0, availableHeight), false);
 
-            for (size_t i = 0; i < sceneSettings.objects.size(); ++i)
+            uint32 index = 0;
+            for (const auto& [type, objectList] : sceneSettings.objects)
             {
-                bool isSelected = m_selectedObjectIndex == i;
-                ObjectType objType = sceneSettings.objects[i]->type;
-                ImGui::Image(m_objectIcons[objType], smallIconSize);
-                ImGui::SameLine();
-                if (ImGui::Selectable(sceneSettings.objects[i]->name.c_str(), isSelected))
+                for (const auto& obj : objectList)
                 {
-                    m_selectedObjectIndex = static_cast<uint32>(i);
+                    bool isSelected = (m_selectedObjectIndex == index);
+                    ImGui::Image(m_objectIcons[type], smallIconSize);
+                    ImGui::SameLine();
+                    if (ImGui::Selectable(obj->name.c_str(), isSelected))
+                    {
+                        m_selectedObjectIndex = index;
+                        m_selectedObject = obj.get();
+                    }
+                    ++index;
                 }
             }
 
@@ -321,10 +327,9 @@ namespace SGE
         ImGui::End();
 
         ImGui::Begin("Properties");
-        if (m_selectedObjectIndex != -1 && m_selectedObjectIndex < sceneSettings.objects.size())
-        {     
-            ObjectDataBase* selectedObject = sceneSettings.objects[m_selectedObjectIndex].get();
-            selectedObject->DrawEditor();
+        if (m_selectedObject)
+        {
+            m_selectedObject->DrawEditor();
         }
         else
         {

@@ -72,9 +72,9 @@ namespace SGE
     enum class ObjectType
     {
         Camera           = 0,
-        Model            = 1,
-        PointLight       = 2,
-        DirectionalLight = 3
+        DirectionalLight = 1,
+        Model            = 2,
+        PointLight       = 3
     };
 
     class ObjectDataBase
@@ -217,7 +217,7 @@ namespace SGE
         DirectionalLightData* GetDirectionalLight();
 
     public:
-        std::vector<std::unique_ptr<ObjectDataBase>> objects;
+        std::map<ObjectType, std::vector<std::unique_ptr<ObjectDataBase>>> objects;
 
     private:
         CameraData* m_mainCamera = nullptr;

@@ -233,37 +233,31 @@ namespace SGE
     {
         if (!m_mainCamera)
         {
-            for (const auto& obj : objects)
+            auto it = objects.find(ObjectType::Camera);
+            if (it != objects.end() && !it->second.empty())
             {
-                if (auto cameraData = dynamic_cast<CameraData*>(obj.get()))
-                {
-                    m_mainCamera = cameraData;
-                    break;
-                }
+                m_mainCamera = dynamic_cast<CameraData*>(it->second.front().get());
             }
         }
 
         return m_mainCamera;
     }
 
-    DirectionalLightData *SceneData::GetDirectionalLight()
+    DirectionalLightData* SceneData::GetDirectionalLight()
     {
         if (!m_directionalLight)
         {
-            for (const auto& obj : objects)
+            auto it = objects.find(ObjectType::DirectionalLight);
+            if (it != objects.end() && !it->second.empty())
             {
-                if (auto directionalLight = dynamic_cast<DirectionalLightData*>(obj.get()))
-                {
-                    m_directionalLight = directionalLight;
-                    break;
-                }
+                m_directionalLight = dynamic_cast<DirectionalLightData*>(it->second.front().get());
             }
         }
 
         return m_directionalLight;
     }
 
-    const char **WindowData::GetResolutions()
+    const char** WindowData::GetResolutions()
     {
         return resolutionCStrings.data();
     }
@@ -377,30 +371,36 @@ namespace SGE
     void to_json(njson& data, const SceneData& scene)
     {
         njson objectsJson = njson::array();
-        for (const auto& obj : scene.objects)
+
+        for (const auto& [type, objectList] : scene.objects)
         {
-            njson objJson;
-            obj->ToJson(objJson);
-            objectsJson.push_back(objJson);
+            for (const auto& obj : objectList)
+            {
+                njson objJson;
+                obj->ToJson(objJson);
+                objectsJson.push_back(objJson);
+            }
         }
+
         data["objects"] = objectsJson;
     }
-    
+
     void from_json(const njson& data, SceneData& scene)
     {
         RegisterObjectDataTypes();
         scene.objects.clear();
+
         if (data.contains("objects"))
         {
-            for (const auto& objJson : data.at("objects"))
+            const auto& objectsJson = data.at("objects");
+            for (const auto& objJson : objectsJson)
             {
                 int32_t typeInt;
                 objJson.at("type").get_to(typeInt);
                 auto type = static_cast<ObjectType>(typeInt);
-
-                auto obj = ObjectDataFactory::Get().Create(type);
-                obj->FromJson(objJson);
-                scene.objects.push_back(std::move(obj));
+                auto object = ObjectDataFactory::Get().Create(type);
+                object->FromJson(objJson);
+                scene.objects[type].push_back(std::move(object));
             }
         }
     }

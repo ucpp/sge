@@ -23,6 +23,8 @@ namespace SGE
         void InitializeCamera();
         void InitializeFrameData();
         void InstantiateModels();
+        void InitializeDirectionalLight();
+        void InitializePointLights();
         void InitializeFog();
 
         void UpdateCamera(double deltaTime);

@@ -1,4 +1,4 @@
-static const uint MAX_POINT_LIGHTS = 2;
+static const uint MAX_POINT_LIGHTS = 20;
 static const uint MAX_SPOT_LIGHTS = 1;
 
 struct DirectionalLight

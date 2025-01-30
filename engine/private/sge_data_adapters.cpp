@@ -66,4 +66,23 @@ namespace SGE
         model->SetRotation(data->rotation);
         model->SetScale(data->scale);
     }
+
+    void SyncData(const PointLightData* data, PointLight* pointLight)
+    {
+        if (pointLight == nullptr)
+        {
+            LOG_ERROR("SyncData: PointLight pointer is null.");
+            return;
+        }
+
+        if (data == nullptr)
+        {
+            LOG_ERROR("SyncData: PointLightData pointer is null.");
+            return;
+        }
+
+        pointLight->position = data->position;
+        pointLight->color = data->color;
+        pointLight->intensity = data->intensity;
+    }
 }

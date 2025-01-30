@@ -44,9 +44,8 @@ namespace SGE
         m_frameDataBuffer = std::make_unique<ConstantBuffer>();
         m_frameDataBuffer->Initialize(m_context->GetD12Device().Get(), m_context->GetCbvSrvUavHeap(), sizeof(FrameData), 0);
 
-        DirectionalLightData* directionalLightData = m_context->GetSceneData().GetDirectionalLight();
-        SyncData(directionalLightData, &m_frameData.directionalLight);
-
+        InitializeDirectionalLight();
+        InitializePointLights();
         InitializeFog();
         
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
@@ -58,17 +57,19 @@ namespace SGE
     void Scene::InstantiateModels()
     {
         const AssetsData& assetsData = m_context->GetAssetsData();
+        const auto& sceneObjects = m_context->GetSceneData().objects;
 
-        for (const auto& obj : m_context->GetSceneData().objects)
+        auto it = sceneObjects.find(ObjectType::Model);
+        if (it == sceneObjects.end())
         {
-            if (obj->type != ObjectType::Model)
-            {
-                continue;
-            }
+            return;
+        }
 
+        for (const auto& obj : it->second)
+        {
             if (const auto* modelData = dynamic_cast<const ModelData*>(obj.get()))
             {
-                const std::string& assetName = modelData->assetId; 
+                const std::string& assetName = modelData->assetId;
                 const std::string& materialName = modelData->materialId;
 
                 const ModelAssetData& modelAsset = assetsData.GetModel(assetName);
@@ -76,11 +77,40 @@ namespace SGE
 
                 bool isModelLoaded = ModelLoader::LoadModel(modelAsset);
                 ModelInstance* instance = ModelLoader::Instantiate(modelAsset, m_context);
-                Material* material = MaterialManager::LoadMaterial(materialAsset, m_context); 
+                Material* material = MaterialManager::LoadMaterial(materialAsset, m_context);
                 instance->SetMaterial(material);
-                SyncData(modelData, instance); 
+                SyncData(modelData, instance);
 
                 m_modelInstances[modelData] = instance;
+            }
+        }
+    }
+
+    void Scene::InitializeDirectionalLight()
+    {
+        SceneData& sceneData = m_context->GetSceneData();
+        DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
+        SyncData(directionalLightData, &m_frameData.directionalLight);
+    }
+
+    void Scene::InitializePointLights()
+    {
+        const auto& sceneObjects = m_context->GetSceneData().objects;
+        auto it = sceneObjects.find(ObjectType::PointLight);
+        if (it == sceneObjects.end())
+        {
+            m_frameData.activePointLightsCount = 0;
+            return;
+        }
+        
+        const uint32 count = static_cast<uint32>(it->second.size());
+        m_frameData.activePointLightsCount = count;
+
+        for(int32 i = 0; i < count; ++i)
+        {
+            if(const auto* pointLightData = dynamic_cast<const PointLightData*>(it->second[i].get()))
+            {
+                SyncData(pointLightData, &m_frameData.pointLights[i]);
             }
         }
     }
@@ -104,8 +134,29 @@ namespace SGE
     
     void Scene::UpdateFrameData(double deltaTime)
     {
-        DirectionalLightData* directionalLightData = m_context->GetSceneData().GetDirectionalLight();
+        SceneData& sceneData = m_context->GetSceneData();
+
+        DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
         SyncData(directionalLightData, &m_frameData.directionalLight);
+
+        auto it = sceneData.objects.find(ObjectType::PointLight);
+        if (it != sceneData.objects.end())
+        {
+            const uint32 count = static_cast<uint32>(it->second.size());
+            m_frameData.activePointLightsCount = count;
+
+            for (uint32 i = 0; i < count; ++i)
+            {
+                if (const auto* pointLightData = dynamic_cast<const PointLightData*>(it->second[i].get()))
+                {
+                    SyncData(pointLightData, &m_frameData.pointLights[i]);
+                }
+            }
+        }
+        else
+        {
+            m_frameData.activePointLightsCount = 0;
+        }
 
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;

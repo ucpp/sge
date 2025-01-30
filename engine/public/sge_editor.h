@@ -43,7 +43,8 @@ namespace SGE
 
         std::unique_ptr<FileDialog> m_fileDialog;
 
-        uint32 m_selectedObjectIndex = 0;
+        ObjectDataBase* m_selectedObject = nullptr; 
+        uint32 m_selectedObjectIndex = -1;
 
         bool m_isEnable = true;
     };

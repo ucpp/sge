@@ -23,9 +23,8 @@ namespace SGE
 
     constexpr float CLEAR_COLOR[4] = { 0.0, 0.0, 0.0, 1.0 };
 
-    constexpr uint32 MAX_POINT_LIGHTS = 6;
+    constexpr uint32 MAX_POINT_LIGHTS = 20;
     constexpr uint32 MAX_SPOT_LIGHTS = 1;
-
 
     constexpr const char* SHADERS_DIRECTORY = "shaders";
     constexpr const char* DEFAULT_SETTINGS_PATH = "resources/configs/application_settings.json";
