@@ -39,8 +39,8 @@ namespace SGE
 
         const float3 forward = CalculateForwardVector(m_cameraData->rotation[0], m_cameraData->rotation[1]);
         const float3 up(0, 1, 0);
-        const float3 right = forward.cross(up);
-        right.normalized();
+        float3 right = forward.cross(up);
+        right.normalize();
 
         if (Input::Get().GetKey('S'))
         {

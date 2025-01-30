@@ -44,7 +44,7 @@ namespace SGE
             cosf(pitchInRadians) * sinf(yawInRadians)  // Z
         );
 
-        m_direction = m_direction.normalized();
+        m_direction.normalize();
         Recalculate();
     }
 
@@ -58,7 +58,7 @@ namespace SGE
     void Camera::SetTarget(const float3& target)
     {
         m_direction = (target - m_position);
-        m_direction = m_direction.normalized();
+        m_direction.normalize();
 
         m_yaw = atan2f(m_direction.z, m_direction.x);
         m_pitch = asinf(m_direction.y);

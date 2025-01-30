@@ -21,6 +21,19 @@ namespace SGE
         return *this / len;
     }
 
+    void float2::normalize() noexcept
+    {
+        float len = length();
+        if (len >= EPSILON)
+        {
+            *this /= len;
+        }
+        else
+        { 
+            *this = Zero;
+        }
+    }
+
     float float2::dot(const float2& other) const noexcept
     {
         return x * other.x + y * other.y;
@@ -119,6 +132,19 @@ namespace SGE
         float len = length();
         if (len < EPSILON) return Zero;
         return *this / len;
+    }
+
+    void float3::normalize() noexcept
+    {
+        float len = length();
+        if (len >= EPSILON) 
+        {
+            *this /= len;
+        }
+        else
+        {
+            *this = Zero;
+        }
     }
 
     float float3::dot(const float3& other) const noexcept

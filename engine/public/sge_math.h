@@ -23,6 +23,7 @@ namespace SGE
         float length() const noexcept;
         float dot(const float2& other) const noexcept;
         float2 normalized() const noexcept;
+        void normalize() noexcept;
         float2 reflect(const float2& normal) const noexcept;
         float2 project(const float2& onto) const noexcept;
         static float distance(const float2& a, const float2& b) noexcept;
@@ -66,6 +67,7 @@ namespace SGE
         float length() const noexcept;
         float dot(const float3& other) const noexcept;
         float3 normalized() const noexcept;
+        void normalize() noexcept;
         float3 cross(const float3& other) const noexcept;
         float3 reflect(const float3& normal) const noexcept;
         float3 project(const float3& onto) const noexcept;

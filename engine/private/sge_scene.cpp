@@ -106,7 +106,7 @@ namespace SGE
         const uint32 count = static_cast<uint32>(it->second.size());
         m_frameData.activePointLightsCount = count;
 
-        for(int32 i = 0; i < count; ++i)
+        for(uint32 i = 0; i < count; ++i)
         {
             if(const auto* pointLightData = dynamic_cast<const PointLightData*>(it->second[i].get()))
             {
