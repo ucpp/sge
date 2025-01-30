@@ -29,9 +29,6 @@ namespace SGE
         void CreateCommandAllocators();
         void CreateCommandList();
 
-    public:
-        static const uint32 CbvSrvHeapCapacity = 256;
-
     private:
         ComPtr<ID3D12Device> m_device;
         ComPtr<ID3D12CommandQueue> m_commandQueue;
