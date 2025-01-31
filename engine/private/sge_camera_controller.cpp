@@ -52,11 +52,11 @@ namespace SGE
         }
         if (Input::Get().GetKey('A'))
         {
-            UpdatePosition(-right, velocity);
+            UpdatePosition(right, velocity);
         }
         if (Input::Get().GetKey('D'))
         {
-            UpdatePosition(right, velocity);
+            UpdatePosition(-right, velocity);
         }
     }
 
@@ -71,15 +71,15 @@ namespace SGE
 
             m_lastMousePosition = float2(mouseX, mouseY);
 
-            m_cameraData->rotation[1] += deltaX * m_sensitivity; // Yaw
-            m_cameraData->rotation[0] -= deltaY * m_sensitivity; // Pitch
+            m_cameraData->rotation.y -= deltaX * m_sensitivity; // Yaw
+            m_cameraData->rotation.x -= deltaY * m_sensitivity; // Pitch
 
-            m_cameraData->rotation[0] = std::clamp(m_cameraData->rotation[0], -MAX_PITCH, MAX_PITCH);
-            m_cameraData->rotation[1] = fmodf(m_cameraData->rotation[1], 360.0f);
-            if (m_cameraData->rotation[1] > 180.0f)
-                m_cameraData->rotation[1] -= 360.0f;
-            else if (m_cameraData->rotation[1] < -180.0f)
-                m_cameraData->rotation[1] += 360.0f;
+            m_cameraData->rotation.x = std::clamp(m_cameraData->rotation.x, -MAX_PITCH, MAX_PITCH);
+            m_cameraData->rotation.y = fmodf(m_cameraData->rotation.y, 360.0f);
+            if (m_cameraData->rotation.y > 180.0f)
+                m_cameraData->rotation.y -= 360.0f;
+            else if (m_cameraData->rotation.y < -180.0f)
+                m_cameraData->rotation.y += 360.0f;
         }
         else
         {
@@ -110,6 +110,10 @@ namespace SGE
 
     void CameraController::UpdatePosition(float3 direction, float velocity)
     {
-        m_cameraData->position += direction * velocity;
+        if (direction.length() > 0)
+        {
+            direction.normalize();
+            m_cameraData->position += direction * velocity;
+        }
     }
 }

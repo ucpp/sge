@@ -60,8 +60,8 @@ namespace SGE
     {
         TransformBuffer transformData = {};
         transformData.model = GetWorldMatrix().Transpose();
-        transformData.view = viewMatrix;
-        transformData.projection = projectionMatrix;
+        transformData.view = viewMatrix.Transpose();
+        transformData.projection = projectionMatrix.Transpose();
 
         m_transformBuffer.Update(&transformData, sizeof(TransformBuffer));
     }

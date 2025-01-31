@@ -51,7 +51,7 @@ namespace SGE
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.zNear = m_mainCamera.GetNear();
         m_frameData.zFar = m_mainCamera.GetFar();
-        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).Transpose();
     }
 
     void Scene::InstantiateModels()

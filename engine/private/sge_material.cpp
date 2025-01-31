@@ -17,6 +17,6 @@ namespace SGE
         commandList->SetGraphicsRootDescriptorTable(2, heap->GetGPUHandle(m_albedoTextureIndex));
         commandList->SetGraphicsRootDescriptorTable(3, heap->GetGPUHandle(m_normalTextureIndex));
         commandList->SetGraphicsRootDescriptorTable(4, heap->GetGPUHandle(m_metallicTextureIndex));
-        // commandList->SetGraphicsRootDescriptorTable(5, heap->GetGPUHandle(m_roughnessTextureIndex));
+        commandList->SetGraphicsRootDescriptorTable(5, heap->GetGPUHandle(m_roughnessTextureIndex));
     }
 }

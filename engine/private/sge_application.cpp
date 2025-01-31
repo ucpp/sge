@@ -91,7 +91,7 @@ namespace SGE
             m_isRunning = false;
         }
 
-        if(Input::Get().GetKeyDown('0'))
+        if(Input::Get().GetKeyDown('Q'))
         {
             WindowData& windowData = m_renderContext->GetWindowData();
             windowData.isEditorEnable = !windowData.isEditorEnable;

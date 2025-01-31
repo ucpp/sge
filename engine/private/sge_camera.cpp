@@ -1,4 +1,5 @@
 #include "sge_camera.h"
+#include "sge_logger.h"
 
 namespace SGE
 {
@@ -110,7 +111,7 @@ namespace SGE
         Vector3 eyePos = { m_position.x, m_position.y, m_position.z };
         Vector3 focusPos = { pos.x, pos.y, pos.z };
         Vector3 upDir = { m_up.x, m_up.y, m_up.z };
-        return XMMatrixTranspose(XMMatrixLookAtRH(eyePos, focusPos, upDir));
+        return XMMatrixLookAtLH(eyePos, focusPos, upDir);
     }
 
     Matrix Camera::GetProjMatrix(int width, int height) const
@@ -123,7 +124,7 @@ namespace SGE
             fovAngleY /= aspectRatio;
         }
 
-        return XMMatrixTranspose(XMMatrixPerspectiveFovRH(fovAngleY, aspectRatio, m_nearPlane, m_farPlane));
+        return XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, m_nearPlane, m_farPlane);
     }
 
     Matrix Camera::GetViewProjMatrix(int width, int height) const
@@ -139,7 +140,7 @@ namespace SGE
 
     Matrix Camera::GetOrthoProjMatrix(float width, float height) const
     {
-        return XMMatrixTranspose(XMMatrixOrthographicRH(width, height, m_nearPlane, m_farPlane));
+        return XMMatrixOrthographicLH(width, height, m_nearPlane, m_farPlane);
     }
 
     std::array<Matrix, 6> Camera::GetCubeViewMatrices() const
@@ -169,7 +170,7 @@ namespace SGE
             Vector3 eyePos = { m_position.x, m_position.y, m_position.z };
             Vector3 focusPos = { pos.x, pos.y, pos.z };
             Vector3 upDir = { ups[i].x, ups[i].y, ups[i].z };
-            matrices[i] = XMMatrixLookAtRH(eyePos, focusPos, upDir);
+            matrices[i] = XMMatrixLookAtLH(eyePos, focusPos, upDir);
         }
         return matrices;
     }

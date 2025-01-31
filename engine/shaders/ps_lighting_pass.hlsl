@@ -55,9 +55,11 @@ float3 calculateSpotLight(float3 worldPos, float3 normal, float3 albedo, SpotLig
 
 float3 ReconstructWorldPos(float2 uv, float depth, float4x4 invViewProj, float zNear, float zFar)
 {
-    float zLinear = zNear * zFar / (zFar + depth * (zNear - zFar));
+    float zLinear = zNear * zFar / (zFar - depth * (zFar - zNear));
     float4 clipPos = float4(uv * 2.0 - 1.0, zLinear, 1.0);
-    float4 worldPos = mul(invViewProj, clipPos);
+    clipPos.y = -clipPos.y;
+    float4 worldPos = mul(clipPos, invViewProj);
+
     worldPos /= worldPos.w;
 
     return worldPos.xyz;
@@ -85,5 +87,6 @@ LightingOutput main(PixelInput input)
     }
 
     output.color = float4(finalColor, 1.0f);
+    //output.color = float4(normal.x, normal.z, normal.y,  1.0f);
     return output;
 }

@@ -43,6 +43,6 @@ namespace SGE
             currentIndexOffset += static_cast<uint32>(meshVertices.size());
         }
 
-        std::reverse(m_indices.begin(), m_indices.end());
+        //std::reverse(m_indices.begin(), m_indices.end());
     }
 }

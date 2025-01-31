@@ -52,6 +52,8 @@ namespace SGE
         m_context->SetRootSignature(m_pipelineState->GetSignature());
         m_context->SetRenderTarget(false);
 
+        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
         m_context->SetRootDescriptorTable(0, 0);
         commandList->SetGraphicsRootDescriptorTable(2, m_context->GetGBuffer()->GetSRVGPUHandle(0));
         commandList->SetGraphicsRootDescriptorTable(3, m_context->GetGBuffer()->GetSRVGPUHandle(1));

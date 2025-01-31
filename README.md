@@ -122,7 +122,7 @@ The SGE project is designed to:
   - Hold the right mouse button and move the mouse to rotate the camera.
 ### Editor Controls
 - **Toggle Editor**:
-  - `0`: Toggle the editor UI on/off.
+  - `Q`: Toggle the editor UI on/off.
 ---
   
 ## Contribution

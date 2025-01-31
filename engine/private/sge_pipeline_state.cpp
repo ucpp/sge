@@ -62,8 +62,8 @@ namespace SGE
         config.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
         config.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
         config.DepthStencilState.DepthEnable = TRUE;
-        config.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-
+        config.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+        
         return config;
     }
 }
