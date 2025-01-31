@@ -15,7 +15,7 @@ namespace SGE
         pipelineConfig.RenderTargetFormats = 
         {
             DXGI_FORMAT_R8G8B8A8_UNORM, // Albedo + Metallic
-            DXGI_FORMAT_R10G10B10A2_UNORM   // Normal + Roughness
+            DXGI_FORMAT_R8G8B8A8_UNORM   // Normal + Roughness
         };
         pipelineConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
         pipelineConfig.SampleCount = 1;

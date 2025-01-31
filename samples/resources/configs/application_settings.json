@@ -144,7 +144,7 @@
                 "sensitivity": "0.1"
             },
             {
-                "name": "Directional Light",
+                "name": "Directional L",
                 "type": 1,
                 "direction": [
                     "0.08",
