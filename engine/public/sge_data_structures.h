@@ -88,6 +88,7 @@ namespace SGE
     public:
         std::string name;
         ObjectType  type;
+        bool enabled = true;
     };
 
     class TransformData : public ObjectDataBase

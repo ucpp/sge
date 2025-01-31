@@ -83,6 +83,7 @@ namespace SGE
 
     void ModelData::DrawEditor()
     {
+        Checkbox("Enabled:", enabled);
         TransformData::DrawEditor();
         InputText("Asset ID:", assetId);
         InputText("Material ID:", materialId);
@@ -93,6 +94,7 @@ namespace SGE
         TransformData::ToJson(data);
         data["asset_id"] = assetId;
         data["material_id"] = materialId;
+        data["enabled"] = enabled;
     }
 
     void ModelData::FromJson(const njson& data)
@@ -100,6 +102,7 @@ namespace SGE
         TransformData::FromJson(data);
         data.at("asset_id").get_to(assetId);
         data.at("material_id").get_to(materialId);
+        data.at("enabled").get_to(enabled);
     }
 
     void PointLightData::DrawEditor()

@@ -11,6 +11,7 @@ namespace SGE
     bool DragAngle3(const std::string& label, float3& value, ImGuiInputTextFlags flags = 0);
     bool DragFloat3(const std::string& label, float3& value, ImGuiInputTextFlags flags = 0);
     bool ColorEdit3(const std::string& label, float3& color, ImGuiInputTextFlags flags = 0);
+    bool Checkbox(const std::string& label, bool& value, ImGuiInputTextFlags flags = 0);
 }
 
 #endif // !_SGE_EDITOR_UTILS_H_

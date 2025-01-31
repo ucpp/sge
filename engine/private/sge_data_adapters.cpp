@@ -3,7 +3,7 @@
 #include "sge_data_structures.h"
 #include "sge_camera.h"
 #include "sge_logger.h"
-#include "sge_model.h"
+#include "sge_model_instance.h"
 
 namespace SGE
 {
@@ -65,6 +65,7 @@ namespace SGE
         model->SetPosition(data->position);
         model->SetRotation(data->rotation);
         model->SetScale(data->scale);
+        model->SetActive(data->enabled);
     }
 
     void SyncData(const PointLightData* data, PointLight* pointLight)

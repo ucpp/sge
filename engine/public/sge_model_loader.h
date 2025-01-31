@@ -3,7 +3,7 @@
 
 #include <string>
 #include "sge_render_context.h"
-#include "sge_model.h"
+#include "sge_model_instance.h"
 #include "sge_model_asset.h"
 #include "sge_data_structures.h"
 

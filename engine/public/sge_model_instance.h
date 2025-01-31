@@ -19,6 +19,8 @@ namespace SGE
         void Update(const Matrix& viewMatrix, const Matrix& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
+        void SetActive(bool isEnabled);
+
         void SetPosition(const float3& position) { m_position = position; }
         void SetRotation(const float3& rotation) { m_rotation = rotation; }
         void SetScale(const float3& scale) { m_scale = scale; }
@@ -43,6 +45,7 @@ namespace SGE
         float3 m_scale    = { 1.0f, 1.0f, 1.0f };
 
         uint32 m_instanceIndex = 0;
+        bool m_enabled = true;
     };
 }
 

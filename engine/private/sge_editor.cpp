@@ -14,6 +14,7 @@
 namespace SGE
 {
     static const std::string PathToSaveFile = "resources/configs/editor_layout.ini";
+    static const std::string PathToIcons = "resources/editor/";
 
     std::string ConvertWcharToUtf8(const wchar_t* wcharStr)
     {
@@ -53,23 +54,36 @@ namespace SGE
 
         ImGui_ImplDX12_Init(device, BUFFER_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);    
 
-        uint32 meshIconIndex = TextureManager::GetTextureIndex("resources/editor/mesh_icon.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 materialIconIndex = TextureManager::GetTextureIndex("resources/editor/material_icon.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 lightIconIndex = TextureManager::GetTextureIndex("resources/editor/light_icon.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        m_icons.emplace(AssetType::Model, GetTexturePtr("mesh_icon.png"));
+        m_icons.emplace(AssetType::Material, GetTexturePtr("material_icon.png"));
+        m_icons.emplace(AssetType::Light, GetTexturePtr("light_icon.png"));
 
-        m_icons.emplace(AssetType::Model, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIconIndex).ptr);
-        m_icons.emplace(AssetType::Material, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(materialIconIndex).ptr);
-        m_icons.emplace(AssetType::Light, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(lightIconIndex).ptr);
+        m_objectIcons.emplace(ObjectType::Camera, GetTexturePtr("camera_16.png"));
+        m_objectIcons.emplace(ObjectType::DirectionalLight, GetTexturePtr("directional_light_16.png"));
+        m_objectIcons.emplace(ObjectType::PointLight, GetTexturePtr("point_light_16.png"));
+        m_objectIcons.emplace(ObjectType::Model, GetTexturePtr("mesh_16.png"));
 
-        uint32 cameraIcon16 = TextureManager::GetTextureIndex("resources/editor/camera_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 meshIcon16 = TextureManager::GetTextureIndex("resources/editor/mesh_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 directionalIcon16 = TextureManager::GetTextureIndex("resources/editor/directional_light_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
-        uint32 pointLightIcon16 = TextureManager::GetTextureIndex("resources/editor/point_light_16.png", TextureType::Default, m_context->GetDevice(), m_context->GetCbvSrvUavHeap());
+        m_visibleObjectTexure   = GetTexturePtr("visible_16.png");
+        m_invisibleObjectTexure = GetTexturePtr("invisible_16.png");
+    }
 
-        m_objectIcons.emplace(ObjectType::Camera, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(cameraIcon16).ptr);
-        m_objectIcons.emplace(ObjectType::DirectionalLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(directionalIcon16).ptr);
-        m_objectIcons.emplace(ObjectType::PointLight, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(pointLightIcon16).ptr);
-        m_objectIcons.emplace(ObjectType::Model, (ImTextureID)m_context->GetCbvSrvUavHeap()->GetGPUHandle(meshIcon16).ptr);
+    uint32 Editor::GetTextureIndex(const std::string& name) const
+    {
+        const DescriptorHeap* heap = m_context->GetCbvSrvUavHeap();
+        const Device* device = m_context->GetDevice();
+
+        return TextureManager::GetTextureIndex(PathToIcons + name, TextureType::Default, device, heap);
+    }
+
+    ImTextureID Editor::GetTexturePtr(const std::string& name) const
+    {
+        const uint32 index = GetTextureIndex(name);
+        return GetTexturePtr(index);
+    }
+
+    ImTextureID Editor::GetTexturePtr(uint32 index) const
+    {
+        return static_cast<ImTextureID>(m_context->GetCbvSrvUavHeap()->GetGPUHandle(index).ptr);
     }
 
     void Editor::BuildFrame()
@@ -265,13 +279,23 @@ namespace SGE
                 for (const auto& obj : objectList)
                 {
                     bool isSelected = (m_selectedObjectIndex == index);
+
                     ImGui::Image(m_objectIcons[type], smallIconSize);
                     ImGui::SameLine();
+
                     if (ImGui::Selectable(obj->name.c_str(), isSelected))
                     {
                         m_selectedObjectIndex = index;
                         m_selectedObject = obj.get();
                     }
+                    
+                    ImGui::SameLine();
+                    float offset = ImGui::GetWindowWidth() - smallIconSize.x;
+                    ImGui::SetCursorPosX(offset);
+
+                    ImTextureID visibilityIcon = obj->enabled ? m_visibleObjectTexure : m_invisibleObjectTexure;
+                    ImGui::Image(visibilityIcon, smallIconSize);
+            
                     ++index;
                 }
             }

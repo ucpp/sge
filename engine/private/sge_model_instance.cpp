@@ -1,4 +1,4 @@
-#include "sge_model.h"
+#include "sge_model_instance.h"
 
 #include "sge_helpers.h"
 #include "sge_device.h"
@@ -26,6 +26,11 @@ namespace SGE
 
     void ModelInstance::Render(ID3D12GraphicsCommandList* commandList) const
     {
+        if(!m_enabled)
+        {
+            return;
+        }
+
         commandList->IASetVertexBuffers(0, 1, &m_vertexBuffer.GetView());
         commandList->IASetIndexBuffer(&m_indexBuffer.GetView());
         commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(m_instanceIndex));
@@ -43,6 +48,11 @@ namespace SGE
         }
     }
 
+    void ModelInstance::SetActive(bool isEnabled)
+    {
+        m_enabled = isEnabled;
+    }
+
     Matrix ModelInstance::GetWorldMatrix() const
     {
         Matrix scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
@@ -58,6 +68,11 @@ namespace SGE
 
     void ModelInstance::Update(const Matrix& viewMatrix, const Matrix& projectionMatrix)
     {
+        if(!m_enabled)
+        {
+            return;
+        }
+
         TransformBuffer transformData = {};
         transformData.model = GetWorldMatrix().Transpose();
         transformData.view = viewMatrix.Transpose();

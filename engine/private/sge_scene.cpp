@@ -1,7 +1,7 @@
 #include "sge_scene.h"
 
 #include "sge_render_context.h"
-#include "sge_model.h"
+#include "sge_model_instance.h"
 #include "sge_model_loader.h"
 #include "sge_material.h"
 #include "sge_input.h"

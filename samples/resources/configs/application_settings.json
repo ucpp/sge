@@ -161,6 +161,7 @@
             {
                 "name": "backpack (1)",
                 "type": 2,
+                "enabled": true,
                 "position": [
                     "-0.8",
                     "0.8",
@@ -182,6 +183,7 @@
             {
                 "name": "backpack (2)",
                 "type": 2,
+                "enabled": true,
                 "position": [
                     "0.36",
                     "0.8",
@@ -203,6 +205,7 @@
             {
                 "name": "backpack (3)",
                 "type": 2,
+                "enabled": true,
                 "position": [
                     "-0.8",
                     "0.8",
@@ -224,6 +227,7 @@
             {
                 "name": "backpack (4)",
                 "type": 2,
+                "enabled": true,
                 "position": [
                     "2.06",
                     "0.8",
@@ -245,6 +249,7 @@
             {
                 "name": "backpack (5)",
                 "type": 2,
+                "enabled": true,
                 "position": [
                     "-1.65",
                     "0.8",

@@ -8,8 +8,8 @@ namespace SGE
     constexpr bool USE_WARP_DEVICE = false;
     constexpr uint32 BUFFER_COUNT = 2;
     
-    constexpr uint32 CBV_HEAP_CAPACITY = 128;
-    constexpr uint32 SRV_HEAP_CAPACITY = 128;
+    constexpr uint32 CBV_HEAP_CAPACITY = 256;
+    constexpr uint32 SRV_HEAP_CAPACITY = 256;
     constexpr uint32 CBV_SRV_HEAP_CAPACITY = CBV_HEAP_CAPACITY + SRV_HEAP_CAPACITY;
     
     constexpr uint32 DSV_HEAP_CAPACITY = 1;
@@ -19,7 +19,7 @@ namespace SGE
     constexpr uint32 GBUFFER_START_SRV_HEAP_INDEX = CBV_SRV_HEAP_CAPACITY - 10;
     constexpr uint32 DEPTH_BUFFER_START_SRV_HEAP_INDEX = CBV_SRV_HEAP_CAPACITY - 2;
     constexpr uint32 TEXTURES_START_HEAP_INDEX = CBV_SRV_HEAP_CAPACITY - SRV_HEAP_CAPACITY;
-    constexpr uint32 EDITOR_START_HEAP_INDEX = CBV_SRV_HEAP_CAPACITY - 20;
+    constexpr uint32 EDITOR_START_HEAP_INDEX = CBV_SRV_HEAP_CAPACITY - 60;
 
     constexpr float CLEAR_COLOR[4] = { 0.0, 0.0, 0.0, 1.0 };
 

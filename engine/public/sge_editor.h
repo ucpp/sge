@@ -32,6 +32,10 @@ namespace SGE
 
         void ApplyResolutionChange();
 
+        uint32 GetTextureIndex(const std::string& name) const;
+        ImTextureID GetTexturePtr(const std::string& name) const;
+        ImTextureID GetTexturePtr(uint32 index) const;
+
     private:
         class RenderContext* m_context = nullptr;
 
@@ -40,6 +44,9 @@ namespace SGE
 
         std::unordered_map<AssetType, ImTextureID> m_icons;
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;
+        
+        ImTextureID m_invisibleObjectTexure;
+        ImTextureID m_visibleObjectTexure;
 
         std::unique_ptr<FileDialog> m_fileDialog;
 

@@ -3,17 +3,16 @@
 
 #include "pch.h"
 #include "sge_texture.h"
-#include "sge_device.h"
 
 namespace SGE
 {
     class TextureManager
     {
     public:
-        static uint32 GetTextureIndex(const std::string& texturePath, TextureType type, class Device* device, class DescriptorHeap* descriptorHeap);
+        static uint32 GetTextureIndex(const std::string& texturePath, TextureType type, const class Device* device, const class DescriptorHeap* descriptorHeap);
 
     private:
-        static void CreateDefaultTextures(Device* device, DescriptorHeap* descriptorHeap);
+        static void CreateDefaultTextures(const class Device* device, const class DescriptorHeap* descriptorHeap);
 
     private:
         struct TextureData

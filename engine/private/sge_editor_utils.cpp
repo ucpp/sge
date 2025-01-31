@@ -105,4 +105,21 @@ namespace SGE
 
         return result;
     }
+
+    bool Checkbox(const std::string& label, bool& value, ImGuiInputTextFlags flags)
+    {
+        float windowWidth = ImGui::GetWindowSize().x;
+        float cursorX = ImGui::GetCursorPosX();
+
+        ImGui::Text(label.c_str());
+
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(cursorX + windowWidth * ITEM_WIDTH_RATIO - LABEL_OFFSET);
+
+        ImGui::PushItemWidth(windowWidth * ITEM_WIDTH_RATIO);
+        bool result = ImGui::Checkbox(("##" + label).c_str(), &value);
+        ImGui::PopItemWidth();
+
+        return result;
+    }
 }

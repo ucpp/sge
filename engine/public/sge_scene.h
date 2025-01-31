@@ -6,7 +6,7 @@
 #include "sge_camera_controller.h"
 #include "sge_data_structures.h"
 #include "sge_constant_buffer.h"
-#include "sge_model.h"
+#include "sge_model_instance.h"
 
 namespace SGE
 {

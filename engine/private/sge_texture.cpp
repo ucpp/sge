@@ -8,7 +8,7 @@
 
 namespace SGE
 {
-    void Texture::Initialize(const std::string& texturePath, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void Texture::Initialize(const std::string& texturePath, const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         if (!std::filesystem::exists(texturePath))
         {
@@ -99,7 +99,7 @@ namespace SGE
         m_descriptorIndex = descriptorIndex;
     }
 
-    void Texture::CreateSinglePixelTexture(uint32 color, Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void Texture::CreateSinglePixelTexture(uint32 color, const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         D3D12_RESOURCE_DESC textureDesc = {};
         textureDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -161,22 +161,22 @@ namespace SGE
         m_descriptorIndex = descriptorIndex;
     }
 
-    void Texture::CreateDefaultAlbedo(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void Texture::CreateDefaultAlbedo(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         CreateSinglePixelTexture(0xFFFFFFFF, device, descriptorHeap, descriptorIndex); // white
     }
 
-    void Texture::CreateDefaultMetallic(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void Texture::CreateDefaultMetallic(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         CreateSinglePixelTexture(0x000000FF, device, descriptorHeap, descriptorIndex); // black
     }
 
-    void Texture::CreateDefaultRoughness(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void Texture::CreateDefaultRoughness(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         CreateSinglePixelTexture(0xFFFFFFFF, device, descriptorHeap, descriptorIndex); // white
     }
 
-    void Texture::CreateDefaultNormal(Device* device, DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
+    void Texture::CreateDefaultNormal(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
         CreateSinglePixelTexture(0x8080FFFF, device, descriptorHeap, descriptorIndex); // (128, 128, 255)
     }

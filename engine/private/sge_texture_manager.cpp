@@ -11,7 +11,7 @@ namespace SGE
     uint32 TextureManager::m_currentTextureIndex = TEXTURES_START_HEAP_INDEX;
     bool TextureManager::hasDefaultTextures = false;
 
-    uint32 TextureManager::GetTextureIndex(const std::string& texturePath, TextureType type, Device* device, DescriptorHeap* descriptorHeap)
+    uint32 TextureManager::GetTextureIndex(const std::string& texturePath, TextureType type, const Device* device, const DescriptorHeap* descriptorHeap)
     {
         auto it = m_textureCache.find(texturePath);
         if (it != m_textureCache.end())
@@ -45,7 +45,7 @@ namespace SGE
         return descriptorIndex;
     }
 
-    void TextureManager::CreateDefaultTextures(Device* device, DescriptorHeap* descriptorHeap)
+    void TextureManager::CreateDefaultTextures(const Device* device, const DescriptorHeap* descriptorHeap)
     {
         m_defaultTextures[TextureType::Albedo] = std::make_unique<Texture>();
         m_defaultTextures[TextureType::Albedo]->CreateDefaultAlbedo(device, descriptorHeap, m_currentTextureIndex++);
