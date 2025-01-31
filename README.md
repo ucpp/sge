@@ -83,15 +83,25 @@ This project is **actively under development**, and its purpose is to experiment
 
 </details>
 <details>
-  <summary><strong>☐ 10. Cook-Torrance BRDF and Image-Based Lighting (IBL)</strong>: Add realistic PBR lighting.</summary>
+  <summary><strong>✔ 10. Cook-Torrance BRDF and Image-Based Lighting (IBL)</strong>: Add realistic PBR lighting.</summary>
+
+  ![BRDF](https://github.com/ucpp/sge/blob/master/docs/brdf.png)
+
+</details>
+<details>
+  <summary><strong>✔ 11. HDR pipeline</strong>: Add auto exposure and tone mapping for high dynamic range rendering.</summary>
+
+  ![BRDF](https://github.com/ucpp/sge/blob/master/docs/brdf.png)
+
+</details>
+<details>
+  <summary><strong>☐ 12. Bloom effect</strong>: Implement a post-process bloom effect.</summary>
 
 
 </details>
-
+  
 ---
   
-**11. HDR pipeline**: Add auto exposure and tone mapping for high dynamic range rendering.  
-**12. Bloom effect**: Implement a post-process bloom effect.  
 **13. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
 **14. Soft shadows**: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.  
 **15. SSAO**: Implement screen-space ambient occlusion.  
@@ -99,6 +109,9 @@ This project is **actively under development**, and its purpose is to experiment
 **17. Load skinned mesh animations**: Import animated models and process on the GPU.  
 **18. Animation blending**: Combine multiple animations (e.g., running and shooting).    
 **19. Particle system**: Create a system that supports 10,000+ particles.  
+  
+--- 
+  
 **20. Transparency**: Implement transparency rendering with proper sorting and blending techniques.  
 **21. TAA/FXAA**: Add temporal anti-aliasing (TAA) and fast approximate anti-aliasing (FXAA) as post-process options.
 
