@@ -168,7 +168,7 @@ namespace SGE
 
     void Texture::CreateDefaultMetallic(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
-        CreateSinglePixelTexture(0x000000FF, device, descriptorHeap, descriptorIndex); // black
+        CreateSinglePixelTexture(0x00000000, device, descriptorHeap, descriptorIndex); // black
     }
 
     void Texture::CreateDefaultRoughness(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)

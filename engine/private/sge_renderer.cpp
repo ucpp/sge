@@ -35,14 +35,10 @@ namespace SGE
 
         editor->BuildFrame();
 
-        {
-            m_context->ResetCommandList(nullptr);
-
-            SCOPED_EVENT(m_context->GetCommandList().Get(), "Frame Initialization");
-            m_context->BindDescriptorHeaps();
-            m_context->BindViewportScissors();
-            m_context->ClearRenderTargets();
-        }
+        m_context->ResetCommandList(nullptr);
+        m_context->BindDescriptorHeaps();
+        m_context->BindViewportScissors();
+        m_context->ClearRenderTargets();
 
         if(m_context->GetRenderData().isDeferredRendering)
         {

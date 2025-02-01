@@ -4,7 +4,7 @@
 
 Texture2D diffuseMap : register(t0);
 Texture2D normalMap : register(t1);
-Texture2D specularMap : register(t2);
+Texture2D metallicMap : register(t2);
 Texture2D roughnessMap : register(t3);
 
 SamplerState sampleWrap : register(s0);
@@ -40,7 +40,7 @@ float4 main(PixelInput input) : SV_TARGET
     float3 reflectionDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectionDir), 0.0f), 32.0f); // Shininess exponent (adjust as needed)
 
-    float specularColor = specularMap.Sample(sampleWrap, input.texCoords).r;
+    float specularColor = metallicMap.Sample(sampleWrap, input.texCoords).r;
     float3 specular = spec * specularColor * directionalLight.color * directionalLight.intensity;
 
     float4 diffuseColor = diffuseMap.Sample(sampleWrap, input.texCoords);

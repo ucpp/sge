@@ -115,7 +115,7 @@ namespace SGE
         ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
         Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
 
-        SCOPED_EVENT(commandList, "Draw Editor UI");
+        SCOPED_EVENT("Draw Editor UI");
         ImGui::Render();
         
         ComPtr<ID3D12DescriptorHeap> heap = m_context->GetCbvSrvUavHeap()->GetHeap();

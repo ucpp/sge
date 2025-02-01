@@ -23,19 +23,14 @@
     "assets_data": {
         "assets": [
             {
-                "name": "backpack.obj",
-                "type": 0,
-                "path": "resources/backpack/backpack.obj"
-            },
-            {
                 "name": "ball",
                 "type": 0,
                 "path": "resources/models/ball.obj"
             },
             {
-                "name": "cube",
+                "name": "backpack.obj",
                 "type": 0,
-                "path": "resources/models/cube.obj"
+                "path": "resources/backpack/backpack.obj"
             },
             {
                 "name": "sphere",
@@ -43,33 +38,14 @@
                 "path": "resources/models/sphere.obj"
             },
             {
+                "name": "cube",
+                "type": 0,
+                "path": "resources/models/cube.obj"
+            },
+            {
                 "name": "plane",
                 "type": 0,
                 "path": "resources/models/plane.obj"
-            },
-            {
-                "name": "bricks",
-                "type": 1,
-                "albedo_texture_path": "resources/bricks/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/bricks/normal.png",
-                "roughness_texture_path": "resources/bricks/roughness.png"
-            },
-            {
-                "name": "backpack",
-                "type": 1,
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds"
-            },
-            {
-                "name": "stones",
-                "type": 1,
-                "albedo_texture_path": "resources/stones/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/stones/normal_gl.png",
-                "roughness_texture_path": "resources/stones/roughness.png"
             },
             {
                 "name": "plastic",
@@ -80,6 +56,30 @@
                 "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
+                "name": "stones",
+                "type": 1,
+                "albedo_texture_path": "resources/stones/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/stones/normal.png",
+                "roughness_texture_path": "resources/stones/roughness.png"
+            },
+            {
+                "name": "backpack",
+                "type": 1,
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
+            },
+            {
+                "name": "bricks",
+                "type": 1,
+                "albedo_texture_path": "resources/bricks/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/bricks/normal.png",
+                "roughness_texture_path": "resources/bricks/roughness.png"
+            },
+            {
                 "name": "metal",
                 "type": 1,
                 "albedo_texture_path": "resources/metal/albedo.png",
@@ -88,20 +88,20 @@
                 "roughness_texture_path": "resources/metal/roughness.png"
             },
             {
-                "name": "marbel",
-                "type": 1,
-                "albedo_texture_path": "resources/marbel/albedo.png",
-                "metallic_texture_path": "resources/marbel/albedo.png",
-                "normal_texture_path": "resources/marbel/normal.png",
-                "roughness_texture_path": "resources/marbel/roughness.png"
-            },
-            {
                 "name": "backpack_norm",
                 "type": 1,
                 "albedo_texture_path": "",
                 "metallic_texture_path": "",
                 "normal_texture_path": "resources/backpack/normal.dds",
                 "roughness_texture_path": ""
+            },
+            {
+                "name": "marbel",
+                "type": 1,
+                "albedo_texture_path": "resources/marbel/albedo.png",
+                "metallic_texture_path": "resources/marbel/albedo.png",
+                "normal_texture_path": "resources/marbel/normal.png",
+                "roughness_texture_path": "resources/marbel/roughness.png"
             },
             {
                 "name": "empty",
@@ -123,13 +123,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "-0.182",
-                    "2.984",
-                    "-5.918"
+                    "-0.476",
+                    "2.81",
+                    "-7.064"
                 ],
                 "rotation": [
-                    "-29.8",
-                    "89.8",
+                    "-27.8",
+                    "90.8",
                     "0.0"
                 ],
                 "scale": [
@@ -161,7 +161,6 @@
             {
                 "name": "backpack (1)",
                 "type": 2,
-                "enabled": true,
                 "position": [
                     "-0.8",
                     "0.8",
@@ -178,12 +177,12 @@
                     "0.5"
                 ],
                 "asset_id": "backpack.obj",
-                "material_id": "backpack"
+                "material_id": "backpack",
+                "enabled": true
             },
             {
                 "name": "backpack (2)",
                 "type": 2,
-                "enabled": true,
                 "position": [
                     "0.36",
                     "0.8",
@@ -200,12 +199,12 @@
                     "0.5"
                 ],
                 "asset_id": "backpack.obj",
-                "material_id": "backpack"
+                "material_id": "backpack",
+                "enabled": false
             },
             {
                 "name": "backpack (3)",
                 "type": 2,
-                "enabled": true,
                 "position": [
                     "-0.8",
                     "0.8",
@@ -222,12 +221,12 @@
                     "0.5"
                 ],
                 "asset_id": "backpack.obj",
-                "material_id": "backpack"
+                "material_id": "backpack",
+                "enabled": false
             },
             {
                 "name": "backpack (4)",
                 "type": 2,
-                "enabled": true,
                 "position": [
                     "2.06",
                     "0.8",
@@ -244,12 +243,12 @@
                     "0.5"
                 ],
                 "asset_id": "backpack.obj",
-                "material_id": "backpack"
+                "material_id": "backpack",
+                "enabled": false
             },
             {
                 "name": "backpack (5)",
                 "type": 2,
-                "enabled": true,
                 "position": [
                     "-1.65",
                     "0.8",
@@ -266,7 +265,30 @@
                     "0.5"
                 ],
                 "asset_id": "backpack.obj",
-                "material_id": "backpack"
+                "material_id": "backpack",
+                "enabled": false
+            },
+            {
+                "name": "plane",
+                "type": 2,
+                "position": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "rotation": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "1.5",
+                    "1.5",
+                    "1.5"
+                ],
+                "asset_id": "plane",
+                "material_id": "stones",
+                "enabled": false
             },
             {
                 "name": "Point L(1)",

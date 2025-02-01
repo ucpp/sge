@@ -3,24 +3,22 @@
 
 #include "pch.h"
 #include <d3d12.h>
+//#include <pix.h>
 
 namespace SGE
 {
     class ScopedEvent final
     {
     public:
-        ScopedEvent(ID3D12GraphicsCommandList* commandList, const std::string& eventName);
+        ScopedEvent(const std::string& eventName);
         ~ScopedEvent();
-    
-    private:
-        ID3D12GraphicsCommandList* m_commandList;
     };
 }
 
 #ifdef _DEBUG
-    #define SCOPED_EVENT(commandList, eventName) SGE::ScopedEvent event(commandList, eventName)
+    #define SCOPED_EVENT(eventName) SGE::ScopedEvent event(eventName)
 #else
-    #define SCOPED_EVENT(commandList, eventName)
+    #define SCOPED_EVENT(eventName)
 #endif
 
 #endif // !_SGE_SCOPED_EVENT_H_
