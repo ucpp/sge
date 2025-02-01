@@ -25,6 +25,7 @@ namespace SGE
         std::unique_ptr<RenderPass> m_forwardPass;
         std::unique_ptr<RenderPass> m_geometryPass;
         std::unique_ptr<RenderPass> m_lightingPass;
+        std::unique_ptr<RenderPass> m_tonemappingPass;
     };
 }
 

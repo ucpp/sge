@@ -50,7 +50,14 @@ namespace SGE
         
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
-        m_context->SetRenderTarget(false);
+
+
+        m_context->GetRTTBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_context->GetCommandList().Get());
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_context->GetRTTBuffer()->GetRTVHandle();
+        commandList->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
+        
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
+        commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

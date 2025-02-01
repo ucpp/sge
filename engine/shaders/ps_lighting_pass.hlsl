@@ -113,16 +113,6 @@ float3 ReconstructWorldPos(float2 uv, float depth, float4x4 invViewProj, float z
     return worldPos.xyz / worldPos.w;
 }
 
-float3 ACESFilm(float3 x)
-{
-    float a = 2.51f;
-    float b = 0.03f;
-    float c = 2.43f;
-    float d = 0.59f;
-    float e = 0.14f;
-    return saturate((x * (a * x + b)) / (x * (c * x + d) + e));
-}
-
 LightingOutput main(PixelInput input)
 {
     LightingOutput output;
@@ -144,11 +134,6 @@ LightingOutput main(PixelInput input)
     {
         finalColor += CalculatePointLight(worldPos, normal, albedo, metallic, roughness, viewDir, pointLights[i]);
     }
-
-    float exposure = 1.5;
-    finalColor *= exposure;
-    finalColor = ACESFilm(finalColor);
-    finalColor = pow(finalColor, 1.0 / 2.2);
 
     output.color = float4(finalColor, 1.0f);
     return output;

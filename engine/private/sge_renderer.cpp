@@ -4,6 +4,7 @@
 #include "sge_forward_render_pass.h"
 #include "sge_geometry_render_pass.h"
 #include "sge_lighting_render_pass.h"
+#include "sge_tonemapping_render_pass.h"
 #include "sge_helpers.h"
 #include "sge_scoped_event.h"
 
@@ -22,6 +23,9 @@ namespace SGE
 
         m_lightingPass = std::make_unique<LightingRenderPass>();
         m_lightingPass->Initialize(m_context);
+
+        m_tonemappingPass = std::make_unique<ToneMappingRenderPass>();
+        m_tonemappingPass->Initialize(m_context);
 
         m_context->CloseCommandList();
         m_context->ExecuteCommandList();
@@ -44,6 +48,7 @@ namespace SGE
         {
             m_geometryPass->Render(scene);
             m_lightingPass->Render(scene);
+            m_tonemappingPass->Render(scene);
         }
         else
         {
@@ -78,6 +83,12 @@ namespace SGE
             m_lightingPass->Shutdown();
             m_lightingPass.reset();
         }
+
+        if(m_tonemappingPass)
+        {
+            m_tonemappingPass->Shutdown();
+            m_tonemappingPass.reset();
+        }
     }
     
     void Renderer::ReloadShaders()
@@ -86,5 +97,6 @@ namespace SGE
         m_forwardPass->Reload();
         m_geometryPass->Reload();
         m_lightingPass->Reload();
+        m_tonemappingPass->Reload();
     }
 }

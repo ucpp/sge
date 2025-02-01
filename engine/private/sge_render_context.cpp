@@ -27,6 +27,7 @@ namespace SGE
         InitializeDescriptorHeaps();
         InitializeRenderTargets();
         InitializeGBuffer();
+        InitializeRTTBuffer();
     }
 
     void RenderContext::InitializeDescriptorHeaps()
@@ -51,6 +52,12 @@ namespace SGE
     {
         m_gBuffer = std::make_unique<GBuffer>();
         m_gBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight());
+    }
+
+    void RenderContext::InitializeRTTBuffer()
+    {
+        m_rttBuffer = std::make_unique<RenderTargetTexture>();
+        m_rttBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
     }
 
     void RenderContext::Shutdown()

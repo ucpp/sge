@@ -11,6 +11,7 @@
 #include "sge_viewport_scissors.h"
 #include "sge_gbuffer.h"
 #include "sge_data_structures.h"
+#include "sge_render_target_texture.h"
 
 namespace SGE
 {
@@ -28,6 +29,7 @@ namespace SGE
         RenderTarget* GetRenderTarget() { return m_renderTarget.get(); }
         DepthBuffer* GetDepthBuffer() { return m_depthBuffer.get(); }
         GBuffer* GetGBuffer() { return m_gBuffer.get(); }
+        RenderTargetTexture* GetRTTBuffer() { return m_rttBuffer.get(); }
         Fence* GetFence() { return &m_fence; }
 
         uint32 GetFrameIndex() const { return m_frameIndex; }
@@ -65,6 +67,7 @@ namespace SGE
         void InitializeDescriptorHeaps();
         void InitializeRenderTargets();
         void InitializeGBuffer();
+        void InitializeRTTBuffer();
 
     private:
         class Window* m_window = nullptr;
@@ -75,6 +78,7 @@ namespace SGE
         std::unique_ptr<RenderTarget> m_renderTarget;
         std::unique_ptr<DepthBuffer> m_depthBuffer;
         std::unique_ptr<GBuffer> m_gBuffer;
+        std::unique_ptr<RenderTargetTexture> m_rttBuffer;
 
         DescriptorHeap m_cbvSrvUavHeap;
         DescriptorHeap m_rtvHeap;
