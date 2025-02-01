@@ -62,6 +62,7 @@ namespace SGE
             return;
         }
 
+        model->SetName(data->name);
         model->SetPosition(data->position);
         model->SetRotation(data->rotation);
         model->SetScale(data->scale);

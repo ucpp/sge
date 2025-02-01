@@ -5,6 +5,7 @@
 #include "sge_geometry_render_pass.h"
 #include "sge_lighting_render_pass.h"
 #include "sge_helpers.h"
+#include "sge_scoped_event.h"
 
 namespace SGE
 {
@@ -34,11 +35,14 @@ namespace SGE
 
         editor->BuildFrame();
 
-        m_context->ResetCommandList(nullptr);
+        {
+            m_context->ResetCommandList(nullptr);
 
-        m_context->BindDescriptorHeaps();
-        m_context->BindViewportScissors();
-        m_context->ClearRenderTargets();
+            SCOPED_EVENT(m_context->GetCommandList().Get(), "Frame Initialization");
+            m_context->BindDescriptorHeaps();
+            m_context->BindViewportScissors();
+            m_context->ClearRenderTargets();
+        }
 
         if(m_context->GetRenderData().isDeferredRendering)
         {

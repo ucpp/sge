@@ -4,6 +4,7 @@
 #include "sge_device.h"
 #include "sge_descriptor_heap.h"
 #include "sge_texture_manager.h"
+#include "sge_scoped_event.h"
 
 namespace SGE
 {
@@ -36,6 +37,8 @@ namespace SGE
         commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(m_instanceIndex));
         m_material->Bind(commandList, m_descriptorHeap);
 
+        SCOPED_EVENT(commandList, "Draw " + m_name);
+
         const std::vector<Mesh>& meshes = m_asset->GetMeshes();
         for (size_t i = 0; i < meshes.size(); ++i)
         {
@@ -46,6 +49,11 @@ namespace SGE
 
             commandList->DrawIndexedInstanced(meshIndexCount, 1, indexOffset, 0, 0);
         }
+    }
+
+    void ModelInstance::SetName(const std::string& name)
+    {
+        m_name = name;
     }
 
     void ModelInstance::SetActive(bool isEnabled)

@@ -47,6 +47,30 @@ namespace SGE
             }
         );
     }
+
+    inline std::wstring StringToWideString(const std::string& str)
+    {
+        if (str.empty())
+        {
+            return L"";
+        }
+
+        int32 wideStrSize = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, nullptr, 0);
+        if (wideStrSize == 0)
+        {
+            return L"";
+        }
+        
+        std::wstring wideStr(wideStrSize, L'\0');
+        if (MultiByteToWideChar(CP_UTF8, 0, str.c_str(), -1, wideStr.data(), wideStrSize) == 0)
+        {
+            return L"";
+        }
+
+        wideStr.pop_back();
+
+        return wideStr;
+    }
 }
 
 #endif // !_SGE_DEBUG_H_

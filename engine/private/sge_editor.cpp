@@ -8,6 +8,7 @@
 #include "sge_texture_manager.h"
 #include "sge_config.h"
 #include "sge_data_structures.h"
+#include "sge_scoped_event.h"
 
 #include <commdlg.h>
 
@@ -111,10 +112,11 @@ namespace SGE
         {
             return;
         }
-
-        ImGui::Render();
         ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
         Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
+
+        SCOPED_EVENT(commandList, "Draw Editor UI");
+        ImGui::Render();
         
         ComPtr<ID3D12DescriptorHeap> heap = m_context->GetCbvSrvUavHeap()->GetHeap();
         Verify(heap.Get(), "Editor::Render: DescriptorHeap is null or invalid. Rendering cannot proceed.");

@@ -19,6 +19,7 @@ namespace SGE
         void Update(const Matrix& viewMatrix, const Matrix& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
+        void SetName(const std::string& name);
         void SetActive(bool isEnabled);
 
         void SetPosition(const float3& position) { m_position = position; }
@@ -46,6 +47,7 @@ namespace SGE
 
         uint32 m_instanceIndex = 0;
         bool m_enabled = true;
+        std::string m_name = "Unnamed model";
     };
 }
 
