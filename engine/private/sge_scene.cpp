@@ -160,7 +160,7 @@ namespace SGE
 
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
-        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).Transpose();
         m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));
     }
     

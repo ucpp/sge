@@ -86,7 +86,6 @@ float3 CalculatePointLight(float3 worldPos, float3 normal, float3 albedo, float 
     float3 lightDir = light.position - worldPos;
     float distance = length(lightDir);
     lightDir = normalize(lightDir);
-
     float attenuation = 1.0 / (1.0 + 0.14 * distance + 0.07 * (distance * distance));
     return CalculateLightContribution(albedo, metallic, roughness, normal, lightDir, viewDir, light.color, light.intensity) * attenuation;
 }
@@ -104,13 +103,15 @@ float3 CalculateSpotLight(float3 worldPos, float3 normal, float3 albedo, float m
     return CalculateLightContribution(albedo, metallic, roughness, normal, lightDir, viewDir, light.color, light.intensity) * attenuation * intensity;
 }
 
-float3 ReconstructWorldPos(float2 uv, float depth, float4x4 invViewProj, float zNear, float zFar)
+float3 ReconstructWorldPosition(float2 texCoords, float depth)
 {
-    float zLinear = zNear * zFar / (zFar - depth * (zFar - zNear));
-    float4 clipPos = float4(uv * 2.0 - 1.0, zLinear, 1.0);
-    clipPos.y = -clipPos.y;
-    float4 worldPos = mul(clipPos, invViewProj);
-    return worldPos.xyz / worldPos.w;
+    float4 clipSpacePos = float4(texCoords * 2.0 - 1.0, depth, 1.0);
+    clipSpacePos.y = -clipSpacePos.y;
+    float4 viewSpacePos = mul(clipSpacePos, invViewProj);
+    viewSpacePos /= viewSpacePos.w;
+    float3 worldPos = viewSpacePos.xyz;
+
+    return worldPos;
 }
 
 LightingOutput main(PixelInput input)
@@ -126,7 +127,7 @@ LightingOutput main(PixelInput input)
     float3 normal = normalize(normalRoughness.xyz * 2.0f - 1.0f);
     float roughness = normalRoughness.w;
 
-    float3 worldPos = ReconstructWorldPos(input.texCoords, depth, invViewProj, zNear, zFar);
+    float3 worldPos = ReconstructWorldPosition(input.texCoords, depth);
     float3 viewDir = normalize(cameraPosition - worldPos);
 
     float3 finalColor = CalculateDirectionalLight(normal, albedo, metallic, roughness, viewDir, directionalLight);
@@ -139,5 +140,6 @@ LightingOutput main(PixelInput input)
     finalColor *= exposure;
 
     output.color = float4(finalColor, 1.0f);
+    //output.color = float4(worldPos, 1.0f);
     return output;
 }

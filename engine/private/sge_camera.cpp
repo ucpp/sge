@@ -129,7 +129,7 @@ namespace SGE
 
     Matrix Camera::GetViewProjMatrix(int width, int height) const
     {
-        return GetViewMatrix() * GetProjMatrix(width, height);
+        return GetProjMatrix(width, height) * GetViewMatrix();
     }
 
     Matrix Camera::GetInvViewProjMatrix(int width, int height) const
