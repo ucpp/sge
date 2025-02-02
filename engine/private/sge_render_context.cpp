@@ -27,7 +27,7 @@ namespace SGE
         InitializeDescriptorHeaps();
         InitializeRenderTargets();
         InitializeGBuffer();
-        InitializeRTTBuffer();
+        InitializeRTTBuffers();
     }
 
     void RenderContext::InitializeDescriptorHeaps()
@@ -54,10 +54,19 @@ namespace SGE
         m_gBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight());
     }
 
-    void RenderContext::InitializeRTTBuffer()
+    void RenderContext::InitializeRTTBuffers()
     {
-        m_rttBuffer = std::make_unique<RenderTargetTexture>();
-        m_rttBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+        m_lightingBuffer = std::make_unique<RenderTargetTexture>();
+        m_lightingBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+
+        m_brightnessBuffer = std::make_unique<RenderTargetTexture>();
+        m_brightnessBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 1);
+
+        m_blurBuffer = std::make_unique<RenderTargetTexture>();
+        m_blurBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 2);
+
+        m_bloomBuffer = std::make_unique<RenderTargetTexture>();
+        m_bloomBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 3);
     }
 
     void RenderContext::Shutdown()
@@ -72,6 +81,36 @@ namespace SGE
         {
             m_depthBuffer->Shutdown();
             m_depthBuffer.reset();
+        }
+
+        if(m_gBuffer)
+        {
+            m_gBuffer->Shutdown();
+            m_gBuffer.reset();
+        }
+
+        if(m_lightingBuffer)
+        {
+            m_lightingBuffer->Shutdown();
+            m_lightingBuffer.reset();
+        }
+        
+        if(m_brightnessBuffer)
+        {
+            m_brightnessBuffer->Shutdown();
+            m_brightnessBuffer.reset();
+        }
+        
+        if(m_blurBuffer)
+        {
+            m_blurBuffer->Shutdown();
+            m_blurBuffer.reset();
+        }
+
+        if(m_bloomBuffer)
+        {
+            m_bloomBuffer->Shutdown();
+            m_bloomBuffer.reset();
         }
     }
     
@@ -259,6 +298,10 @@ namespace SGE
         m_renderTarget->Shutdown();
         m_depthBuffer->Shutdown();
         m_gBuffer->Shutdown();
+        m_lightingBuffer->Shutdown();
+        m_brightnessBuffer->Shutdown();
+        m_blurBuffer->Shutdown();
+        m_bloomBuffer->Shutdown();
 
         DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
         GetSwapChain()->GetDesc(&swapChainDesc);
@@ -271,6 +314,10 @@ namespace SGE
         m_renderTarget->Resize(width, height);
         m_depthBuffer->Resize(width, height);
         m_gBuffer->Resize(width, height);
+        m_lightingBuffer->Resize(width, height);
+        m_brightnessBuffer->Resize(width, height);
+        m_blurBuffer->Resize(width, height);
+        m_bloomBuffer->Resize(width, height);
     
         m_frameIndex = GetSwapChain()->GetCurrentBackBufferIndex();
     }

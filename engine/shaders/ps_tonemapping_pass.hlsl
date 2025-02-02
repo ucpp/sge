@@ -28,8 +28,6 @@ TonemappingOutput main(PixelInput input) : SV_Target
 
     float3 color = g_LightingResult.Sample(sampleWrap, input.texCoords).rgb;
 
-    float exposure = 1.5;
-    color *= exposure;
     color = ACESFilm(color);
     color = pow(color, 1.0 / 2.2);
     

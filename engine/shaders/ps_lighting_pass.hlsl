@@ -135,6 +135,9 @@ LightingOutput main(PixelInput input)
         finalColor += CalculatePointLight(worldPos, normal, albedo, metallic, roughness, viewDir, pointLights[i]);
     }
 
+    float exposure = 1.1;
+    finalColor *= exposure;
+
     output.color = float4(finalColor, 1.0f);
     return output;
 }

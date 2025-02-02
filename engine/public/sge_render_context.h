@@ -29,7 +29,10 @@ namespace SGE
         RenderTarget* GetRenderTarget() { return m_renderTarget.get(); }
         DepthBuffer* GetDepthBuffer() { return m_depthBuffer.get(); }
         GBuffer* GetGBuffer() { return m_gBuffer.get(); }
-        RenderTargetTexture* GetRTTBuffer() { return m_rttBuffer.get(); }
+        RenderTargetTexture* GetLightingBuffer() { return m_lightingBuffer.get(); }
+        RenderTargetTexture* GetBrightnessBuffer() { return m_brightnessBuffer.get(); }
+        RenderTargetTexture* GetBlurBuffer() { return m_blurBuffer.get(); }
+        RenderTargetTexture* GetBloomBuffer() { return m_bloomBuffer.get(); }
         Fence* GetFence() { return &m_fence; }
 
         uint32 GetFrameIndex() const { return m_frameIndex; }
@@ -67,7 +70,7 @@ namespace SGE
         void InitializeDescriptorHeaps();
         void InitializeRenderTargets();
         void InitializeGBuffer();
-        void InitializeRTTBuffer();
+        void InitializeRTTBuffers();
 
     private:
         class Window* m_window = nullptr;
@@ -78,7 +81,10 @@ namespace SGE
         std::unique_ptr<RenderTarget> m_renderTarget;
         std::unique_ptr<DepthBuffer> m_depthBuffer;
         std::unique_ptr<GBuffer> m_gBuffer;
-        std::unique_ptr<RenderTargetTexture> m_rttBuffer;
+        std::unique_ptr<RenderTargetTexture> m_lightingBuffer;
+        std::unique_ptr<RenderTargetTexture> m_brightnessBuffer;
+        std::unique_ptr<RenderTargetTexture> m_blurBuffer;
+        std::unique_ptr<RenderTargetTexture> m_bloomBuffer;
 
         DescriptorHeap m_cbvSrvUavHeap;
         DescriptorHeap m_rtvHeap;

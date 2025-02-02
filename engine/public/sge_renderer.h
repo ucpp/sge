@@ -26,6 +26,9 @@ namespace SGE
         std::unique_ptr<RenderPass> m_geometryPass;
         std::unique_ptr<RenderPass> m_lightingPass;
         std::unique_ptr<RenderPass> m_tonemappingPass;
+        std::unique_ptr<RenderPass> m_brightnesPass;
+        std::unique_ptr<RenderPass> m_blurPass;
+        std::unique_ptr<RenderPass> m_bloomCombinePass;
     };
 }
 

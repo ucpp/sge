@@ -15,7 +15,7 @@ namespace SGE
         pipelineConfig.RenderTargetFormats = { DXGI_FORMAT_R8G8B8A8_UNORM };
         pipelineConfig.DepthStencilState.DepthEnable = false;
         pipelineConfig.SampleCount = 1;
-        pipelineConfig.VertexShaderPath = "shaders/vs_lighting_pass.hlsl";
+        pipelineConfig.VertexShaderPath = "shaders/vs_fullscreen_quad.hlsl";
         pipelineConfig.PixelShaderPath = "shaders/ps_lighting_pass.hlsl";
         
         if (!m_pipelineState || m_reloadRequested)
@@ -52,8 +52,8 @@ namespace SGE
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
 
-        m_context->GetRTTBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_context->GetCommandList().Get());
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_context->GetRTTBuffer()->GetRTVHandle();
+        m_context->GetLightingBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_context->GetCommandList().Get());
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_context->GetLightingBuffer()->GetRTVHandle();
         commandList->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
         
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);

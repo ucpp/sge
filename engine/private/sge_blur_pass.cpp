@@ -1,4 +1,4 @@
-#include "sge_tonemapping_render_pass.h"
+#include "sge_blur_pass.h"
 
 #include "sge_render_context.h"
 #include "sge_scene.h"
@@ -6,9 +6,9 @@
 
 namespace SGE
 {
-    void ToneMappingRenderPass::Initialize(RenderContext* context)
+    void BlurPass::Initialize(RenderContext* context)
     {
-        Verify(context, "ToneMappingRenderPass::Initialize: Provided render context is null.");
+        Verify(context, "BlurPass::Initialize: Provided render context is null.");
         m_context = context;
 
         PipelineConfig pipelineConfig = PipelineState::CreateDefaultConfig();
@@ -16,7 +16,7 @@ namespace SGE
         pipelineConfig.DepthStencilState.DepthEnable = false;
         pipelineConfig.SampleCount = 1;
         pipelineConfig.VertexShaderPath = "shaders/vs_fullscreen_quad.hlsl";
-        pipelineConfig.PixelShaderPath = "shaders/ps_tonemapping_pass.hlsl";
+        pipelineConfig.PixelShaderPath = "shaders/ps_blur_pass.hlsl";
         
         if (!m_pipelineState || m_reloadRequested)
         {
@@ -24,8 +24,8 @@ namespace SGE
             m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig, m_reloadRequested);
         }
     }
-    
-    void ToneMappingRenderPass::Render(Scene* scene)
+
+    void BlurPass::Render(Scene* scene)
     {
         if (m_reloadRequested)
         {
@@ -34,21 +34,27 @@ namespace SGE
         }
 
         auto commandList = m_context->GetCommandList();
-        m_context->GetBloomBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
-        
+        m_context->GetBrightnessBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
+
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
-        m_context->SetRenderTarget(false);
+
+        m_context->GetBlurBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_context->GetCommandList().Get());
+        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_context->GetBlurBuffer()->GetRTVHandle();
+        commandList->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
+        
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
+        commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
 
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         m_context->SetRootDescriptorTable(0, 0);
-        commandList->SetGraphicsRootDescriptorTable(2, m_context->GetBloomBuffer()->GetSRVGPUHandle());
+        commandList->SetGraphicsRootDescriptorTable(2, m_context->GetBrightnessBuffer()->GetSRVGPUHandle());
 
         commandList->DrawInstanced(6, 1, 0, 0);
     }
-    
-    void ToneMappingRenderPass::Shutdown()
+
+    void BlurPass::Shutdown()
     {
         if(m_pipelineState)
         {

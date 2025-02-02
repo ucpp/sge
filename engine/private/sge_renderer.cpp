@@ -5,6 +5,9 @@
 #include "sge_geometry_render_pass.h"
 #include "sge_lighting_render_pass.h"
 #include "sge_tonemapping_render_pass.h"
+#include "sge_brightness_extraction_pass.h"
+#include "sge_blur_pass.h"
+#include "sge_bloom_combine_pass.h"
 #include "sge_helpers.h"
 #include "sge_scoped_event.h"
 
@@ -27,6 +30,15 @@ namespace SGE
         m_tonemappingPass = std::make_unique<ToneMappingRenderPass>();
         m_tonemappingPass->Initialize(m_context);
 
+        m_brightnesPass = std::make_unique<BrightnessExtractionPass>();
+        m_brightnesPass->Initialize(m_context);
+
+        m_blurPass = std::make_unique<BlurPass>();
+        m_blurPass->Initialize(m_context);
+
+        m_bloomCombinePass = std::make_unique<BloomCombinePass>();
+        m_bloomCombinePass->Initialize(m_context);
+
         m_context->CloseCommandList();
         m_context->ExecuteCommandList();
         m_context->WaitForPreviousFrame();
@@ -48,6 +60,9 @@ namespace SGE
         {
             m_geometryPass->Render(scene);
             m_lightingPass->Render(scene);
+            m_brightnesPass->Render(scene);
+            m_blurPass->Render(scene);
+            m_bloomCombinePass->Render(scene);
             m_tonemappingPass->Render(scene);
         }
         else
@@ -89,6 +104,24 @@ namespace SGE
             m_tonemappingPass->Shutdown();
             m_tonemappingPass.reset();
         }
+
+        if(m_brightnesPass)
+        {
+            m_brightnesPass->Shutdown();
+            m_brightnesPass.reset();
+        }
+
+        if(m_blurPass)
+        {
+            m_blurPass->Shutdown();
+            m_blurPass.reset();
+        }
+
+        if(m_bloomCombinePass)
+        {
+            m_bloomCombinePass->Shutdown();
+            m_bloomCombinePass.reset();
+        }
     }
     
     void Renderer::ReloadShaders()
@@ -98,5 +131,8 @@ namespace SGE
         m_geometryPass->Reload();
         m_lightingPass->Reload();
         m_tonemappingPass->Reload();
+        m_brightnesPass->Reload();
+        m_blurPass->Reload();
+        m_bloomCombinePass->Reload();
     }
 }
