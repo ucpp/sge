@@ -110,7 +110,7 @@ namespace SGE
         ObjectDataBase::DrawEditor();
         DragFloat3("Position:", position);
         ColorEdit3("Color:", color);
-        DragFloat("Intensity:", intensity);
+        DragFloat("Intensity:", intensity, 0.0f);
     }
 
     void PointLightData::ToJson(njson& data)
@@ -134,7 +134,7 @@ namespace SGE
         ObjectDataBase::DrawEditor();
         DragFloat3("Direction:", direction);
         ColorEdit3("Color:", color);
-        DragFloat("Intensity:", intensity);
+        DragFloat("Intensity:", intensity, 0.0f);
     }
 
     void DirectionalLightData::ToJson(njson& data)

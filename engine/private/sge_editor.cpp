@@ -284,8 +284,8 @@ namespace SGE
 
                     ImGui::Image(m_objectIcons[type], smallIconSize);
                     ImGui::SameLine();
-
-                    if (ImGui::Selectable(obj->name.c_str(), isSelected))
+                    const auto objName = obj->name.empty() ? "empty" : obj->name.c_str();
+                    if (ImGui::Selectable(objName, isSelected))
                     {
                         m_selectedObjectIndex = index;
                         m_selectedObject = obj.get();
