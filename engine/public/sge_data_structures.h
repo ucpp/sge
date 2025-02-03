@@ -17,9 +17,9 @@ namespace SGE
 
     struct alignas(16) TransformBuffer
     {
-        Matrix model;
-        Matrix view;
-        Matrix projection;
+        float4x4 model;
+        float4x4 view;
+        float4x4 projection;
     };
     static_assert(alignof(TransformBuffer) == 16, "TransformBuffer structure alignment mismatch");
 
@@ -63,7 +63,7 @@ namespace SGE
         float  fogDensity{};
         float  zNear{};
         float  zFar{};
-        Matrix invViewProj{};
+        float4x4 invViewProj{};
         uint32 activePointLightsCount{};
         uint32 activeSpotLightsCount{};
     };

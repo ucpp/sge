@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <DirectXTex.h>
 
+using namespace DirectX;
+
 namespace SGE
 {
     void Texture::Initialize(const std::string& texturePath, const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)

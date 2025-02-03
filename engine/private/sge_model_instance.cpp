@@ -61,20 +61,20 @@ namespace SGE
         m_enabled = isEnabled;
     }
 
-    Matrix ModelInstance::GetWorldMatrix() const
+    float4x4 ModelInstance::GetWorldMatrix() const
     {
-        Matrix scaleMatrix = XMMatrixScaling(m_scale.x, m_scale.y, m_scale.z);
-        Matrix rotationMatrix = XMMatrixRotationRollPitchYaw(
-            XMConvertToRadians(m_rotation.x),
-            XMConvertToRadians(m_rotation.y),
-            XMConvertToRadians(m_rotation.z)
+        float4x4 scaleMatrix = CreateScaleMatrix(m_scale);
+        float4x4 rotationMatrix = CreateRotationMatrixYawPitchRoll(
+            ConvertToRadians(m_rotation.x),
+            ConvertToRadians(m_rotation.y),
+            ConvertToRadians(m_rotation.z)
         );
-        Matrix translationMatrix = XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+        float4x4 translationMatrix = CreateTranslationMatrix(m_position);
 
         return scaleMatrix * rotationMatrix * translationMatrix;
     }
 
-    void ModelInstance::Update(const Matrix& viewMatrix, const Matrix& projectionMatrix)
+    void ModelInstance::Update(const float4x4& viewMatrix, const float4x4& projectionMatrix)
     {
         if(!m_enabled)
         {
@@ -82,9 +82,9 @@ namespace SGE
         }
 
         TransformBuffer transformData = {};
-        transformData.model = GetWorldMatrix().Transpose();
-        transformData.view = viewMatrix.Transpose();
-        transformData.projection = projectionMatrix.Transpose();
+        transformData.model = GetWorldMatrix();
+        transformData.view = viewMatrix;
+        transformData.projection = projectionMatrix;
 
         m_transformBuffer.Update(&transformData, sizeof(TransformBuffer));
     }

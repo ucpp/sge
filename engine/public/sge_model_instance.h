@@ -16,7 +16,7 @@ namespace SGE
     public:
         void Initialize(ModelAsset* asset, class Device* device, class DescriptorHeap* descriptorHeap, uint32 instanceIndex);
         void SetMaterial(Material* material);
-        void Update(const Matrix& viewMatrix, const Matrix& projectionMatrix);
+        void Update(const float4x4& viewMatrix, const float4x4& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
         void SetName(const std::string& name);
@@ -31,7 +31,7 @@ namespace SGE
         const float3& GetScale() const { return m_scale; }
 
     private:
-        Matrix GetWorldMatrix() const;
+        float4x4 GetWorldMatrix() const;
 
     private:
         ModelAsset*     m_asset = nullptr;

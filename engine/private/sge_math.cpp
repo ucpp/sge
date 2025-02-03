@@ -38,36 +38,40 @@ namespace SGE
         }
     }
 
-    float float2::dot(const float2& other) const noexcept
+    float dot(const float2& a, const float2& b) noexcept
     {
-        return x * other.x + y * other.y;
+        return a.x * b.x + a.y * b.y;
     }
 
-    float2 float2::lerp(const float2& a, const float2& b, float t) noexcept
+    float2 reflect(const float2& vec, const float2& normal) noexcept
     {
-        return a + (b - a) * t;
+        float dotProduct = dot(vec, normal);
+        return vec - 2.0f * dotProduct * normal;
     }
 
-    float float2::distance(const float2& a, const float2& b) noexcept
+    float2 project(const float2& vec, const float2& onto) noexcept
+    {
+        float dotProduct = dot(vec, onto);
+        float ontoLengthSq = dot(onto, onto);
+        return onto * (dotProduct / ontoLengthSq);
+    }
+
+    float distance(const float2& a, const float2& b) noexcept
     {
         return (a - b).length();
     }
 
-    float2 float2::reflect(const float2& normal) const noexcept
+    float angle(const float2& a, const float2& b) noexcept
     {
-        return *this - 2.0f * normal.dot(*this) * normal;
+        float dotProduct = dot(a, b);
+        float lenA = a.length();
+        float lenB = b.length();
+        return std::acos(dotProduct / (lenA * lenB));
     }
 
-    float2 float2::project(const float2& onto) const noexcept
+    float2 lerp(const float2& a, const float2& b, float t) noexcept
     {
-        return onto * (this->dot(onto) / onto.dot(onto));
-    }
-
-    float float2::angle(const float2& a, const float2& b) noexcept
-    {
-        float dot = a.dot(b);
-        dot = std::clamp(dot, -1.0f, 1.0f);
-        return std::acos(dot);
+        return a + (b - a) * t;
     }
 
     float2& float2::operator+=(const float2& other) noexcept
@@ -150,55 +154,56 @@ namespace SGE
         }
     }
 
-    float float3::dot(const float3& other) const noexcept
+    float dot(const float3& lhs, const float3& rhs) noexcept
     {
-        return x * other.x + y * other.y + z * other.z;
+        return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
     }
 
-    float3 float3::cross(const float3& other) const noexcept
+    float3 cross(const float3& lhs, const float3& rhs) noexcept
     {
-        return float3(
-            y * other.z - z * other.y,
-            z * other.x - x * other.z,
-            x * other.y - y * other.x
+        return float3
+        (
+            lhs.y * rhs.z - lhs.z * rhs.y,
+            lhs.z * rhs.x - lhs.x * rhs.z,
+            lhs.x * rhs.y - lhs.y * rhs.x
         );
     }
 
-    float3 float3::lerp(const float3& a, const float3& b, float t) noexcept
+    float3 lerp(const float3& a, const float3& b, float t) noexcept
     {
         return a + (b - a) * t;
     }
 
-    float3 float3::slerp(const float3& a, const float3& b, float t) noexcept
+    float3 slerp(const float3& a, const float3& b, float t) noexcept
     {
-        float dot = a.dot(b);
-        dot = std::clamp(dot, -1.0f, 1.0f);
-        float theta = std::acos(dot) * t;
-        float3 relativeVec = b - a * dot;
+        float dotValue = dot(a, b);
+        dotValue = std::clamp(dotValue, -1.0f, 1.0f);
+        float theta = std::acos(dotValue) * t;
+        float3 relativeVec = b - a * dotValue;
         relativeVec = relativeVec.normalized();
         return a * std::cos(theta) + relativeVec * std::sin(theta);
     }
 
-    float3 float3::reflect(const float3& normal) const noexcept
+    float3 reflect(const float3& vec, const float3& normal) noexcept
     {
-        return *this - 2.0f * normal.dot(*this) * normal;
+        return vec - 2.0f * dot(normal, vec) * normal;
     }
 
-    float float3::distance(const float3& a, const float3& b) noexcept
+    float distance(const float3& a, const float3& b) noexcept
     {
         return (a - b).length();
     }
 
-    float3 float3::project(const float3& onto) const noexcept
+    float3 project(const float3& vec, const float3& onto) noexcept
     {
-        return onto * (this->dot(onto) / onto.dot(onto));
+        return onto * (dot(vec, onto) / dot(onto, onto));
     }
 
-    float float3::angle(const float3& a, const float3& b) noexcept
+    float angle(const float3& a, const float3& b) noexcept
     {
-        float dot = a.dot(b);
-        dot = std::clamp(dot, -1.0f, 1.0f);
-        return std::acos(dot);
+        float dotValue = dot(a, b);
+        dotValue = std::clamp(dotValue, -1.0f, 1.0f);
+        return std::acos(dotValue);
     }
 
     float3& float3::operator+=(const float3& other) noexcept
@@ -838,5 +843,124 @@ namespace SGE
             mat.m20 * scalar, mat.m21 * scalar, mat.m22 * scalar, mat.m23 * scalar,
             mat.m30 * scalar, mat.m31 * scalar, mat.m32 * scalar, mat.m33 * scalar
         );
+    }
+    
+    // --------------------------------------------------------------------------
+    // camera and transformations
+    // --------------------------------------------------------------------------
+
+    float4x4 CreateViewMatrix(const float3& eye, const float3& target, const float3& up) noexcept
+    {
+        float3 zAxis = (target - eye).normalized();
+        float3 xAxis = cross(up, zAxis).normalized();
+        float3 yAxis = cross(zAxis, xAxis);
+
+        float4x4 viewMatrix = 
+        {
+            xAxis.x, yAxis.x, zAxis.x, 0.0f,
+            xAxis.y, yAxis.y, zAxis.y, 0.0f,
+            xAxis.z, yAxis.z, zAxis.z, 0.0f,
+            -dot(xAxis, eye), -dot(yAxis, eye), -dot(zAxis, eye), 1.0f
+        };
+
+        return viewMatrix;
+    }
+    
+    float4x4 CreatePerspectiveProjectionMatrix(float fov, float aspectRatio, float nearZ, float farZ) noexcept
+    {
+        float height = 1.0f / tan(fov * 0.5f);
+        float width = height / aspectRatio;
+        float range = farZ / (farZ - nearZ);
+
+        float4x4 projectionMatrix = 
+        {
+            width, 0.0f, 0.0f, 0.0f,
+            0.0f, height, 0.0f, 0.0f,
+            0.0f, 0.0f, range, 1.0f,
+            0.0f, 0.0f, -range * nearZ, 0.0f
+        };
+
+        return projectionMatrix;
+    }
+    
+    float4x4 CreateTranslationMatrix(const float3& translation) noexcept
+    {
+        float4x4 translationMatrix =
+        {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            translation.x, translation.y, translation.z, 1.0f
+        };
+
+        return translationMatrix;
+    }
+
+    float4x4 CreateRotationMatrixYawPitchRoll(float yaw, float pitch, float roll) noexcept
+    {
+        float cosYaw = cos(yaw);
+        float sinYaw = sin(yaw);
+        float cosPitch = cos(pitch);
+        float sinPitch = sin(pitch);
+        float cosRoll = cos(roll);
+        float sinRoll = sin(roll);
+
+        // Y (yaw)
+        float4x4 yawMatrix = 
+        {
+            cosYaw, 0.0f, -sinYaw, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            sinYaw, 0.0f, cosYaw, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        // X (pitch)
+        float4x4 pitchMatrix =
+        {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, cosPitch, sinPitch, 0.0f,
+            0.0f, -sinPitch, cosPitch, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        // Z (roll)
+        float4x4 rollMatrix = 
+        {
+            cosRoll, sinRoll, 0.0f, 0.0f,
+            -sinRoll, cosRoll, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        // Yaw -> Pitch -> Roll
+        return rollMatrix * pitchMatrix * yawMatrix;
+    }
+
+    float4x4 CreateScaleMatrix(const float3& scale) noexcept
+    {
+        float4x4 scaleMatrix = 
+        {
+            scale.x, 0.0f, 0.0f, 0.0f,
+            0.0f, scale.y, 0.0f, 0.0f,
+            0.0f, 0.0f, scale.z, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        return scaleMatrix;
+    }
+
+    float4x4 CreateOrthographicProjectionMatrix(float width, float height, float nearZ, float farZ) noexcept
+    {
+        float range = 1.0f / (farZ - nearZ);
+
+        float4x4 orthoMatrix = 
+        {
+            2.0f / width, 0.0f, 0.0f, 0.0f,
+            0.0f, 2.0f / height, 0.0f, 0.0f,
+            0.0f, 0.0f, range, 0.0f,
+            0.0f, 0.0f, -range * nearZ, 1.0f
+        };
+
+        return orthoMatrix;
     }
 }

@@ -105,13 +105,14 @@ float3 CalculateSpotLight(float3 worldPos, float3 normal, float3 albedo, float m
 
 float3 ReconstructWorldPosition(float2 texCoords, float depth)
 {
-    float4 clipSpacePos = float4(texCoords * 2.0 - 1.0, depth, 1.0);
-    clipSpacePos.y = -clipSpacePos.y;
-    float4 viewSpacePos = mul(clipSpacePos, invViewProj);
-    viewSpacePos /= viewSpacePos.w;
-    float3 worldPos = viewSpacePos.xyz;
 
-    return worldPos;
+    float4 clipSpacePos = float4(texCoords * 2.0 - 1.0, depth, 1.0);
+    clipSpacePos.y = -clipSpacePos.y; 
+
+    float4 worldSpacePos = mul(invViewProj, clipSpacePos);
+    worldSpacePos /= worldSpacePos.w;
+
+    return worldSpacePos.xyz;
 }
 
 LightingOutput main(PixelInput input)

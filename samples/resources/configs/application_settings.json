@@ -23,19 +23,14 @@
     "assets_data": {
         "assets": [
             {
-                "name": "ball",
-                "type": 0,
-                "path": "resources/models/ball.obj"
-            },
-            {
                 "name": "backpack.obj",
                 "type": 0,
                 "path": "resources/backpack/backpack.obj"
             },
             {
-                "name": "sphere",
+                "name": "ball",
                 "type": 0,
-                "path": "resources/models/sphere.obj"
+                "path": "resources/models/ball.obj"
             },
             {
                 "name": "cube",
@@ -43,33 +38,14 @@
                 "path": "resources/models/cube.obj"
             },
             {
+                "name": "sphere",
+                "type": 0,
+                "path": "resources/models/sphere.obj"
+            },
+            {
                 "name": "plane",
                 "type": 0,
                 "path": "resources/models/plane.obj"
-            },
-            {
-                "name": "plastic",
-                "type": 1,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
-            },
-            {
-                "name": "stones",
-                "type": 1,
-                "albedo_texture_path": "resources/stones/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/stones/normal.png",
-                "roughness_texture_path": "resources/stones/roughness.png"
-            },
-            {
-                "name": "backpack",
-                "type": 1,
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds"
             },
             {
                 "name": "bricks",
@@ -80,6 +56,30 @@
                 "roughness_texture_path": "resources/bricks/roughness.png"
             },
             {
+                "name": "backpack",
+                "type": 1,
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
+            },
+            {
+                "name": "stones",
+                "type": 1,
+                "albedo_texture_path": "resources/stones/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/stones/normal.png",
+                "roughness_texture_path": "resources/stones/roughness.png"
+            },
+            {
+                "name": "plastic",
+                "type": 1,
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
+            },
+            {
                 "name": "metal",
                 "type": 1,
                 "albedo_texture_path": "resources/metal/albedo.png",
@@ -88,20 +88,20 @@
                 "roughness_texture_path": "resources/metal/roughness.png"
             },
             {
-                "name": "backpack_norm",
-                "type": 1,
-                "albedo_texture_path": "",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": ""
-            },
-            {
                 "name": "marbel",
                 "type": 1,
                 "albedo_texture_path": "resources/marbel/albedo.png",
                 "metallic_texture_path": "resources/marbel/albedo.png",
                 "normal_texture_path": "resources/marbel/normal.png",
                 "roughness_texture_path": "resources/marbel/roughness.png"
+            },
+            {
+                "name": "backpack_norm",
+                "type": 1,
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": ""
             },
             {
                 "name": "empty",
@@ -123,13 +123,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "-0.697",
-                    "2.229",
-                    "-4.9"
+                    "-1.954",
+                    "0.867",
+                    "3.947"
                 ],
                 "rotation": [
-                    "-22.6",
-                    "70.6",
+                    "-1.6",
+                    "-63.3",
                     "0.0"
                 ],
                 "scale": [
@@ -148,8 +148,8 @@
                 "type": 1,
                 "direction": [
                     "0.0",
-                    "-0.09",
-                    "0.05"
+                    "-0.16",
+                    "-0.66"
                 ],
                 "color": [
                     "0.735",
@@ -162,14 +162,14 @@
                 "name": "backpack (1)",
                 "type": 2,
                 "position": [
-                    "0.17",
+                    "0.0",
                     "0.8",
-                    "-2.8"
+                    "0.0"
                 ],
                 "rotation": [
-                    "347.2",
-                    "215.5",
-                    "0.3"
+                    "0.0",
+                    "0.0",
+                    "0.0"
                 ],
                 "scale": [
                     "0.5",

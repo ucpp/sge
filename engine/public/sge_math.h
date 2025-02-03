@@ -43,14 +43,8 @@ namespace SGE
         static const float2 Zero;
 
         float length() const noexcept;
-        float dot(const float2& other) const noexcept;
         float2 normalized() const noexcept;
         void normalize() noexcept;
-        float2 reflect(const float2& normal) const noexcept;
-        float2 project(const float2& onto) const noexcept;
-        static float distance(const float2& a, const float2& b) noexcept;
-        static float angle(const float2& a, const float2& b) noexcept;
-        static float2 lerp(const float2& a, const float2& b, float t) noexcept;
 
         float2& operator+=(const float2& other) noexcept;
         float2& operator-=(const float2& other) noexcept;
@@ -61,11 +55,17 @@ namespace SGE
         float2 operator-() const noexcept;
     };
 
-    inline float2 operator+(const float2& lhs, const float2& rhs) noexcept;
-    inline float2 operator-(const float2& lhs, const float2& rhs) noexcept;
-    inline float2 operator*(const float2& vec, float scalar) noexcept;
-    inline float2 operator*(float scalar, const float2& vec) noexcept;
-    inline float2 operator/(const float2& vec, float scalar) noexcept;
+    float dot(const float2& a, const float2& b) noexcept;
+    float2 reflect(const float2& vec, const float2& normal) noexcept;
+    float2 project(const float2& vec, const float2& onto) noexcept;
+    float distance(const float2& a, const float2& b) noexcept;
+    float angle(const float2& a, const float2& b) noexcept;
+    float2 lerp(const float2& a, const float2& b, float t) noexcept;
+    float2 operator+(const float2& lhs, const float2& rhs) noexcept;
+    float2 operator-(const float2& lhs, const float2& rhs) noexcept;
+    float2 operator*(const float2& vec, float scalar) noexcept;
+    float2 operator*(float scalar, const float2& vec) noexcept;
+    float2 operator/(const float2& vec, float scalar) noexcept;
 
     // --------------------------------------------------------------------------
     // float3
@@ -92,16 +92,8 @@ namespace SGE
         static const float3 Zero;
 
         float length() const noexcept;
-        float dot(const float3& other) const noexcept;
         float3 normalized() const noexcept;
         void normalize() noexcept;
-        float3 cross(const float3& other) const noexcept;
-        float3 reflect(const float3& normal) const noexcept;
-        float3 project(const float3& onto) const noexcept;
-        static float distance(const float3& a, const float3& b) noexcept;
-        static float angle(const float3& a, const float3& b) noexcept;
-        static float3 lerp(const float3& a, const float3& b, float t) noexcept;
-        static float3 slerp(const float3& a, const float3& b, float t) noexcept;
 
         float3& operator+=(const float3& other) noexcept;
         float3& operator-=(const float3& other) noexcept;
@@ -112,11 +104,19 @@ namespace SGE
         float3 operator-() const noexcept;
     };
 
-    inline float3 operator+(const float3& lhs, const float3& rhs) noexcept;
-    inline float3 operator-(const float3& lhs, const float3& rhs) noexcept;
-    inline float3 operator*(const float3& vec, float scalar) noexcept;
-    inline float3 operator*(float scalar, const float3& vec) noexcept;
-    inline float3 operator/(const float3& vec, float scalar) noexcept;
+    float3 cross(const float3& lhs, const float3& rhs) noexcept;
+    float3 slerp(const float3& a, const float3& b, float t) noexcept;
+    float dot(const float3& a, const float3& b) noexcept;
+    float3 reflect(const float3& vec, const float3& normal) noexcept;
+    float3 project(const float3& vec, const float3& onto) noexcept;
+    float distance(const float3& a, const float3& b) noexcept;
+    float angle(const float3& a, const float3& b) noexcept;
+    float3 lerp(const float3& a, const float3& b, float t) noexcept;
+    float3 operator+(const float3& lhs, const float3& rhs) noexcept;
+    float3 operator-(const float3& lhs, const float3& rhs) noexcept;
+    float3 operator*(const float3& vec, float scalar) noexcept;
+    float3 operator*(float scalar, const float3& vec) noexcept;
+    float3 operator/(const float3& vec, float scalar) noexcept;
 
     // --------------------------------------------------------------------------
     // float4
@@ -259,7 +259,7 @@ namespace SGE
     // float4x4
     // --------------------------------------------------------------------------
 
-    class float4x4
+    class alignas(16) float4x4
     {
     public:
         // row-major order: m[0]  = m00, m[1]  = m01, m[2]  = m02, m[3]  = m03,
@@ -309,6 +309,17 @@ namespace SGE
     };
 
     float4x4 operator*(float scalar, const float4x4& mat) noexcept;
+
+    // --------------------------------------------------------------------------
+    // camera and transformations
+    // --------------------------------------------------------------------------
+
+    float4x4 CreateViewMatrix(const float3& eye, const float3& target, const float3& up) noexcept;
+    float4x4 CreatePerspectiveProjectionMatrix(float fov, float aspectRatio, float nearZ, float farZ) noexcept;
+    float4x4 CreateTranslationMatrix(const float3& translation) noexcept;
+    float4x4 CreateRotationMatrixYawPitchRoll(float yaw, float pitch, float roll) noexcept;
+    float4x4 CreateScaleMatrix(const float3& scale) noexcept;
+    float4x4 CreateOrthographicProjectionMatrix(float width, float height, float nearZ, float farZ) noexcept;
 }
 
 #endif // !_SGE_MATH_H_

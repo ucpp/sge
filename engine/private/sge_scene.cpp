@@ -51,7 +51,7 @@ namespace SGE
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.zNear = m_mainCamera.GetNear();
         m_frameData.zFar = m_mainCamera.GetFar();
-        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).Transpose();
+        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
     }
 
     void Scene::InstantiateModels()
@@ -160,14 +160,14 @@ namespace SGE
 
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
-        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).Transpose();
+        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
         m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));
     }
     
     void Scene::UpdateModels(double deltaTime)
     {
-        const Matrix& view = m_mainCamera.GetViewMatrix();
-        const Matrix& proj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        const float4x4& view = m_mainCamera.GetViewMatrix();
+        const float4x4& proj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
 
         for (const auto& pair : m_modelInstances)
         {

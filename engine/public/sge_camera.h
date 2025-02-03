@@ -38,13 +38,13 @@ namespace SGE
         float GetNear() const { return m_nearPlane; }
         float GetFar() const { return m_farPlane; }
 
-        Matrix GetViewMatrix() const;
-        Matrix GetProjMatrix(int width, int height) const;
-        Matrix GetOrthoProjMatrix(float width, float height) const;
-        Matrix GetViewProjMatrix(int width, int height) const;
-        Matrix GetInvViewProjMatrix(int width, int height) const;
+        float4x4 GetViewMatrix() const;
+        float4x4 GetProjMatrix(int width, int height) const;
+        float4x4 GetOrthoProjMatrix(float width, float height) const;
+        float4x4 GetViewProjMatrix(int width, int height) const;
+        float4x4 GetInvViewProjMatrix(int width, int height) const;
 
-        std::array<Matrix, 6> GetCubeViewMatrices() const;
+        std::array<float4x4, 6> GetCubeViewMatrices() const;
 
     private:
         void Recalculate();
@@ -64,8 +64,8 @@ namespace SGE
         static constexpr float DEFAULT_FOV = 45.0f;
         static constexpr float DEFAULT_NEAR_PLANE = 0.01f;
         static constexpr float DEFAULT_FAR_PLANE = 125.0f;
-        static constexpr float DEG_TO_RAD = XM_PI / 180.0f;
-        static constexpr float RAD_TO_DEG = 180.0f / XM_PI;
+        static constexpr float DEG_TO_RAD = PI / 180.0f;
+        static constexpr float RAD_TO_DEG = 180.0f / PI;
     };
 }
 

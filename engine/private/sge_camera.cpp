@@ -98,23 +98,20 @@ namespace SGE
 
     void Camera::Recalculate()
     {
-        m_right = m_worldUp.cross(m_direction);
+        m_right = cross(m_worldUp, m_direction);
         m_right = m_right / m_right.length();
 
-        m_up = m_direction.cross(m_right);
+        m_up = cross(m_direction, m_right);
         m_up = m_up / m_up.length();
     }
 
-    Matrix Camera::GetViewMatrix() const
+    float4x4 Camera::GetViewMatrix() const
     {
-        float3 pos = m_position + m_direction;
-        Vector3 eyePos = { m_position.x, m_position.y, m_position.z };
-        Vector3 focusPos = { pos.x, pos.y, pos.z };
-        Vector3 upDir = { m_up.x, m_up.y, m_up.z };
-        return XMMatrixLookAtLH(eyePos, focusPos, upDir);
+        float3 target = m_position + m_direction.normalized();
+        return CreateViewMatrix(m_position, target, m_up);
     }
 
-    Matrix Camera::GetProjMatrix(int width, int height) const
+    float4x4 Camera::GetProjMatrix(int width, int height) const
     {
         float aspectRatio = static_cast<float>(width) / height;
         float fovAngleY = m_fov * DEG_TO_RAD;
@@ -124,26 +121,26 @@ namespace SGE
             fovAngleY /= aspectRatio;
         }
 
-        return XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, m_nearPlane, m_farPlane);
+        return CreatePerspectiveProjectionMatrix(fovAngleY, aspectRatio, m_nearPlane, m_farPlane);
     }
 
-    Matrix Camera::GetViewProjMatrix(int width, int height) const
+    float4x4 Camera::GetViewProjMatrix(int width, int height) const
     {
         return GetProjMatrix(width, height) * GetViewMatrix();
     }
 
-    Matrix Camera::GetInvViewProjMatrix(int width, int height) const
+    float4x4 Camera::GetInvViewProjMatrix(int width, int height) const
     {
-        Matrix viewProj = GetViewProjMatrix(width, height);
-        return viewProj.Invert();
+        float4x4 viewProj = GetViewProjMatrix(width, height);
+        return viewProj.inverse();
     }
 
-    Matrix Camera::GetOrthoProjMatrix(float width, float height) const
+    float4x4 Camera::GetOrthoProjMatrix(float width, float height) const
     {
-        return XMMatrixOrthographicLH(width, height, m_nearPlane, m_farPlane);
+        return CreateOrthographicProjectionMatrix(width, height, m_nearPlane, m_farPlane);
     }
 
-    std::array<Matrix, 6> Camera::GetCubeViewMatrices() const
+    std::array<float4x4, 6> Camera::GetCubeViewMatrices() const
     {
         static const float3 directions[6] = {
             { 1.0f,  0.0f,  0.0f },  // +X
@@ -163,14 +160,11 @@ namespace SGE
             { 0.0f,  1.0f,  0.0f }   // -Z
         };
 
-        std::array<Matrix, 6> matrices;
+        std::array<float4x4, 6> matrices;
         for (int32 i = 0; i < 6; ++i)
         {
-            float3 pos = m_position + directions[i];
-            Vector3 eyePos = { m_position.x, m_position.y, m_position.z };
-            Vector3 focusPos = { pos.x, pos.y, pos.z };
-            Vector3 upDir = { ups[i].x, ups[i].y, ups[i].z };
-            matrices[i] = XMMatrixLookAtLH(eyePos, focusPos, upDir);
+            float3 target = m_position + directions[i].normalized();
+            matrices[i] = CreateViewMatrix(m_position, target, ups[i]);
         }
         return matrices;
     }

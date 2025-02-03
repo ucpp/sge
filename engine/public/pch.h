@@ -7,6 +7,7 @@
 
 #include <windows.h>
 #include <dxgi.h>
+#include <dxgi1_6.h>
 #include <d3d12.h>
 #include <d3dx12.h>
 #include <d3dcommon.h>
@@ -14,8 +15,6 @@
 
 #include <wrl.h>
 #include <wrl/client.h>
-#include <DirectXMath.h>
-#include <SimpleMath.h>
 
 #include <cstdint>
 #include <vector>
@@ -32,8 +31,6 @@
 #include <ctime>
 #include <array>
 
-using namespace DirectX;
-using namespace SimpleMath;
 using namespace Microsoft::WRL;
 
 #include "sge_types.h"
@@ -41,8 +38,8 @@ using namespace Microsoft::WRL;
 
 #include "json.hpp"
 
-#define ORDERED_JSON 1
-#if ORDERED_JSON
+#define ORDERED_JSON
+#ifdef ORDERED_JSON
 using njson = nlohmann::ordered_json;
 #else
 using njson = nlohmann::json;
