@@ -98,8 +98,8 @@ namespace SGE
 
     float3 CameraController::CalculateForwardVector(float pitch, float yaw) const
     {
-        float pitchInRadians = DirectX::XMConvertToRadians(pitch);
-        float yawInRadians = DirectX::XMConvertToRadians(yaw);
+        float pitchInRadians = ConvertToRadians(pitch);
+        float yawInRadians = ConvertToRadians(yaw);
 
         return float3(
             cosf(pitchInRadians) * cosf(yawInRadians),

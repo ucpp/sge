@@ -8,7 +8,14 @@
 namespace SGE
 {
     constexpr float EPSILON = 1e-5f;
+    constexpr float PI = 3.14159265358979323846f;
 
+    constexpr float ConvertToRadians(float degrees) noexcept { return degrees * (PI / 180.0f); }
+    constexpr float ConvertToDegrees(float radians) noexcept { return radians * (180.0f / PI); }
+
+    // --------------------------------------------------------------------------
+    // float1
+    // --------------------------------------------------------------------------
     struct float1
     {
         float value;
@@ -19,6 +26,10 @@ namespace SGE
         operator float() const { return value; }
     };
 
+    // --------------------------------------------------------------------------
+    // float2
+    // --------------------------------------------------------------------------
+
     class float2
     {
     public:
@@ -27,6 +38,7 @@ namespace SGE
         float2() noexcept;
         float2(float x, float y) noexcept;
         float* data() noexcept;
+        const float* data() const noexcept;
 
         static const float2 Zero;
 
@@ -49,11 +61,15 @@ namespace SGE
         float2 operator-() const noexcept;
     };
 
-    inline float2 operator+(const float2& lhs, const float2& rhs);
-    inline float2 operator-(const float2& lhs, const float2& rhs);
-    inline float2 operator*(const float2& vec, float scalar);
-    inline float2 operator*(float scalar, const float2& vec);
-    inline float2 operator/(const float2& vec, float scalar);
+    inline float2 operator+(const float2& lhs, const float2& rhs) noexcept;
+    inline float2 operator-(const float2& lhs, const float2& rhs) noexcept;
+    inline float2 operator*(const float2& vec, float scalar) noexcept;
+    inline float2 operator*(float scalar, const float2& vec) noexcept;
+    inline float2 operator/(const float2& vec, float scalar) noexcept;
+
+    // --------------------------------------------------------------------------
+    // float3
+    // --------------------------------------------------------------------------
 
     class float3
     {
@@ -68,6 +84,7 @@ namespace SGE
         float3() noexcept;
         float3(float x, float y, float z) noexcept;
         float* data() noexcept;
+        const float* data() const noexcept;
 
         float& operator[](size_t index) noexcept;
         const float& operator[](size_t index) const noexcept;
@@ -95,11 +112,15 @@ namespace SGE
         float3 operator-() const noexcept;
     };
 
-    inline float3 operator+(const float3& lhs, const float3& rhs);
-    inline float3 operator-(const float3& lhs, const float3& rhs);
-    inline float3 operator*(const float3& vec, float scalar);
-    inline float3 operator*(float scalar, const float3& vec);
-    inline float3 operator/(const float3& vec, float scalar);
+    inline float3 operator+(const float3& lhs, const float3& rhs) noexcept;
+    inline float3 operator-(const float3& lhs, const float3& rhs) noexcept;
+    inline float3 operator*(const float3& vec, float scalar) noexcept;
+    inline float3 operator*(float scalar, const float3& vec) noexcept;
+    inline float3 operator/(const float3& vec, float scalar) noexcept;
+
+    // --------------------------------------------------------------------------
+    // float4
+    // --------------------------------------------------------------------------
 
     class float4
     {
@@ -114,12 +135,180 @@ namespace SGE
         float4() noexcept;
         float4(float x, float y, float z, float w) noexcept;
         float* data() noexcept;
+        const float* data() const noexcept;
 
         float& operator[](size_t index) noexcept;
         const float& operator[](size_t index) const noexcept;
 
+        float4& operator+=(const float4& other) noexcept;
+        float4& operator-=(const float4& other) noexcept;
+        float4& operator*=(float scalar) noexcept;
+        float4& operator/=(float scalar) noexcept;
+        bool operator==(const float4& other) noexcept;
+        bool operator!=(const float4& other) noexcept;
+        float4 operator-() noexcept;
+
         static const float4 Zero;
     };
+
+    float4 operator+(const float4& lhs, const float4& rhs) noexcept;
+    float4 operator-(const float4& lhs, const float4& rhs) noexcept;
+    float4 operator*(const float4& vec, float scalar) noexcept;
+    float4 operator/(const float4& vec, float scalar) noexcept;
+
+    // --------------------------------------------------------------------------
+    // float2x2
+    // --------------------------------------------------------------------------
+
+    class float2x2
+    {
+    public:
+        // row-major order: m[0] = m00, m[1] = m01, m[2] = m10, m[3] = m11
+        union
+        {
+            struct
+            {
+                float m00, m01;
+                float m10, m11;
+            };
+            float m[4]; // Row-major: [m00, m01, m10, m11]
+        };
+
+        float2x2() noexcept;
+        float2x2(float m00, float m01, float m10, float m11) noexcept;
+        float2x2(const float2& row0, const float2& row1) noexcept;
+
+        float* data() noexcept;
+        const float* data() const noexcept;
+
+        static const float2x2 Identity;
+        static const float2x2 Zero;
+
+        float2x2 transposed() const noexcept;
+        float determinant() const noexcept;
+        float2x2 inverse() const noexcept;
+
+        float2 operator*(const float2& vec) const noexcept;
+        float2x2 operator*(const float2x2& other) const noexcept;
+        float2x2& operator*=(const float2x2& other) noexcept;
+        float2x2 operator*(float scalar) const noexcept;
+        float2x2& operator*=(float scalar) noexcept;
+        float2x2 operator+(const float2x2& other) const noexcept;
+        float2x2& operator+=(const float2x2& other) noexcept;
+        float2x2 operator-(const float2x2& other) const noexcept;
+        float2x2& operator-=(const float2x2& other) noexcept;
+        bool operator==(const float2x2& other) const noexcept;
+        bool operator!=(const float2x2& other) const noexcept;
+    };
+
+    float2x2 operator*(float scalar, const float2x2& mat) noexcept;
+
+    // --------------------------------------------------------------------------
+    // float3x3
+    // --------------------------------------------------------------------------
+
+    class float3x3
+    {
+    public:
+        // row-major order: m[0] = m00, m[1] = m01, m[2] = m02,
+        //                  m[3] = m10, m[4] = m11, m[5] = m12,
+        //                  m[6] = m20, m[7] = m21, m[8] = m22
+        union
+        {
+            struct
+            {
+                float m00, m01, m02;
+                float m10, m11, m12;
+                float m20, m21, m22;
+            };
+            float m[9]; // Row-major: [m00, m01, m02, m10, m11, m12, m20, m21, m22]
+        };
+
+        float3x3() noexcept;
+        float3x3(float m00, float m01, float m02,
+                 float m10, float m11, float m12,
+                 float m20, float m21, float m22) noexcept;
+        float3x3(const float3& row0, const float3& row1, const float3& row2) noexcept;
+
+        float* data() noexcept;
+        const float* data() const noexcept;
+
+        static const float3x3 Identity;
+        static const float3x3 Zero;
+
+        float3x3 transposed() const noexcept;
+        float determinant() const noexcept;
+        float3x3 inverse() const noexcept;
+
+        float3 operator*(const float3& vec) const noexcept;
+        float3x3 operator*(const float3x3& other) const noexcept;
+        float3x3& operator*=(const float3x3& other) noexcept;
+        float3x3 operator*(float scalar) const noexcept;
+        float3x3& operator*=(float scalar) noexcept;
+        float3x3 operator+(const float3x3& other) const noexcept;
+        float3x3& operator+=(const float3x3& other) noexcept;
+        float3x3 operator-(const float3x3& other) const noexcept;
+        float3x3& operator-=(const float3x3& other) noexcept;
+        bool operator==(const float3x3& other) const noexcept;
+        bool operator!=(const float3x3& other) const noexcept;
+    };
+
+    float3x3 operator*(float scalar, const float3x3& mat) noexcept;
+
+    // --------------------------------------------------------------------------
+    // float4x4
+    // --------------------------------------------------------------------------
+
+    class float4x4
+    {
+    public:
+        // row-major order: m[0]  = m00, m[1]  = m01, m[2]  = m02, m[3]  = m03,
+        //                  m[4]  = m10, m[5]  = m11, m[6]  = m12, m[7]  = m13,
+        //                  m[8]  = m20, m[9]  = m21, m[10] = m22, m[11] = m23,
+        //                  m[12] = m30, m[13] = m31, m[14] = m32, m[15] = m33
+        union
+        {
+            struct
+            {
+                float m00, m01, m02, m03;
+                float m10, m11, m12, m13;
+                float m20, m21, m22, m23;
+                float m30, m31, m32, m33;
+            };
+            float m[16]; // Row-major: [m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33]
+        };
+
+        float4x4() noexcept;
+        float4x4(float m00, float m01, float m02, float m03, 
+                 float m10, float m11, float m12, float m13, 
+                 float m20, float m21, float m22, float m23, 
+                 float m30, float m31, float m32, float m33) noexcept;
+        float4x4(const float4& row0, const float4& row1, const float4& row2, const float4& row3) noexcept;
+
+        float* data() noexcept;
+        const float* data() const noexcept;
+
+        static const float4x4 Identity;
+        static const float4x4 Zero;
+
+        float4x4 transposed() const noexcept;
+        float determinant() const noexcept;
+        float4x4 inverse() const noexcept;
+
+        float4 operator*(const float4& vec) const noexcept;
+        float4x4 operator*(const float4x4& other) const noexcept;
+        float4x4& operator*=(const float4x4& other) noexcept;
+        float4x4 operator*(float scalar) const noexcept;
+        float4x4& operator*=(float scalar) noexcept;
+        float4x4 operator+(const float4x4& other) const noexcept;
+        float4x4& operator+=(const float4x4& other) noexcept;
+        float4x4 operator-(const float4x4& other) const noexcept;
+        float4x4& operator-=(const float4x4& other) noexcept;
+        bool operator==(const float4x4& other) const noexcept;
+        bool operator!=(const float4x4& other) const noexcept;
+    };
+
+    float4x4 operator*(float scalar, const float4x4& mat) noexcept;
 }
 
 #endif // !_SGE_MATH_H_
