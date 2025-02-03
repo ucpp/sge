@@ -30,25 +30,25 @@ namespace SGE
     void TransformData::DrawEditor()
     {
         ObjectDataBase::DrawEditor();
-        DragFloat3("Position:", position);
-        DragAngle3("Rotation:", rotation);
-        DragFloat3("Scale:", scale);
+        DragFloat3("Position:", transform.position);
+        DragAngle3("Rotation:", transform.rotation);
+        DragFloat3("Scale:", transform.scale);
     }
 
     void TransformData::ToJson(njson& data)
     {
         ObjectDataBase::ToJson(data);
-        data["position"] = position;
-        data["rotation"] = rotation;
-        data["scale"] = scale;
+        data["position"] = transform.position;
+        data["rotation"] = transform.rotation;
+        data["scale"] = transform.scale;
     }
 
     void TransformData::FromJson(const njson &data)
     {
         ObjectDataBase::FromJson(data);
-        data.at("position").get_to(position);
-        data.at("rotation").get_to(rotation);
-        data.at("scale").get_to(scale);
+        data.at("position").get_to(transform.position);
+        data.at("rotation").get_to(transform.rotation);
+        data.at("scale").get_to(transform.scale);
     }
 
     void CameraData::DrawEditor()

@@ -21,8 +21,8 @@ namespace SGE
             return;
         }
 
-        camera->SetPosition(data->position);
-        camera->SetRotation(data->rotation.x, data->rotation.y);
+        camera->SetPosition(data->transform.position);
+        camera->SetRotation(data->transform.rotation.x, data->transform.rotation.y);
 
         camera->SetFov(data->fov);
         camera->SetNearPlane(data->nearPlane);
@@ -63,9 +63,9 @@ namespace SGE
         }
 
         model->SetName(data->name);
-        model->SetPosition(data->position);
-        model->SetRotation(data->rotation);
-        model->SetScale(data->scale);
+        model->SetPosition(data->transform.position);
+        model->SetRotation(data->transform.rotation);
+        model->SetScale(data->transform.scale);
         model->SetActive(data->enabled);
     }
 

@@ -37,7 +37,7 @@ namespace SGE
     {
         const float velocity = m_moveSpeed * static_cast<float>(deltaTime);
 
-        const float3 forward = CalculateForwardVector(m_cameraData->rotation[0], m_cameraData->rotation[1]);
+        const float3 forward = CalculateForwardVector(m_cameraData->transform.rotation.x, m_cameraData->transform.rotation.y);
         const float3 up(0, 1, 0);
         float3 right = forward.cross(up);
         right.normalize();
@@ -71,15 +71,15 @@ namespace SGE
 
             m_lastMousePosition = float2(mouseX, mouseY);
 
-            m_cameraData->rotation.y -= deltaX * m_sensitivity; // Yaw
-            m_cameraData->rotation.x -= deltaY * m_sensitivity; // Pitch
+            m_cameraData->transform.rotation.y -= deltaX * m_sensitivity; // Yaw
+            m_cameraData->transform.rotation.x -= deltaY * m_sensitivity; // Pitch
 
-            m_cameraData->rotation.x = std::clamp(m_cameraData->rotation.x, -MAX_PITCH, MAX_PITCH);
-            m_cameraData->rotation.y = fmodf(m_cameraData->rotation.y, 360.0f);
-            if (m_cameraData->rotation.y > 180.0f)
-                m_cameraData->rotation.y -= 360.0f;
-            else if (m_cameraData->rotation.y < -180.0f)
-                m_cameraData->rotation.y += 360.0f;
+            m_cameraData->transform.rotation.x = std::clamp(m_cameraData->transform.rotation.x, -MAX_PITCH, MAX_PITCH);
+            m_cameraData->transform.rotation.y = fmodf(m_cameraData->transform.rotation.y, 360.0f);
+            if (m_cameraData->transform.rotation.y > 180.0f)
+                m_cameraData->transform.rotation.y -= 360.0f;
+            else if (m_cameraData->transform.rotation.y < -180.0f)
+                m_cameraData->transform.rotation.y += 360.0f;
         }
         else
         {
@@ -113,7 +113,7 @@ namespace SGE
         if (direction.length() > 0)
         {
             direction.normalize();
-            m_cameraData->position += direction * velocity;
+            m_cameraData->transform.position += direction * velocity;
         }
     }
 }

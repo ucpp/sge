@@ -9,6 +9,16 @@ namespace SGE
 {
     constexpr float EPSILON = 1e-5f;
 
+    struct float1
+    {
+        float value;
+
+        float1() = default;
+        float1(float v) : value(v) {}
+
+        operator float() const { return value; }
+    };
+
     class float2
     {
     public:
@@ -90,6 +100,26 @@ namespace SGE
     inline float3 operator*(const float3& vec, float scalar);
     inline float3 operator*(float scalar, const float3& vec);
     inline float3 operator/(const float3& vec, float scalar);
+
+    class float4
+    {
+    public:
+        union
+        {
+            struct { float x, y, z, w; };
+            struct { float r, g, b, a; };
+            float components[4];
+        };
+
+        float4() noexcept;
+        float4(float x, float y, float z, float w) noexcept;
+        float* data() noexcept;
+
+        float& operator[](size_t index) noexcept;
+        const float& operator[](size_t index) const noexcept;
+
+        static const float4 Zero;
+    };
 }
 
 #endif // !_SGE_MATH_H_

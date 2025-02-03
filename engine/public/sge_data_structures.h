@@ -91,6 +91,13 @@ namespace SGE
         bool enabled = true;
     };
 
+    struct Transform
+    {
+        float3 position;
+        float3 rotation;
+        float3 scale;
+    };
+
     class TransformData : public ObjectDataBase
     {
     public:
@@ -99,9 +106,7 @@ namespace SGE
         void FromJson(const njson& data) override;
 
     public:
-        float3 position;
-        float3 rotation;
-        float3 scale;
+        Transform transform;
     };
 
     class CameraData : public TransformData
@@ -264,16 +269,6 @@ namespace SGE
         RenderData renderData;
         AssetsData assetsData;
         SceneData  sceneData;
-    };
-
-    struct float1
-    {
-        float value;
-
-        float1() = default;
-        float1(float v) : value(v) {}
-
-        operator float() const { return value; }
     };
 
     inline std::string roundToString(float1 value, int32 precision = 3) noexcept;
