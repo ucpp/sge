@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 project(sge_engine)
 
@@ -16,3 +16,7 @@ add_subdirectory(${EXTERNALS_PATH}/directx_tex)
 
 add_subdirectory(engine)
 add_subdirectory(samples)
+
+set(GOOGLETEST_VERSION 1.14.0)
+add_subdirectory(${EXTERNALS_PATH}/googletest)
+add_subdirectory(tests)

@@ -428,8 +428,8 @@ namespace SGE
     {
         return float2
         (
-            vec.x * m00 + vec.y * m10,
-            vec.x * m01 + vec.y * m11
+            m00 * vec.x + m01 * vec.y,
+            m10 * vec.x + m11 * vec.y
         );
     }
 
@@ -529,9 +529,9 @@ namespace SGE
 
     float float3x3::determinant() const noexcept
     {
-        return m00 * (m11 * m22 - m12 * m21) -
-            m01 * (m10 * m22 - m12 * m20) +
-            m02 * (m10 * m21 - m11 * m20);
+        return m00 * (m11 * m22 - m12 * m21)
+             - m01 * (m10 * m22 - m12 * m20)
+             + m02 * (m10 * m21 - m11 * m20);
     }
 
     float3x3 float3x3::inverse() const noexcept
@@ -544,11 +544,19 @@ namespace SGE
 
         float invDet = 1.0f / det;
 
-        return float3x3
-        (
-            (m11 * m22 - m12 * m21) * invDet, (m02 * m21 - m01 * m22) * invDet, (m01 * m12 - m02 * m11) * invDet,
-            (m12 * m20 - m10 * m22) * invDet, (m00 * m22 - m02 * m20) * invDet, (m02 * m10 - m00 * m12) * invDet,
-            (m10 * m21 - m11 * m20) * invDet, (m01 * m20 - m00 * m21) * invDet, (m00 * m11 - m01 * m10) * invDet
+        return float3x3(
+            // Row 0
+            (m11 * m22 - m12 * m21) * invDet,
+            (m02 * m21 - m01 * m22) * invDet,
+            (m01 * m12 - m02 * m11) * invDet,
+            // Row 1
+            (m12 * m20 - m10 * m22) * invDet,
+            (m00 * m22 - m02 * m20) * invDet,
+            (m02 * m10 - m00 * m12) * invDet,
+            // Row 2
+            (m10 * m21 - m11 * m20) * invDet,
+            (m01 * m20 - m00 * m21) * invDet,
+            (m00 * m11 - m01 * m10) * invDet
         );
     }
 
@@ -556,9 +564,9 @@ namespace SGE
     {
         return float3
         (
-            vec.x * m00 + vec.y * m10 + vec.z * m20,
-            vec.x * m01 + vec.y * m11 + vec.z * m21,
-            vec.x * m02 + vec.y * m12 + vec.z * m22
+            vec.x * m00 + vec.y * m01 + vec.z * m02,
+            vec.x * m10 + vec.y * m11 + vec.z * m12,
+            vec.x * m20 + vec.y * m21 + vec.z * m22
         );
     }
 
@@ -718,10 +726,10 @@ namespace SGE
     {
         return float4
         (
-            vec.x * m00 + vec.y * m10 + vec.z * m20 + vec.w * m30,
-            vec.x * m01 + vec.y * m11 + vec.z * m21 + vec.w * m31,
-            vec.x * m02 + vec.y * m12 + vec.z * m22 + vec.w * m32,
-            vec.x * m03 + vec.y * m13 + vec.z * m23 + vec.w * m33
+            vec.x * m00 + vec.y * m01 + vec.z * m02 + vec.w * m03,
+            vec.x * m10 + vec.y * m11 + vec.z * m12 + vec.w * m13,
+            vec.x * m20 + vec.y * m21 + vec.z * m22 + vec.w * m23,
+            vec.x * m30 + vec.y * m31 + vec.z * m32 + vec.w * m33
         );
     }
 
@@ -851,16 +859,16 @@ namespace SGE
 
     float4x4 CreateViewMatrix(const float3& eye, const float3& target, const float3& up) noexcept
     {
-        float3 zAxis = (target - eye).normalized();
+        float3 zAxis = (eye - target).normalized();
         float3 xAxis = cross(up, zAxis).normalized();
         float3 yAxis = cross(zAxis, xAxis);
 
         float4x4 viewMatrix = 
         {
-            xAxis.x, yAxis.x, zAxis.x, 0.0f,
-            xAxis.y, yAxis.y, zAxis.y, 0.0f,
-            xAxis.z, yAxis.z, zAxis.z, 0.0f,
-            -dot(xAxis, eye), -dot(yAxis, eye), -dot(zAxis, eye), 1.0f
+            xAxis.x, xAxis.y, xAxis.z, -dot(xAxis, eye),
+            yAxis.x, yAxis.y, yAxis.z, -dot(yAxis, eye),
+            zAxis.x, zAxis.y, zAxis.z, -dot(zAxis, eye),
+            0.0f,    0.0f,    0.0f,    1.0f
         };
 
         return viewMatrix;
@@ -868,29 +876,30 @@ namespace SGE
     
     float4x4 CreatePerspectiveProjectionMatrix(float fov, float aspectRatio, float nearZ, float farZ) noexcept
     {
-        float height = 1.0f / tan(fov * 0.5f);
+        float tanHalfFov = tan(fov * 0.5f);
+        float height = 1.0f / tanHalfFov;
         float width = height / aspectRatio;
-        float range = farZ / (farZ - nearZ);
+        float range = farZ - nearZ;
 
         float4x4 projectionMatrix = 
         {
-            width, 0.0f, 0.0f, 0.0f,
-            0.0f, height, 0.0f, 0.0f,
-            0.0f, 0.0f, range, 1.0f,
-            0.0f, 0.0f, -range * nearZ, 0.0f
+            width, 0.0f,  0.0f,                          0.0f,
+            0.0f,  height, 0.0f,                          0.0f,
+            0.0f,  0.0f,  -(farZ + nearZ) / range,       -1.0f,
+            0.0f,  0.0f,  -2.0f * farZ * nearZ / range,  0.0f
         };
 
         return projectionMatrix;
     }
-    
+
     float4x4 CreateTranslationMatrix(const float3& translation) noexcept
     {
         float4x4 translationMatrix =
         {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            translation.x, translation.y, translation.z, 1.0f
+            1.0f, 0.0f, 0.0f, translation.x,
+            0.0f, 1.0f, 0.0f, translation.y,
+            0.0f, 0.0f, 1.0f, translation.z,
+            0.0f, 0.0f, 0.0f, 1.0f
         };
 
         return translationMatrix;
@@ -918,22 +927,22 @@ namespace SGE
         float4x4 pitchMatrix =
         {
             1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, cosPitch, sinPitch, 0.0f,
-            0.0f, -sinPitch, cosPitch, 0.0f,
+            0.0f, cosPitch, -sinPitch, 0.0f,
+            0.0f, sinPitch, cosPitch, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         };
 
         // Z (roll)
         float4x4 rollMatrix = 
         {
-            cosRoll, sinRoll, 0.0f, 0.0f,
-            -sinRoll, cosRoll, 0.0f, 0.0f,
+            cosRoll, -sinRoll, 0.0f, 0.0f,
+            sinRoll, cosRoll, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f
         };
 
         // Yaw -> Pitch -> Roll
-        return rollMatrix * pitchMatrix * yawMatrix;
+        return yawMatrix * pitchMatrix * rollMatrix;
     }
 
     float4x4 CreateScaleMatrix(const float3& scale) noexcept
@@ -951,14 +960,14 @@ namespace SGE
 
     float4x4 CreateOrthographicProjectionMatrix(float width, float height, float nearZ, float farZ) noexcept
     {
-        float range = 1.0f / (farZ - nearZ);
+        float range = farZ - nearZ;
 
         float4x4 orthoMatrix = 
         {
             2.0f / width, 0.0f, 0.0f, 0.0f,
             0.0f, 2.0f / height, 0.0f, 0.0f,
-            0.0f, 0.0f, range, 0.0f,
-            0.0f, 0.0f, -range * nearZ, 1.0f
+            0.0f, 0.0f, -2.0f / range, 0.0f,
+            0.0f, 0.0f, -(farZ + nearZ) / range, 1.0f
         };
 
         return orthoMatrix;
