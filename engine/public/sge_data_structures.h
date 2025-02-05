@@ -36,6 +36,7 @@ namespace SGE
         float3 position;
         float  intensity;
         float3 color;
+        float radius = 15.0f;
     };
     static_assert(alignof(PointLight) == 16, "PointLight structure alignment mismatch");
 
@@ -63,9 +64,12 @@ namespace SGE
         float  fogDensity{};
         float  zNear{};
         float  zFar{};
-        float4x4 invViewProj{};
+        float4x4 invProj{};
+        float4x4 invView{};
         uint32 activePointLightsCount{};
         uint32 activeSpotLightsCount{};
+        uint32 screenWidth{};
+        uint32 screenHeight{};
     };
     static_assert(alignof(FrameData) == 16, "FrameData structure alignment mismatch");
 

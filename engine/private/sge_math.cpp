@@ -1,5 +1,9 @@
 #include "sge_math.h"
 
+#include <DirectXMath.h>
+
+using namespace DirectX;
+
 namespace SGE
 {
     // --------------------------------------------------------------------------
@@ -859,7 +863,7 @@ namespace SGE
 
     float4x4 CreateViewMatrix(const float3& eye, const float3& target, const float3& up) noexcept
     {
-        float3 zAxis = (eye - target).normalized();
+        float3 zAxis = (target - eye).normalized();
         float3 xAxis = cross(up, zAxis).normalized();
         float3 yAxis = cross(zAxis, xAxis);
 
@@ -873,103 +877,54 @@ namespace SGE
 
         return viewMatrix;
     }
-    
+
     float4x4 CreatePerspectiveProjectionMatrix(float fov, float aspectRatio, float nearZ, float farZ) noexcept
     {
-        float tanHalfFov = tan(fov * 0.5f);
-        float height = 1.0f / tanHalfFov;
-        float width = height / aspectRatio;
-        float range = farZ - nearZ;
+        XMMATRIX projection = XMMatrixPerspectiveFovLH(fov, aspectRatio, nearZ, farZ);
+        projection = XMMatrixTranspose(projection);
 
-        float4x4 projectionMatrix = 
-        {
-            width, 0.0f,  0.0f,                          0.0f,
-            0.0f,  height, 0.0f,                          0.0f,
-            0.0f,  0.0f,  -(farZ + nearZ) / range,       -1.0f,
-            0.0f,  0.0f,  -2.0f * farZ * nearZ / range,  0.0f
-        };
-
-        return projectionMatrix;
+        float4x4 result;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), projection);
+        return result;
     }
 
     float4x4 CreateTranslationMatrix(const float3& translation) noexcept
     {
-        float4x4 translationMatrix =
-        {
-            1.0f, 0.0f, 0.0f, translation.x,
-            0.0f, 1.0f, 0.0f, translation.y,
-            0.0f, 0.0f, 1.0f, translation.z,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
+        XMMATRIX translationMatrix = XMMatrixTranslation(translation.x, translation.y, translation.z);
+        translationMatrix = XMMatrixTranspose(translationMatrix);
 
-        return translationMatrix;
+        float4x4 result;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), translationMatrix);
+        return result;
     }
 
     float4x4 CreateRotationMatrixYawPitchRoll(float yaw, float pitch, float roll) noexcept
     {
-        float cosYaw = cos(yaw);
-        float sinYaw = sin(yaw);
-        float cosPitch = cos(pitch);
-        float sinPitch = sin(pitch);
-        float cosRoll = cos(roll);
-        float sinRoll = sin(roll);
+        XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+        rotationMatrix = XMMatrixTranspose(rotationMatrix);
 
-        // Y (yaw)
-        float4x4 yawMatrix = 
-        {
-            cosYaw, 0.0f, -sinYaw, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f,
-            sinYaw, 0.0f, cosYaw, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
-
-        // X (pitch)
-        float4x4 pitchMatrix =
-        {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, cosPitch, -sinPitch, 0.0f,
-            0.0f, sinPitch, cosPitch, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
-
-        // Z (roll)
-        float4x4 rollMatrix = 
-        {
-            cosRoll, -sinRoll, 0.0f, 0.0f,
-            sinRoll, cosRoll, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
-
-        // Yaw -> Pitch -> Roll
-        return yawMatrix * pitchMatrix * rollMatrix;
+        float4x4 result;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), rotationMatrix);
+        return result;
     }
 
     float4x4 CreateScaleMatrix(const float3& scale) noexcept
     {
-        float4x4 scaleMatrix = 
-        {
-            scale.x, 0.0f, 0.0f, 0.0f,
-            0.0f, scale.y, 0.0f, 0.0f,
-            0.0f, 0.0f, scale.z, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f
-        };
+        XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+        scaleMatrix = XMMatrixTranspose(scaleMatrix);
 
-        return scaleMatrix;
+        float4x4 result;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), scaleMatrix);
+        return result;
     }
 
     float4x4 CreateOrthographicProjectionMatrix(float width, float height, float nearZ, float farZ) noexcept
     {
-        float range = farZ - nearZ;
+        XMMATRIX orthoMatrix = XMMatrixOrthographicLH(width, height, nearZ, farZ);
+        orthoMatrix = XMMatrixTranspose(orthoMatrix);
 
-        float4x4 orthoMatrix = 
-        {
-            2.0f / width, 0.0f, 0.0f, 0.0f,
-            0.0f, 2.0f / height, 0.0f, 0.0f,
-            0.0f, 0.0f, -2.0f / range, 0.0f,
-            0.0f, 0.0f, -(farZ + nearZ) / range, 1.0f
-        };
-
-        return orthoMatrix;
+        float4x4 result;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), orthoMatrix);
+        return result;
     }
 }

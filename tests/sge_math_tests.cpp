@@ -1339,22 +1339,25 @@ TEST(sge_math_float4x4, CreateViewMatrix)
 
     float4x4 viewMatrix = CreateViewMatrix(eye, target, up);
 
-    EXPECT_NEAR(viewMatrix.m00, 1.0f, EPSILON);
+    EXPECT_NEAR(viewMatrix.m00, 1.0f, EPSILON);  // X axis
     EXPECT_NEAR(viewMatrix.m01, 0.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m02, 0.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m03, 0.0f, EPSILON);
-    EXPECT_NEAR(viewMatrix.m10, 0.0f, EPSILON);
+
+    EXPECT_NEAR(viewMatrix.m10, 0.0f, EPSILON);  // Y axis
     EXPECT_NEAR(viewMatrix.m11, 1.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m12, 0.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m13, 0.0f, EPSILON);
-    EXPECT_NEAR(viewMatrix.m20, 0.0f, EPSILON);
+
+    EXPECT_NEAR(viewMatrix.m20, 0.0f, EPSILON);  // Z axis
     EXPECT_NEAR(viewMatrix.m21, 0.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m22, 1.0f, EPSILON);
-    EXPECT_NEAR(viewMatrix.m23, -5.0f, EPSILON);
+    EXPECT_NEAR(viewMatrix.m23, -5.0f, EPSILON);  // Camera translation
+
     EXPECT_NEAR(viewMatrix.m30, 0.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m31, 0.0f, EPSILON);
     EXPECT_NEAR(viewMatrix.m32, 0.0f, EPSILON);
-    EXPECT_NEAR(viewMatrix.m33, 1.0f, EPSILON);
+    EXPECT_NEAR(viewMatrix.m33, 1.0f, EPSILON);  // Homogeneous coordinate
 }
 
 TEST(sge_math_float4x4, CreatePerspectiveProjectionMatrix)
@@ -1373,9 +1376,9 @@ TEST(sge_math_float4x4, CreatePerspectiveProjectionMatrix)
 
     EXPECT_NEAR(projMatrix.m00, width, EPSILON);
     EXPECT_NEAR(projMatrix.m11, height, EPSILON);
-    EXPECT_NEAR(projMatrix.m22, -(farZ + nearZ) / range, EPSILON);
-    EXPECT_NEAR(projMatrix.m23, -2.0f * farZ * nearZ / range, EPSILON);
-    EXPECT_NEAR(projMatrix.m32, -1.0f, EPSILON);
+    EXPECT_NEAR(projMatrix.m22, farZ / range, EPSILON);
+    EXPECT_NEAR(projMatrix.m23, -farZ * nearZ / range, EPSILON);
+    EXPECT_NEAR(projMatrix.m32, 1.0f, EPSILON);
 }
 
 TEST(sge_math_float4x4, CreateTranslationMatrix)

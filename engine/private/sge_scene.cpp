@@ -35,6 +35,7 @@ namespace SGE
     void Scene::InitializeCamera()
     {
         CameraData* cameraData = m_context->GetSceneData().GetCameraData();
+        m_mainCamera.Initialize();
         m_cameraController.Initialize(cameraData);
         SyncData(cameraData, &m_mainCamera);
     }
@@ -51,7 +52,10 @@ namespace SGE
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.zNear = m_mainCamera.GetNear();
         m_frameData.zFar = m_mainCamera.GetFar();
-        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
+        m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
+        m_frameData.screenWidth = m_context->GetScreenWidth();
+        m_frameData.screenHeight = m_context->GetScreenHeight();
     }
 
     void Scene::InstantiateModels()
@@ -160,7 +164,10 @@ namespace SGE
 
         m_frameData.cameraPosition = m_mainCamera.GetPosition();
         m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
-        m_frameData.invViewProj = m_mainCamera.GetInvViewProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
+        m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
+        m_frameData.screenWidth = m_context->GetScreenWidth();
+        m_frameData.screenHeight = m_context->GetScreenHeight();
         m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));
     }
     

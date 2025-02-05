@@ -71,7 +71,7 @@ namespace SGE
 
             m_lastMousePosition = float2(mouseX, mouseY);
 
-            m_cameraData->transform.rotation.y -= deltaX * m_sensitivity; // Yaw
+            m_cameraData->transform.rotation.y += deltaX * m_sensitivity; // Yaw
             m_cameraData->transform.rotation.x -= deltaY * m_sensitivity; // Pitch
 
             m_cameraData->transform.rotation.x = std::clamp(m_cameraData->transform.rotation.x, -MAX_PITCH, MAX_PITCH);
@@ -102,9 +102,9 @@ namespace SGE
         float yawInRadians = ConvertToRadians(yaw);
 
         return float3(
-            cosf(pitchInRadians) * cosf(yawInRadians),
-            sinf(pitchInRadians),
-            cosf(pitchInRadians) * sinf(yawInRadians)
+            cosf(pitchInRadians) * sinf(yawInRadians), // X
+            sinf(pitchInRadians),                      // Y
+            cosf(pitchInRadians) * cosf(yawInRadians)  // Z
         );
     }
 

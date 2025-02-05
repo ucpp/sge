@@ -13,6 +13,7 @@ struct PointLight
     float3 position;
     float  intensity;
     float3 color;
+    float radius;
 };
 
 struct SpotLight
@@ -38,7 +39,10 @@ cbuffer FrameData : register(b0)
     float  fogDensity;
     float  zNear;
     float  zFar;
-    matrix invViewProj;
+    matrix invProj;
+    matrix invView;
     uint activePointLightsCount;
     uint activeSpotLightsCount;
+    uint screenWidth{};
+    uint screenHeight{};
 };

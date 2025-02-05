@@ -14,18 +14,19 @@ PixelInput TransformVertex(VertexInput input)
 {
     PixelInput output;
 
-    float4 modelPos = mul(model, float4(input.position, 1.0f));
+    float4 modelPos = mul(float4(input.position, 1.0f), model);
     output.worldPosition = modelPos.xyz;
 
-    float4 viewPos = mul(view, modelPos);
+    float4 viewPos = mul(modelPos, view);
+    output.position = mul(viewPos, projection);
 
-    output.position = mul(projection, viewPos);
-
-    output.normal    = normalize(mul((float3x3)model, input.normal));
-    output.tangent   = normalize(mul((float3x3)model, input.tangent));
-    output.bitangent = normalize(mul((float3x3)model, input.bitangent));
+    output.normal    = normalize(mul(input.normal, (float3x3)model));
+    output.tangent   = normalize(mul(input.tangent, (float3x3)model));
+    output.bitangent = normalize(mul(input.bitangent, (float3x3)model));
 
     output.texCoords = input.texCoords;
 
     return output;
 }
+
+

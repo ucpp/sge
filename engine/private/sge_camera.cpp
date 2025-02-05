@@ -11,7 +11,7 @@ namespace SGE
     , m_nearPlane(DEFAULT_NEAR_PLANE)
     , m_farPlane(DEFAULT_FAR_PLANE)
     {
-        SetRotation(m_pitch, m_yaw);
+        Initialize(m_position, m_pitch, m_yaw, m_fov, m_nearPlane, m_farPlane);
     }
 
     void Camera::Initialize(const float3& position, float pitch, float yaw, float fov, float nearPlane, float farPlane)
@@ -40,10 +40,11 @@ namespace SGE
         float yawInRadians = m_yaw * DEG_TO_RAD;
 
         m_direction = float3(
-            cosf(pitchInRadians) * cosf(yawInRadians), // X
+            cosf(pitchInRadians) * sinf(yawInRadians), // X
             sinf(pitchInRadians),                      // Y
-            cosf(pitchInRadians) * sinf(yawInRadians)  // Z
+            cosf(pitchInRadians) * cosf(yawInRadians)  // Z
         );
+
 
         m_direction.normalize();
         Recalculate();
@@ -114,7 +115,7 @@ namespace SGE
     float4x4 Camera::GetProjMatrix(int width, int height) const
     {
         float aspectRatio = static_cast<float>(width) / height;
-        float fovAngleY = m_fov * DEG_TO_RAD;
+        float fovAngleY = ConvertToRadians(m_fov);
 
         if (aspectRatio < 1.0f)
         {
@@ -122,17 +123,6 @@ namespace SGE
         }
 
         return CreatePerspectiveProjectionMatrix(fovAngleY, aspectRatio, m_nearPlane, m_farPlane);
-    }
-
-    float4x4 Camera::GetViewProjMatrix(int width, int height) const
-    {
-        return GetProjMatrix(width, height) * GetViewMatrix();
-    }
-
-    float4x4 Camera::GetInvViewProjMatrix(int width, int height) const
-    {
-        float4x4 viewProj = GetViewProjMatrix(width, height);
-        return viewProj.inverse();
     }
 
     float4x4 Camera::GetOrthoProjMatrix(float width, float height) const

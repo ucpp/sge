@@ -41,8 +41,6 @@ namespace SGE
         float4x4 GetViewMatrix() const;
         float4x4 GetProjMatrix(int width, int height) const;
         float4x4 GetOrthoProjMatrix(float width, float height) const;
-        float4x4 GetViewProjMatrix(int width, int height) const;
-        float4x4 GetInvViewProjMatrix(int width, int height) const;
 
         std::array<float4x4, 6> GetCubeViewMatrices() const;
 
