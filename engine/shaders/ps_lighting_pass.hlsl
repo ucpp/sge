@@ -124,23 +124,26 @@ float4 NDCToViewSpace(float2 position, float depth)
     return viewSpacePos;
 }
 
-float4 ViewSpaceToWorldSpace(float2 position, float depth)
+float3 ViewSpaceToWorldSpace(float2 position, float depth)
 {
     float4 viewSpacePos = NDCToViewSpace(position, depth);
     float4 worldPos = mul(invView, viewSpacePos);
     
-    return worldPos;
+    return worldPos.xyz;
 }
 
-float3 ReconstructWorldPosition(float2 texCoords, float depth)
+float3 ReconstructWorldPosition(float2 uv, float depth)
 {
-    float3 ndc = float3(texCoords * 2.0 - 1.0, depth * 2.0 - 1.0);
+    float2 clipSpaceXY = uv * 2.0 - 1.0;
+    clipSpaceXY.y = -clipSpaceXY.y;
+    
+    float4 clipSpacePosition = float4(clipSpaceXY, depth, 1.0);
+    float4 cameraSpacePosition = mul(clipSpacePosition, invProj);
+    cameraSpacePosition.xyzw /= cameraSpacePosition.w;
 
-    float4 viewPos = mul(float4(ndc, 1.0), invProj);
-    viewPos /= viewPos.w;
+    float4 worldSpacePosition = mul(cameraSpacePosition, invView);
 
-    float4 worldPos = mul(viewPos, invView);
-    return worldPos.xyz;
+    return worldSpacePosition.xyz;
 }
 
 LightingOutput main(PixelInput input)
@@ -156,7 +159,7 @@ LightingOutput main(PixelInput input)
     float3 normal = normalize(normalRoughness.xyz * 2.0f - 1.0f);
     float roughness = normalRoughness.w;
 
-    float3 worldPos = ViewSpaceToWorldSpace(input.position.xy, depth).xyz;
+    float3 worldPos = ReconstructWorldPosition(input.texCoords, depth);
     float3 viewDir = normalize(cameraPosition - worldPos);
 
     float3 finalColor = CalculateDirectionalLight(normal, albedo, metallic, roughness, viewDir, directionalLight);

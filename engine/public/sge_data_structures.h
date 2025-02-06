@@ -36,7 +36,7 @@ namespace SGE
         float3 position;
         float  intensity;
         float3 color;
-        float radius = 15.0f;
+        float radius = 2.0f;
     };
     static_assert(alignof(PointLight) == 16, "PointLight structure alignment mismatch");
 

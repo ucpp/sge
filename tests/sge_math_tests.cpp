@@ -1456,16 +1456,24 @@ TEST(sge_math_float4x4, CreateScaleMatrix)
 
 TEST(sge_math_float4x4, CreateOrthographicProjectionMatrix)
 {
-    float width = 800.0f;
-    float height = 600.0f;
-    float nearZ = 0.1f;
+    float width = 10.0f;
+    float height = 10.0f;
+    float nearZ = 1.0f;
     float farZ = 100.0f;
 
-    float4x4 orthoMatrix = CreateOrthographicProjectionMatrix(width, height, nearZ, farZ);
+    float4x4 expectedMatrix =
+    {
+        0.2f, 0.0f, 0.0f, 0.0f,
+        0.0f, 0.2f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.010101f, -0.010101f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
 
-    EXPECT_NEAR(orthoMatrix.m00, 2.0f / width, EPSILON);
-    EXPECT_NEAR(orthoMatrix.m11, 2.0f / height, EPSILON);
-    EXPECT_NEAR(orthoMatrix.m22, -2.0f / (farZ - nearZ), EPSILON);
-    EXPECT_NEAR(orthoMatrix.m23, -(farZ + nearZ) / (farZ - nearZ), EPSILON);
-    EXPECT_NEAR(orthoMatrix.m33, 1.0f, EPSILON);
+    float4x4 resultMatrix = CreateOrthographicProjectionMatrix(width, height, nearZ, farZ);
+
+    for (int i = 0; i < 16; ++i) 
+    {
+        EXPECT_NEAR(resultMatrix.m[i], expectedMatrix.m[i], EPSILON)
+            << "Element at index " << i << " is incorrect!";
+    }
 }

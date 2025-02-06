@@ -694,6 +694,9 @@ namespace SGE
 
     float4x4 float4x4::inverse() const noexcept
     {
+        float4x4 temp;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&temp), XMMatrixInverse(nullptr, XMLoadFloat4x4(reinterpret_cast<const XMFLOAT4X4*>(this))));
+        return temp;
         float det = determinant();
         if (std::fabs(det) < EPSILON)
         {
@@ -856,6 +859,15 @@ namespace SGE
             mat.m30 * scalar, mat.m31 * scalar, mat.m32 * scalar, mat.m33 * scalar
         );
     }
+
+    std::ostream& operator<<(std::ostream& os, const float4x4& mat)
+    {
+        os << "[ [" << mat.m00 << ", " << mat.m01 << ", " << mat.m02 << ", " << mat.m03 << "],\n"
+        << "  [" << mat.m10 << ", " << mat.m11 << ", " << mat.m12 << ", " << mat.m13 << "],\n"
+        << "  [" << mat.m20 << ", " << mat.m21 << ", " << mat.m22 << ", " << mat.m23 << "],\n"
+        << "  [" << mat.m30 << ", " << mat.m31 << ", " << mat.m32 << ", " << mat.m33 << "] ]";
+        return os;
+    }
     
     // --------------------------------------------------------------------------
     // camera and transformations
@@ -920,11 +932,19 @@ namespace SGE
 
     float4x4 CreateOrthographicProjectionMatrix(float width, float height, float nearZ, float farZ) noexcept
     {
-        XMMATRIX orthoMatrix = XMMatrixOrthographicLH(width, height, nearZ, farZ);
-        orthoMatrix = XMMatrixTranspose(orthoMatrix);
+        float left = -width / 2.0f;
+        float right = width / 2.0f;
+        float bottom = -height / 2.0f;
+        float top = height / 2.0f;
 
-        float4x4 result;
-        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), orthoMatrix);
-        return result;
+        float4x4 projectionMatrix = 
+        {
+            2.0f / (right - left), 0.0f,                  0.0f,                  -(right + left) / (right - left),
+            0.0f,                  2.0f / (top - bottom), 0.0f,                  -(top + bottom) / (top - bottom),
+            0.0f,                  0.0f,                  1.0f / (farZ - nearZ), -nearZ / (farZ - nearZ),
+            0.0f,                  0.0f,                  0.0f,                  1.0f
+        };
+
+        return projectionMatrix;
     }
 }

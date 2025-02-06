@@ -4,6 +4,7 @@
 #include <cmath>
 #include <limits>
 #include <algorithm>
+#include <iostream>
 
 namespace SGE
 {
@@ -309,6 +310,7 @@ namespace SGE
     };
 
     float4x4 operator*(float scalar, const float4x4& mat) noexcept;
+    std::ostream& operator<<(std::ostream& os, const float4x4& mat);
 
     // --------------------------------------------------------------------------
     // camera and transformations

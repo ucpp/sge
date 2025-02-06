@@ -56,6 +56,20 @@ namespace SGE
         m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
         m_frameData.screenWidth = m_context->GetScreenWidth();
         m_frameData.screenHeight = m_context->GetScreenHeight();
+
+        std::cout << " viewMatrix = \n";
+        std::cout << m_mainCamera.GetViewMatrix() << std::endl;
+        std::cout << " inverse viewMatrix = \n";
+        std::cout << m_mainCamera.GetViewMatrix().inverse() << std::endl;
+
+        std::cout << " projMatrix = \n";
+        std::cout << m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()) << std::endl;
+        std::cout << " inverse projMatrix = \n";
+        std::cout << m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse() << std::endl;
+    
+        float4x4 proj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
+        float4x4 i = proj * proj.inverse();
+        std::cout << i << std::endl;
     }
 
     void Scene::InstantiateModels()

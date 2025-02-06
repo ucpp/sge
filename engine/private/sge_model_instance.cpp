@@ -71,7 +71,7 @@ namespace SGE
         );
         float4x4 translationMatrix = CreateTranslationMatrix(m_position);
 
-        return scaleMatrix * rotationMatrix * translationMatrix;
+        return translationMatrix * rotationMatrix * scaleMatrix;
     }
 
     void ModelInstance::Update(const float4x4& viewMatrix, const float4x4& projectionMatrix)
