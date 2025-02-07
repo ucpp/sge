@@ -104,11 +104,15 @@ This project is **actively under development**, and its purpose is to experiment
   <summary><strong>☐ 13. Soft shadows</strong>: Implement soft shadows using techniques like SM+PCF, VSM, or ESM (in progress).</summary>
   
 </details>
+</details>
+ <details>
+  <summary><strong>☐ 14. SSAO</strong>: Implement screen-space ambient occlusion. (in progress).</summary>
+  
+</details>
    
 ---
   
-**14. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
-**15. SSAO**: Implement screen-space ambient occlusion.  
+**15. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
 **16. SSLR**: Add screen-space local reflections.  
 **17. Load skinned mesh animations**: Import animated models and process on the GPU.  
 **18. Animation blending**: Combine multiple animations (e.g., running and shooting).    
