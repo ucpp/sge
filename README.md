@@ -1,6 +1,6 @@
 # SGE - Simple Game Engine  
 
-![Preview](https://github.com/ucpp/sge/blob/master/docs/preview.png)
+![Preview](https://github.com/ucpp/sge/blob/master/docs/point_lights.png)
 
 SGE (Simple Game Engine) is a learning project aimed at building a minimalistic game engine using **DirectX 12**. This project is structured as a roadmap consisting several tasks, designed to teach and implement various modern rendering techniques and systems. 
 
@@ -85,7 +85,7 @@ This project is **actively under development**, and its purpose is to experiment
 <details>
   <summary><strong>✔ 10. Cook-Torrance BRDF and Image-Based Lighting (IBL)</strong>: Add realistic PBR lighting.</summary>
 
-  ![BRDF](https://github.com/ucpp/sge/blob/master/docs/brdf.png)
+  ![BRDF](https://github.com/ucpp/sge/blob/master/docs/point_lights.png)
 
 </details>
 <details>
