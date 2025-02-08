@@ -36,7 +36,7 @@ namespace SGE
         float3 position;
         float  intensity;
         float3 color;
-        float radius = 2.0f;
+        float radius;
     };
     static_assert(alignof(PointLight) == 16, "PointLight structure alignment mismatch");
 
@@ -151,6 +151,7 @@ namespace SGE
         float3 position;
         float3 color;
         float  intensity;
+        float  radius;
     };
 
     class DirectionalLightData : public ObjectDataBase

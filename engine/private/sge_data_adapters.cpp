@@ -86,5 +86,6 @@ namespace SGE
         pointLight->position = data->position;
         pointLight->color = data->color;
         pointLight->intensity = data->intensity;
+        pointLight->radius = data->radius;
     }
 }

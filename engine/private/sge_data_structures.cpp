@@ -111,6 +111,7 @@ namespace SGE
         DragFloat3("Position:", position);
         ColorEdit3("Color:", color);
         DragFloat("Intensity:", intensity, 0.0f);
+        DragFloat("Radius:", radius, 0.1f);
     }
 
     void PointLightData::ToJson(njson& data)
@@ -119,6 +120,7 @@ namespace SGE
         data["position"] = position;
         data["color"] = color;
         data["intensity"] = float1(intensity);
+        data["radius"] = float1(radius);
     }
 
     void PointLightData::FromJson(const njson& data)
@@ -127,6 +129,7 @@ namespace SGE
         data.at("position").get_to(position);
         data.at("color").get_to(color);
         intensity = data.at("intensity").get<float1>().value;
+        radius = data.at("radius").get<float1>().value;
     }
 
     void DirectionalLightData::DrawEditor()
