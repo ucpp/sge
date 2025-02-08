@@ -5,38 +5,9 @@
 #include "core/sge_helpers.h"
 
 namespace SGE
-{
-    void GeometryRenderPass::Initialize(RenderContext* context)
+{    
+    void GeometryRenderPass::OnRender(Scene* scene)
     {
-        Verify(context, "GeometryRenderPass::Initialize: Provided render context is null.");
-        m_context = context;
-
-        PipelineConfig pipelineConfig = PipelineState::CreateDefaultConfig();
-        pipelineConfig.RenderTargetFormats = 
-        {
-            DXGI_FORMAT_R8G8B8A8_UNORM, // Albedo + Metallic
-            DXGI_FORMAT_R8G8B8A8_UNORM   // Normal + Roughness
-        };
-        pipelineConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
-        pipelineConfig.SampleCount = 1;
-        pipelineConfig.VertexShaderPath = "shaders/vs_geometry_pass.hlsl";
-        pipelineConfig.PixelShaderPath = "shaders/ps_geometry_pass.hlsl";
-        
-        if (!m_pipelineState || m_reloadRequested)
-        {
-            m_pipelineState = std::make_unique<PipelineState>();
-            m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig, m_reloadRequested);
-        }
-    }
-    
-    void GeometryRenderPass::Render(Scene* scene)
-    {
-        if (m_reloadRequested)
-        {
-            Initialize(m_context);
-            m_reloadRequested = false;
-        }
-
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
         m_context->SetRenderTarget();
@@ -73,11 +44,12 @@ namespace SGE
         }
     }
     
-    void GeometryRenderPass::Shutdown()
+    PipelineConfig GeometryRenderPass::GetPipelineConfig() const
     {
-        if(m_pipelineState)
-        {
-            m_pipelineState.reset();
-        }
+        return PipelineState::CreateDefaultConfig()
+            .SetRenderTargetFormats({ DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM })
+            .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT)
+            .SetSampleCount(1)
+            .SetShaders("shaders/vs_geometry_pass.hlsl", "shaders/ps_geometry_pass.hlsl");
     }
 }

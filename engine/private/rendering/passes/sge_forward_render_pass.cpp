@@ -6,35 +6,8 @@
 
 namespace SGE
 {
-    void ForwardRenderPass::Initialize(RenderContext* context)
+    void ForwardRenderPass::OnRender(Scene* scene)
     {
-        Verify(context, "ForwardRenderPass::Initialize: Provided render context is null.");
-        m_context = context;
-
-        PipelineConfig pipelineConfig = PipelineState::CreateDefaultConfig();
-        pipelineConfig.RenderTargetFormats = { DXGI_FORMAT_R8G8B8A8_UNORM };
-        pipelineConfig.DepthStencilFormat = DXGI_FORMAT_D32_FLOAT;
-
-        const bool isMSAA = m_context->GetRenderData().isMSAAEnabled && !m_context->GetRenderData().isDeferredRendering;
-        pipelineConfig.SampleCount = isMSAA ? 4 : 1;
-        pipelineConfig.VertexShaderPath = "shaders/vs_forward_pass.hlsl";
-        pipelineConfig.PixelShaderPath = "shaders/ps_forward_pass.hlsl";
-        
-        if (!m_pipelineState || m_reloadRequested)
-        {
-            m_pipelineState = std::make_unique<PipelineState>();
-            m_pipelineState->Initialize(m_context->GetD12Device().Get(), pipelineConfig, m_reloadRequested);
-        }
-    }
-    
-    void ForwardRenderPass::Render(Scene* scene)
-    {
-        if (m_reloadRequested)
-        {
-            Initialize(m_context);
-            m_reloadRequested = false;
-        }
-
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
@@ -48,11 +21,12 @@ namespace SGE
         }
     }
     
-    void ForwardRenderPass::Shutdown()
+    PipelineConfig ForwardRenderPass::GetPipelineConfig() const
     {
-        if(m_pipelineState)
-        {
-            m_pipelineState.reset();
-        }
+        return PipelineState::CreateDefaultConfig()
+            .SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
+            .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT)
+            .SetSampleCount(1)
+            .SetShaders("shaders/vs_forward_pass.hlsl", "shaders/ps_forward_pass.hlsl");
     }
 }

@@ -2,16 +2,15 @@
 #define _SGE_BRIGHTNESS_EXTRACTION_PASS_H_
 
 #include "pch.h"
-#include "sge_render_pass.h"
+#include "rendering/passes/sge_render_pass.h"
 
 namespace SGE
 {
     class BrightnessExtractionPass : public RenderPass
     {
-    public:
-        void Initialize(class RenderContext* context) override;
-        void Render(class Scene* scene) override;
-        void Shutdown() override;
+    protected:
+        void OnRender(class Scene* scene) override;
+        PipelineConfig GetPipelineConfig() const override;
     };
 }
 

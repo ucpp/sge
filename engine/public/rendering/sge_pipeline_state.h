@@ -20,6 +20,38 @@ namespace SGE
         uint32 SampleCount = 1;
         std::string VertexShaderPath;
         std::string PixelShaderPath;
+
+        PipelineConfig& SetRenderTargetFormat(DXGI_FORMAT format)
+        {
+            RenderTargetFormats = { format };
+            return *this;
+        }
+    
+        PipelineConfig& SetRenderTargetFormats(std::initializer_list<DXGI_FORMAT> formats)
+        {
+            RenderTargetFormats = formats;
+            return *this;
+        }
+    
+        PipelineConfig& SetDepthStencilFormat(DXGI_FORMAT format, bool depthEnable = true)
+        {
+            DepthStencilFormat = format;
+            DepthStencilState.DepthEnable = depthEnable;
+            return *this;
+        }
+    
+        PipelineConfig& SetSampleCount(uint32_t count)
+        {
+            SampleCount = count;
+            return *this;
+        }
+    
+        PipelineConfig& SetShaders(const std::string& vsPath, const std::string& psPath)
+        {
+            VertexShaderPath = vsPath;
+            PixelShaderPath = psPath;
+            return *this;
+        }
     };
 
     class PipelineState

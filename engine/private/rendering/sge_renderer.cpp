@@ -1,6 +1,7 @@
 #include "rendering/sge_renderer.h"
 
 #include "rendering/sge_render_context.h"
+#include "rendering/passes/sge_render_pass.h"
 #include "rendering/passes/sge_forward_render_pass.h"
 #include "rendering/passes/sge_geometry_render_pass.h"
 #include "rendering/passes/sge_lighting_render_pass.h"
