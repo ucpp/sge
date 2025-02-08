@@ -48,8 +48,8 @@ namespace SGE
     
         PipelineConfig& SetShaders(const std::string& vsPath, const std::string& psPath)
         {
-            VertexShaderPath = vsPath;
-            PixelShaderPath = psPath;
+            VertexShaderPath = std::string(SHADERS_DIRECTORY) + vsPath;
+            PixelShaderPath = std::string(SHADERS_DIRECTORY) + psPath;
             return *this;
         }
     };

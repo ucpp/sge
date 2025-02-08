@@ -50,6 +50,6 @@ namespace SGE
             .SetRenderTargetFormats({ DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_FORMAT_R8G8B8A8_UNORM })
             .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT)
             .SetSampleCount(1)
-            .SetShaders("shaders/vs_geometry_pass.hlsl", "shaders/ps_geometry_pass.hlsl");
+            .SetShaders("/vs_geometry_pass.hlsl", "/ps_geometry_pass.hlsl");
     }
 }

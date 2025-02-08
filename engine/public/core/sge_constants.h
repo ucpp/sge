@@ -28,7 +28,12 @@ namespace SGE
     constexpr uint32 MAX_POINT_LIGHTS = 20;
     constexpr uint32 MAX_SPOT_LIGHTS = 1;
 
+#ifdef _DEBUG
+    constexpr const char* SHADERS_DIRECTORY = "../../../engine/shaders";
+#else
     constexpr const char* SHADERS_DIRECTORY = "shaders";
+#endif
+
     constexpr const char* DEFAULT_SETTINGS_PATH = "resources/configs/application_settings.json";
 }
 

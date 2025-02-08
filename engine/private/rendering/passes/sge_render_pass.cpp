@@ -45,6 +45,6 @@ namespace SGE
             .SetRenderTargetFormat(renderTargetFormat)
             .SetDepthStencilFormat(DXGI_FORMAT_UNKNOWN, false)
             .SetSampleCount(1)
-            .SetShaders("shaders/vs_fullscreen_quad.hlsl", pixelShaderPath);
+            .SetShaders("/vs_fullscreen_quad.hlsl", pixelShaderPath);
     }
 }

@@ -172,7 +172,6 @@ LightingOutput main(PixelInput input)
     finalColor *= exposure;
 
     output.color = float4(finalColor, 1.0f);
-    //output.color = float4(worldPos, 1.0f);
 
     return output;
 }

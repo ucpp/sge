@@ -31,6 +31,6 @@ namespace SGE
 
     PipelineConfig BlurPass::GetPipelineConfig() const
     {
-        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, "shaders/ps_blur_pass.hlsl");
+        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, "/ps_blur_pass.hlsl");
     }
 }

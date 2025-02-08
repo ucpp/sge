@@ -27,6 +27,6 @@ namespace SGE
             .SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
             .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT)
             .SetSampleCount(1)
-            .SetShaders("shaders/vs_forward_pass.hlsl", "shaders/ps_forward_pass.hlsl");
+            .SetShaders("/vs_forward_pass.hlsl", "/ps_forward_pass.hlsl");
     }
 }
