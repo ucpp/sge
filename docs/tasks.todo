@@ -1,35 +1,34 @@
 ### Daily tasks
 
-[Day 29/1000 - 19/01/2025]
-✔ Add support for includes in shaders. @done(25-01-19 13:34)
-✔ Extract common structures into a separate source file. @done(25-01-19 13:34)
-✔ Add mouse wheel input to adjust camera FOV. @done(25-01-19 13:35)
+[08-14.02.2025 - 8th week]
+[Day 49/1000 - 08/02/2025]
+☐ Soft Shadows PCF
+☐ Fix forward rendering
+☐ Add auto expouse
+☐ Improve blur pass
+☐ Add input output to passes
+☐ Add pix event library
+☐ Fix math
+☐ Add spot lights
+☐ Fix normals
+☐ SSAO
+☐ Fix scene sync
+☐ Refactor passes
+☐ Add define for shaders debug folder
 
-[Day 30/1000 - 20/01/2025]
-✔ Add shader hot-reloading. @done(25-01-20 21:50)
+[15-21.02.2025 - 9th week]
+☐ Cubemaps
+☐ Skybox
+☐ Reflections
 
-[Day 31/1000 - 21/01/2025]
-✔ Improve screen resolution management. @done(25-01-21 19:01)
-✔ Add a save project functionality. @done(25-01-21 20:07)
+[22-28.02.2025 - 10th week]
+☐ Skeletal meshes
+☐ Play animations
+☐ Blend animations
 
-[Day 32/1000 - 22/01/2025]
-✔ Add draw editor of properties for the selected object in the scene. @done(25-01-22 22:55)
-✔ Implement scene data structures and add serialization/deserialization support. @done(25-01-22 21:41)
+[01-07.03.2025 - 11th week]
+☐ Particle system
+☐ Particle editor
 
-[Day 33/1000 - 23/01/2025]
-✔ Implement a toggleable enabled/disabled state for the editor. @done(25-01-23 20:01)
-✔ Add camera initialization and synchronization according to the camera data. @done(25-01-23 22:36)
-
-[Day 34/1000 - 24/01/2025]
-✔ Add camera movement properties to the settings. @done(25-01-24 22:10)
-✔ Add directional light initialization and synchronization according to the data. @done(25-01-24 22:10)
-
-[Day 35/1000 - 25/01/2025]
-✔ Refactoring of the model loading and management system (draft version). @done(25-01-25 21:40)
-
-[Day 36/1000 - 26/01/2025]
-✔ Add fallback to default texture creation when texture is missing. @done(25-01-26 22:30)
-
-[Day 37/1000 - 27/01/2025]
-☐ Add lights initialization and synchronization according to the lights data.
-☐ Refactoring of the model loading and management system.
+[08-14.03.2025 - 12th week]
+☐ Refactoring and optimization
