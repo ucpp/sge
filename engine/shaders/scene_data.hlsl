@@ -43,6 +43,4 @@ cbuffer FrameData : register(b0)
     matrix invView;
     uint activePointLightsCount;
     uint activeSpotLightsCount;
-    uint screenWidth{};
-    uint screenHeight{};
 };

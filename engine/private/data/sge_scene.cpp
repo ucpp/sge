@@ -22,8 +22,8 @@ namespace SGE
     void Scene::Update(double deltaTime)
     {
         UpdateCamera(deltaTime);
-        UpdateFrameData(deltaTime);
         UpdateModels(deltaTime);
+        SyncFrameData();
     }
     
     void Scene::Shutdown()
@@ -31,11 +31,51 @@ namespace SGE
         m_frameData = {};
         m_modelInstances.clear();
     }
+
+    void Scene::SyncFrameData()
+    {
+        SceneData& sceneData = m_context->GetSceneData();
+
+        m_frameData.cameraPosition = m_mainCamera.GetPosition();
+        m_frameData.zNear = m_mainCamera.GetNear();
+        m_frameData.zFar = m_mainCamera.GetFar();
+        m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
+        m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
+
+        DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
+        SyncData(directionalLightData, &m_frameData.directionalLight);
+
+        auto it = sceneData.objects.find(ObjectType::PointLight);
+        if (it != sceneData.objects.end())
+        {
+            const uint32 count = static_cast<uint32>(it->second.size());
+            m_frameData.activePointLightsCount = count;
+
+            for (uint32 i = 0; i < count; ++i)
+            {
+                if (const auto* pointLightData = dynamic_cast<const PointLightData*>(it->second[i].get()))
+                {
+                    SyncData(pointLightData, &m_frameData.pointLights[i]);
+                }
+            }
+        }
+        else
+        {
+            m_frameData.activePointLightsCount = 0;
+        }
+
+        m_frameData.fogStart = 3.0f;
+        m_frameData.fogEnd = 30.0f;
+        m_frameData.fogColor = {0.314f, 0.314f, 0.314f};
+        m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
+        m_frameData.fogDensity = 0.1f;
+
+        m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));
+    }
     
     void Scene::InitializeCamera()
     {
         CameraData* cameraData = m_context->GetSceneData().GetCameraData();
-        m_mainCamera.Initialize();
         m_cameraController.Initialize(cameraData);
         SyncData(cameraData, &m_mainCamera);
     }
@@ -45,17 +85,7 @@ namespace SGE
         m_frameDataBuffer = std::make_unique<ConstantBuffer>();
         m_frameDataBuffer->Initialize(m_context->GetD12Device().Get(), m_context->GetCbvSrvUavHeap(), sizeof(FrameData), 0);
 
-        InitializeDirectionalLight();
-        InitializePointLights();
-        InitializeFog();
-        
-        m_frameData.cameraPosition = m_mainCamera.GetPosition();
-        m_frameData.zNear = m_mainCamera.GetNear();
-        m_frameData.zFar = m_mainCamera.GetFar();
-        m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
-        m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
-        m_frameData.screenWidth = m_context->GetScreenWidth();
-        m_frameData.screenHeight = m_context->GetScreenHeight();
+        SyncFrameData();
     }
 
     void Scene::InstantiateModels()
@@ -90,85 +120,12 @@ namespace SGE
         }
     }
 
-    void Scene::InitializeDirectionalLight()
-    {
-        SceneData& sceneData = m_context->GetSceneData();
-        DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
-        SyncData(directionalLightData, &m_frameData.directionalLight);
-    }
-
-    void Scene::InitializePointLights()
-    {
-        const auto& sceneObjects = m_context->GetSceneData().objects;
-        auto it = sceneObjects.find(ObjectType::PointLight);
-        if (it == sceneObjects.end())
-        {
-            m_frameData.activePointLightsCount = 0;
-            return;
-        }
-        
-        const uint32 count = static_cast<uint32>(it->second.size());
-        m_frameData.activePointLightsCount = count;
-
-        for(uint32 i = 0; i < count; ++i)
-        {
-            if(const auto* pointLightData = dynamic_cast<const PointLightData*>(it->second[i].get()))
-            {
-                SyncData(pointLightData, &m_frameData.pointLights[i]);
-            }
-        }
-    }
-
-    void Scene::InitializeFog()
-    {
-        m_frameData.fogStart = 3.0f;
-        m_frameData.fogEnd = 30.0f;
-        m_frameData.fogColor = {0.314f, 0.314f, 0.314f};
-        m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
-        m_frameData.fogDensity = 0.1f;
-    }
-
     void Scene::UpdateCamera(double deltaTime)
     {
         m_cameraController.Update(deltaTime);
 
         CameraData* cameraData = m_context->GetSceneData().GetCameraData();
         SyncData(cameraData, &m_mainCamera);
-    }
-    
-    void Scene::UpdateFrameData(double deltaTime)
-    {
-        SceneData& sceneData = m_context->GetSceneData();
-
-        DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
-        SyncData(directionalLightData, &m_frameData.directionalLight);
-
-        auto it = sceneData.objects.find(ObjectType::PointLight);
-        if (it != sceneData.objects.end())
-        {
-            const uint32 count = static_cast<uint32>(it->second.size());
-            m_frameData.activePointLightsCount = count;
-
-            for (uint32 i = 0; i < count; ++i)
-            {
-                if (const auto* pointLightData = dynamic_cast<const PointLightData*>(it->second[i].get()))
-                {
-                    SyncData(pointLightData, &m_frameData.pointLights[i]);
-                }
-            }
-        }
-        else
-        {
-            m_frameData.activePointLightsCount = 0;
-        }
-
-        m_frameData.cameraPosition = m_mainCamera.GetPosition();
-        m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
-        m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
-        m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
-        m_frameData.screenWidth = m_context->GetScreenWidth();
-        m_frameData.screenHeight = m_context->GetScreenHeight();
-        m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));
     }
     
     void Scene::UpdateModels(double deltaTime)

@@ -23,13 +23,10 @@ namespace SGE
         void InitializeCamera();
         void InitializeFrameData();
         void InstantiateModels();
-        void InitializeDirectionalLight();
-        void InitializePointLights();
-        void InitializeFog();
 
         void UpdateCamera(double deltaTime);
-        void UpdateFrameData(double deltaTime);
         void UpdateModels(double deltaTime);
+        void SyncFrameData();
 
     private:
         class RenderContext* m_context = nullptr;

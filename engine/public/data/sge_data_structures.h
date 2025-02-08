@@ -68,8 +68,6 @@ namespace SGE
         float4x4 invView{};
         uint32 activePointLightsCount{};
         uint32 activeSpotLightsCount{};
-        uint32 screenWidth{};
-        uint32 screenHeight{};
     };
     static_assert(alignof(FrameData) == 16, "FrameData structure alignment mismatch");
 

@@ -108,30 +108,6 @@ float3 CalculateSpotLight(float3 worldPos, float3 normal, float3 albedo, float m
     return CalculateLightContribution(albedo, metallic, roughness, normal, lightDir, viewDir, light.color, light.intensity) * attenuation * intensity;
 }
 
-float4 ClipSpaceToNDC(float2 position, float depth)
-{
-    float2 normalizedPos = position / float2(screenWidth, screenHeight) * 2.0 - 1.0;
-    float3 ndc = float3(normalizedPos, depth * 2.0 - 1.0);
-    
-    return float4(ndc, 1.0);
-}
-
-float4 NDCToViewSpace(float2 position, float depth)
-{
-    float4 ndc = ClipSpaceToNDC(position, depth);
-    float4 viewSpacePos = mul(invProj, ndc);
-    
-    return viewSpacePos;
-}
-
-float3 ViewSpaceToWorldSpace(float2 position, float depth)
-{
-    float4 viewSpacePos = NDCToViewSpace(position, depth);
-    float4 worldPos = mul(invView, viewSpacePos);
-    
-    return worldPos.xyz;
-}
-
 float3 ReconstructWorldPosition(float2 uv, float depth)
 {
     float2 clipSpaceXY = uv * 2.0 - 1.0;
