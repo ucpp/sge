@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <gtest/gtest.h>
-#include "sge_math.h"
+#include "core/sge_math.h"
 using namespace SGE;
 
 TEST(sge_math, ConvertToRadians) 

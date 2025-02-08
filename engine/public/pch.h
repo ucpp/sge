@@ -9,7 +9,7 @@
 #include <dxgi.h>
 #include <dxgi1_6.h>
 #include <d3d12.h>
-#include <d3dx12.h>
+#include "core/d3dx12.h"
 #include <d3dcommon.h>
 #include <d3dcompiler.h>
 
@@ -33,8 +33,8 @@
 
 using namespace Microsoft::WRL;
 
-#include "sge_types.h"
-#include "sge_constants.h"
+#include "core/sge_types.h"
+#include "core/sge_constants.h"
 
 #include "json.hpp"
 
@@ -45,6 +45,6 @@ using njson = nlohmann::ordered_json;
 using njson = nlohmann::json;
 #endif
 
-#include "sge_math.h"
+#include "core/sge_math.h"
 
 #endif //!_SGE_PCH_H

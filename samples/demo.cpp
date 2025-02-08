@@ -1,5 +1,5 @@
-#include "sge_logger.h"
-#include "sge_application.h"
+#include "core/sge_logger.h"
+#include "core/sge_application.h"
 
 int main()
 {
