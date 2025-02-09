@@ -9,16 +9,14 @@ namespace SGE
     void ToneMappingRenderPass::OnRender(Scene* scene)
     {
         auto commandList = m_context->GetCommandList();
-        m_context->GetBloomBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
-        
+        SetTargetState(RTargetType::BloomBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
         m_context->SetRenderTarget(false);
 
-        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
         m_context->SetRootDescriptorTable(0, 0);
-        commandList->SetGraphicsRootDescriptorTable(2, m_context->GetBloomBuffer()->GetSRVGPUHandle());
+        BindRenderTargetSRV(RTargetType::BloomBuffer, 2);
 
         commandList->DrawInstanced(6, 1, 0, 0);
     }

@@ -13,31 +13,13 @@ namespace SGE
         m_context->SetRenderTarget();
         
         auto commandList = m_context->GetCommandList();
-        uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles[2];
+        SetTargetState(RTargetType::AlbedoMetallic, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        SetTargetState(RTargetType::NormalRoughness, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, commandList.Get());
 
-        std::vector<CD3DX12_RESOURCE_BARRIER> barriers;
-        for(uint32 i = 0; i < targetCount; ++i)
-        {
-            m_context->GetGBuffer()->GetResource(i)->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, barriers);
-        }
+        ClearRenderTargetView({RTargetType::AlbedoMetallic, RTargetType::NormalRoughness});
+        SetRenderTarget({RTargetType::AlbedoMetallic, RTargetType::NormalRoughness});
 
-        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, barriers);
-
-        if(barriers.size() > 0)
-        {
-            commandList->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
-        }
-
-        for (uint32 i = 0; i < targetCount; ++i)
-        {
-            rtvHandles[i] = m_context->GetGBuffer()->GetRTVHandle(i);
-            commandList->ClearRenderTargetView(rtvHandles[i], CLEAR_COLOR, 0, nullptr);
-        }
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
-        commandList->OMSetRenderTargets(targetCount, rtvHandles, false, &dsvHandle);
-
-        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         for(auto& pair : scene->GetModels())
         {
             pair.second->Render(m_context->GetCommandList().Get());

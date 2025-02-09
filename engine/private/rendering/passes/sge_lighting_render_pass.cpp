@@ -9,36 +9,20 @@ namespace SGE
     void LightingRenderPass::OnRender(Scene* scene)
     {
         auto commandList = m_context->GetCommandList();
-        uint32 targetCount = m_context->GetGBuffer()->GetTargetCount();
-        std::vector<CD3DX12_RESOURCE_BARRIER> barriers;
-        for(uint32 i = 0; i < targetCount; ++i)
-        {
-            m_context->GetGBuffer()->GetResource(i)->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, barriers);
-        }
-        
-        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, barriers);
+        SetTargetState(RTargetType::AlbedoMetallic, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        SetTargetState(RTargetType::NormalRoughness, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
 
-        if(barriers.size() > 0)
-        {
-            commandList->ResourceBarrier(static_cast<uint32>(barriers.size()), barriers.data());
-        }
-        
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
-
-        m_context->GetLightingBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, m_context->GetCommandList().Get());
-        D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_context->GetLightingBuffer()->GetRTVHandle();
-        commandList->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
-        
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
-        commandList->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle);
-
-        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        SetTargetState(RTargetType::LightingBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(RTargetType::LightingBuffer);
+        SetRenderTarget(RTargetType::LightingBuffer);
 
         m_context->SetRootDescriptorTable(0, 0);
-        commandList->SetGraphicsRootDescriptorTable(2, m_context->GetGBuffer()->GetSRVGPUHandle(0));
-        commandList->SetGraphicsRootDescriptorTable(3, m_context->GetGBuffer()->GetSRVGPUHandle(1));
+        BindRenderTargetSRV(RTargetType::AlbedoMetallic, 2);
+        BindRenderTargetSRV(RTargetType::NormalRoughness, 3);
         commandList->SetGraphicsRootDescriptorTable(4, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
 
         commandList->DrawInstanced(6, 1, 0, 0);

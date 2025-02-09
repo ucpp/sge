@@ -26,8 +26,6 @@ namespace SGE
 
         InitializeDescriptorHeaps();
         InitializeRenderTargets();
-        InitializeGBuffer();
-        InitializeRTTBuffers();
     }
 
     void RenderContext::InitializeDescriptorHeaps()
@@ -46,27 +44,15 @@ namespace SGE
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
         m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), 1, isMSAA);
-    }
 
-    void RenderContext::InitializeGBuffer()
-    {
-        m_gBuffer = std::make_unique<GBuffer>();
-        m_gBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight());
-    }
+        m_rtts.clear();
 
-    void RenderContext::InitializeRTTBuffers()
-    {
-        m_lightingBuffer = std::make_unique<RenderTargetTexture>();
-        m_lightingBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
-
-        m_brightnessBuffer = std::make_unique<RenderTargetTexture>();
-        m_brightnessBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 1);
-
-        m_blurBuffer = std::make_unique<RenderTargetTexture>();
-        m_blurBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 2);
-
-        m_bloomBuffer = std::make_unique<RenderTargetTexture>();
-        m_bloomBuffer->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), DXGI_FORMAT_R8G8B8A8_UNORM, 3);
+        CreateRTT(RTargetType::AlbedoMetallic);
+        CreateRTT(RTargetType::NormalRoughness);
+        CreateRTT(RTargetType::LightingBuffer);
+        CreateRTT(RTargetType::BrightnessBuffer);
+        CreateRTT(RTargetType::BlurBuffer);
+        CreateRTT(RTargetType::BloomBuffer);
     }
 
     void RenderContext::Shutdown()
@@ -83,35 +69,11 @@ namespace SGE
             m_depthBuffer.reset();
         }
 
-        if(m_gBuffer)
+        for (auto& [type, buffer] : m_rtts)
         {
-            m_gBuffer->Shutdown();
-            m_gBuffer.reset();
+            if (buffer) buffer->Shutdown();
         }
-
-        if(m_lightingBuffer)
-        {
-            m_lightingBuffer->Shutdown();
-            m_lightingBuffer.reset();
-        }
-        
-        if(m_brightnessBuffer)
-        {
-            m_brightnessBuffer->Shutdown();
-            m_brightnessBuffer.reset();
-        }
-        
-        if(m_blurBuffer)
-        {
-            m_blurBuffer->Shutdown();
-            m_blurBuffer.reset();
-        }
-
-        if(m_bloomBuffer)
-        {
-            m_bloomBuffer->Shutdown();
-            m_bloomBuffer.reset();
-        }
+        m_rtts.clear();
     }
     
     ComPtr<IDXGISwapChain3> RenderContext::GetSwapChain() const
@@ -297,11 +259,10 @@ namespace SGE
         Verify(m_depthBuffer, "RenderContext::SetWindowSize: Depth buffer is not initialized or invalid.");
         m_renderTarget->Shutdown();
         m_depthBuffer->Shutdown();
-        m_gBuffer->Shutdown();
-        m_lightingBuffer->Shutdown();
-        m_brightnessBuffer->Shutdown();
-        m_blurBuffer->Shutdown();
-        m_bloomBuffer->Shutdown();
+        for (auto& [type, buffer] : m_rtts)
+        {
+            if (buffer) buffer->Shutdown();
+        }
 
         DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
         GetSwapChain()->GetDesc(&swapChainDesc);
@@ -313,11 +274,10 @@ namespace SGE
         m_viewportScissors->Set(width, height);
         m_renderTarget->Resize(width, height);
         m_depthBuffer->Resize(width, height);
-        m_gBuffer->Resize(width, height);
-        m_lightingBuffer->Resize(width, height);
-        m_brightnessBuffer->Resize(width, height);
-        m_blurBuffer->Resize(width, height);
-        m_bloomBuffer->Resize(width, height);
+        for (auto& [type, buffer] : m_rtts)
+        {
+            if (buffer) buffer->Resize(width, height);
+        }
     
         m_frameIndex = GetSwapChain()->GetCurrentBackBufferIndex();
     }
@@ -326,5 +286,25 @@ namespace SGE
     {
         CD3DX12_GPU_DESCRIPTOR_HANDLE handle = m_cbvSrvUavHeap.GetGPUHandle(descriptorIndex);
         GetCommandList()->SetGraphicsRootDescriptorTable(rootParameterIndex, handle);
+    }
+
+    RenderTargetTexture* RenderContext::GetRTT(RTargetType type)
+    {
+        auto it = m_rtts.find(type);
+        if (it != m_rtts.end())
+        {
+            return it->second.get();
+        }
+        return nullptr;
+    }
+
+    void RenderContext::CreateRTT(RTargetType type, DXGI_FORMAT format)
+    {
+        const uint32 width = GetScreenWidth();
+        const uint32 height = GetScreenHeight();
+        const uint32 index = static_cast<uint32>(type);
+
+        m_rtts[type] = std::make_unique<RenderTargetTexture>();
+        m_rtts[type]->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, width, height, format, index);
     }
 }

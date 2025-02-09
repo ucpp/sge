@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include "rendering/sge_pipeline_state.h"
+#include "rendering/sge_render_target_texture.h"
 
 namespace SGE
 {
@@ -23,6 +24,13 @@ namespace SGE
         
         virtual PipelineConfig GetPipelineConfig() const = 0;
         static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const std::string& pixelShaderPath);
+
+        void SetTargetState(RTargetType type, D3D12_RESOURCE_STATES state);
+        void ClearRenderTargetView(RTargetType type);
+        void ClearRenderTargetView(const std::vector<RTargetType>& type);
+        void SetRenderTarget(RTargetType type);
+        void SetRenderTarget(const std::vector<RTargetType>& types);
+        void BindRenderTargetSRV(RTargetType type, uint32 descIndex);
 
     protected:
         class RenderContext* m_context = nullptr;

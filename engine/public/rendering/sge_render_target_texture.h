@@ -8,6 +8,16 @@
 
 namespace SGE
 {
+    enum class RTargetType
+    {
+        AlbedoMetallic   = 0,
+        NormalRoughness  = 1,
+        LightingBuffer   = 2,
+        BrightnessBuffer = 3,
+        BlurBuffer       = 4,
+        BloomBuffer      = 5
+    };
+
     class RenderTargetTexture
     {
     public:

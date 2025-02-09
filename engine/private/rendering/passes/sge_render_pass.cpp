@@ -47,4 +47,63 @@ namespace SGE
             .SetSampleCount(1)
             .SetShaders("/vs_fullscreen_quad.hlsl", pixelShaderPath);
     }
+
+    void RenderPass::SetTargetState(RTargetType type, D3D12_RESOURCE_STATES state)
+    {
+        Verify(m_context, "RenderPass::SetTargetState: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+        
+        RenderTargetTexture* rtt = m_context->GetRTT(type);
+        Verify(rtt, "RenderPass::SetTargetState: Render target texture is null.");
+
+        rtt->GetResource()->TransitionState(state, commandList);
+    }
+
+    void RenderPass::ClearRenderTargetView(RTargetType type)
+    {
+        ClearRenderTargetView(std::vector<RTargetType>{ type });
+    }
+
+    void RenderPass::ClearRenderTargetView(const std::vector<RTargetType>& types)
+    {
+        Verify(m_context, "RenderPass::ClearRenderTargetView: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+
+        for (RTargetType type : types)
+        {
+            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_context->GetRTT(type)->GetRTVHandle();
+            commandList->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
+        }
+    }
+
+    void RenderPass::SetRenderTarget(RTargetType type)
+    {
+        SetRenderTarget(std::vector<RTargetType>{ type });
+    }
+
+    void RenderPass::SetRenderTarget(const std::vector<RTargetType>& types)
+    {
+        Verify(m_context, "RenderPass::SetRenderTarget: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+
+        std::vector<CD3DX12_CPU_DESCRIPTOR_HANDLE> rtvHandles;
+        rtvHandles.reserve(types.size());
+
+        for (RTargetType type : types)
+        {
+            rtvHandles.push_back(m_context->GetRTT(type)->GetRTVHandle());
+        }
+
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
+        commandList->OMSetRenderTargets(static_cast<uint32>(rtvHandles.size()), rtvHandles.data(), false, &dsvHandle);
+    }
+
+
+    void RenderPass::BindRenderTargetSRV(RTargetType type, uint32 descIndex)
+    {
+        Verify(m_context, "RenderPass::BindRenderTargetSRV: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+
+        commandList->SetGraphicsRootDescriptorTable(descIndex, m_context->GetRTT(type)->GetSRVGPUHandle());
+    }
 }
