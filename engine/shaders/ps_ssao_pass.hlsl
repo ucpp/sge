@@ -44,16 +44,12 @@ float3 ReconstructWorldPosition(float2 uv, float depth)
 float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
 {
     float occlusion = 0.0;
-    const float radius = 0.4;
-
-    float3 tangent = normalize(cross(normal, float3(0.0, 1.0, 0.0)));
-    float3 bitangent = -cross(normal, tangent);
-    float3x3 TBN = float3x3(tangent, bitangent, normal);
+    const float radius = 0.3;
 
     for (int i = 0; i < SSAO_SAMPLE_COUNT; i++)
     {
         float3 sampleOffset = SSAO_Samples[i] * radius;
-        float3 samplePos = worldPos + mul(sampleOffset, TBN);
+        float3 samplePos = worldPos + sampleOffset;
 
         float4 sampleClipPos = mul(float4(samplePos, 1.0), viewProj);
         sampleClipPos.xy /= sampleClipPos.w;
@@ -72,7 +68,7 @@ float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
         occlusion += (sampleWorldPos.z <= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck * normalFactor;
     }
 
-    return 1.0 - (occlusion / SSAO_SAMPLE_COUNT);
+    return saturate(1.0 - (occlusion / SSAO_SAMPLE_COUNT) * 1.2);
 }
 
 SSAOOutput main(PixelInput input)
@@ -88,7 +84,8 @@ SSAOOutput main(PixelInput input)
     float3 worldPos = ReconstructWorldPosition(input.texCoords, depth);
     
     float ssao = ComputeSSAO(worldPos, normal, input.texCoords);
-    
+    ssao = pow(ssao, 1.2);
     output.color = float4(ssao, ssao, ssao, 1.0);
+
     return output;
 }
