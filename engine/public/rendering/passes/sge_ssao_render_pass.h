@@ -1,18 +1,17 @@
-#ifndef _SGE_FORWARD_RENDER_PASS_H_
-#define _SGE_FORWARD_RENDER_PASS_H_
+#ifndef _SGE_SSAO_RENDER_PASS_H_
+#define _SGE_SSAO_RENDER_PASS_H_
 
 #include "pch.h"
 #include "rendering/passes/sge_render_pass.h"
 
 namespace SGE
 {
-    class ForwardRenderPass : public RenderPass
+    class SSAORenderPass : public RenderPass
     {
     protected:
         void OnRender(class Scene* scene) override;
-        void OnDraw(class Scene* scene) override;
         PipelineConfig GetPipelineConfig() const override;
     };
 }
 
-#endif // !_SGE_FORWARD_RENDER_PASS_H_
+#endif // !_SGE_BRIGHTNESS_EXTRACTION_PASS_H_

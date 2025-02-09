@@ -23,8 +23,6 @@ namespace SGE
         m_context->SetRootDescriptorTable(0, 0);
         BindRenderTargetSRV(RTargetType::LightingBuffer, 2);
         BindRenderTargetSRV(RTargetType::BlurBuffer, 3);
-
-        commandList->DrawInstanced(6, 1, 0, 0);
     }
 
     PipelineConfig BloomCombinePass::GetPipelineConfig() const

@@ -18,9 +18,10 @@ namespace SGE
         void Reload() { m_reloadRequested = true; }
 
     protected:
-        virtual void OnInitialize(class RenderContext* context) {};
-        virtual void OnRender(class Scene* scene) {};
-        virtual void OnShutdown() {};
+        virtual void OnInitialize(class RenderContext* context) {}
+        virtual void OnRender(class Scene* scene) {}
+        virtual void OnDraw(class Scene* scene);
+        virtual void OnShutdown() {}
         
         virtual PipelineConfig GetPipelineConfig() const = 0;
         static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const std::string& pixelShaderPath);
@@ -31,6 +32,8 @@ namespace SGE
         void SetRenderTarget(RTargetType type);
         void SetRenderTarget(const std::vector<RTargetType>& types);
         void BindRenderTargetSRV(RTargetType type, uint32 descIndex);
+
+        void DrawQuad();
 
     protected:
         class RenderContext* m_context = nullptr;

@@ -11,6 +11,7 @@ namespace SGE
         auto commandList = m_context->GetCommandList();
         SetTargetState(RTargetType::AlbedoMetallic, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         SetTargetState(RTargetType::NormalRoughness, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        SetTargetState(RTargetType::SSAOBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
@@ -23,9 +24,8 @@ namespace SGE
         m_context->SetRootDescriptorTable(0, 0);
         BindRenderTargetSRV(RTargetType::AlbedoMetallic, 2);
         BindRenderTargetSRV(RTargetType::NormalRoughness, 3);
-        commandList->SetGraphicsRootDescriptorTable(4, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
-
-        commandList->DrawInstanced(6, 1, 0, 0);
+        BindRenderTargetSRV(RTargetType::SSAOBuffer, 4);
+        commandList->SetGraphicsRootDescriptorTable(5, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
     }
 
     PipelineConfig LightingRenderPass::GetPipelineConfig() const

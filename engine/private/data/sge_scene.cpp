@@ -41,6 +41,7 @@ namespace SGE
         m_frameData.zFar = m_mainCamera.GetFar();
         m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
         m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
+        m_frameData.viewProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()) * m_mainCamera.GetViewMatrix();
 
         DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
         SyncData(directionalLightData, &m_frameData.directionalLight);

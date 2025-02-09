@@ -15,7 +15,8 @@ namespace SGE
         LightingBuffer   = 2,
         BrightnessBuffer = 3,
         BlurBuffer       = 4,
-        BloomBuffer      = 5
+        BloomBuffer      = 5,
+        SSAOBuffer       = 6
     };
 
     class RenderTargetTexture

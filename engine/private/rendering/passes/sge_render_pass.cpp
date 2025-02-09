@@ -28,6 +28,7 @@ namespace SGE
         }
 
         OnRender(scene);
+        OnDraw(scene);
     }
 
     void RenderPass::Shutdown()
@@ -98,12 +99,24 @@ namespace SGE
         commandList->OMSetRenderTargets(static_cast<uint32>(rtvHandles.size()), rtvHandles.data(), false, &dsvHandle);
     }
 
-
     void RenderPass::BindRenderTargetSRV(RTargetType type, uint32 descIndex)
     {
         Verify(m_context, "RenderPass::BindRenderTargetSRV: Render context is null.");
         ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
 
         commandList->SetGraphicsRootDescriptorTable(descIndex, m_context->GetRTT(type)->GetSRVGPUHandle());
+    }
+
+    void RenderPass::OnDraw(Scene* scene)
+    {
+        DrawQuad();
+    }
+
+    void RenderPass::DrawQuad()
+    {
+        Verify(m_context, "RenderPass::DrawQuad: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        commandList->DrawInstanced(6, 1, 0, 0);
     }
 }

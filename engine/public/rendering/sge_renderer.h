@@ -29,6 +29,7 @@ namespace SGE
         std::unique_ptr<RenderPass> m_brightnesPass;
         std::unique_ptr<RenderPass> m_blurPass;
         std::unique_ptr<RenderPass> m_bloomCombinePass;
+        std::unique_ptr<RenderPass> m_ssaoPass;
     };
 }
 

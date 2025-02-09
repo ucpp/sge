@@ -9,6 +9,7 @@
 #include "rendering/passes/sge_brightness_extraction_pass.h"
 #include "rendering/passes/sge_blur_pass.h"
 #include "rendering/passes/sge_bloom_combine_pass.h"
+#include "rendering/passes/sge_ssao_render_pass.h"
 #include "core/sge_helpers.h"
 #include "core/sge_scoped_event.h"
 
@@ -40,6 +41,9 @@ namespace SGE
         m_bloomCombinePass = std::make_unique<BloomCombinePass>();
         m_bloomCombinePass->Initialize(m_context);
 
+        m_ssaoPass = std::make_unique<SSAORenderPass>();
+        m_ssaoPass->Initialize(m_context);
+
         m_context->CloseCommandList();
         m_context->ExecuteCommandList();
         m_context->WaitForPreviousFrame();
@@ -60,6 +64,7 @@ namespace SGE
         if(m_context->GetRenderData().isDeferredRendering)
         {
             m_geometryPass->Render(scene);
+            m_ssaoPass->Render(scene);
             m_lightingPass->Render(scene);
             m_brightnesPass->Render(scene);
             m_blurPass->Render(scene);
@@ -123,6 +128,12 @@ namespace SGE
             m_bloomCombinePass->Shutdown();
             m_bloomCombinePass.reset();
         }
+
+        if(m_ssaoPass)
+        {
+            m_ssaoPass->Shutdown();
+            m_ssaoPass.reset();
+        }
     }
     
     void Renderer::ReloadShaders()
@@ -135,5 +146,6 @@ namespace SGE
         m_brightnesPass->Reload();
         m_blurPass->Reload();
         m_bloomCombinePass->Reload();
+        m_ssaoPass->Reload();
     }
 }

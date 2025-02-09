@@ -2,7 +2,8 @@
 
 Texture2D<float4> g_AlbedoMetallic : register(t0);
 Texture2D<float4> g_NormalRoughness : register(t1);
-Texture2D<float> g_Depth : register(t2);
+Texture2D<float4> g_SSAO : register(t2);
+Texture2D<float> g_Depth : register(t3);
 SamplerState sampleWrap : register(s0);
 
 struct PixelInput
@@ -143,6 +144,9 @@ LightingOutput main(PixelInput input)
     {
         finalColor += CalculatePointLight(worldPos, normal, albedo, metallic, roughness, viewDir, pointLights[i]);
     }
+
+    float ssao = lerp(1.0, g_SSAO.Sample(sampleWrap, input.texCoords).r, 0.7);
+    finalColor *= ssao;
 
     float exposure = 1.1;
     finalColor *= exposure;

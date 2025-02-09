@@ -66,6 +66,7 @@ namespace SGE
         float  zFar{};
         float4x4 invProj{};
         float4x4 invView{};
+        float4x4 viewProj{};
         uint32 activePointLightsCount{};
         uint32 activeSpotLightsCount{};
     };

@@ -24,7 +24,7 @@ BrightOutput main(PixelInput input)
     float3 color = g_LightingResult.Sample(sampleWrap, input.texCoords).rgb;
     float brightness = luminance(color);
 
-    float threshold = 1.0f;
+    float threshold = 0.8f;
     output.color = float4(color * step(threshold, brightness), 1.0f);
 
     return output;

@@ -20,8 +20,6 @@ namespace SGE
 
         m_context->SetRootDescriptorTable(0, 0);
         BindRenderTargetSRV(RTargetType::BrightnessBuffer, 2);
-
-        commandList->DrawInstanced(6, 1, 0, 0);
     }
 
     PipelineConfig BlurPass::GetPipelineConfig() const

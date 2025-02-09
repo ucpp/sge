@@ -10,6 +10,7 @@ namespace SGE
     {
     protected:
         void OnRender(class Scene* scene) override;
+        void OnDraw(class Scene* scene) override;
         PipelineConfig GetPipelineConfig() const override;
     };
 }

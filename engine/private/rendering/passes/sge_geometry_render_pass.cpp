@@ -19,6 +19,13 @@ namespace SGE
 
         ClearRenderTargetView({RTargetType::AlbedoMetallic, RTargetType::NormalRoughness});
         SetRenderTarget({RTargetType::AlbedoMetallic, RTargetType::NormalRoughness});
+    }
+
+    void GeometryRenderPass::OnDraw(Scene* scene)
+    {
+        Verify(m_context, "GeometryRenderPass::OnDraw: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
         for(auto& pair : scene->GetModels())
         {
