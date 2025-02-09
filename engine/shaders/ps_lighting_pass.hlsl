@@ -145,7 +145,7 @@ LightingOutput main(PixelInput input)
         finalColor += CalculatePointLight(worldPos, normal, albedo, metallic, roughness, viewDir, pointLights[i]);
     }
 
-    float ssao = lerp(1.0, g_SSAO.Sample(sampleWrap, input.texCoords).r, 0.7);
+    float ssao = lerp(1.0, g_SSAO.Sample(sampleWrap, input.texCoords).r, 0.9f);
     finalColor *= ssao;
 
     float exposure = 1.1;

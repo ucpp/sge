@@ -101,15 +101,16 @@ This project is **actively under development**, and its purpose is to experiment
 
 </details>
  <details>
-  <summary><strong>☐ 13. Soft shadows</strong>: Implement soft shadows using techniques like SM+PCF, VSM, or ESM (in progress).</summary>
-  
-</details>
+  <summary><strong>✔ 13. SSAO</strong>: Implement screen-space ambient occlusion. (in progress).</summary>
+
+  ![SSAO](https://github.com/ucpp/sge/blob/master/docs/ssao.png)
+
 </details>
  <details>
-  <summary><strong>☐ 14. SSAO</strong>: Implement screen-space ambient occlusion. (in progress).</summary>
+  <summary><strong>☐ 14. Soft shadows</strong>: Implement soft shadows using techniques like SM+PCF, VSM, or ESM (in progress).</summary>
   
 </details>
-   
+    
 ---
   
 **15. Dynamic environment reflections**: Render cube maps for dynamic reflections.  

@@ -46,15 +46,14 @@ float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
     float occlusion = 0.0;
     const float radius = 0.2;
 
-    float3x3 TBN;
-    TBN[2] = normal;
-    TBN[0] = normalize(cross(normal, float3(0.0, 1.0, 0.0)));
-    TBN[1] = cross(TBN[2], TBN[0]);
+    float3 tangent = normalize(cross(normal, float3(0.0, 1.0, 0.0)));
+    float3 bitangent = cross(normal, tangent);
+    float3x3 TBN = float3x3(tangent, bitangent, normal);
 
     for (int i = 0; i < SSAO_SAMPLE_COUNT; i++)
     {
-        float3 sampleOffset = mul(TBN, SSAO_Samples[i]) * radius;
-        float3 samplePos = worldPos + sampleOffset;
+        float3 sampleOffset = SSAO_Samples[i] * radius;
+        float3 samplePos = worldPos + mul(sampleOffset, TBN);
 
         float4 sampleClipPos = mul(float4(samplePos, 1.0), viewProj);
         sampleClipPos.xy /= sampleClipPos.w;
@@ -65,7 +64,8 @@ float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
         float3 sampleWorldPos = ReconstructWorldPosition(sampleUV, sampleDepth);
 
         float rangeCheck = smoothstep(0.0, 1.0, radius / abs(worldPos.z - sampleWorldPos.z));
-        occlusion += (sampleWorldPos.z <= samplePos.z ? 1.0 : 0.0) * rangeCheck;
+        float bias = 0.025;
+        occlusion += (sampleWorldPos.z <= samplePos.z - bias ? 1.0 : 0.0) * rangeCheck;
     }
 
     return 1.0 - (occlusion / SSAO_SAMPLE_COUNT);

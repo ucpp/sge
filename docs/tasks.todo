@@ -11,7 +11,7 @@
 ☐ Fix math
 ☐ Add spot lights
 ☐ Fix normals
-☐ SSAO
+✔ SSAO @done(25-02-09 20:13)
 ✔ Fix scene sync @done(25-02-08 20:27)
 ✔ Refactor passes @done(25-02-09 16:29)
 ✔ Add define for shaders debug folder @done(25-02-08 20:13)
