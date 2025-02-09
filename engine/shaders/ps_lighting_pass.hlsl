@@ -148,9 +148,6 @@ LightingOutput main(PixelInput input)
     float ssao = lerp(1.0, g_SSAO.Sample(sampleWrap, input.texCoords).r, 0.9f);
     finalColor *= ssao;
 
-    float exposure = 1.1;
-    finalColor *= exposure;
-
     output.color = float4(finalColor, 1.0f);
 
     return output;

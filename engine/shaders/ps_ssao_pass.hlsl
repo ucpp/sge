@@ -44,10 +44,10 @@ float3 ReconstructWorldPosition(float2 uv, float depth)
 float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
 {
     float occlusion = 0.0;
-    const float radius = 0.2;
+    const float radius = 0.4;
 
     float3 tangent = normalize(cross(normal, float3(0.0, 1.0, 0.0)));
-    float3 bitangent = cross(normal, tangent);
+    float3 bitangent = -cross(normal, tangent);
     float3x3 TBN = float3x3(tangent, bitangent, normal);
 
     for (int i = 0; i < SSAO_SAMPLE_COUNT; i++)
@@ -63,9 +63,13 @@ float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
         float sampleDepth = g_Depth.Sample(sampleWrap, sampleUV).r;
         float3 sampleWorldPos = ReconstructWorldPosition(sampleUV, sampleDepth);
 
-        float rangeCheck = smoothstep(0.0, 1.0, radius / abs(worldPos.z - sampleWorldPos.z));
-        float bias = 0.025;
-        occlusion += (sampleWorldPos.z <= samplePos.z - bias ? 1.0 : 0.0) * rangeCheck;
+        float3 toSample = normalize(sampleWorldPos - worldPos);
+        float normalFactor = max(dot(normal, toSample), 0.0);
+
+        float rangeCheck = smoothstep(0.0, 1.0, radius / length(worldPos - sampleWorldPos));
+        float bias = 0.025 * radius;
+
+        occlusion += (sampleWorldPos.z <= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck * normalFactor;
     }
 
     return 1.0 - (occlusion / SSAO_SAMPLE_COUNT);

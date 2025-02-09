@@ -30,6 +30,6 @@ namespace SGE
 
     PipelineConfig LightingRenderPass::GetPipelineConfig() const
     {
-        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, "/ps_lighting_pass.hlsl");
+        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R16G16B16A16_FLOAT, "/ps_lighting_pass.hlsl");
     }
 }

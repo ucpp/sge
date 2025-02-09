@@ -30,6 +30,9 @@ TonemappingOutput main(PixelInput input) : SV_Target
 
     color = ACESFilm(color);
     color = pow(color, 1.0 / 2.2);
+
+    float exposure = 1.1;
+    color *= exposure;
     
     output.color = float4(color, 1.0f);
     return output;
