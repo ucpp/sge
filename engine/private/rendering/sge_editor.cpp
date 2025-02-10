@@ -261,9 +261,17 @@ namespace SGE
     void Editor::BuildDockingExample()
     {
         ImGui::Begin("Scene hierarchy");
-        ImGui::Text("Render Pass:");
 
-        const char* passNames[] = {
+        const char* forwardPassNames[] = 
+        {
+            "BrightnessBuffer",
+            "BlurBuffer",
+            "BloomBuffer",
+            "ToneMapping"
+        };
+        
+        const char* deferredPassNames[] = 
+        {
             "AlbedoMetallic",
             "NormalRoughness",
             "LightingBuffer",
@@ -273,13 +281,70 @@ namespace SGE
             "SSAOBuffer",
             "ToneMapping"
         };
-
-        RenderData& renderData = m_context->GetRenderData();
-        int currentPass = static_cast<int32>(renderData.finalRender);
-        if (ImGui::Combo("##RenderPass", &currentPass, passNames, IM_ARRAYSIZE(passNames)))
+        
+        const char* techniqueNames[] = 
         {
-            renderData.finalRender = static_cast<RTargetType>(currentPass);
+            "Forward",
+            "Deferred"
+        };
+        
+        std::unordered_map<std::string, RTargetType> passNameToTargetType = 
+        {
+            {"AlbedoMetallic", RTargetType::AlbedoMetallic},
+            {"NormalRoughness", RTargetType::NormalRoughness},
+            {"LightingBuffer", RTargetType::LightingBuffer},
+            {"BrightnessBuffer", RTargetType::BrightnessBuffer},
+            {"BlurBuffer", RTargetType::BlurBuffer},
+            {"BloomBuffer", RTargetType::BloomBuffer},
+            {"SSAOBuffer", RTargetType::SSAOBuffer},
+            {"ToneMapping", RTargetType::ToneMapping}
+        };
+        
+        RenderData& renderData = m_context->GetRenderData();
+        float windowWidth = ImGui::GetWindowWidth();
+        ImGui::PushItemWidth(windowWidth - 16.0f);
+        int32 currentTechnique = static_cast<int32>(renderData.technique);
+        if (ImGui::Combo("##Technique", &currentTechnique, techniqueNames, IM_ARRAYSIZE(techniqueNames)))
+        {
+            renderData.technique = static_cast<RenderTechnique>(currentTechnique);
+            renderData.finalRender = RTargetType::ToneMapping;
         }
+        
+        const char** passNames = nullptr;
+        int32 passCount = 0;
+        
+        if (renderData.technique == RenderTechnique::Forward)
+        {
+            passNames = forwardPassNames;
+            passCount = IM_ARRAYSIZE(forwardPassNames);
+        }
+        else if (renderData.technique == RenderTechnique::Deferred)
+        {
+            passNames = deferredPassNames;
+            passCount = IM_ARRAYSIZE(deferredPassNames);
+        }
+
+        int32 currentPass = 0;
+        for (int32 i = 0; i < passCount; ++i)
+        {
+            if (passNameToTargetType[passNames[i]] == renderData.finalRender)
+            {
+                currentPass = i;
+                break;
+            }
+        }
+        
+        if (currentPass >= passCount)
+        {
+            currentPass = passCount - 1;
+            renderData.finalRender = RTargetType::ToneMapping;
+        }
+        
+        if (ImGui::Combo("##RenderPass", &currentPass, passNames, passCount))
+        {
+            renderData.finalRender = passNameToTargetType[passNames[currentPass]];
+        }
+        ImGui::PopItemWidth();
 
         ImGui::Dummy(ImVec2(0.0f, 5.0f));
         ImGui::Separator();

@@ -20,17 +20,11 @@ namespace SGE
         void ReloadShaders();
 
     private:
-        class RenderContext* m_context = nullptr;
+        void InitializeRenderPass(const std::string& name, RenderContext* context);
+        void RenderPasses(const std::vector<RenderPassData>& passes, Scene* scene);
 
-        std::unique_ptr<RenderPass> m_forwardPass;
-        std::unique_ptr<RenderPass> m_geometryPass;
-        std::unique_ptr<RenderPass> m_lightingPass;
-        std::unique_ptr<RenderPass> m_tonemappingPass;
-        std::unique_ptr<RenderPass> m_brightnesPass;
-        std::unique_ptr<RenderPass> m_blurPass;
-        std::unique_ptr<RenderPass> m_bloomCombinePass;
-        std::unique_ptr<RenderPass> m_ssaoPass;
-        std::unique_ptr<RenderPass> m_finalPass;
+        class RenderContext* m_context = nullptr;
+        std::unordered_map<std::string, std::unique_ptr<RenderPass>> m_renderPasses;
     };
 }
 

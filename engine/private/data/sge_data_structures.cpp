@@ -438,25 +438,35 @@ namespace SGE
     
     void to_json(njson& data, const RenderData& render)
     {
-        data = njson
-        {
-            { "v_sync", render.vSync },
-            { "is_msaa_enabled", render.isMSAAEnabled },
-            { "is_fog_enabled", render.isFogEnabled },
-            { "is_deferred_rendering", render.isDeferredRendering },
-            { "final_render_type", static_cast<int32>(render.finalRender) }
+        data = njson{
+            {"v_sync", render.vSync},
+            {"final_render_type", static_cast<int32>(render.finalRender)},
+            {"render_technique", static_cast<int32>(render.technique)},
+            {"forward_render_passes", render.forwardPasses},
+            {"deferred_render_passes", render.deferredPasses}
         };
     }
-    
+
     void from_json(const njson& data, RenderData& render)
     {
         data.at("v_sync").get_to(render.vSync);
-        data.at("is_msaa_enabled").get_to(render.isMSAAEnabled);
-        data.at("is_fog_enabled").get_to(render.isFogEnabled);
-        data.at("is_deferred_rendering").get_to(render.isDeferredRendering);
-        int32_t typeInt;
+
+        int32 typeInt;
         data.at("final_render_type").get_to(typeInt);
         render.finalRender = static_cast<RTargetType>(typeInt);
+
+        data.at("render_technique").get_to(typeInt);
+        render.technique = static_cast<RenderTechnique>(typeInt);
+
+        if (data.contains("forward_render_passes"))
+        {
+            data.at("forward_render_passes").get_to(render.forwardPasses);
+        }
+
+        if (data.contains("deferred_render_passes"))
+        {
+            data.at("deferred_render_passes").get_to(render.deferredPasses);
+        }
     }
     
     void to_json(njson& data, const AssetsData& assets)
@@ -512,5 +522,21 @@ namespace SGE
         data.at("render_data").get_to(application.renderData);
         data.at("assets_data").get_to(application.assetsData);
         data.at("scene_data").get_to(application.sceneData);
+    }
+
+    void to_json(njson& data, const RenderPassData& pass)
+    {
+        data = njson{
+            {"name", pass.name},
+            {"input", pass.input},
+            {"output", pass.output}
+        };
+    }
+
+    void from_json(const njson& data, RenderPassData& pass)
+    {
+        data.at("name").get_to(pass.name);
+        data.at("input").get_to(pass.input);
+        data.at("output").get_to(pass.output);
     }
 }

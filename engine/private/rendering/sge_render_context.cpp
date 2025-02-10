@@ -37,13 +37,11 @@ namespace SGE
 
     void RenderContext::InitializeRenderTargets()
     {
-        const bool isMSAA = GetRenderData().isMSAAEnabled && !GetRenderData().isDeferredRendering;
-
         m_renderTarget = std::make_unique<RenderTarget>();
-        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BUFFER_COUNT, isMSAA);
+        m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BUFFER_COUNT, false);
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
-        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), 1, isMSAA);
+        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), 1, false);
 
         m_rtts.clear();
 
@@ -209,11 +207,8 @@ namespace SGE
         Verify(m_renderTarget, "RenderContext::ClearRenderTargets: Render target is not initialized or invalid.");
         Verify(m_depthBuffer, "RenderContext::ClearRenderTargets: Depth buffer is not initialized or invalid.");
 
-        const RenderData& renderData = GetRenderData();
-        const bool isMSAA = renderData.isMSAAEnabled && !renderData.isDeferredRendering;
-        
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAA);
-        m_renderTarget->GetResource(m_frameIndex, isMSAA)->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, GetCommandList().Get());
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, false);
+        m_renderTarget->GetResource(m_frameIndex, false)->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, GetCommandList().Get());
         
         CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
         m_depthBuffer->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, GetCommandList().Get());
@@ -224,9 +219,7 @@ namespace SGE
 
     void RenderContext::SetRenderTarget(bool includeDepth)
     {
-        const RenderData& renderData = GetRenderData();
-        const bool isMSAA = renderData.isMSAAEnabled && !renderData.isDeferredRendering;
-        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, isMSAA);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, false);
         if(includeDepth)
         {
             CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
@@ -242,13 +235,9 @@ namespace SGE
     void RenderContext::PrepareRenderTargetForPresent()
     {
         Verify(m_renderTarget, "RenderContext::PrepareRenderTargetForPresent: Render target is not initialized or invalid.");
-        const RenderData& renderData = GetRenderData();
-        const bool isMSAA = renderData.isMSAAEnabled && !renderData.isDeferredRendering;
-        if (isMSAA)
-        {
-            m_renderTarget->Resolve(GetCommandList().Get(), m_frameIndex);
-        }
 
+        // MSAA disbled
+        // m_renderTarget->Resolve(GetCommandList().Get(), m_frameIndex);
         m_renderTarget->GetResource(m_frameIndex)->TransitionState(D3D12_RESOURCE_STATE_PRESENT, GetCommandList().Get());
     }
 

@@ -17,10 +17,82 @@
     },
     "render_data": {
         "v_sync": false,
-        "is_msaa_enabled": false,
-        "is_fog_enabled": false,
-        "is_deferred_rendering": true,
-        "final_render_type": 7
+        "final_render_type": 7,
+        "render_technique": 1,
+        "forward_render_passes": [
+            {
+                "name": "forward",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "brightness_extraction",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "blur",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "bloom_combine",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "tonemapping",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "final",
+                "input": [],
+                "output": []
+            }
+        ],
+        "deferred_render_passes": [
+            {
+                "name": "geometry",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "ssao",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "lighting",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "brightness_extraction",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "blur",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "bloom_combine",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "tonemapping",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "final",
+                "input": [],
+                "output": []
+            }
+        ]
     },
     "assets_data": {
         "assets": [

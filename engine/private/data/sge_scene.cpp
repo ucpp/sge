@@ -68,7 +68,7 @@ namespace SGE
         m_frameData.fogStart = 3.0f;
         m_frameData.fogEnd = 30.0f;
         m_frameData.fogColor = {0.314f, 0.314f, 0.314f};
-        m_frameData.fogStrength = m_context->GetRenderData().isFogEnabled ? 1.0f : 0.0f;
+        m_frameData.fogStrength = 0.0f;
         m_frameData.fogDensity = 0.1f;
 
         m_frameDataBuffer->Update(&m_frameData, sizeof(FrameData));

@@ -84,6 +84,12 @@ namespace SGE
         ToneMapping      = 7
     };
 
+    enum class RenderTechnique
+    {
+        Forward   = 0,
+        Deferred  = 1
+    };
+    
     enum class ObjectType
     {
         Camera           = 0,
@@ -269,14 +275,22 @@ namespace SGE
         std::vector<const char*> resolutionCStrings;
     };
 
+    struct RenderPassData
+    {
+        std::string name;
+        std::vector<std::string> input;
+        std::vector<std::string> output;
+    };
+
     class RenderData
     {
     public:
         bool vSync = true;
-        bool isMSAAEnabled = true;
-        bool isFogEnabled = false;
-        bool isDeferredRendering = false;
         RTargetType finalRender = RTargetType::ToneMapping;
+        RenderTechnique technique = RenderTechnique::Deferred;
+
+        std::vector<RenderPassData> forwardPasses;
+        std::vector<RenderPassData> deferredPasses;
     };
 
     class ApplicationData
@@ -314,6 +328,9 @@ namespace SGE
 
     void to_json(njson& data, const ApplicationData& application);
     void from_json(const njson& data, ApplicationData& application);
+
+    void to_json(njson& data, const RenderPassData& pass);
+    void from_json(const njson& data, RenderPassData& pass);
 }
 
 #endif // !_SGE_DATA_STRUCTURES_H_

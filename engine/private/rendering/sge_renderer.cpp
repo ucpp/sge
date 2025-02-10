@@ -1,16 +1,7 @@
 #include "rendering/sge_renderer.h"
 
 #include "rendering/sge_render_context.h"
-#include "rendering/passes/sge_render_pass.h"
-#include "rendering/passes/sge_forward_render_pass.h"
-#include "rendering/passes/sge_geometry_render_pass.h"
-#include "rendering/passes/sge_lighting_render_pass.h"
-#include "rendering/passes/sge_tonemapping_render_pass.h"
-#include "rendering/passes/sge_brightness_extraction_pass.h"
-#include "rendering/passes/sge_blur_pass.h"
-#include "rendering/passes/sge_bloom_combine_pass.h"
-#include "rendering/passes/sge_ssao_render_pass.h"
-#include "rendering/passes/sge_final_render_pass.h"
+#include "rendering/passes/sge_render_pass_factory.h"
 #include "core/sge_helpers.h"
 #include "core/sge_scoped_event.h"
 
@@ -21,36 +12,34 @@ namespace SGE
         Verify(context, "Renderer::Initialize: Provided render context is null.");
         m_context = context;
 
-        m_forwardPass = std::make_unique<ForwardRenderPass>();
-        m_forwardPass->Initialize(m_context);
+        RegisterRenderPasses();
+        m_renderPasses.clear();
 
-        m_geometryPass = std::make_unique<GeometryRenderPass>();
-        m_geometryPass->Initialize(m_context);
+        const RenderData& data = m_context->GetRenderData();
 
-        m_lightingPass = std::make_unique<LightingRenderPass>();
-        m_lightingPass->Initialize(m_context);
+        for (const auto& passData : data.forwardPasses)
+        {
+            InitializeRenderPass(passData.name, context);
+        }
 
-        m_tonemappingPass = std::make_unique<ToneMappingRenderPass>();
-        m_tonemappingPass->Initialize(m_context);
-
-        m_brightnesPass = std::make_unique<BrightnessExtractionPass>();
-        m_brightnesPass->Initialize(m_context);
-
-        m_blurPass = std::make_unique<BlurPass>();
-        m_blurPass->Initialize(m_context);
-
-        m_bloomCombinePass = std::make_unique<BloomCombinePass>();
-        m_bloomCombinePass->Initialize(m_context);
-
-        m_ssaoPass = std::make_unique<SSAORenderPass>();
-        m_ssaoPass->Initialize(m_context);
-
-        m_finalPass = std::make_unique<FinalRenderPass>();
-        m_finalPass->Initialize(m_context);
+        for (const auto& passData : data.deferredPasses)
+        {
+            InitializeRenderPass(passData.name, context);
+        }
 
         m_context->CloseCommandList();
         m_context->ExecuteCommandList();
         m_context->WaitForPreviousFrame();
+    }
+
+    void Renderer::InitializeRenderPass(const std::string& name, RenderContext* context)
+    {
+        auto& factory = RenderPassFactory::Get();
+        if (m_renderPasses.find(name) == m_renderPasses.end())
+        {
+            m_renderPasses[name] = factory.Create(name);
+            m_renderPasses[name]->Initialize(context);
+        }
     }
 
     void Renderer::Render(Scene* scene, Editor* editor)
@@ -65,22 +54,18 @@ namespace SGE
         m_context->BindViewportScissors();
         m_context->ClearRenderTargets();
 
-        if(m_context->GetRenderData().isDeferredRendering)
+        const RenderData& data = m_context->GetRenderData();
+        const RenderTechnique technique = data.technique;
+
+        if (technique == RenderTechnique::Deferred)
         {
-            m_geometryPass->Render(scene);
-            m_ssaoPass->Render(scene);
-            m_lightingPass->Render(scene);
-            m_brightnesPass->Render(scene);
-            m_blurPass->Render(scene);
-            m_bloomCombinePass->Render(scene);
-            m_tonemappingPass->Render(scene);
-            m_finalPass->Render(scene);
+            RenderPasses(data.deferredPasses, scene);
         }
-        else
+        else if (technique == RenderTechnique::Forward)
         {
-            m_forwardPass->Render(scene);
+            RenderPasses(data.forwardPasses, scene);
         }
-        
+
         editor->Render();
 
         m_context->PrepareRenderTargetForPresent();
@@ -89,75 +74,35 @@ namespace SGE
         m_context->PresentFrame();
         m_context->WaitForPreviousFrame();
     }
-  
-    void Renderer::Shutdown()
+
+    void Renderer::RenderPasses(const std::vector<RenderPassData>& passes, Scene* scene)
     {
-        if(m_forwardPass)
+        for (const auto& passData : passes)
         {
-            m_forwardPass->Shutdown();
-            m_forwardPass.reset();
-        }
-
-        if(m_geometryPass)
-        {
-            m_geometryPass->Shutdown();
-            m_geometryPass.reset();
-        }
-
-        if(m_lightingPass)
-        {
-            m_lightingPass->Shutdown();
-            m_lightingPass.reset();
-        }
-
-        if(m_tonemappingPass)
-        {
-            m_tonemappingPass->Shutdown();
-            m_tonemappingPass.reset();
-        }
-
-        if(m_brightnesPass)
-        {
-            m_brightnesPass->Shutdown();
-            m_brightnesPass.reset();
-        }
-
-        if(m_blurPass)
-        {
-            m_blurPass->Shutdown();
-            m_blurPass.reset();
-        }
-
-        if(m_bloomCombinePass)
-        {
-            m_bloomCombinePass->Shutdown();
-            m_bloomCombinePass.reset();
-        }
-
-        if(m_ssaoPass)
-        {
-            m_ssaoPass->Shutdown();
-            m_ssaoPass.reset();
-        }
-
-        if(m_finalPass)
-        {
-            m_finalPass->Shutdown();
-            m_finalPass.reset();
+            if (m_renderPasses.find(passData.name) != m_renderPasses.end())
+            {
+                m_renderPasses[passData.name]->Render(scene);
+            }
         }
     }
-    
+
+    void Renderer::Shutdown()
+    {
+        for (auto& [name, pass] : m_renderPasses)
+        {
+            pass->Shutdown();
+            pass.reset();
+        }
+        m_renderPasses.clear();
+    }
+
     void Renderer::ReloadShaders()
     {
         m_context->WaitForPreviousFrame();
-        m_forwardPass->Reload();
-        m_geometryPass->Reload();
-        m_lightingPass->Reload();
-        m_tonemappingPass->Reload();
-        m_brightnesPass->Reload();
-        m_blurPass->Reload();
-        m_bloomCombinePass->Reload();
-        m_ssaoPass->Reload();
-        m_finalPass->Reload();
+
+        for (auto& [name, pass] : m_renderPasses)
+        {
+            pass->Reload();
+        }
     }
 }

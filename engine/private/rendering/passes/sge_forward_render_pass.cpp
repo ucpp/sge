@@ -11,7 +11,10 @@ namespace SGE
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
-        m_context->SetRenderTarget();
+        SetTargetState(RTargetType::LightingBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(RTargetType::LightingBuffer);
+        SetRenderTarget(RTargetType::LightingBuffer);
+        
         m_context->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         m_context->SetRootDescriptorTable(0, 0);
     }
