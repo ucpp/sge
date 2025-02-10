@@ -54,6 +54,7 @@ namespace SGE
         CreateRTT(RTargetType::BlurBuffer);
         CreateRTT(RTargetType::BloomBuffer);
         CreateRTT(RTargetType::SSAOBuffer);
+        CreateRTT(RTargetType::ToneMapping);
     }
 
     void RenderContext::Shutdown()

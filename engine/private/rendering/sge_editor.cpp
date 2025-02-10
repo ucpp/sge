@@ -200,13 +200,7 @@ namespace SGE
             ImGui::SetNextWindowSize(ImVec2(150, 300), ImGuiCond_Once);
             if (ImGui::Begin("Render settings", &m_isOpenSettingsWindow))
             {
-                ImGui::Text("Render settings");
-                RenderData& renderData = m_context->GetRenderData();
-                if (!renderData.isDeferredRendering)
-                {
-                    ImGui::Checkbox("MSAA 4x", &renderData.isMSAAEnabled);
-                    ImGui::Checkbox("Fog", &renderData.isFogEnabled);
-                }
+            
             }
             ImGui::End();
         }
@@ -267,6 +261,30 @@ namespace SGE
     void Editor::BuildDockingExample()
     {
         ImGui::Begin("Scene hierarchy");
+        ImGui::Text("Render Pass:");
+
+        const char* passNames[] = {
+            "AlbedoMetallic",
+            "NormalRoughness",
+            "LightingBuffer",
+            "BrightnessBuffer",
+            "BlurBuffer",
+            "BloomBuffer",
+            "SSAOBuffer",
+            "ToneMapping"
+        };
+
+        RenderData& renderData = m_context->GetRenderData();
+        int currentPass = static_cast<int32>(renderData.finalRender);
+        if (ImGui::Combo("##RenderPass", &currentPass, passNames, IM_ARRAYSIZE(passNames)))
+        {
+            renderData.finalRender = static_cast<RTargetType>(currentPass);
+        }
+
+        ImGui::Dummy(ImVec2(0.0f, 5.0f));
+        ImGui::Separator();
+        ImGui::Dummy(ImVec2(0.0f, 5.0f)); 
+
         const ImVec2 smallIconSize = ImVec2(16, 16);
         const SceneData& sceneSettings = m_context->GetSceneData();
 

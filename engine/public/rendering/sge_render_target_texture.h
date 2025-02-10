@@ -5,20 +5,10 @@
 #include "core/sge_device.h"
 #include "core/sge_descriptor_heap.h"
 #include "core/sge_resource.h"
+#include "data/sge_data_structures.h"
 
 namespace SGE
 {
-    enum class RTargetType
-    {
-        AlbedoMetallic   = 0,
-        NormalRoughness  = 1,
-        LightingBuffer   = 2,
-        BrightnessBuffer = 3,
-        BlurBuffer       = 4,
-        BloomBuffer      = 5,
-        SSAOBuffer       = 6
-    };
-
     class RenderTargetTexture
     {
     public:

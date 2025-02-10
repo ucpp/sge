@@ -19,7 +19,8 @@
         "v_sync": false,
         "is_msaa_enabled": false,
         "is_fog_enabled": false,
-        "is_deferred_rendering": true
+        "is_deferred_rendering": true,
+        "final_render_type": 7
     },
     "assets_data": {
         "assets": [

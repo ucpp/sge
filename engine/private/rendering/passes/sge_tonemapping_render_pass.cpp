@@ -13,7 +13,9 @@ namespace SGE
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
-        m_context->SetRenderTarget(false);
+        SetTargetState(RTargetType::ToneMapping, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(RTargetType::ToneMapping);
+        SetRenderTarget(RTargetType::ToneMapping);
 
         m_context->SetRootDescriptorTable(0, 0);
         BindRenderTargetSRV(RTargetType::BloomBuffer, 2);

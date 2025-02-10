@@ -30,6 +30,7 @@ namespace SGE
         std::unique_ptr<RenderPass> m_blurPass;
         std::unique_ptr<RenderPass> m_bloomCombinePass;
         std::unique_ptr<RenderPass> m_ssaoPass;
+        std::unique_ptr<RenderPass> m_finalPass;
     };
 }
 

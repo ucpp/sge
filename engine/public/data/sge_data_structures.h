@@ -72,6 +72,18 @@ namespace SGE
     };
     static_assert(alignof(FrameData) == 16, "FrameData structure alignment mismatch");
 
+    enum class RTargetType
+    {
+        AlbedoMetallic   = 0,
+        NormalRoughness  = 1,
+        LightingBuffer   = 2,
+        BrightnessBuffer = 3,
+        BlurBuffer       = 4,
+        BloomBuffer      = 5,
+        SSAOBuffer       = 6,
+        ToneMapping      = 7
+    };
+
     enum class ObjectType
     {
         Camera           = 0,
@@ -264,6 +276,7 @@ namespace SGE
         bool isMSAAEnabled = true;
         bool isFogEnabled = false;
         bool isDeferredRendering = false;
+        RTargetType finalRender = RTargetType::ToneMapping;
     };
 
     class ApplicationData

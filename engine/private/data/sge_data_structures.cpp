@@ -401,7 +401,7 @@ namespace SGE
             const auto& objectsJson = data.at("objects");
             for (const auto& objJson : objectsJson)
             {
-                int32_t typeInt;
+                int32 typeInt;
                 objJson.at("type").get_to(typeInt);
                 auto type = static_cast<ObjectType>(typeInt);
                 auto object = ObjectDataFactory::Get().Create(type);
@@ -443,7 +443,8 @@ namespace SGE
             { "v_sync", render.vSync },
             { "is_msaa_enabled", render.isMSAAEnabled },
             { "is_fog_enabled", render.isFogEnabled },
-            { "is_deferred_rendering", render.isDeferredRendering }
+            { "is_deferred_rendering", render.isDeferredRendering },
+            { "final_render_type", static_cast<int32>(render.finalRender) }
         };
     }
     
@@ -453,6 +454,9 @@ namespace SGE
         data.at("is_msaa_enabled").get_to(render.isMSAAEnabled);
         data.at("is_fog_enabled").get_to(render.isFogEnabled);
         data.at("is_deferred_rendering").get_to(render.isDeferredRendering);
+        int32_t typeInt;
+        data.at("final_render_type").get_to(typeInt);
+        render.finalRender = static_cast<RTargetType>(typeInt);
     }
     
     void to_json(njson& data, const AssetsData& assets)
