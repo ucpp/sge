@@ -311,6 +311,118 @@ namespace SGE
         return std::stoul(resolution.substr(xPos + 1));
     }
 
+    std::unordered_set<std::string> RenderData::GetAllPassNames() const
+    {
+        std::unordered_set<std::string> passNames;
+
+        for (const auto& pass : forwardPasses)
+        {
+            passNames.insert(pass.name);
+        }
+
+        for (const auto& pass : deferredPasses)
+        {
+            passNames.insert(pass.name);
+        }
+
+        return passNames;
+    }
+    
+    std::unordered_set<std::string> RenderData::GetAllOutputs() const
+    {
+        std::unordered_set<std::string> outputs;
+
+        for (const auto& pass : forwardPasses)
+        {
+            outputs.insert(pass.output.begin(), pass.output.end());
+        }
+
+        for (const auto& pass : deferredPasses)
+        {
+            outputs.insert(pass.output.begin(), pass.output.end());
+        }
+
+        return outputs;
+    }
+
+    void RenderData::BuildForwardOutputsCache() const
+    {
+        if (!forwardOutputsCached)
+        {
+            std::unordered_set<std::string> uniqueOutputs;
+            for (const auto& pass : forwardPasses)
+            {
+                uniqueOutputs.insert(pass.output.begin(), pass.output.end());
+            }
+
+            cachedForwardOutputs.assign(uniqueOutputs.begin(), uniqueOutputs.end());
+
+            cachedForwardOutputPtrs.clear();
+            for (const auto& output : cachedForwardOutputs)
+            {
+                cachedForwardOutputPtrs.push_back(output.c_str());
+            }
+
+            forwardOutputsCached = true;
+        }
+    }
+
+    void RenderData::BuildDeferredOutputsCache() const
+    {
+        if (!deferredOutputsCached)
+        {
+            std::unordered_set<std::string> uniqueOutputs;
+            for (const auto& pass : deferredPasses)
+            {
+                uniqueOutputs.insert(pass.output.begin(), pass.output.end());
+            }
+
+            cachedDeferredOutputs.assign(uniqueOutputs.begin(), uniqueOutputs.end());
+
+            cachedDeferredOutputPtrs.clear();
+            for (const auto& output : cachedDeferredOutputs)
+            {
+                cachedDeferredOutputPtrs.push_back(output.c_str());
+            }
+
+            deferredOutputsCached = true;
+        }
+    }
+
+    const std::vector<std::string>& RenderData::GetForwardOutputs() const
+    {
+        BuildForwardOutputsCache();
+        return cachedForwardOutputs;
+    }
+
+    const std::vector<std::string>& RenderData::GetDeferredOutputs() const
+    {
+        BuildDeferredOutputsCache();
+        return cachedDeferredOutputs;
+    }
+
+    const std::vector<const char*>& RenderData::GetForwardOutputsData() const
+    {
+        BuildForwardOutputsCache();
+        return cachedForwardOutputPtrs;
+    }
+
+    const std::vector<const char*>& RenderData::GetDeferredOutputsData() const
+    {
+        BuildDeferredOutputsCache();
+        return cachedDeferredOutputPtrs;
+    }
+
+    uint32 RenderData::GetForwardOutputsCount() const
+    {
+        return static_cast<uint32>(GetForwardOutputs().size());
+    }
+
+    uint32 RenderData::GetDeferredOutputsCount() const
+    {
+        return static_cast<uint32>(GetDeferredOutputs().size());
+    }
+
     std::string roundToString(float1 value, int32 precision) noexcept
     {
         std::ostringstream stream;
@@ -440,7 +552,7 @@ namespace SGE
     {
         data = njson{
             {"v_sync", render.vSync},
-            {"final_render_type", static_cast<int32>(render.finalRender)},
+            {"final_render_type", render.finalRender},
             {"render_technique", static_cast<int32>(render.technique)},
             {"forward_render_passes", render.forwardPasses},
             {"deferred_render_passes", render.deferredPasses}
@@ -450,11 +562,9 @@ namespace SGE
     void from_json(const njson& data, RenderData& render)
     {
         data.at("v_sync").get_to(render.vSync);
-
+        data.at("final_render_type").get_to(render.finalRender);
+        
         int32 typeInt;
-        data.at("final_render_type").get_to(typeInt);
-        render.finalRender = static_cast<RTargetType>(typeInt);
-
         data.at("render_technique").get_to(typeInt);
         render.technique = static_cast<RenderTechnique>(typeInt);
 

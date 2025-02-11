@@ -6,14 +6,14 @@
 
 namespace SGE
 {
-    void ForwardRenderPass::OnRender(Scene* scene)
+    void ForwardRenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
-        SetTargetState(RTargetType::LightingBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        ClearRenderTargetView(RTargetType::LightingBuffer);
-        SetRenderTarget(RTargetType::LightingBuffer);
+        SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(output);
+        SetRenderTarget(output);
         
         m_context->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         m_context->SetRootDescriptorTable(0, 0);

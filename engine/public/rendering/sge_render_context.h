@@ -28,8 +28,8 @@ namespace SGE
         RenderTarget* GetRenderTarget() { return m_renderTarget.get(); }
         DepthBuffer* GetDepthBuffer() { return m_depthBuffer.get(); }
 
-        RenderTargetTexture* GetRTT(RTargetType type);
-        void CreateRTT(RTargetType type, DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM);
+        RenderTargetTexture* GetRTT(const std::string& name);
+        void CreateRTT(const std::string& name, DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM);
     
         Fence* GetFence() { return &m_fence; }
         uint32 GetFrameIndex() const { return m_frameIndex; }
@@ -75,7 +75,7 @@ namespace SGE
         std::unique_ptr<ViewportScissors> m_viewportScissors;
         std::unique_ptr<RenderTarget> m_renderTarget;
         std::unique_ptr<DepthBuffer> m_depthBuffer;
-        std::map<RTargetType, std::unique_ptr<RenderTargetTexture>> m_rtts;
+        std::map<std::string, std::unique_ptr<RenderTargetTexture>> m_rtts;
 
         DescriptorHeap m_cbvSrvUavHeap;
         DescriptorHeap m_rtvHeap;

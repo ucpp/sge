@@ -12,26 +12,27 @@ namespace SGE
     public:
         virtual ~RenderPass() = default;
         void Initialize(class RenderContext* context);
-        void Render(class Scene* scene);
+        void Render(class Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output);
         void Shutdown();
 
         void Reload() { m_reloadRequested = true; }
 
     protected:
         virtual void OnInitialize(class RenderContext* context) {}
-        virtual void OnRender(class Scene* scene) {}
+        virtual void OnRender(class Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output) {}
         virtual void OnDraw(class Scene* scene);
         virtual void OnShutdown() {}
         
         virtual PipelineConfig GetPipelineConfig() const = 0;
         static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const std::string& pixelShaderPath);
 
-        void SetTargetState(RTargetType type, D3D12_RESOURCE_STATES state);
-        void ClearRenderTargetView(RTargetType type);
-        void ClearRenderTargetView(const std::vector<RTargetType>& type);
-        void SetRenderTarget(RTargetType type);
-        void SetRenderTarget(const std::vector<RTargetType>& types);
-        void BindRenderTargetSRV(RTargetType type, uint32 descIndex);
+        void SetTargetState(const std::vector<std::string>& names, D3D12_RESOURCE_STATES state);
+        void SetTargetState(const std::string& name, D3D12_RESOURCE_STATES state);
+        void ClearRenderTargetView(const std::string& name);
+        void ClearRenderTargetView(const std::vector<std::string>& names);
+        void SetRenderTarget(const std::string& name);
+        void SetRenderTarget(const std::vector<std::string>& names);
+        void BindRenderTargetSRV(const std::string& name, uint32 descIndex);
 
         void DrawQuad();
 

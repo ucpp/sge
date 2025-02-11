@@ -9,7 +9,7 @@ namespace SGE
     class SSAORenderPass : public RenderPass
     {
     protected:
-        void OnRender(class Scene* scene) override;
+        void OnRender(class Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output) override;
         PipelineConfig GetPipelineConfig() const override;
     };
 }

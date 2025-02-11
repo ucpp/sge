@@ -6,22 +6,26 @@
 
 namespace SGE
 {    
-    void SSAORenderPass::OnRender(Scene* scene)
+    void SSAORenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         auto commandList = m_context->GetCommandList();
-        SetTargetState(RTargetType::NormalRoughness, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        SetTargetState(input, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
-
-        SetTargetState(RTargetType::SSAOBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        ClearRenderTargetView(RTargetType::SSAOBuffer);
-        SetRenderTarget(RTargetType::SSAOBuffer);
+        SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(output);
+        SetRenderTarget(output);
 
         m_context->SetRootDescriptorTable(0, 0);
-        BindRenderTargetSRV(RTargetType::NormalRoughness, 2);
-        commandList->SetGraphicsRootDescriptorTable(3, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
+        uint32 descriptionTableIndex = 2;
+        for(const std::string& name : input)
+        {
+            BindRenderTargetSRV(name, descriptionTableIndex);
+            ++descriptionTableIndex;
+        }
+        commandList->SetGraphicsRootDescriptorTable(descriptionTableIndex, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
     }
 
     PipelineConfig SSAORenderPass::GetPipelineConfig() const

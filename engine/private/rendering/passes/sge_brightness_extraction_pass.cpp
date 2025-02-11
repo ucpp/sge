@@ -6,20 +6,25 @@
 
 namespace SGE
 {
-    void BrightnessExtractionPass::OnRender(Scene* scene)
+    void BrightnessExtractionPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         auto commandList = m_context->GetCommandList();
-        SetTargetState(RTargetType::LightingBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        SetTargetState(input, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         
-        m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
+        commandList->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
-        SetTargetState(RTargetType::BrightnessBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        ClearRenderTargetView(RTargetType::BrightnessBuffer);
-        SetRenderTarget(RTargetType::BrightnessBuffer);
+        SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(output);
+        SetRenderTarget(output);
 
         m_context->SetRootDescriptorTable(0, 0);
-        BindRenderTargetSRV(RTargetType::LightingBuffer, 2);
+        uint32 descriptionTableIndex = 2;
+        for(const std::string& name : input)
+        {
+            BindRenderTargetSRV(name, descriptionTableIndex);
+            ++descriptionTableIndex;
+        }
     }
 
     PipelineConfig BrightnessExtractionPass::GetPipelineConfig() const

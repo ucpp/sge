@@ -45,14 +45,14 @@ namespace SGE
 
         m_rtts.clear();
 
-        CreateRTT(RTargetType::AlbedoMetallic);
-        CreateRTT(RTargetType::NormalRoughness);
-        CreateRTT(RTargetType::LightingBuffer);
-        CreateRTT(RTargetType::BrightnessBuffer);
-        CreateRTT(RTargetType::BlurBuffer);
-        CreateRTT(RTargetType::BloomBuffer);
-        CreateRTT(RTargetType::SSAOBuffer);
-        CreateRTT(RTargetType::ToneMapping);
+        //CreateRTT(RTargetType::AlbedoMetallic);
+        //CreateRTT(RTargetType::NormalRoughness);
+        //CreateRTT(RTargetType::LightingBuffer);
+        //CreateRTT(RTargetType::BrightnessBuffer);
+        //CreateRTT(RTargetType::BlurBuffer);
+        //CreateRTT(RTargetType::BloomBuffer);
+        //CreateRTT(RTargetType::SSAOBuffer);
+        //CreateRTT(RTargetType::ToneMapping);
     }
 
     void RenderContext::Shutdown()
@@ -279,9 +279,9 @@ namespace SGE
         GetCommandList()->SetGraphicsRootDescriptorTable(rootParameterIndex, handle);
     }
 
-    RenderTargetTexture* RenderContext::GetRTT(RTargetType type)
+    RenderTargetTexture* RenderContext::GetRTT(const std::string& name)
     {
-        auto it = m_rtts.find(type);
+        auto it = m_rtts.find(name);
         if (it != m_rtts.end())
         {
             return it->second.get();
@@ -289,13 +289,16 @@ namespace SGE
         return nullptr;
     }
 
-    void RenderContext::CreateRTT(RTargetType type, DXGI_FORMAT format)
+    void RenderContext::CreateRTT(const std::string& name, DXGI_FORMAT format)
     {
         const uint32 width = GetScreenWidth();
         const uint32 height = GetScreenHeight();
-        const uint32 index = static_cast<uint32>(type);
 
-        m_rtts[type] = std::make_unique<RenderTargetTexture>();
-        m_rtts[type]->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, width, height, format, index);
+        if(!GetRTT(name))
+        {
+            const uint32 currentIndex = static_cast<uint32>(m_rtts.size());
+            m_rtts[name] = std::make_unique<RenderTargetTexture>();
+            m_rtts[name]->Initialize(m_device.get(), &m_rtvHeap, &m_cbvSrvUavHeap, width, height, format, currentIndex);
+        }
     }
 }

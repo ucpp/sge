@@ -6,19 +6,17 @@
 
 namespace SGE
 {    
-    void GeometryRenderPass::OnRender(Scene* scene)
+    void GeometryRenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
-        m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
+        auto commandList = m_context->GetCommandList();
+        commandList->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
         m_context->SetRenderTarget();
-        
-        auto commandList = m_context->GetCommandList();
-        SetTargetState(RTargetType::AlbedoMetallic, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        SetTargetState(RTargetType::NormalRoughness, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, commandList.Get());
 
-        ClearRenderTargetView({RTargetType::AlbedoMetallic, RTargetType::NormalRoughness});
-        SetRenderTarget({RTargetType::AlbedoMetallic, RTargetType::NormalRoughness});
+        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, commandList.Get());
+        SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(output);
+        SetRenderTarget(output);
     }
 
     void GeometryRenderPass::OnDraw(Scene* scene)

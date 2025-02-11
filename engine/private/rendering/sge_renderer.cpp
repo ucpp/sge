@@ -17,14 +17,16 @@ namespace SGE
 
         const RenderData& data = m_context->GetRenderData();
 
-        for (const auto& passData : data.forwardPasses)
+        const std::unordered_set<std::string> passes = data.GetAllPassNames();
+        for (const auto& name : passes)
         {
-            InitializeRenderPass(passData.name, context);
+            InitializeRenderPass(name, context);
         }
 
-        for (const auto& passData : data.deferredPasses)
+        const std::unordered_set<std::string> rtts = data.GetAllOutputs();
+        for (const auto& name : rtts)
         {
-            InitializeRenderPass(passData.name, context);
+            m_context->CreateRTT(name);
         }
 
         m_context->CloseCommandList();
@@ -81,7 +83,9 @@ namespace SGE
         {
             if (m_renderPasses.find(passData.name) != m_renderPasses.end())
             {
-                m_renderPasses[passData.name]->Render(scene);
+                const std::vector<std::string>& input = passData.input;
+                const std::vector<std::string>& output = passData.output;
+                m_renderPasses[passData.name]->Render(scene, input, output);
             }
         }
     }

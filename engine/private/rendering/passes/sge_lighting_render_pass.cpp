@@ -6,30 +6,30 @@
 
 namespace SGE
 {    
-    void LightingRenderPass::OnRender(Scene* scene)
+    void LightingRenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         auto commandList = m_context->GetCommandList();
-        SetTargetState(RTargetType::AlbedoMetallic, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        SetTargetState(RTargetType::NormalRoughness, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        SetTargetState(RTargetType::SSAOBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        SetTargetState(input, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
-
-        SetTargetState(RTargetType::LightingBuffer, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        ClearRenderTargetView(RTargetType::LightingBuffer);
-        SetRenderTarget(RTargetType::LightingBuffer);
+        SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ClearRenderTargetView(output);
+        SetRenderTarget(output);
 
         m_context->SetRootDescriptorTable(0, 0);
-        BindRenderTargetSRV(RTargetType::AlbedoMetallic, 2);
-        BindRenderTargetSRV(RTargetType::NormalRoughness, 3);
-        BindRenderTargetSRV(RTargetType::SSAOBuffer, 4);
-        commandList->SetGraphicsRootDescriptorTable(5, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
+        uint32 descriptionTableIndex = 2;
+        for(const std::string& name : input)
+        {
+            BindRenderTargetSRV(name, descriptionTableIndex);
+            ++descriptionTableIndex;
+        }
+        commandList->SetGraphicsRootDescriptorTable(descriptionTableIndex, m_context->GetDepthBuffer()->GetSRVGPUHandle(0));
     }
 
     PipelineConfig LightingRenderPass::GetPipelineConfig() const
     {
-        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R16G16B16A16_FLOAT, "/ps_lighting_pass.hlsl");
+        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, "/ps_lighting_pass.hlsl");
     }
 }

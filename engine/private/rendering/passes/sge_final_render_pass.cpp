@@ -6,10 +6,10 @@
 
 namespace SGE
 {    
-    void FinalRenderPass::OnRender(Scene* scene)
+    void FinalRenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         auto commandList = m_context->GetCommandList();
-        RTargetType finalTarget = m_context->GetRenderData().finalRender;
+        const std::string finalTarget = m_context->GetRenderData().finalRender;
         
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());

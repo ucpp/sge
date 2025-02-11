@@ -17,33 +17,33 @@
     },
     "render_data": {
         "v_sync": false,
-        "final_render_type": 7,
+        "final_render_type": "tonemapping_target",
         "render_technique": 1,
         "forward_render_passes": [
             {
                 "name": "forward",
                 "input": [],
-                "output": []
+                "output": ["lighting_target"]
             },
             {
                 "name": "brightness_extraction",
-                "input": [],
-                "output": []
+                "input": ["lighting_target"],
+                "output": ["brightness_target"]
             },
             {
                 "name": "blur",
-                "input": [],
-                "output": []
+                "input": ["brightness_target"],
+                "output": ["blur_target"]
             },
             {
                 "name": "bloom_combine",
-                "input": [],
-                "output": []
+                "input": ["lighting_target", "blur_target"],
+                "output": ["bloom_target"]
             },
             {
                 "name": "tonemapping",
-                "input": [],
-                "output": []
+                "input": ["bloom_target"],
+                "output": ["tonemapping_target"]
             },
             {
                 "name": "final",
@@ -55,37 +55,37 @@
             {
                 "name": "geometry",
                 "input": [],
-                "output": []
+                "output": ["albedo_metallic_target", "normal_roughness_target"]
             },
             {
                 "name": "ssao",
-                "input": [],
-                "output": []
+                "input": ["normal_roughness_target"],
+                "output": ["ssao_target"]
             },
             {
                 "name": "lighting",
-                "input": [],
-                "output": []
+                "input": ["albedo_metallic_target", "normal_roughness_target", "ssao_target"],
+                "output": ["lighting_target"]
             },
             {
                 "name": "brightness_extraction",
-                "input": [],
-                "output": []
+                "input": ["brightness_target"],
+                "output": ["blur_target"]
             },
             {
                 "name": "blur",
-                "input": [],
-                "output": []
+                "input": ["brightness_target"],
+                "output": ["blur_target"]
             },
             {
                 "name": "bloom_combine",
-                "input": [],
-                "output": []
+                "input": ["lighting_target", "blur_target"],
+                "output": ["bloom_target"]
             },
             {
                 "name": "tonemapping",
-                "input": [],
-                "output": []
+                "input": ["bloom_target"],
+                "output": ["tonemapping_target"]
             },
             {
                 "name": "final",

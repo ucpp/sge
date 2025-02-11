@@ -2,6 +2,7 @@
 #define _SGE_DATA_STRUCTURES_H_
 
 #include "pch.h"
+#include <unordered_set>
 
 namespace SGE
 {
@@ -286,11 +287,35 @@ namespace SGE
     {
     public:
         bool vSync = true;
-        RTargetType finalRender = RTargetType::ToneMapping;
+        std::string finalRender;
         RenderTechnique technique = RenderTechnique::Deferred;
-
+    
         std::vector<RenderPassData> forwardPasses;
         std::vector<RenderPassData> deferredPasses;
+    
+        std::unordered_set<std::string> GetAllPassNames() const;
+        std::unordered_set<std::string> GetAllOutputs() const;
+    
+        const std::vector<std::string>& GetForwardOutputs() const;
+        const std::vector<std::string>& GetDeferredOutputs() const;
+    
+        const std::vector<const char*>& GetForwardOutputsData() const;
+        const std::vector<const char*>& GetDeferredOutputsData() const;
+    
+        uint32 GetForwardOutputsCount() const;
+        uint32 GetDeferredOutputsCount() const;
+    
+    private:
+        void BuildForwardOutputsCache() const;
+        void BuildDeferredOutputsCache() const;
+    
+    private:
+        mutable std::vector<std::string> cachedForwardOutputs;
+        mutable std::vector<std::string> cachedDeferredOutputs;
+        mutable std::vector<const char*> cachedForwardOutputPtrs;
+        mutable std::vector<const char*> cachedDeferredOutputPtrs;
+        mutable bool forwardOutputsCached = false;
+        mutable bool deferredOutputsCached = false;
     };
 
     class ApplicationData
