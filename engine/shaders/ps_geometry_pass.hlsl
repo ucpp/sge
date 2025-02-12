@@ -29,7 +29,7 @@ GBufferOutput main(PixelInput input)
     float3 normalMapValue = normalMap.Sample(sampleWrap, input.texCoords).xyz * 2.0f - 1.0f;
     float roughness = roughnessMap.Sample(sampleWrap, input.texCoords).r;
 
-    float3 bitangent = cross(normalize(input.tangent), normalize(input.normal));
+    float3 bitangent = -cross(normalize(input.tangent), normalize(input.normal));
     float3x3 TBN = float3x3(normalize(input.tangent), normalize(bitangent), normalize(input.normal));
     float3 normal = normalize(mul(normalMapValue, TBN));
 

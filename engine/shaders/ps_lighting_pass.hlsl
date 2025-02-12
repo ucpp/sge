@@ -120,7 +120,7 @@ float3 ReconstructWorldPosition(float2 uv, float depth)
 
     float4 worldSpacePosition = mul(cameraSpacePosition, invView);
 
-    return worldSpacePosition.xyz;
+    return lerp(worldSpacePosition.xyz, float3(0.0, 0.0, 1e5), step(1.0, depth));
 }
 
 LightingOutput main(PixelInput input)

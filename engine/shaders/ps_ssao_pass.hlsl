@@ -37,14 +37,14 @@ float3 ReconstructWorldPosition(float2 uv, float depth)
     cameraSpacePosition.xyzw /= cameraSpacePosition.w;
 
     float4 worldSpacePosition = mul(cameraSpacePosition, invView);
-
-    return worldSpacePosition.xyz;
+    
+    return lerp(worldSpacePosition.xyz, float3(0.0, 0.0, 1e5), step(1.0, depth));
 }
 
 float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
 {
     float occlusion = 0.0;
-    const float radius = 0.3;
+    const float radius = 0.4;
 
     for (int i = 0; i < SSAO_SAMPLE_COUNT; i++)
     {
@@ -62,8 +62,8 @@ float ComputeSSAO(float3 worldPos, float3 normal, float2 texCoords)
         float3 toSample = normalize(sampleWorldPos - worldPos);
         float normalFactor = max(dot(normal, toSample), 0.0);
 
-        float rangeCheck = smoothstep(0.0, 1.0, radius / length(worldPos - sampleWorldPos));
-        float bias = 0.025 * radius;
+        float rangeCheck = exp(-length(worldPos - sampleWorldPos) / (radius * 2.0));
+        float bias = 0.02 * radius;
 
         occlusion += (sampleWorldPos.z <= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck * normalFactor;
     }
