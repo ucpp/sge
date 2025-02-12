@@ -13,7 +13,7 @@ namespace SGE
         m_context->SetRootSignature(m_pipelineState->GetSignature());
         m_context->SetRenderTarget();
 
-        m_context->GetDepthBuffer()->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, commandList.Get());
+        m_context->GetDepthBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, commandList.Get());
         SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
         ClearRenderTargetView(output);
         SetRenderTarget(output);

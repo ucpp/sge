@@ -101,7 +101,7 @@ namespace SGE
             rtvHandles.push_back(m_context->GetRTT(name)->GetRTVHandle());
         }
 
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle(0);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_context->GetDepthBuffer()->GetDSVHandle();
         commandList->OMSetRenderTargets(static_cast<uint32>(rtvHandles.size()), rtvHandles.data(), false, &dsvHandle);
     }
 

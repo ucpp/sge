@@ -10,6 +10,7 @@ namespace SGE
     {
         auto commandList = m_context->GetCommandList();
         const std::string finalTarget = m_context->GetRenderData().finalRender;
+        SetTargetState(finalTarget, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());

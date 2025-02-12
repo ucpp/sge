@@ -7,7 +7,7 @@
 
 namespace SGE
 {
-    void DepthBuffer::Initialize(Device* device, DescriptorHeap* dsvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height, uint32 bufferCount, bool isMSAAEnabled)
+    void DepthBuffer::Initialize(Device* device, DescriptorHeap* dsvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height)
     {
         if (!device)
         {
@@ -29,44 +29,37 @@ namespace SGE
 
         m_dsvHeap = dsvHeap;
         m_srvHeap = srvHeap;
-        m_depthBuffers.resize(bufferCount);
-
-        m_bufferCount = bufferCount;
         m_device = device;
-        m_isMSAAEnabled = isMSAAEnabled;
 
-        for (uint32 i = 0; i < bufferCount; i++)
-        {
-            CreateDepthBuffer(device, width, height, i);
-        }
+        CreateDepthBuffer(device, width, height);
     }
 
     void DepthBuffer::Shutdown()
     {
-        m_depthBuffers.clear();
+        m_depthBuffer.reset();
     }
 
-    CD3DX12_CPU_DESCRIPTOR_HANDLE DepthBuffer::GetDSVHandle(uint32 index) const
+    CD3DX12_CPU_DESCRIPTOR_HANDLE DepthBuffer::GetDSVHandle() const
     {
         if (m_dsvHeap)
         {
-            return m_dsvHeap->GetCPUHandle(index);
+            return m_dsvHeap->GetCPUHandle(0);
         }
 
         return {};
     }
 
-    CD3DX12_CPU_DESCRIPTOR_HANDLE DepthBuffer::GetSRVHandle(uint32 index) const
+    CD3DX12_CPU_DESCRIPTOR_HANDLE DepthBuffer::GetSRVHandle() const
     {
-        return m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX + index);
+        return m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX);
     }
 
-    CD3DX12_GPU_DESCRIPTOR_HANDLE DepthBuffer::GetSRVGPUHandle(uint32 index) const
+    CD3DX12_GPU_DESCRIPTOR_HANDLE DepthBuffer::GetSRVGPUHandle() const
     {
-        return m_srvHeap->GetGPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX + index);
+        return m_srvHeap->GetGPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX);
     }
 
-    void DepthBuffer::CreateDepthBuffer(Device* device, uint32 width, uint32 height, uint32 index)
+    void DepthBuffer::CreateDepthBuffer(Device* device, uint32 width, uint32 height)
     {
         D3D12_RESOURCE_DESC depthDesc = {};
         depthDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -76,7 +69,7 @@ namespace SGE
         depthDesc.DepthOrArraySize = 1;
         depthDesc.MipLevels = 1;
         depthDesc.Format = DXGI_FORMAT_D32_FLOAT;
-        depthDesc.SampleDesc.Count = m_isMSAAEnabled ? 4 : 1;
+        depthDesc.SampleDesc.Count = 1;
         depthDesc.SampleDesc.Quality = 0;
         depthDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
         depthDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
@@ -96,28 +89,27 @@ namespace SGE
             IID_PPV_ARGS(&depthBufferResource)
         );
         Verify(hr, "Failed to create depth buffer.");
-        m_depthBuffers[index] = std::make_unique<Resource>(depthBufferResource.Get(), D3D12_RESOURCE_STATE_DEPTH_WRITE);
+        m_depthBuffer = std::make_unique<Resource>(depthBufferResource.Get(), D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_dsvHeap->GetCPUHandle(index);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_dsvHeap->GetCPUHandle(0);
 
         D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
         dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
-        dsvDesc.ViewDimension = m_isMSAAEnabled ? D3D12_DSV_DIMENSION_TEXTURE2DMS : D3D12_DSV_DIMENSION_TEXTURE2D;
+        dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
         dsvDesc.Texture2D.MipSlice = 0;
 
-        device->GetDevice()->CreateDepthStencilView(m_depthBuffers[index]->Get(), &dsvDesc, dsvHandle);
+        device->GetDevice()->CreateDepthStencilView(m_depthBuffer->Get(), &dsvDesc, dsvHandle);
 
-        // Create SRV for the depth buffer
-        CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX + index);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX);
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
         srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
-        srvDesc.ViewDimension = m_isMSAAEnabled ? D3D12_SRV_DIMENSION_TEXTURE2DMS : D3D12_SRV_DIMENSION_TEXTURE2D;
+        srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
         srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
         srvDesc.Texture2D.MostDetailedMip = 0;
         srvDesc.Texture2D.MipLevels = 1;
 
-        device->GetDevice()->CreateShaderResourceView(m_depthBuffers[index]->Get(), &srvDesc, srvHandle);
-        m_depthBuffers[index]->Get()->SetName(L"Depth Buffer");
+        device->GetDevice()->CreateShaderResourceView(m_depthBuffer->Get(), &srvDesc, srvHandle);
+        m_depthBuffer->Get()->SetName(L"Depth Buffer");
     }
 
     void DepthBuffer::Resize(uint32 width, uint32 height)
@@ -134,10 +126,6 @@ namespace SGE
             return;
         }
 
-        m_depthBuffers.resize(m_bufferCount);
-        for (uint32 i = 0; i < m_bufferCount; i++)
-        {
-            CreateDepthBuffer(m_device, width, height, i);
-        }
+        CreateDepthBuffer(m_device, width, height);
     }
 }

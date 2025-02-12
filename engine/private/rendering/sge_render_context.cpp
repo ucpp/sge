@@ -41,18 +41,9 @@ namespace SGE
         m_renderTarget->Initialize(m_device.get(), &m_rtvHeap, BUFFER_COUNT, false);
 
         m_depthBuffer = std::make_unique<DepthBuffer>();
-        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), 1, false);
+        m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight());
 
         m_rtts.clear();
-
-        //CreateRTT(RTargetType::AlbedoMetallic);
-        //CreateRTT(RTargetType::NormalRoughness);
-        //CreateRTT(RTargetType::LightingBuffer);
-        //CreateRTT(RTargetType::BrightnessBuffer);
-        //CreateRTT(RTargetType::BlurBuffer);
-        //CreateRTT(RTargetType::BloomBuffer);
-        //CreateRTT(RTargetType::SSAOBuffer);
-        //CreateRTT(RTargetType::ToneMapping);
     }
 
     void RenderContext::Shutdown()
@@ -210,8 +201,8 @@ namespace SGE
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, false);
         m_renderTarget->GetResource(m_frameIndex, false)->TransitionState(D3D12_RESOURCE_STATE_RENDER_TARGET, GetCommandList().Get());
         
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
-        m_depthBuffer->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, GetCommandList().Get());
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle();
+        m_depthBuffer->GetResource()->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, GetCommandList().Get());
 
         GetCommandList()->ClearRenderTargetView(rtvHandle, CLEAR_COLOR, 0, nullptr);
         GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
@@ -222,8 +213,8 @@ namespace SGE
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle = m_renderTarget->GetRTVHandle(m_frameIndex, false);
         if(includeDepth)
         {
-            CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle(0);
-            m_depthBuffer->GetResource(0)->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, GetCommandList().Get());
+            CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_depthBuffer->GetDSVHandle();
+            m_depthBuffer->GetResource()->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, GetCommandList().Get());
             GetCommandList()->OMSetRenderTargets(1, &rtvHandle, false, &dsvHandle); 
         }
         else
