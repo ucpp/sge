@@ -10,6 +10,7 @@
 #include "rendering/passes/sge_bloom_combine_pass.h"
 #include "rendering/passes/sge_ssao_render_pass.h"
 #include "rendering/passes/sge_final_render_pass.h"
+#include "rendering/passes/sge_fxaa_render_pass.h"
 
 namespace SGE
 {   
@@ -43,5 +44,6 @@ namespace SGE
         factory.Register("geometry", []() { return std::make_unique<GeometryRenderPass>(); });
         factory.Register("ssao", []() { return std::make_unique<SSAORenderPass>(); });
         factory.Register("lighting", []() { return std::make_unique<LightingRenderPass>(); });
+        factory.Register("fxaa", []() { return std::make_unique<FXAARenderPass>(); });
     }
 }
