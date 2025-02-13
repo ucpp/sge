@@ -40,7 +40,7 @@ namespace SGE
         if (m_renderPasses.find(name) == m_renderPasses.end())
         {
             m_renderPasses[name] = factory.Create(name);
-            m_renderPasses[name]->Initialize(context);
+            m_renderPasses[name]->Initialize(context, name + " pass");
         }
     }
 
@@ -48,33 +48,41 @@ namespace SGE
     {
         Verify(scene, "Renderer::Render: Scene is null");
         Verify(editor, "Renderer::Render: Editor is null");
-
+        
         editor->BuildFrame();
-
         m_context->ResetCommandList(nullptr);
-        m_context->BindDescriptorHeaps();
-        m_context->BindViewportScissors();
-        m_context->ClearRenderTargets();
+
+        {
+            SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), "Begin Frame");
+            m_context->BindDescriptorHeaps();
+            m_context->BindViewportScissors();
+            m_context->ClearRenderTargets();
+        }
 
         const RenderData& data = m_context->GetRenderData();
         const RenderTechnique technique = data.technique;
 
         if (technique == RenderTechnique::Deferred)
         {
+            SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), "Deferred Rendering");
             RenderPasses(data.deferredPasses, scene);
         }
         else if (technique == RenderTechnique::Forward)
         {
+            SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), "Forward Rendering");
             RenderPasses(data.forwardPasses, scene);
         }
 
         editor->Render();
 
-        m_context->PrepareRenderTargetForPresent();
-        m_context->CloseCommandList();
-        m_context->ExecuteCommandList();
-        m_context->PresentFrame();
-        m_context->WaitForPreviousFrame();
+        {
+            SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), "End Frame");
+            m_context->PrepareRenderTargetForPresent();
+            m_context->CloseCommandList();
+            m_context->ExecuteCommandList();
+            m_context->PresentFrame();
+            m_context->WaitForPreviousFrame();
+        }
     }
 
     void Renderer::RenderPasses(const std::vector<RenderPassData>& passes, Scene* scene)

@@ -5,10 +5,11 @@
 
 namespace SGE
 {
-    void RenderPass::Initialize(RenderContext* context)
+    void RenderPass::Initialize(RenderContext* context, const std::string& passName)
     {
         Verify(context, "RenderPass::Initialize: Provided render context is null.");
         m_context = context;
+        m_name = passName;
 
         OnInitialize(context);
 
@@ -26,6 +27,8 @@ namespace SGE
             Initialize(m_context);
             m_reloadRequested = false;
         }
+
+        SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), m_name.c_str());
 
         OnRender(scene, input, output);
         OnDraw(scene);

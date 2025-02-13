@@ -37,7 +37,8 @@ namespace SGE
         commandList->SetGraphicsRootDescriptorTable(1, m_descriptorHeap->GetGPUHandle(m_instanceIndex));
         m_material->Bind(commandList, m_descriptorHeap);
 
-        SCOPED_EVENT("Draw " + m_name);
+        std::string eventName = "Draw " + m_name;
+        SCOPED_EVENT_GPU(commandList, eventName.c_str());
 
         const std::vector<Mesh>& meshes = m_asset->GetMeshes();
         for (size_t i = 0; i < meshes.size(); ++i)

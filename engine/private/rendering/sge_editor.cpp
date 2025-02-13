@@ -115,7 +115,7 @@ namespace SGE
         ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
         Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
 
-        SCOPED_EVENT("Draw Editor UI");
+        SCOPED_EVENT_GPU(commandList, "Draw Editor UI");
         ImGui::Render();
         
         ComPtr<ID3D12DescriptorHeap> heap = m_context->GetCbvSrvUavHeap()->GetHeap();
@@ -308,7 +308,8 @@ namespace SGE
                 for (const auto& obj : objectList)
                 {
                     bool isSelected = (m_selectedObjectIndex == index);
-
+                    
+                    ImGui::BeginGroup();
                     ImGui::Image(m_objectIcons[type], smallIconSize);
                     ImGui::SameLine();
                     const auto objName = obj->name.empty() ? "empty" : obj->name.c_str();
@@ -324,7 +325,8 @@ namespace SGE
 
                     ImTextureID visibilityIcon = obj->enabled ? m_visibleObjectTexure : m_invisibleObjectTexure;
                     ImGui::Image(visibilityIcon, smallIconSize);
-            
+                    ImGui::EndGroup();
+
                     ++index;
                 }
             }

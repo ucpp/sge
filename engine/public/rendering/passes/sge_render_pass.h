@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "rendering/sge_pipeline_state.h"
 #include "rendering/sge_render_target_texture.h"
+#include "core/sge_scoped_event.h"
 
 namespace SGE
 {
@@ -11,7 +12,7 @@ namespace SGE
     {
     public:
         virtual ~RenderPass() = default;
-        void Initialize(class RenderContext* context);
+        void Initialize(class RenderContext* context, const std::string& passName = "RednderPass");
         void Render(class Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output);
         void Shutdown();
 
@@ -42,6 +43,7 @@ namespace SGE
 
     private:
         bool m_reloadRequested = false;
+        std::string m_name;
     };
 }
 

@@ -4,13 +4,11 @@
 
 namespace SGE
 {
-    ScopedEvent::ScopedEvent(const std::string& eventName)
+    ScopedEvent::ScopedEvent(ID3D12GraphicsCommandList* commandList, const std::string& eventName)
     {
-        //PIXBeginEvent(0, eventName.c_str());
     }
     
     ScopedEvent::~ScopedEvent()
     {
-        //PIXEndEvent();
     }
 }
