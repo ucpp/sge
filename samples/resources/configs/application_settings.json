@@ -171,6 +171,16 @@
                 "path": "resources/models/plane.obj"
             },
             {
+                "name": "sky_cube",
+                "type": 3,
+                "back": "resources/skybox/back.jpg",
+                "bottom": "resources/skybox/bottom.jpg",
+                "front": "resources/skybox/front.jpg",
+                "left": "resources/skybox/left.jpg",
+                "right": "resources/skybox/right.jpg",
+                "top": "resources/skybox/top.jpg"
+            },
+            {
                 "name": "plastic",
                 "type": 1,
                 "albedo_texture_path": "resources/plastic/albedo.png",
@@ -282,8 +292,13 @@
                 "intensity": "1.0"
             },
             {
-                "name": "Backpack (1)",
+                "name": "Skybox",
                 "type": 2,
+                "cubemap_id": "sky_cube"
+            },
+            {
+                "name": "Backpack (1)",
+                "type": 3,
                 "position": [
                     "1.4",
                     "0.0",
@@ -305,7 +320,7 @@
             },
             {
                 "name": "Backpack (2)",
-                "type": 2,
+                "type": 3,
                 "position": [
                     "-1.41",
                     "0.0",
@@ -327,7 +342,7 @@
             },
             {
                 "name": "Backpack (3)",
-                "type": 2,
+                "type": 3,
                 "position": [
                     "0.24",
                     "0.0",
@@ -349,7 +364,7 @@
             },
             {
                 "name": "Ground",
-                "type": 2,
+                "type": 3,
                 "position": [
                     "0.0",
                     "-1.0",
@@ -371,7 +386,7 @@
             },
             {
                 "name": "Point Light (1)",
-                "type": 3,
+                "type": 4,
                 "position": [
                     "1.0",
                     "0.05",
@@ -387,7 +402,7 @@
             },
             {
                 "name": "Point Light (2)",
-                "type": 3,
+                "type": 4,
                 "position": [
                     "-1.15",
                     "0.05",
@@ -403,7 +418,7 @@
             },
             {
                 "name": "Point Light (3)",
-                "type": 3,
+                "type": 4,
                 "position": [
                     "0.04",
                     "-0.01",

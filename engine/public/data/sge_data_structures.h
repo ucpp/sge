@@ -95,8 +95,9 @@ namespace SGE
     {
         Camera           = 0,
         DirectionalLight = 1,
-        Model            = 2,
-        PointLight       = 3
+        Skybox           = 2,
+        Model            = 3,
+        PointLight       = 4
     };
 
     class ObjectDataBase
@@ -185,11 +186,23 @@ namespace SGE
         float  intensity;
     };
 
+    class SkyboxData : public ObjectDataBase
+    {
+    public:
+        void DrawEditor() override;
+        void ToJson(njson& data) override;
+        void FromJson(const njson& data) override;
+    
+    public:
+        std::string cubemapId;
+    };
+
     enum class AssetType
     {
         Model     = 0,
         Material  = 1,
-        Light     = 2
+        Light     = 2,
+        Cubemap   = 3
     };
 
     class AssetDataBase
@@ -229,11 +242,27 @@ namespace SGE
 
     class LightAssetData : public AssetDataBase { };
 
+    class CubemapAssetData : public AssetDataBase
+    {
+    public:
+        void ToJson(njson& data) override;
+        void FromJson(const njson& data) override;
+    
+    public:
+        std::string back;
+        std::string bottom;
+        std::string front;
+        std::string left;
+        std::string right;
+        std::string top;
+    };
+
     class AssetsData
     {
     public:
         const MaterialAssetData& GetMaterial(const std::string& id) const;
         const ModelAssetData& GetModel(const std::string& id) const;
+        const CubemapAssetData& GetCubemap(const std::string& id) const;
 
     public:
         std::map<AssetType, std::unordered_map<std::string, std::unique_ptr<AssetDataBase>>> assets;

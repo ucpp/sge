@@ -156,6 +156,24 @@ namespace SGE
         intensity = data.at("intensity").get<float1>().value;
     }
 
+    void SkyboxData::DrawEditor()
+    {
+        ObjectDataBase::DrawEditor();
+        InputText("Cubemap ID:", cubemapId);
+    }
+
+    void SkyboxData::ToJson(njson& data)
+    {
+        ObjectDataBase::ToJson(data);
+        data["cubemap_id"] = cubemapId;
+    }
+
+    void SkyboxData::FromJson(const njson& data)
+    {
+        ObjectDataBase::FromJson(data);
+        data.at("cubemap_id").get_to(cubemapId);
+    }
+
     void AssetDataBase::ToJson(njson& data)
     {
         data = njson
@@ -203,6 +221,28 @@ namespace SGE
         data.at("roughness_texture_path").get_to(roughnessTexturePath);
     }
 
+    void CubemapAssetData::ToJson(njson& data)
+    {
+        AssetDataBase::ToJson(data);
+        data["back"] = back;
+        data["bottom"] = bottom;
+        data["front"] = front;
+        data["left"] = left;
+        data["right"] = right;
+        data["top"] = top;
+    }
+
+    void CubemapAssetData::FromJson(const njson& data)
+    {
+        AssetDataBase::FromJson(data);
+        data.at("back").get_to(back);
+        data.at("bottom").get_to(bottom);
+        data.at("front").get_to(front);
+        data.at("left").get_to(left);
+        data.at("right").get_to(right);
+        data.at("top").get_to(top);
+    }
+
     const MaterialAssetData& AssetsData::GetMaterial(const std::string& id) const
     {
         auto typeIt = assets.find(AssetType::Material);
@@ -229,6 +269,22 @@ namespace SGE
             if (it != modelMap.end())
             {
                 return static_cast<const ModelAssetData&>(*it->second);
+            }
+        }
+
+        throw std::runtime_error("Model with ID " + id + " not found.");
+    }
+
+    const CubemapAssetData& AssetsData::GetCubemap(const std::string& id) const
+    {
+        auto typeIt = assets.find(AssetType::Cubemap);
+        if (typeIt != assets.end())
+        {
+            const auto& modelMap = typeIt->second;
+            auto it = modelMap.find(id);
+            if (it != modelMap.end())
+            {
+                return static_cast<const CubemapAssetData&>(*it->second);
             }
         }
 

@@ -58,11 +58,13 @@ namespace SGE
         m_icons.emplace(AssetType::Model, GetTexturePtr("mesh_icon.png"));
         m_icons.emplace(AssetType::Material, GetTexturePtr("material_icon.png"));
         m_icons.emplace(AssetType::Light, GetTexturePtr("light_icon.png"));
+        m_icons.emplace(AssetType::Cubemap, GetTexturePtr("cubemap_icon.png"));
 
         m_objectIcons.emplace(ObjectType::Camera, GetTexturePtr("camera_16.png"));
         m_objectIcons.emplace(ObjectType::DirectionalLight, GetTexturePtr("directional_light_16.png"));
         m_objectIcons.emplace(ObjectType::PointLight, GetTexturePtr("point_light_16.png"));
         m_objectIcons.emplace(ObjectType::Model, GetTexturePtr("mesh_16.png"));
+        m_objectIcons.emplace(ObjectType::Skybox, GetTexturePtr("skybox_16.png"));
 
         m_visibleObjectTexure   = GetTexturePtr("visible_16.png");
         m_invisibleObjectTexure = GetTexturePtr("invisible_16.png");

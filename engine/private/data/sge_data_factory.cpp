@@ -41,6 +41,7 @@ namespace SGE
         factory.Register(ObjectType::Model, []() { return std::make_unique<ModelData>(); });
         factory.Register(ObjectType::PointLight, []() { return std::make_unique<PointLightData>(); });
         factory.Register(ObjectType::DirectionalLight, []() { return std::make_unique<DirectionalLightData>(); });
+        factory.Register(ObjectType::Skybox, []() { return std::make_unique<SkyboxData>(); });
     }
     
     void RegisterAssetDataTypes()
@@ -49,5 +50,6 @@ namespace SGE
         factory.Register(AssetType::Model, []() { return std::make_unique<ModelAssetData>(); });
         factory.Register(AssetType::Material, []() { return std::make_unique<MaterialAssetData>(); });
         factory.Register(AssetType::Light, []() { return std::make_unique<LightAssetData>(); });
+        factory.Register(AssetType::Cubemap, []() { return std::make_unique<CubemapAssetData>(); });
     }
 }
