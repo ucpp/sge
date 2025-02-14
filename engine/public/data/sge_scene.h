@@ -18,6 +18,7 @@ namespace SGE
         void Shutdown();
 
         const std::map<const ModelData*, ModelInstance*>& GetModels() const { return m_modelInstances; }
+        CubemapAssetData GetSkyboxCubeMap() const { return m_skyboxCubemap; }
 
     private:
         void InitializeCamera();
@@ -34,6 +35,7 @@ namespace SGE
         Camera m_mainCamera;
         CameraController m_cameraController;
         std::map<const ModelData*, ModelInstance*> m_modelInstances;
+        CubemapAssetData m_skyboxCubemap;
 
         std::unique_ptr<ConstantBuffer> m_frameDataBuffer;
         FrameData m_frameData;

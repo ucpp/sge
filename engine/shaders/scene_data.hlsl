@@ -42,6 +42,7 @@ cbuffer FrameData : register(b0)
     matrix invProj;
     matrix invView;
     matrix viewProj;
+    matrix viewProjSky;
     uint activePointLightsCount;
     uint activeSpotLightsCount;
 };

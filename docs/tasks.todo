@@ -1,11 +1,9 @@
 ### Daily tasks
 
 [08-14.02.2025 - 8th week]
-[Day 54/1000 - 13/02/2025]
-☐ Soft Shadows PCF
-☐ Fix math
-☐ Add spot lights
-☐ Add auto expouse
+[Day 55/1000 - 14/02/2025]
+✔ Cubemaps @done(25-02-14)
+✔ Skybox @done(25-02-14)
 ✔ Fix forward rendering @done(25-02-12)
 ✔ Improve blur pass @done(25-02-12)
 ✔ Add input output to passes @done(25-02-12)
@@ -17,9 +15,22 @@
 ✔ Add define for shaders debug folder @done(25-02-08)
 
 [15-21.02.2025 - 9th week]
-☐ Cubemaps
-☐ Skybox
+[Day 56/1000 - 15/02/2025]
+☐ Soft Shadows PCF
+☐ Fix math
+☐ Add spot lights
+☐ Add auto expouse
+☐ Add SSAO for Forward rendering
 ☐ Reflections
+    ☐ Dynamic environment reflections via render to cube map
+    ☐ SSLR
+☐ Refactor 
+    ☐ Make customizable root signature
+    ☐ Refactor render passes
+    ☐ Reduce code duplication in lighting shaders
+☐ Optimizations
+    ☐ Add mesh combining
+    ☐ Reduce draw calls of editor
 
 [22-28.02.2025 - 10th week]
 ☐ Skeletal meshes

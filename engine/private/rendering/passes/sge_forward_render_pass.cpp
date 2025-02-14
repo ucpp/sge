@@ -14,8 +14,7 @@ namespace SGE
         SetTargetState(output, D3D12_RESOURCE_STATE_RENDER_TARGET);
         ClearRenderTargetView(output);
         SetRenderTarget(output);
-        
-        m_context->GetCommandList()->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
         m_context->SetRootDescriptorTable(0, 0);
     }
 

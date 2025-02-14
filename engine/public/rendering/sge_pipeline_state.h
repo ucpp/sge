@@ -26,6 +26,19 @@ namespace SGE
             RenderTargetFormats = { format };
             return *this;
         }
+
+        PipelineConfig& SetRasterizerState(D3D12_FILL_MODE fillMode, D3D12_CULL_MODE cullMode)
+        {
+            RasterizerState.FillMode = fillMode;
+            RasterizerState.CullMode = cullMode;
+            return *this;
+        }
+
+        PipelineConfig& SetDepthFunc(D3D12_COMPARISON_FUNC depthFunc)
+        {
+            DepthStencilState.DepthFunc = depthFunc;
+            return *this;
+        }
     
         PipelineConfig& SetRenderTargetFormats(std::initializer_list<DXGI_FORMAT> formats)
         {

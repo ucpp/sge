@@ -14,7 +14,7 @@ namespace SGE
         m_rootParameters.resize(6);
 
         m_descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // b0
-        m_rootParameters[0].InitAsDescriptorTable(1, &m_descriptorRanges[0], D3D12_SHADER_VISIBILITY_PIXEL);
+        m_rootParameters[0].InitAsDescriptorTable(1, &m_descriptorRanges[0], D3D12_SHADER_VISIBILITY_ALL);
 
         m_descriptorRanges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 1, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // b1
         m_rootParameters[1].InitAsDescriptorTable(1, &m_descriptorRanges[1], D3D12_SHADER_VISIBILITY_ALL);

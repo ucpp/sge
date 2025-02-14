@@ -17,6 +17,14 @@ namespace SGE
         InitializeCamera();
         InitializeFrameData();
         InstantiateModels();
+
+        SceneData& sceneData = m_context->GetSceneData();
+        SkyboxData* data = sceneData.GetSkyboxData();
+        if(data)
+        {
+            const AssetsData& assetsData = m_context->GetAssetsData();
+            m_skyboxCubemap = assetsData.GetCubemap(data->cubemapId);
+        }
     }
     
     void Scene::Update(double deltaTime)
@@ -42,7 +50,7 @@ namespace SGE
         m_frameData.invProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()).inverse();
         m_frameData.invView = m_mainCamera.GetViewMatrix().inverse();
         m_frameData.viewProj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()) * m_mainCamera.GetViewMatrix();
-
+        m_frameData.viewProjSky =  m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()) * m_mainCamera.GetViewSky();
         DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
         SyncData(directionalLightData, &m_frameData.directionalLight);
 

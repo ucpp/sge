@@ -112,6 +112,16 @@ namespace SGE
         return CreateViewMatrix(m_position, target, m_up);
     }
 
+    float4x4 Camera::GetViewSky() const
+    {
+        float4x4 view = GetViewMatrix();
+        view.m03 = 0.0;
+        view.m13 = 0.0;
+        view.m23 = 0.0;
+        view.m33 = 1.0;
+        return view;
+    }
+
     float4x4 Camera::GetProjMatrix(int width, int height) const
     {
         float aspectRatio = static_cast<float>(width) / height;

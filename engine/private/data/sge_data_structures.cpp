@@ -243,6 +243,11 @@ namespace SGE
         data.at("top").get_to(top);
     }
 
+    std::array<std::string, 6> CubemapAssetData::GetPaths() const
+    {
+        return { right, left, top, bottom, front, back };
+    }
+
     const MaterialAssetData& AssetsData::GetMaterial(const std::string& id) const
     {
         auto typeIt = assets.find(AssetType::Material);
@@ -317,6 +322,20 @@ namespace SGE
         }
 
         return m_directionalLight;
+    }
+
+    SkyboxData* SceneData::GetSkyboxData()
+    {
+        if (!m_skyboxData)
+        {
+            auto it = objects.find(ObjectType::Skybox);
+            if (it != objects.end() && !it->second.empty())
+            {
+                m_skyboxData = dynamic_cast<SkyboxData*>(it->second.front().get());
+            }
+        }
+
+        return m_skyboxData;
     }
 
     const char** WindowData::GetResolutions()

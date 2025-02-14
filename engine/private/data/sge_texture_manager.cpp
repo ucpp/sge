@@ -7,6 +7,7 @@
 namespace SGE
 {
     std::unordered_map<std::string, TextureManager::TextureData> TextureManager::m_textureCache;
+    std::unordered_map<std::string, TextureManager::CubemapData> TextureManager::m_cubemapCache;
     std::unordered_map<TextureType, std::unique_ptr<Texture>> TextureManager::m_defaultTextures;
     uint32 TextureManager::m_currentTextureIndex = TEXTURES_START_HEAP_INDEX;
     bool TextureManager::hasDefaultTextures = false;
@@ -21,7 +22,7 @@ namespace SGE
 
         if (texturePath == "" || !std::filesystem::exists(texturePath))
         {
-            if(!hasDefaultTextures)
+            if (!hasDefaultTextures)
             {
                 CreateDefaultTextures(device, descriptorHeap);
             }
@@ -40,6 +41,32 @@ namespace SGE
         texture->Initialize(texturePath, device, descriptorHeap, descriptorIndex);
 
         m_textureCache[texturePath] = { std::move(texture), descriptorIndex };
+        m_currentTextureIndex++;
+
+        return descriptorIndex;
+    }
+
+    uint32 TextureManager::GetCubemapIndex(const CubemapAssetData& cubemapData, const Device* device, const DescriptorHeap* descriptorHeap)
+    {
+        std::string cubemapKey = cubemapData.right + cubemapData.left + cubemapData.top + cubemapData.bottom + cubemapData.front + cubemapData.back;
+
+        auto it = m_cubemapCache.find(cubemapKey);
+        if (it != m_cubemapCache.end())
+        {
+            return it->second.descriptorIndex;
+        }
+
+        if (m_currentTextureIndex >= CBV_SRV_HEAP_CAPACITY)
+        {
+            throw std::runtime_error("TextureManager: Descriptor heap capacity exceeded!");
+        }
+
+        auto cubemap = std::make_unique<CubemapTexture>();
+        uint32 descriptorIndex = m_currentTextureIndex;
+
+        cubemap->Initialize(cubemapData, device, descriptorHeap, descriptorIndex);
+
+        m_cubemapCache[cubemapKey] = { std::move(cubemap), descriptorIndex };
         m_currentTextureIndex++;
 
         return descriptorIndex;

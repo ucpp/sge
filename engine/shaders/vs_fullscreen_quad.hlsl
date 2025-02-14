@@ -1,3 +1,5 @@
+#include "scene_data.hlsl"
+
 struct VertexInput
 {
     uint vertexID : SV_VertexID;

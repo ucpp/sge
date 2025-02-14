@@ -68,6 +68,7 @@ namespace SGE
         float4x4 invProj{};
         float4x4 invView{};
         float4x4 viewProj{};
+        float4x4 viewProjSky{};
         uint32 activePointLightsCount{};
         uint32 activeSpotLightsCount{};
     };
@@ -247,6 +248,7 @@ namespace SGE
     public:
         void ToJson(njson& data) override;
         void FromJson(const njson& data) override;
+        std::array<std::string, 6> GetPaths() const;
     
     public:
         std::string back;
@@ -273,6 +275,7 @@ namespace SGE
     public:
         CameraData* GetCameraData();
         DirectionalLightData* GetDirectionalLight();
+        SkyboxData* GetSkyboxData();
 
     public:
         std::map<ObjectType, std::vector<std::unique_ptr<ObjectDataBase>>> objects;
@@ -280,6 +283,7 @@ namespace SGE
     private:
         CameraData* m_mainCamera = nullptr;
         DirectionalLightData* m_directionalLight = nullptr;
+        SkyboxData* m_skyboxData = nullptr;
     };
 
     class WindowData

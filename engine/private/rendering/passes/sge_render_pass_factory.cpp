@@ -11,6 +11,7 @@
 #include "rendering/passes/sge_ssao_render_pass.h"
 #include "rendering/passes/sge_final_render_pass.h"
 #include "rendering/passes/sge_fxaa_render_pass.h"
+#include "rendering/passes/sge_skybox_render_pass.h"
 
 namespace SGE
 {   
@@ -45,5 +46,6 @@ namespace SGE
         factory.Register("ssao", []() { return std::make_unique<SSAORenderPass>(); });
         factory.Register("lighting", []() { return std::make_unique<LightingRenderPass>(); });
         factory.Register("fxaa", []() { return std::make_unique<FXAARenderPass>(); });
+        factory.Register("skybox", []() { return std::make_unique<SkyboxRenderPass>(); });
     }
 }
