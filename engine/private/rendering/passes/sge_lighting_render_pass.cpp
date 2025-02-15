@@ -11,6 +11,7 @@ namespace SGE
         auto commandList = m_context->GetCommandList();
         SetTargetState(input, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         m_context->GetDepthBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
+        m_context->GetShadowMap()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
@@ -26,6 +27,8 @@ namespace SGE
             ++descriptionTableIndex;
         }
         commandList->SetGraphicsRootDescriptorTable(descriptionTableIndex, m_context->GetDepthBuffer()->GetSRVGPUHandle());
+        ++descriptionTableIndex;
+        commandList->SetGraphicsRootDescriptorTable(descriptionTableIndex, m_context->GetShadowMap()->GetSRVGPUHandle());
     }
 
     PipelineConfig LightingRenderPass::GetPipelineConfig() const

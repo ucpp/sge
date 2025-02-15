@@ -43,6 +43,9 @@ namespace SGE
         m_depthBuffer = std::make_unique<DepthBuffer>();
         m_depthBuffer->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight());
 
+        m_shadowMap = std::make_unique<DepthBuffer>();
+        m_shadowMap->Initialize(m_device.get(), &m_dsvHeap, &m_cbvSrvUavHeap, GetScreenWidth(), GetScreenHeight(), 1);
+
         m_rtts.clear();
     }
 
@@ -58,6 +61,12 @@ namespace SGE
         {
             m_depthBuffer->Shutdown();
             m_depthBuffer.reset();
+        }
+
+        if(m_shadowMap)
+        {
+            m_shadowMap->Shutdown();
+            m_shadowMap.reset();
         }
 
         for (auto& [type, buffer] : m_rtts)
@@ -241,6 +250,7 @@ namespace SGE
         Verify(m_depthBuffer, "RenderContext::SetWindowSize: Depth buffer is not initialized or invalid.");
         m_renderTarget->Shutdown();
         m_depthBuffer->Shutdown();
+
         for (auto& [type, buffer] : m_rtts)
         {
             if (buffer) buffer->Shutdown();

@@ -26,6 +26,11 @@
                 "output": []
             },
             {
+                "name": "shadow_map",
+                "input": [],
+                "output": []
+            },
+            {
                 "name": "forward",
                 "input": [],
                 "output": [
@@ -78,6 +83,11 @@
         "deferred_render_passes": [
             {
                 "name": "skybox",
+                "input": [],
+                "output": []
+            },
+            {
+                "name": "shadow_map",
                 "input": [],
                 "output": []
             },
@@ -165,19 +175,14 @@
     "assets_data": {
         "assets": [
             {
-                "name": "ball",
-                "type": 0,
-                "path": "resources/models/ball.obj"
-            },
-            {
                 "name": "backpack.obj",
                 "type": 0,
                 "path": "resources/backpack/backpack.obj"
             },
             {
-                "name": "sphere",
+                "name": "ball",
                 "type": 0,
-                "path": "resources/models/sphere.obj"
+                "path": "resources/models/ball.obj"
             },
             {
                 "name": "cube",
@@ -185,43 +190,14 @@
                 "path": "resources/models/cube.obj"
             },
             {
+                "name": "sphere",
+                "type": 0,
+                "path": "resources/models/sphere.obj"
+            },
+            {
                 "name": "plane",
                 "type": 0,
                 "path": "resources/models/plane.obj"
-            },
-            {
-                "name": "sky_cube",
-                "type": 3,
-                "back": "resources/skybox/back.jpg",
-                "bottom": "resources/skybox/bottom.jpg",
-                "front": "resources/skybox/front.jpg",
-                "left": "resources/skybox/left.jpg",
-                "right": "resources/skybox/right.jpg",
-                "top": "resources/skybox/top.jpg"
-            },
-            {
-                "name": "plastic",
-                "type": 1,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
-            },
-            {
-                "name": "stones",
-                "type": 1,
-                "albedo_texture_path": "resources/stones/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/stones/normal.png",
-                "roughness_texture_path": "resources/stones/roughness.png"
-            },
-            {
-                "name": "backpack",
-                "type": 1,
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds"
             },
             {
                 "name": "bricks",
@@ -232,6 +208,30 @@
                 "roughness_texture_path": "resources/bricks/roughness.png"
             },
             {
+                "name": "backpack",
+                "type": 1,
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
+            },
+            {
+                "name": "stones",
+                "type": 1,
+                "albedo_texture_path": "resources/stones/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/stones/normal.png",
+                "roughness_texture_path": "resources/stones/roughness.png"
+            },
+            {
+                "name": "plastic",
+                "type": 1,
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
+            },
+            {
                 "name": "metal",
                 "type": 1,
                 "albedo_texture_path": "resources/metal/albedo.png",
@@ -240,20 +240,20 @@
                 "roughness_texture_path": "resources/metal/roughness.png"
             },
             {
-                "name": "backpack_norm",
-                "type": 1,
-                "albedo_texture_path": "",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": ""
-            },
-            {
                 "name": "marbel",
                 "type": 1,
                 "albedo_texture_path": "resources/marbel/albedo.png",
                 "metallic_texture_path": "resources/marbel/albedo.png",
                 "normal_texture_path": "resources/marbel/normal.png",
                 "roughness_texture_path": "resources/marbel/roughness.png"
+            },
+            {
+                "name": "backpack_norm",
+                "type": 1,
+                "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": ""
             },
             {
                 "name": "empty",
@@ -266,6 +266,16 @@
             {
                 "name": "PointLight",
                 "type": 2
+            },
+            {
+                "name": "sky_cube",
+                "type": 3,
+                "back": "resources/skybox/back.jpg",
+                "bottom": "resources/skybox/bottom.jpg",
+                "front": "resources/skybox/front.jpg",
+                "left": "resources/skybox/left.jpg",
+                "right": "resources/skybox/right.jpg",
+                "top": "resources/skybox/top.jpg"
             }
         ]
     },
@@ -275,13 +285,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "-2.228",
-                    "1.61",
-                    "-1.755"
+                    "-0.129",
+                    "2.083",
+                    "-3.493"
                 ],
                 "rotation": [
-                    "-12.5",
-                    "18.9",
+                    "-12.4",
+                    "5.6",
                     "0.0"
                 ],
                 "scale": [
@@ -299,16 +309,16 @@
                 "name": "Dir. Light",
                 "type": 1,
                 "direction": [
-                    "0.0",
-                    "-0.5",
-                    "0.6"
+                    "0.81",
+                    "-0.73",
+                    "1.08"
                 ],
                 "color": [
                     "0.75",
                     "0.75",
                     "0.75"
                 ],
-                "intensity": "1.0"
+                "intensity": "2.43"
             },
             {
                 "name": "Skybox",
@@ -416,7 +426,7 @@
                     "0.369",
                     "1.0"
                 ],
-                "intensity": "3.0",
+                "intensity": "0.0",
                 "radius": "3.0"
             },
             {
@@ -432,7 +442,7 @@
                     "0.149",
                     "0.149"
                 ],
-                "intensity": "4.0",
+                "intensity": "0.0",
                 "radius": "2.0"
             },
             {
@@ -448,7 +458,7 @@
                     "0.946",
                     "0.427"
                 ],
-                "intensity": "3.0",
+                "intensity": "0.0",
                 "radius": "2.0"
             }
         ]

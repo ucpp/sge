@@ -7,7 +7,7 @@
 
 namespace SGE
 {
-    void DepthBuffer::Initialize(Device* device, DescriptorHeap* dsvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height)
+    void DepthBuffer::Initialize(Device* device, DescriptorHeap* dsvHeap, DescriptorHeap* srvHeap, uint32 width, uint32 height, uint32 descriptorIndex)
     {
         if (!device)
         {
@@ -30,6 +30,7 @@ namespace SGE
         m_dsvHeap = dsvHeap;
         m_srvHeap = srvHeap;
         m_device = device;
+        m_descriptorIndex = descriptorIndex;
 
         CreateDepthBuffer(device, width, height);
     }
@@ -43,7 +44,7 @@ namespace SGE
     {
         if (m_dsvHeap)
         {
-            return m_dsvHeap->GetCPUHandle(0);
+            return m_dsvHeap->GetCPUHandle(m_descriptorIndex);
         }
 
         return {};
@@ -51,12 +52,12 @@ namespace SGE
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE DepthBuffer::GetSRVHandle() const
     {
-        return m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX);
+        return m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX + m_descriptorIndex);
     }
 
     CD3DX12_GPU_DESCRIPTOR_HANDLE DepthBuffer::GetSRVGPUHandle() const
     {
-        return m_srvHeap->GetGPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX);
+        return m_srvHeap->GetGPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX + m_descriptorIndex);
     }
 
     void DepthBuffer::CreateDepthBuffer(Device* device, uint32 width, uint32 height)
@@ -91,7 +92,7 @@ namespace SGE
         Verify(hr, "Failed to create depth buffer.");
         m_depthBuffer = std::make_unique<Resource>(depthBufferResource.Get(), D3D12_RESOURCE_STATE_DEPTH_WRITE);
 
-        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_dsvHeap->GetCPUHandle(0);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_dsvHeap->GetCPUHandle(m_descriptorIndex);
 
         D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
         dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -100,7 +101,7 @@ namespace SGE
 
         device->GetDevice()->CreateDepthStencilView(m_depthBuffer->Get(), &dsvDesc, dsvHandle);
 
-        CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX);
+        CD3DX12_CPU_DESCRIPTOR_HANDLE srvHandle = m_srvHeap->GetCPUHandle(DEPTH_BUFFER_START_SRV_HEAP_INDEX + m_descriptorIndex);
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
         srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;

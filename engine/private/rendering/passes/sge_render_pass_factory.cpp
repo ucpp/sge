@@ -12,6 +12,7 @@
 #include "rendering/passes/sge_final_render_pass.h"
 #include "rendering/passes/sge_fxaa_render_pass.h"
 #include "rendering/passes/sge_skybox_render_pass.h"
+#include "rendering/passes/sge_shadow_map_pass.h"
 
 namespace SGE
 {   
@@ -47,5 +48,6 @@ namespace SGE
         factory.Register("lighting", []() { return std::make_unique<LightingRenderPass>(); });
         factory.Register("fxaa", []() { return std::make_unique<FXAARenderPass>(); });
         factory.Register("skybox", []() { return std::make_unique<SkyboxRenderPass>(); });
+        factory.Register("shadow_map", []() { return std::make_unique<ShadowMapRenderPass>(); });
     }
 }

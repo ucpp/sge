@@ -53,6 +53,21 @@ namespace SGE
         m_frameData.viewProjSky =  m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight()) * m_mainCamera.GetViewSky();
         DirectionalLightData* directionalLightData = sceneData.GetDirectionalLight();
         SyncData(directionalLightData, &m_frameData.directionalLight);
+        
+        float3 lightDirection = directionalLightData->direction.normalized();
+        float3 lightPosition = -lightDirection * 7.0f;
+        float3 target = lightPosition + lightDirection;
+        float3 up = float3(0.0f, 1.0f, 0.0f);
+        if (abs(dot(lightDirection, up)) > 0.99f)
+        {
+            up = float3(0.0f, 0.0f, 1.0f);
+        }
+
+        float aspectRatio = static_cast<float>(m_context->GetScreenWidth() / m_context->GetScreenHeight());
+        float4x4 lightView = CreateViewMatrix(lightPosition, target, up);
+        float4x4 lightProj = CreateOrthographicProjectionMatrix(20.0f * aspectRatio, 20.0f, 0.01f, 20.0f);
+        m_frameData.lightView = lightView;
+        m_frameData.lightProj = lightProj;
 
         auto it = sceneData.objects.find(ObjectType::PointLight);
         if (it != sceneData.objects.end())

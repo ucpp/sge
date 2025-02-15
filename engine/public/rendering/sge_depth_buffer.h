@@ -9,7 +9,7 @@ namespace SGE
     class DepthBuffer
     {
     public:
-        void Initialize(class Device* device, class DescriptorHeap* dsvHeap, class DescriptorHeap* srvHeap, uint32 width, uint32 height);
+        void Initialize(class Device* device, class DescriptorHeap* dsvHeap, class DescriptorHeap* srvHeap, uint32 width, uint32 height, uint32 descriptorIndex = 0);
         void Resize(uint32 width, uint32 height);
         void Shutdown();
         Resource* GetResource() const { return m_depthBuffer.get(); }
@@ -25,6 +25,7 @@ namespace SGE
         class DescriptorHeap* m_dsvHeap = nullptr;
         class DescriptorHeap* m_srvHeap = nullptr;
         std::unique_ptr<Resource> m_depthBuffer;
+        uint32 m_descriptorIndex = 0;
     };
 }
 

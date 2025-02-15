@@ -13,7 +13,8 @@ namespace SGE
 
     private:
         void CreateRootSignature(ID3D12Device* device);
-        void CreateStaticSampler();
+        void CreateWrapSampler();
+        void CreateClampSampler();
 
         ComPtr<ID3D12RootSignature> m_rootSignature;
         std::vector<CD3DX12_ROOT_PARAMETER1> m_rootParameters;

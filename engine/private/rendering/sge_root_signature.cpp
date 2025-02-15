@@ -10,8 +10,8 @@ namespace SGE
     
     void RootSignature::CreateRootSignature(ID3D12Device *device)
     {
-        m_descriptorRanges.resize(6);
-        m_rootParameters.resize(6);
+        m_descriptorRanges.resize(7);
+        m_rootParameters.resize(7);
 
         m_descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // b0
         m_rootParameters[0].InitAsDescriptorTable(1, &m_descriptorRanges[0], D3D12_SHADER_VISIBILITY_ALL);
@@ -31,7 +31,12 @@ namespace SGE
         m_descriptorRanges[5].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // t3
         m_rootParameters[5].InitAsDescriptorTable(1, &m_descriptorRanges[5], D3D12_SHADER_VISIBILITY_PIXEL);  
 
-        CreateStaticSampler();
+        m_descriptorRanges[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // t4
+        m_rootParameters[6].InitAsDescriptorTable(1, &m_descriptorRanges[6], D3D12_SHADER_VISIBILITY_PIXEL);  
+
+        m_staticSamplers.clear();
+        CreateWrapSampler();
+        CreateClampSampler();
 
         D3D12_FEATURE_DATA_ROOT_SIGNATURE featureData = {};
         featureData.HighestVersion = D3D_ROOT_SIGNATURE_VERSION_1_1;
@@ -54,7 +59,7 @@ namespace SGE
         Verify(hr, "Failed to create root signature.");
     }
 
-    void RootSignature::CreateStaticSampler()
+    void RootSignature::CreateWrapSampler()
     {
         CD3DX12_STATIC_SAMPLER_DESC staticSampler = {};
         staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -72,5 +77,25 @@ namespace SGE
         staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
         m_staticSamplers.push_back(staticSampler);
+    }
+
+    void RootSignature::CreateClampSampler()
+    {
+        CD3DX12_STATIC_SAMPLER_DESC clampSampler = {};
+        clampSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+        clampSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+        clampSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+        clampSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+        clampSampler.MipLODBias = 0;
+        clampSampler.MaxAnisotropy = 1;
+        clampSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+        clampSampler.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
+        clampSampler.MinLOD = 0.0f;
+        clampSampler.MaxLOD = D3D12_FLOAT32_MAX;
+        clampSampler.ShaderRegister = 1;
+        clampSampler.RegisterSpace = 0;
+        clampSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+        m_staticSamplers.push_back(clampSampler);
     }
 }

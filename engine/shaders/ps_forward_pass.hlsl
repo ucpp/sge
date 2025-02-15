@@ -6,8 +6,10 @@ Texture2D diffuseMap : register(t0);
 Texture2D normalMap : register(t1);
 Texture2D metallicMap : register(t2);
 Texture2D roughnessMap : register(t3);
+Texture2D<float> g_ShadowMap : register(t4);
 
 SamplerState sampleWrap : register(s0);
+SamplerState sampleClamp : register(s1);
 
 static const float PI = 3.14159265359;
 
@@ -95,6 +97,37 @@ float3 CalculateSpotLight(float3 worldPos, float3 normal, float3 albedo, float m
     return CalculateLightContribution(albedo, metallic, roughness, normal, lightDir, viewDir, light.color, light.intensity) * attenuation * intensity;
 }
 
+float CalculateShadowPCF(Texture2D<float> shadowMap, SamplerState samplerState, float3 shadowCoord, float bias)
+{
+    float shadow = 0.0;
+    float2 textureSize;
+    shadowMap.GetDimensions(textureSize.x, textureSize.y);
+    float2 texelSize = 1.0 / textureSize;
+
+    for (int x = -1; x <= 1; ++x)
+    {
+        for (int y = -1; y <= 1; ++y)
+        {
+            float2 offset = float2(x, y) * texelSize;
+            float shadowMapDepth = shadowMap.Sample(samplerState, shadowCoord.xy + offset);
+            shadow += shadowCoord.z - bias > shadowMapDepth ? 1.0 : 0.0;
+        }
+    }
+
+    return shadow / 9.0;
+}
+
+float CalculateShadow(Texture2D<float> shadowMap, SamplerState samplerState, float3 worldPos)
+{
+    float4 shadowCoord = mul(float4(worldPos.xyz, 1.0), mul(lightView, lightProj));
+    shadowCoord.xyz /= shadowCoord.w;
+    shadowCoord.y = -shadowCoord.y;
+    shadowCoord.xy = shadowCoord.xy * 0.5 + 0.5;
+
+    float bias = 0.02;
+    return CalculateShadowPCF(shadowMap, samplerState, shadowCoord.xyz, bias);
+}
+
 float4 main(PixelInput input) : SV_TARGET
 {
     float3 albedo = diffuseMap.Sample(sampleWrap, input.texCoords).rgb;
@@ -105,8 +138,11 @@ float4 main(PixelInput input) : SV_TARGET
     float3x3 TBN = float3x3(input.tangent, input.bitangent, input.normal);
     float3 normal = normalize(mul(normalMapValue, TBN));
     float3 viewDir = normalize(cameraPosition - input.worldPosition);
+
+    float shadow = CalculateShadow(g_ShadowMap, sampleClamp, input.worldPosition);
+    float shadowFactor = 1.0 - shadow;
     
-    float3 finalColor = CalculateDirectionalLight(normal, albedo, metallic, roughness, viewDir, directionalLight);
+    float3 finalColor = CalculateDirectionalLight(normal, albedo, metallic, roughness, viewDir, directionalLight) * shadowFactor;
     for (uint i = 0; i < activePointLightsCount; ++i)
     {
         finalColor += CalculatePointLight(input.worldPosition, normal, albedo, metallic, roughness, viewDir, pointLights[i]);

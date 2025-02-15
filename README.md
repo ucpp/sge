@@ -1,6 +1,6 @@
 # SGE - Simple Game Engine  
 
-![Preview](https://github.com/ucpp/sge/blob/master/docs/preview.png)
+![Preview](https://github.com/ucpp/sge/blob/master/docs/shadows.png)
 
 SGE (Simple Game Engine) is a learning project aimed at building a minimalistic game engine using **DirectX 12**. This project is structured as a roadmap consisting several tasks, designed to teach and implement various modern rendering techniques and systems. 
 
@@ -101,22 +101,32 @@ This project is **actively under development**, and its purpose is to experiment
 
 </details>
  <details>
-  <summary><strong>✔ 13. SSAO</strong>: Implement screen-space ambient occlusion. (in progress).</summary>
+  <summary><strong>✔ 13. SSAO</strong>: Implement screen-space ambient occlusion.</summary>
 
   ![SSAO](https://github.com/ucpp/sge/blob/master/docs/ssao.png)
 
 </details>
  <details>
-  <summary><strong>☐ 14. Soft shadows</strong>: Implement soft shadows using techniques like SM+PCF, VSM, or ESM (in progress).</summary>
+  <summary><strong>✔ 14. Soft shadows</strong>: Implement soft shadows using techniques like SM+PCF, VSM, or ESM.</summary>
+
+  ![Shadows](https://github.com/ucpp/sge/blob/master/docs/shadows.png)
   
 </details>
-    
+ <details>
+  <summary><strong>☐ 15. Load skinned mesh animations</strong>: Import animated models and process on the GPU (in progress).</summary>
+
+  
+</details>
+ <details>
+  <summary><strong>☐ 16. Animation blending</strong>: Combine multiple animations (e.g., running and shooting) (in progress).</summary>
+
+  
+</details>
+  
 ---
   
-**15. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
-**16. SSLR**: Add screen-space local reflections.  
-**17. Load skinned mesh animations**: Import animated models and process on the GPU.  
-**18. Animation blending**: Combine multiple animations (e.g., running and shooting).    
+**17. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
+**18. SSLR**: Add screen-space local reflections.    
 **19. Particle system**: Create a system that supports 10,000+ particles.  
   
 --- 
