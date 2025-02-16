@@ -15,7 +15,7 @@
 ✔ Add define for shaders debug folder @done(25-02-08)
 
 [15-21.02.2025 - 9th week]
-[Day 56/1000 - 15/02/2025]
+[Day 57/1000 - 16/02/2025]
 ✔ Soft Shadows PCF @done(25-02-15)
 ☐ Fix math
 ☐ Add spot lights
@@ -27,7 +27,7 @@
 ☐ Refactor 
     ☐ Make customizable root signature
     ☐ Refactor render passes
-    ☐ Reduce code duplication in lighting shaders
+    ✔ Reduce code duplication in lighting shaders @done(25-02-16 21:02)
 ☐ Optimizations
     ☐ Add mesh combining
     ☐ Reduce draw calls of editor
