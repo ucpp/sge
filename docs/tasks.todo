@@ -16,6 +16,10 @@
 
 [15-21.02.2025 - 9th week]
 [Day 57/1000 - 16/02/2025]
+☐ Animations
+    ☐ Add data class for animated models
+    ☐ Add animated model instance class
+    ☐ Add animation data loading
 ✔ Soft Shadows PCF @done(25-02-15)
 ☐ Fix math
 ☐ Add spot lights
