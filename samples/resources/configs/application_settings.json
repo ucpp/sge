@@ -31,8 +31,31 @@
                 "output": []
             },
             {
-                "name": "forward",
+                "name": "depth_prepass",
                 "input": [],
+                "output": []
+            },
+            {
+                "name": "ssao",
+                "input": [],
+                "output": [
+                    "ssao_target"
+                ]
+            },
+            {
+                "name": "blur",
+                "input": [
+                    "ssao_target"
+                ],
+                "output": [
+                    "blur_ssao_target"
+                ]
+            },
+            {
+                "name": "forward",
+                "input": [
+                    "blur_ssao_target"
+                ],
                 "output": [
                     "lighting_target"
                 ]
@@ -101,9 +124,7 @@
             },
             {
                 "name": "ssao",
-                "input": [
-                    "normal_roughness_target"
-                ],
+                "input": [],
                 "output": [
                     "ssao_target"
                 ]

@@ -9,7 +9,6 @@ namespace SGE
     void SSAORenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         auto commandList = m_context->GetCommandList();
-        SetTargetState(input, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         m_context->GetDepthBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
 
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
@@ -20,11 +19,6 @@ namespace SGE
 
         m_context->SetRootDescriptorTable(0, 0);
         uint32 descriptionTableIndex = 2;
-        for(const std::string& name : input)
-        {
-            BindRenderTargetSRV(name, descriptionTableIndex);
-            ++descriptionTableIndex;
-        }
         commandList->SetGraphicsRootDescriptorTable(descriptionTableIndex, m_context->GetDepthBuffer()->GetSRVGPUHandle());
     }
 

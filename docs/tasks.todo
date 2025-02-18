@@ -24,7 +24,7 @@
 ☐ Fix math
 ☐ Add spot lights
 ☐ Add auto expouse
-☐ Add SSAO for Forward rendering
+✔ Add SSAO for Forward rendering @done(25-02-18 20:43)
 ☐ Reflections
     ☐ Dynamic environment reflections via render to cube map
     ☐ SSLR

@@ -2,10 +2,10 @@
 #include "pixel_input.hlsl"
 #include "scene_data.hlsl"
 
-Texture2D diffuseMap : register(t0);
-Texture2D normalMap : register(t1);
-Texture2D metallicMap : register(t2);
-Texture2D roughnessMap : register(t3);
+Texture2D<float4> diffuseMap : register(t0);
+Texture2D<float4> normalMap : register(t1);
+Texture2D<float4> metallicMap : register(t2);
+Texture2D<float4> roughnessMap : register(t3);
 
 SamplerState sampleWrap : register(s0);
 

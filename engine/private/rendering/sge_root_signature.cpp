@@ -10,8 +10,8 @@ namespace SGE
     
     void RootSignature::CreateRootSignature(ID3D12Device *device)
     {
-        m_descriptorRanges.resize(7);
-        m_rootParameters.resize(7);
+        m_descriptorRanges.resize(8);
+        m_rootParameters.resize(8);
 
         m_descriptorRanges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // b0
         m_rootParameters[0].InitAsDescriptorTable(1, &m_descriptorRanges[0], D3D12_SHADER_VISIBILITY_ALL);
@@ -33,6 +33,9 @@ namespace SGE
 
         m_descriptorRanges[6].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 4, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // t4
         m_rootParameters[6].InitAsDescriptorTable(1, &m_descriptorRanges[6], D3D12_SHADER_VISIBILITY_PIXEL);  
+
+        m_descriptorRanges[7].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 5, 0, D3D12_DESCRIPTOR_RANGE_FLAG_NONE); // t5
+        m_rootParameters[7].InitAsDescriptorTable(1, &m_descriptorRanges[7], D3D12_SHADER_VISIBILITY_PIXEL); 
 
         m_staticSamplers.clear();
         CreateWrapSampler();

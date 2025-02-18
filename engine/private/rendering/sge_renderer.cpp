@@ -76,7 +76,7 @@ namespace SGE
         editor->Render();
 
         {
-            SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), "End Frame");
+            //SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), "End Frame");
             m_context->PrepareRenderTargetForPresent();
             m_context->CloseCommandList();
             m_context->ExecuteCommandList();

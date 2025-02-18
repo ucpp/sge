@@ -1,7 +1,6 @@
 #include "scene_data.hlsl"
 
-Texture2D<float4> g_NormalRoughness : register(t0);
-Texture2D<float> g_Depth : register(t1);
+Texture2D<float> g_Depth : register(t0);
 SamplerState sampleWrap : register(s0);
 
 static const int SSAO_SAMPLE_COUNT = 16;
@@ -75,14 +74,10 @@ SSAOOutput main(PixelInput input)
 {
     SSAOOutput output;
 
-    float4 normalRoughness = g_NormalRoughness.Sample(sampleWrap, input.texCoords);
-    float depth = g_Depth.Sample(sampleWrap, input.texCoords);
-
-    float3 normal = normalize(normalRoughness.xyz * 2.0f - 1.0f);
-    float roughness = normalRoughness.w;
-
+    float depth = g_Depth.Sample(sampleWrap, input.texCoords).r;
     float3 worldPos = ReconstructWorldPosition(input.texCoords, depth);
-    
+    float3 normal = normalize(cross(ddx(worldPos), ddy(worldPos)));
+
     float ssao = ComputeSSAO(worldPos, normal, input.texCoords);
     ssao = pow(ssao, 1.2);
     output.color = float4(ssao, ssao, ssao, 1.0);

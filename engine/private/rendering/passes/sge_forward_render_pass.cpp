@@ -9,8 +9,14 @@ namespace SGE
     void ForwardRenderPass::OnRender(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
     {
         auto commandList = m_context->GetCommandList();
+        SetTargetState(input, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         m_context->GetShadowMap()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, commandList.Get());
+        m_context->GetDepthBuffer()->GetResource()->TransitionState(D3D12_RESOURCE_STATE_DEPTH_WRITE, commandList.Get());
+        CD3DX12_CPU_DESCRIPTOR_HANDLE depthDSV = m_context->GetDepthBuffer()->GetDSVHandle();
+        commandList->ClearDepthStencilView(depthDSV, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
+        commandList->OMSetRenderTargets(0, nullptr, false, &depthDSV);
+        
         m_context->GetCommandList()->SetPipelineState(m_pipelineState->GetPipelineState());
         m_context->SetRootSignature(m_pipelineState->GetSignature());
 
@@ -19,7 +25,14 @@ namespace SGE
         SetRenderTarget(output);
 
         m_context->SetRootDescriptorTable(0, 0);
-        commandList->SetGraphicsRootDescriptorTable(6, m_context->GetShadowMap()->GetSRVGPUHandle());
+        uint32 descriptionTableIndex = 6;
+        commandList->SetGraphicsRootDescriptorTable(descriptionTableIndex, m_context->GetShadowMap()->GetSRVGPUHandle());
+        ++descriptionTableIndex;
+        for(const std::string& name : input)
+        {
+            BindRenderTargetSRV(name, descriptionTableIndex);
+            ++descriptionTableIndex;
+        }
     }
 
     void ForwardRenderPass::OnDraw(Scene* scene)
