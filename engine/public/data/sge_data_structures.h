@@ -100,7 +100,8 @@ namespace SGE
         DirectionalLight = 1,
         Skybox           = 2,
         Model            = 3,
-        PointLight       = 4
+        AnimatedModel    = 4,
+        PointLight       = 5
     };
 
     class ObjectDataBase
@@ -162,6 +163,12 @@ namespace SGE
         std::string materialId;
     };
 
+    class AnimatedModelData : public ModelData 
+    {
+    public:
+        void DrawEditor() override;
+    };
+
     class PointLightData : public ObjectDataBase
     {
     public:
@@ -202,10 +209,11 @@ namespace SGE
 
     enum class AssetType
     {
-        Model     = 0,
-        Material  = 1,
-        Light     = 2,
-        Cubemap   = 3
+        Model         = 0,
+        AnimatedModel = 1,
+        Material      = 2,
+        Light         = 3,
+        Cubemap       = 4
     };
 
     class AssetDataBase
@@ -229,6 +237,8 @@ namespace SGE
     public:
         std::string path;
     };
+
+    class AnimatedModelAssetData : public ModelAssetData {};
 
     class MaterialAssetData : public AssetDataBase
     {

@@ -221,8 +221,13 @@
                 "path": "resources/models/plane.obj"
             },
             {
+                "name": "anim",
+                "type": 0,
+                "path": "resources/anim/scene.gltf"
+            },
+            {
                 "name": "bricks",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "resources/bricks/albedo.png",
                 "metallic_texture_path": "",
                 "normal_texture_path": "resources/bricks/normal.png",
@@ -230,7 +235,7 @@
             },
             {
                 "name": "backpack",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "resources/backpack/diffuse.dds",
                 "metallic_texture_path": "resources/backpack/specular.dds",
                 "normal_texture_path": "resources/backpack/normal.dds",
@@ -238,7 +243,7 @@
             },
             {
                 "name": "stones",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "resources/stones/albedo.png",
                 "metallic_texture_path": "",
                 "normal_texture_path": "resources/stones/normal.png",
@@ -246,7 +251,7 @@
             },
             {
                 "name": "plastic",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "resources/plastic/albedo.png",
                 "metallic_texture_path": "",
                 "normal_texture_path": "resources/plastic/normal.png",
@@ -254,7 +259,7 @@
             },
             {
                 "name": "metal",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "resources/metal/albedo.png",
                 "metallic_texture_path": "resources/metal/metalness.png",
                 "normal_texture_path": "resources/metal/normal.png",
@@ -262,7 +267,7 @@
             },
             {
                 "name": "marbel",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "resources/marbel/albedo.png",
                 "metallic_texture_path": "resources/marbel/albedo.png",
                 "normal_texture_path": "resources/marbel/normal.png",
@@ -270,7 +275,7 @@
             },
             {
                 "name": "backpack_norm",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "",
                 "metallic_texture_path": "",
                 "normal_texture_path": "resources/backpack/normal.dds",
@@ -278,7 +283,7 @@
             },
             {
                 "name": "empty",
-                "type": 1,
+                "type": 2,
                 "albedo_texture_path": "",
                 "metallic_texture_path": "",
                 "normal_texture_path": "",
@@ -286,11 +291,11 @@
             },
             {
                 "name": "PointLight",
-                "type": 2
+                "type": 3
             },
             {
                 "name": "sky_cube",
-                "type": 3,
+                "type": 4,
                 "back": "resources/skybox/back.jpg",
                 "bottom": "resources/skybox/bottom.jpg",
                 "front": "resources/skybox/front.jpg",
@@ -436,7 +441,7 @@
             },
             {
                 "name": "Point Light (1)",
-                "type": 4,
+                "type": 5,
                 "position": [
                     "1.0",
                     "0.05",
@@ -452,7 +457,7 @@
             },
             {
                 "name": "Point Light (2)",
-                "type": 4,
+                "type": 5,
                 "position": [
                     "-1.15",
                     "0.05",
@@ -468,7 +473,7 @@
             },
             {
                 "name": "Point Light (3)",
-                "type": 4,
+                "type": 5,
                 "position": [
                     "0.04",
                     "-0.01",

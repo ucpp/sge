@@ -105,6 +105,15 @@ namespace SGE
         data.at("enabled").get_to(enabled);
     }
 
+    void AnimatedModelData::DrawEditor()
+    {
+        Checkbox("Enabled:", enabled);
+        TransformData::DrawEditor();
+        InputText("Asset ID:", assetId);
+        InputText("Material ID:", materialId);
+        ImGui::Text("animations etc...");
+    }
+
     void PointLightData::DrawEditor()
     {
         ObjectDataBase::DrawEditor();

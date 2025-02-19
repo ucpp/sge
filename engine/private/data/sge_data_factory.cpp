@@ -39,6 +39,7 @@ namespace SGE
         auto& factory = ObjectDataFactory::Get();
         factory.Register(ObjectType::Camera, []() { return std::make_unique<CameraData>(); });
         factory.Register(ObjectType::Model, []() { return std::make_unique<ModelData>(); });
+        factory.Register(ObjectType::AnimatedModel, []() { return std::make_unique<AnimatedModelData>(); });
         factory.Register(ObjectType::PointLight, []() { return std::make_unique<PointLightData>(); });
         factory.Register(ObjectType::DirectionalLight, []() { return std::make_unique<DirectionalLightData>(); });
         factory.Register(ObjectType::Skybox, []() { return std::make_unique<SkyboxData>(); });
@@ -48,6 +49,7 @@ namespace SGE
     {
         auto& factory = AssetDataFactory::Get();
         factory.Register(AssetType::Model, []() { return std::make_unique<ModelAssetData>(); });
+        factory.Register(AssetType::AnimatedModel, []() { return std::make_unique<AnimatedModelAssetData>(); });
         factory.Register(AssetType::Material, []() { return std::make_unique<MaterialAssetData>(); });
         factory.Register(AssetType::Light, []() { return std::make_unique<LightAssetData>(); });
         factory.Register(AssetType::Cubemap, []() { return std::make_unique<CubemapAssetData>(); });
