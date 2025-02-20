@@ -196,24 +196,14 @@
     "assets_data": {
         "assets": [
             {
-                "name": "ball",
-                "type": 0,
-                "path": "resources/models/ball.obj"
-            },
-            {
                 "name": "backpack.obj",
                 "type": 0,
                 "path": "resources/backpack/backpack.gltf"
             },
             {
-                "name": "anim",
+                "name": "ball",
                 "type": 0,
-                "path": "resources/anim/silly_dancing.fbx"
-            },
-            {
-                "name": "sphere",
-                "type": 0,
-                "path": "resources/models/sphere.obj"
+                "path": "resources/models/ball.obj"
             },
             {
                 "name": "cube",
@@ -221,9 +211,14 @@
                 "path": "resources/models/cube.gltf"
             },
             {
-                "name": "plane",
+                "name": "sphere",
                 "type": 0,
-                "path": "resources/models/plane.gltf"
+                "path": "resources/models/sphere.obj"
+            },
+            {
+                "name": "anim",
+                "type": 0,
+                "path": "resources/anim/silly_dancing.fbx"
             },
             {
                 "name": "cube_plane",
@@ -231,12 +226,9 @@
                 "path": "resources/models/cube_and_plane.gltf"
             },
             {
-                "name": "plastic",
-                "type": 2,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
+                "name": "plane",
+                "type": 0,
+                "path": "resources/models/plane.gltf"
             },
             {
                 "name": "bricks",
@@ -263,12 +255,28 @@
                 "roughness_texture_path": "resources/stones/roughness.png"
             },
             {
+                "name": "plastic",
+                "type": 2,
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
+            },
+            {
                 "name": "metal",
                 "type": 2,
                 "albedo_texture_path": "resources/metal/albedo.png",
                 "metallic_texture_path": "resources/metal/metalness.png",
                 "normal_texture_path": "resources/metal/normal.png",
                 "roughness_texture_path": "resources/metal/roughness.png"
+            },
+            {
+                "name": "marbel",
+                "type": 2,
+                "albedo_texture_path": "resources/marbel/albedo.png",
+                "metallic_texture_path": "resources/marbel/albedo.png",
+                "normal_texture_path": "resources/marbel/normal.png",
+                "roughness_texture_path": "resources/marbel/roughness.png"
             },
             {
                 "name": "uv_checker",
@@ -285,14 +293,6 @@
                 "metallic_texture_path": "",
                 "normal_texture_path": "resources/backpack/normal.dds",
                 "roughness_texture_path": ""
-            },
-            {
-                "name": "marbel",
-                "type": 2,
-                "albedo_texture_path": "resources/marbel/albedo.png",
-                "metallic_texture_path": "resources/marbel/albedo.png",
-                "normal_texture_path": "resources/marbel/normal.png",
-                "roughness_texture_path": "resources/marbel/roughness.png"
             },
             {
                 "name": "empty",
@@ -332,13 +332,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "-0.316",
+                    "-0.15",
                     "5.092",
-                    "-11.674"
+                    "-11.689"
                 ],
                 "rotation": [
-                    "-16.4",
-                    "0.9",
+                    "-16.3",
+                    "0.3",
                     "0.0"
                 ],
                 "scale": [
@@ -365,7 +365,7 @@
                     "0.75",
                     "0.75"
                 ],
-                "intensity": "2.43"
+                "intensity": "1.6"
             },
             {
                 "name": "Skybox",
@@ -439,7 +439,7 @@
                 "enabled": false
             },
             {
-                "name": "anim",
+                "name": "Stormtrooper",
                 "type": 3,
                 "position": [
                     "-2.61",
@@ -461,7 +461,7 @@
                 "enabled": true
             },
             {
-                "name": "scene",
+                "name": "uv_checker",
                 "type": 3,
                 "position": [
                     "0.0",
