@@ -196,19 +196,19 @@
     "assets_data": {
         "assets": [
             {
-                "name": "backpack.obj",
-                "type": 0,
-                "path": "resources/backpack/backpack.obj"
-            },
-            {
                 "name": "ball",
                 "type": 0,
                 "path": "resources/models/ball.obj"
             },
             {
-                "name": "cube",
+                "name": "backpack.obj",
                 "type": 0,
-                "path": "resources/models/cube.obj"
+                "path": "resources/backpack/backpack.gltf"
+            },
+            {
+                "name": "anim",
+                "type": 0,
+                "path": "resources/anim/silly_dancing.fbx"
             },
             {
                 "name": "sphere",
@@ -216,14 +216,27 @@
                 "path": "resources/models/sphere.obj"
             },
             {
-                "name": "plane",
+                "name": "cube",
                 "type": 0,
-                "path": "resources/models/plane.obj"
+                "path": "resources/models/cube.gltf"
             },
             {
-                "name": "anim",
+                "name": "plane",
                 "type": 0,
-                "path": "resources/anim/scene.gltf"
+                "path": "resources/models/plane.gltf"
+            },
+            {
+                "name": "cube_plane",
+                "type": 0,
+                "path": "resources/models/cube_and_plane.gltf"
+            },
+            {
+                "name": "plastic",
+                "type": 2,
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "bricks",
@@ -250,14 +263,6 @@
                 "roughness_texture_path": "resources/stones/roughness.png"
             },
             {
-                "name": "plastic",
-                "type": 2,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
-            },
-            {
                 "name": "metal",
                 "type": 2,
                 "albedo_texture_path": "resources/metal/albedo.png",
@@ -266,12 +271,12 @@
                 "roughness_texture_path": "resources/metal/roughness.png"
             },
             {
-                "name": "marbel",
+                "name": "uv_checker",
                 "type": 2,
-                "albedo_texture_path": "resources/marbel/albedo.png",
-                "metallic_texture_path": "resources/marbel/albedo.png",
-                "normal_texture_path": "resources/marbel/normal.png",
-                "roughness_texture_path": "resources/marbel/roughness.png"
+                "albedo_texture_path": "resources/models/uv_checker.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "",
+                "roughness_texture_path": ""
             },
             {
                 "name": "backpack_norm",
@@ -282,12 +287,28 @@
                 "roughness_texture_path": ""
             },
             {
+                "name": "marbel",
+                "type": 2,
+                "albedo_texture_path": "resources/marbel/albedo.png",
+                "metallic_texture_path": "resources/marbel/albedo.png",
+                "normal_texture_path": "resources/marbel/normal.png",
+                "roughness_texture_path": "resources/marbel/roughness.png"
+            },
+            {
                 "name": "empty",
                 "type": 2,
                 "albedo_texture_path": "",
                 "metallic_texture_path": "",
                 "normal_texture_path": "",
                 "roughness_texture_path": ""
+            },
+            {
+                "name": "anim",
+                "type": 2,
+                "albedo_texture_path": "resources/anim/albedo.dds",
+                "metallic_texture_path": "",
+                "normal_texture_path": "",
+                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "PointLight",
@@ -311,13 +332,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "-0.129",
-                    "2.083",
-                    "-3.493"
+                    "-0.316",
+                    "5.092",
+                    "-11.674"
                 ],
                 "rotation": [
-                    "-12.4",
-                    "5.6",
+                    "-16.4",
+                    "0.9",
                     "0.0"
                 ],
                 "scale": [
@@ -327,7 +348,7 @@
                 ],
                 "fov": "30.0",
                 "near_plane": "0.05",
-                "far_plane": "128.0",
+                "far_plane": "300.0",
                 "move_speed": "10.0",
                 "sensitivity": "0.1"
             },
@@ -336,8 +357,8 @@
                 "type": 1,
                 "direction": [
                     "0.81",
-                    "-0.73",
-                    "1.08"
+                    "-1.0",
+                    "2.0"
                 ],
                 "color": [
                     "0.75",
@@ -371,19 +392,19 @@
                 ],
                 "asset_id": "backpack.obj",
                 "material_id": "backpack_norm",
-                "enabled": true
+                "enabled": false
             },
             {
                 "name": "Backpack (2)",
                 "type": 3,
                 "position": [
-                    "-1.41",
                     "0.0",
-                    "5.21"
+                    "2.97",
+                    "0.0"
                 ],
                 "rotation": [
-                    "156.68",
                     "0.0",
+                    "270.0",
                     "0.3"
                 ],
                 "scale": [
@@ -415,14 +436,14 @@
                 ],
                 "asset_id": "backpack.obj",
                 "material_id": "plastic",
-                "enabled": true
+                "enabled": false
             },
             {
-                "name": "Ground",
+                "name": "anim",
                 "type": 3,
                 "position": [
+                    "-2.61",
                     "0.0",
-                    "-1.0",
                     "0.0"
                 ],
                 "rotation": [
@@ -431,12 +452,34 @@
                     "0.0"
                 ],
                 "scale": [
-                    "2.0",
                     "1.0",
-                    "2.0"
+                    "1.0",
+                    "1.0"
                 ],
-                "asset_id": "plane",
-                "material_id": "stones",
+                "asset_id": "anim",
+                "material_id": "anim",
+                "enabled": true
+            },
+            {
+                "name": "scene",
+                "type": 3,
+                "position": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "rotation": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "1.0",
+                    "1.0",
+                    "1.0"
+                ],
+                "asset_id": "cube_plane",
+                "material_id": "uv_checker",
                 "enabled": true
             },
             {

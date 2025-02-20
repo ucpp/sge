@@ -180,6 +180,6 @@ namespace SGE
 
     void Texture::CreateDefaultNormal(const Device* device, const DescriptorHeap* descriptorHeap, uint32 descriptorIndex)
     {
-        CreateSinglePixelTexture(0x8080FFFF, device, descriptorHeap, descriptorIndex); // (128, 128, 255)
+        CreateSinglePixelTexture(0xFF808080, device, descriptorHeap, descriptorIndex); 
     }
 }

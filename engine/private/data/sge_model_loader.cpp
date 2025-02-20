@@ -21,8 +21,8 @@ namespace SGE
         Assimp::Importer importer{};
         const aiScene* scene = importer.ReadFile(assetData.path, 
           aiProcess_Triangulate | 
-          aiProcess_CalcTangentSpace /* |
-          aiProcess_MakeLeftHanded*/);
+          aiProcess_CalcTangentSpace |
+          aiProcess_MakeLeftHanded);
 
         if (!scene || (scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) || !scene->mRootNode)
         {
@@ -99,7 +99,7 @@ namespace SGE
             if (mesh->HasTangentsAndBitangents())
             {
                 vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
-                vertex.bitangent = { -mesh->mBitangents[i].x, -mesh->mBitangents[i].y, -mesh->mBitangents[i].z };
+                vertex.bitangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
             }
 
             vertices.push_back(vertex);

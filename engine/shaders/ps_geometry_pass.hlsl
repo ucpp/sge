@@ -24,17 +24,24 @@ GBufferOutput main(PixelInput input)
 {
     GBufferOutput output;
 
-    float3 albedo = diffuseMap.Sample(sampleWrap, input.texCoords).rgb;
-    float metallic = metallicMap.Sample(sampleWrap, input.texCoords).r;
-    float3 normalMapValue = normalMap.Sample(sampleWrap, input.texCoords).xyz * 2.0f - 1.0f;
-    float roughness = roughnessMap.Sample(sampleWrap, input.texCoords).r;
+    float2 uv = float2(input.texCoords.x, 1.0f - input.texCoords.y);
 
-    float3 bitangent = -cross(normalize(input.tangent), normalize(input.normal));
-    float3x3 TBN = float3x3(normalize(input.tangent), normalize(bitangent), normalize(input.normal));
-    float3 normal = normalize(mul(normalMapValue, TBN));
+    float3 albedo = diffuseMap.Sample(sampleWrap, uv).rgb;
+    float  metallic = metallicMap.Sample(sampleWrap, uv).r;
+    float3 normalMapValue = normalMap.Sample(sampleWrap, uv).xyz * 2.0f - 1.0f;
+    float  roughness = roughnessMap.Sample(sampleWrap, uv).r;
+
+    float2 tangentBitangent = normalMapValue.xy;
+    float  normalLength = sqrt(saturate(1.0f - dot(tangentBitangent, tangentBitangent)));
+
+    float3 meshNormal = normalize(input.normal);
+    float3 meshTangent = normalize(input.tangent);
+    float3 meshBitangent = normalize(cross(meshTangent, meshNormal));
+
+    float3 worldNormal = normalize(meshTangent * tangentBitangent.x + meshBitangent * tangentBitangent.y + meshNormal * normalLength);
 
     output.AlbedoMetallic = float4(albedo, metallic);
-    output.NormalRoughness = float4(EncodeNormalToRGB(normal), roughness);
+    output.NormalRoughness = float4(EncodeNormalToRGB(worldNormal), roughness);
 
     return output;
 }

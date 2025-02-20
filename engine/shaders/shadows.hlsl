@@ -25,6 +25,6 @@ float CalculateShadow(Texture2D<float> shadowMap, SamplerState samplerState, flo
     shadowCoord.y = -shadowCoord.y;
     shadowCoord.xy = shadowCoord.xy * 0.5 + 0.5;
 
-    float bias = 0.02;
+    float bias = 0.014;
     return CalculateShadowPCF(shadowMap, samplerState, shadowCoord.xyz, bias);
 }

@@ -27,26 +27,34 @@ float2 WorldToScreenUV(float3 worldPosition)
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    float3 albedo = diffuseMap.Sample(sampleWrap, input.texCoords).rgb;
-    float3 normalMapValue = normalMap.Sample(sampleWrap, input.texCoords).xyz * 2.0f - 1.0f;
-    float metallic = metallicMap.Sample(sampleWrap, input.texCoords).r;
-    float roughness = roughnessMap.Sample(sampleWrap, input.texCoords).r;
-    
-    float3x3 TBN = float3x3(input.tangent, input.bitangent, input.normal);
-    float3 normal = normalize(mul(normalMapValue, TBN));
+    float2 uv = float2(input.texCoords.x, 1.0f - input.texCoords.y);
+
+    float3 albedo = diffuseMap.Sample(sampleWrap, uv).rgb;
+    float  metallic = metallicMap.Sample(sampleWrap, uv).r;
+    float3 normalMapValue = normalMap.Sample(sampleWrap, uv).xyz * 2.0f - 1.0f;
+    float  roughness = roughnessMap.Sample(sampleWrap, uv).r;
+
+    float2 tangentBitangent = normalMapValue.xy;
+    float  normalLength = sqrt(saturate(1.0f - dot(tangentBitangent, tangentBitangent)));
+
+    float3 meshNormal = normalize(input.normal);
+    float3 meshTangent = normalize(input.tangent);
+    float3 meshBitangent = normalize(cross(meshTangent, meshNormal));
+
+    float3 worldNormal = normalize(meshTangent * tangentBitangent.x + meshBitangent * tangentBitangent.y + meshNormal * normalLength);
     float3 viewDir = normalize(cameraPosition - input.worldPosition);
 
     float shadow = CalculateShadow(g_ShadowMap, sampleClamp, input.worldPosition);
     float shadowFactor = 1.0 - shadow;
     
-    float3 finalColor = CalculateDirectionalLight(normal, albedo, metallic, roughness, viewDir, directionalLight) * shadowFactor;
+    float3 finalColor = CalculateDirectionalLight(worldNormal, albedo, metallic, roughness, viewDir, directionalLight) * shadowFactor;
     for (uint i = 0; i < activePointLightsCount; ++i)
     {
-        finalColor += CalculatePointLight(input.worldPosition, normal, albedo, metallic, roughness, viewDir, pointLights[i]);
+        finalColor += CalculatePointLight(input.worldPosition, worldNormal, albedo, metallic, roughness, viewDir, pointLights[i]);
     }
     for (uint i = 0; i < activeSpotLightsCount; ++i)
     {
-        finalColor += CalculateSpotLight(input.worldPosition, normal, albedo, metallic, roughness, viewDir, spotLights[i]);
+        finalColor += CalculateSpotLight(input.worldPosition, worldNormal, albedo, metallic, roughness, viewDir, spotLights[i]);
     }
 
     float2 screenUV = WorldToScreenUV(input.worldPosition);
