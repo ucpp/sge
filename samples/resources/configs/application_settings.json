@@ -201,23 +201,13 @@
                 "path": "resources/backpack/backpack.gltf"
             },
             {
-                "name": "ball",
-                "type": 0,
-                "path": "resources/models/ball.obj"
-            },
-            {
                 "name": "cube",
                 "type": 0,
                 "path": "resources/models/cube.gltf"
             },
             {
-                "name": "sphere",
-                "type": 0,
-                "path": "resources/models/sphere.obj"
-            },
-            {
-                "name": "anim",
-                "type": 0,
+                "name": "stormtrooper",
+                "type": 1,
                 "path": "resources/anim/silly_dancing.fbx"
             },
             {
@@ -229,14 +219,6 @@
                 "name": "plane",
                 "type": 0,
                 "path": "resources/models/plane.gltf"
-            },
-            {
-                "name": "bricks",
-                "type": 2,
-                "albedo_texture_path": "resources/bricks/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/bricks/normal.png",
-                "roughness_texture_path": "resources/bricks/roughness.png"
             },
             {
                 "name": "backpack",
@@ -263,22 +245,6 @@
                 "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
-                "name": "metal",
-                "type": 2,
-                "albedo_texture_path": "resources/metal/albedo.png",
-                "metallic_texture_path": "resources/metal/metalness.png",
-                "normal_texture_path": "resources/metal/normal.png",
-                "roughness_texture_path": "resources/metal/roughness.png"
-            },
-            {
-                "name": "marbel",
-                "type": 2,
-                "albedo_texture_path": "resources/marbel/albedo.png",
-                "metallic_texture_path": "resources/marbel/albedo.png",
-                "normal_texture_path": "resources/marbel/normal.png",
-                "roughness_texture_path": "resources/marbel/roughness.png"
-            },
-            {
                 "name": "uv_checker",
                 "type": 2,
                 "albedo_texture_path": "resources/models/uv_checker.png",
@@ -287,12 +253,12 @@
                 "roughness_texture_path": ""
             },
             {
-                "name": "backpack_norm",
+                "name": "stormtrooper_mat",
                 "type": 2,
-                "albedo_texture_path": "",
+                "albedo_texture_path": "resources/anim/albedo.dds",
                 "metallic_texture_path": "",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": ""
+                "normal_texture_path": "",
+                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "empty",
@@ -301,14 +267,6 @@
                 "metallic_texture_path": "",
                 "normal_texture_path": "",
                 "roughness_texture_path": ""
-            },
-            {
-                "name": "anim",
-                "type": 2,
-                "albedo_texture_path": "resources/anim/albedo.dds",
-                "metallic_texture_path": "",
-                "normal_texture_path": "",
-                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "PointLight",
@@ -373,29 +331,7 @@
                 "cubemap_id": "sky_cube"
             },
             {
-                "name": "Backpack (1)",
-                "type": 3,
-                "position": [
-                    "1.4",
-                    "0.0",
-                    "4.35"
-                ],
-                "rotation": [
-                    "246.77",
-                    "0.0",
-                    "0.0"
-                ],
-                "scale": [
-                    "0.5",
-                    "0.5",
-                    "0.5"
-                ],
-                "asset_id": "backpack.obj",
-                "material_id": "backpack_norm",
-                "enabled": false
-            },
-            {
-                "name": "Backpack (2)",
+                "name": "Backpack",
                 "type": 3,
                 "position": [
                     "0.0",
@@ -417,30 +353,8 @@
                 "enabled": true
             },
             {
-                "name": "Backpack (3)",
-                "type": 3,
-                "position": [
-                    "0.24",
-                    "0.0",
-                    "5.58"
-                ],
-                "rotation": [
-                    "204.35",
-                    "0.0",
-                    "0.1"
-                ],
-                "scale": [
-                    "0.5",
-                    "0.5",
-                    "0.5"
-                ],
-                "asset_id": "backpack.obj",
-                "material_id": "plastic",
-                "enabled": false
-            },
-            {
                 "name": "Stormtrooper",
-                "type": 3,
+                "type": 4,
                 "position": [
                     "-2.61",
                     "0.0",
@@ -456,8 +370,8 @@
                     "1.0",
                     "1.0"
                 ],
-                "asset_id": "anim",
-                "material_id": "anim",
+                "asset_id": "stormtrooper",
+                "material_id": "stormtrooper_mat",
                 "enabled": true
             },
             {

@@ -45,4 +45,51 @@ namespace SGE
 
         //std::reverse(m_indices.begin(), m_indices.end());
     }
+
+    void Skeleton::AddBone(const std::string& name, int32 index, const float4x4& offsetMatrix)
+    {
+        Bone bone;
+        bone.name = name;
+        bone.index = index;
+        bone.offsetMatrix = offsetMatrix;
+        bone.transform = float4x4::Identity;
+
+        m_bones.push_back(bone);
+        m_boneNameToIndex[name] = index;
+    }
+
+    int32 Skeleton::GetBoneIndex(const std::string& name) const
+    {
+        auto it = m_boneNameToIndex.find(name);
+        if (it != m_boneNameToIndex.end())
+        {
+            return it->second;
+        }
+        return -1;
+    }
+
+    const Bone& Skeleton::GetBone(int32 index) const
+    {
+        if (index >= 0 && index < m_bones.size())
+        {
+            return m_bones[index];
+        }
+        throw std::out_of_range("Invalid bone index");
+    }
+
+    const float4x4& Skeleton::GetBoneOffset(int32 index) const
+    {
+        if (index >= 0 && index < m_bones.size())
+        {
+            return m_bones[index].offsetMatrix;
+        }
+        throw std::out_of_range("Invalid bone index");
+    }
+
+    void AnimatedModelAsset::Initialize(std::vector<Mesh>& meshes, const Skeleton& skeleton, const std::vector<Animation>& animations)
+    {
+        ModelAsset::Initialize(meshes);
+        m_skeleton = skeleton;
+        m_animations = animations;
+    }
 }

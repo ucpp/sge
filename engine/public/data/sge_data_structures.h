@@ -276,6 +276,7 @@ namespace SGE
     public:
         const MaterialAssetData& GetMaterial(const std::string& id) const;
         const ModelAssetData& GetModel(const std::string& id) const;
+        const AnimatedModelAssetData& GetAnimModel(const std::string& id) const;
         const CubemapAssetData& GetCubemap(const std::string& id) const;
 
     public:

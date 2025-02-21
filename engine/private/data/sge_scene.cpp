@@ -17,6 +17,7 @@ namespace SGE
         InitializeCamera();
         InitializeFrameData();
         InstantiateModels();
+        InstantiateAnimatedModels();
 
         SceneData& sceneData = m_context->GetSceneData();
         SkyboxData* data = sceneData.GetSkyboxData();
@@ -38,6 +39,7 @@ namespace SGE
     {
         m_frameData = {};
         m_modelInstances.clear();
+        m_animatedModelInstances.clear();
     }
 
     void Scene::SyncFrameData()
@@ -114,6 +116,7 @@ namespace SGE
 
     void Scene::InstantiateModels()
     {
+        m_modelInstances.clear();
         const AssetsData& assetsData = m_context->GetAssetsData();
         const auto& sceneObjects = m_context->GetSceneData().objects;
 
@@ -144,6 +147,39 @@ namespace SGE
         }
     }
 
+    void Scene::InstantiateAnimatedModels()
+    {
+        m_animatedModelInstances.clear();
+        const AssetsData& assetsData = m_context->GetAssetsData();
+        const auto& sceneObjects = m_context->GetSceneData().objects;
+
+        auto it = sceneObjects.find(ObjectType::AnimatedModel);
+        if (it == sceneObjects.end())
+        {
+            return;
+        }
+
+        for (const auto& obj : it->second)
+        {
+            if (const auto* animData = dynamic_cast<const AnimatedModelData*>(obj.get()))
+            {
+                const std::string& assetName = animData->assetId;
+                const std::string& materialName = animData->materialId;
+
+                const AnimatedModelAssetData& modelAsset = assetsData.GetAnimModel(assetName);
+                const MaterialAssetData& materialAsset = assetsData.GetMaterial(materialName);
+
+                bool isModelLoaded = ModelLoader::LoadAnimatedModel(modelAsset);
+                AnimatedModelInstance* instance = ModelLoader::InstantiateAnimated(modelAsset, m_context);
+                Material* material = MaterialManager::LoadMaterial(materialAsset, m_context);
+                instance->SetMaterial(material);
+                SyncData(animData, instance); // todo: change to sync anim
+
+                m_animatedModelInstances[animData] = instance;
+            }
+        }
+    }
+
     void Scene::UpdateCamera(double deltaTime)
     {
         m_cameraController.Update(deltaTime);
@@ -158,6 +194,12 @@ namespace SGE
         const float4x4& proj = m_mainCamera.GetProjMatrix(m_context->GetScreenWidth(), m_context->GetScreenHeight());
 
         for (const auto& pair : m_modelInstances)
+        {
+            SyncData(pair.first, pair.second);
+            pair.second->Update(view, proj); 
+        }
+
+        for (const auto& pair : m_animatedModelInstances)
         {
             SyncData(pair.first, pair.second);
             pair.second->Update(view, proj); 

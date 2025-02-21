@@ -30,6 +30,11 @@ namespace SGE
         {
             pair.second->Render(m_context->GetCommandList().Get());
         }
+
+        for(auto& pair : scene->GetAnimModels())
+        {
+            pair.second->Render(m_context->GetCommandList().Get());
+        }
     }
     
     PipelineConfig ShadowMapRenderPass::GetPipelineConfig() const

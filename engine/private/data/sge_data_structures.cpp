@@ -111,6 +111,7 @@ namespace SGE
         TransformData::DrawEditor();
         InputText("Asset ID:", assetId);
         InputText("Material ID:", materialId);
+        ImGui::Separator();
         ImGui::Text("animations etc...");
     }
 
@@ -287,6 +288,22 @@ namespace SGE
         }
 
         throw std::runtime_error("Model with ID " + id + " not found.");
+    }
+
+    const AnimatedModelAssetData& AssetsData::GetAnimModel(const std::string& id) const
+    {
+        auto typeIt = assets.find(AssetType::AnimatedModel);
+        if (typeIt != assets.end())
+        {
+            const auto& modelMap = typeIt->second;
+            auto it = modelMap.find(id);
+            if (it != modelMap.end())
+            {
+                return static_cast<const AnimatedModelAssetData&>(*it->second);
+            }
+        }
+
+        throw std::runtime_error("Animated Model with ID " + id + " not found.");
     }
 
     const CubemapAssetData& AssetsData::GetCubemap(const std::string& id) const

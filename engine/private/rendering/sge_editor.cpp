@@ -56,6 +56,7 @@ namespace SGE
         ImGui_ImplDX12_Init(device, BUFFER_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);    
 
         m_icons.emplace(AssetType::Model, GetTexturePtr("mesh_icon.png"));
+        m_icons.emplace(AssetType::AnimatedModel, GetTexturePtr("anim_icon.png"));
         m_icons.emplace(AssetType::Material, GetTexturePtr("material_icon.png"));
         m_icons.emplace(AssetType::Light, GetTexturePtr("light_icon.png"));
         m_icons.emplace(AssetType::Cubemap, GetTexturePtr("cubemap_icon.png"));
@@ -64,6 +65,8 @@ namespace SGE
         m_objectIcons.emplace(ObjectType::DirectionalLight, GetTexturePtr("directional_light_16.png"));
         m_objectIcons.emplace(ObjectType::PointLight, GetTexturePtr("point_light_16.png"));
         m_objectIcons.emplace(ObjectType::Model, GetTexturePtr("mesh_16.png"));
+        m_objectIcons.emplace(ObjectType::AnimatedModel, GetTexturePtr("anim_16.png"));
+
         m_objectIcons.emplace(ObjectType::Skybox, GetTexturePtr("skybox_16.png"));
 
         m_visibleObjectTexure   = GetTexturePtr("visible_16.png");
