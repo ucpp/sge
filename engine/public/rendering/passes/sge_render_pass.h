@@ -36,6 +36,7 @@ namespace SGE
         void BindRenderTargetSRV(const std::string& name, uint32 descIndex);
 
         void DrawQuad();
+        void DrawModels(class Scene* scene);
 
     protected:
         class RenderContext* m_context = nullptr;

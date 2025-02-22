@@ -2,6 +2,7 @@
 
 #include "rendering/sge_render_context.h"
 #include "core/sge_helpers.h"
+#include "data/sge_scene.h"
 
 namespace SGE
 {
@@ -127,5 +128,22 @@ namespace SGE
         ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         commandList->DrawInstanced(6, 1, 0, 0);
+    }
+
+    void RenderPass::DrawModels(Scene* scene)
+    {
+        Verify(m_context, "ForwardRenderPass::OnDraw: Render context is null.");
+        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
+        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+        for(auto& pair : scene->GetModels())
+        {
+            pair.second->Render(m_context->GetCommandList().Get());
+        }
+
+        for(auto& pair : scene->GetAnimModels())
+        {
+            pair.second->Render(m_context->GetCommandList().Get());
+        }
     }
 }

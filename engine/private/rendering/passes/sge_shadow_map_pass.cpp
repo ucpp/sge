@@ -22,19 +22,7 @@ namespace SGE
 
     void ShadowMapRenderPass::OnDraw(Scene* scene)
     {
-        Verify(m_context, "ShadowMapRenderPass::OnDraw: Render context is null.");
-        ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
-        commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-        for(auto& pair : scene->GetModels())
-        {
-            pair.second->Render(m_context->GetCommandList().Get());
-        }
-
-        for(auto& pair : scene->GetAnimModels())
-        {
-            pair.second->Render(m_context->GetCommandList().Get());
-        }
+        DrawModels(scene);
     }
     
     PipelineConfig ShadowMapRenderPass::GetPipelineConfig() const
