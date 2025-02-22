@@ -17,22 +17,10 @@ namespace SGE
     static const std::string PathToSaveFile = "resources/configs/editor_layout.ini";
     static const std::string PathToIcons = "resources/editor/";
 
-    std::string ConvertWcharToUtf8(const wchar_t* wcharStr)
-    {
-        int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wcharStr, -1, nullptr, 0, nullptr, nullptr);
-        std::vector<char> utf8Str(sizeNeeded);
-        WideCharToMultiByte(CP_UTF8, 0, wcharStr, -1, utf8Str.data(), sizeNeeded, nullptr, nullptr);
-        
-        return std::string(utf8Str.begin(), utf8Str.end());
-    }
-
     void Editor::Initialize(RenderContext* context)
     {
         Verify(context, "Editor::Initialize failed: context object is null!");
         m_context = context;
-
-        ID3D12Device* device = m_context->GetD12Device().Get();
-        Verify(device, "Editor::Initialize failed: ID3D12Device is null!");
 
         HWND hwnd = m_context->GetWindowHandle();
         Verify(hwnd, "Editor::Initialize failed: HWND is null!");
@@ -48,25 +36,41 @@ namespace SGE
         ImGui_ImplWin32_EnableDpiAwareness();
         ImGui_ImplWin32_Init(hwnd);
 
+        InitializeImGuiDX12();
+        RegisterAssetIcons();
+        RegisterObjectIcons();
+    }
+
+    void Editor::InitializeImGuiDX12()
+    {
+        ID3D12Device* device = m_context->GetD12Device().Get();
+        Verify(device, "Editor::Initialize failed: ID3D12Device is null!");
+
         ID3D12DescriptorHeap* heap = m_context->GetCbvSrvUavHeap()->GetHeap().Get();
         Verify(heap, "Editor::Initialize failed: DescriptorHeap is null!");
+
         CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle = m_context->GetCbvSrvUavHeap()->GetCPUHandle(EDITOR_START_HEAP_INDEX);
         CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle = m_context->GetCbvSrvUavHeap()->GetGPUHandle(EDITOR_START_HEAP_INDEX);
 
-        ImGui_ImplDX12_Init(device, BUFFER_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);    
+        ImGui_ImplDX12_Init(device, BUFFER_COUNT, DXGI_FORMAT_R8G8B8A8_UNORM, heap, cpuHandle, gpuHandle);
+    }
 
-        m_icons.emplace(AssetType::Model, GetTexturePtr("mesh_icon.png"));
-        m_icons.emplace(AssetType::AnimatedModel, GetTexturePtr("anim_icon.png"));
-        m_icons.emplace(AssetType::Material, GetTexturePtr("material_icon.png"));
-        m_icons.emplace(AssetType::Light, GetTexturePtr("light_icon.png"));
-        m_icons.emplace(AssetType::Cubemap, GetTexturePtr("cubemap_icon.png"));
+    void Editor::RegisterAssetIcons()
+    {
+        m_assetIcons.emplace(AssetType::Model, GetTexturePtr("mesh_icon.png"));
+        m_assetIcons.emplace(AssetType::AnimatedModel, GetTexturePtr("anim_icon.png"));
+        m_assetIcons.emplace(AssetType::Material, GetTexturePtr("material_icon.png"));
+        m_assetIcons.emplace(AssetType::Light, GetTexturePtr("light_icon.png"));
+        m_assetIcons.emplace(AssetType::Cubemap, GetTexturePtr("cubemap_icon.png"));
+    }
 
+    void Editor::RegisterObjectIcons()
+    {
         m_objectIcons.emplace(ObjectType::Camera, GetTexturePtr("camera_16.png"));
         m_objectIcons.emplace(ObjectType::DirectionalLight, GetTexturePtr("directional_light_16.png"));
         m_objectIcons.emplace(ObjectType::PointLight, GetTexturePtr("point_light_16.png"));
         m_objectIcons.emplace(ObjectType::Model, GetTexturePtr("mesh_16.png"));
         m_objectIcons.emplace(ObjectType::AnimatedModel, GetTexturePtr("anim_16.png"));
-
         m_objectIcons.emplace(ObjectType::Skybox, GetTexturePtr("skybox_16.png"));
 
         m_visibleObjectTexure   = GetTexturePtr("visible_16.png");
@@ -99,16 +103,18 @@ namespace SGE
             return;
         }
 
+        BeginNewFrame();
+        SetupDockspace();
+        
+        ConstructEditors();
+        ConstructMenuBar();
+    }
+
+    void Editor::BeginNewFrame()
+    {
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
-
-        SetupDockspace();
-        BuildDockingExample();
-
-        BuildMainMenuBar();
-        BuildSettingsWindow();
-        BuildResolutionWindow();
     }
 
     void Editor::Render()
@@ -117,6 +123,7 @@ namespace SGE
         {
             return;
         }
+
         ID3D12GraphicsCommandList* commandList = m_context->GetCommandList().Get();
         Verify(commandList, "Editor::Render: 'commandList' is null or invalid. Rendering cannot proceed.");
 
@@ -142,95 +149,139 @@ namespace SGE
         m_isEnable = isActive;
     }
 
-    void Editor::BuildMainMenuBar()
+    void Editor::ConstructMenuBar()
     {
         if (ImGui::BeginMainMenuBar())
         {
-            if (ImGui::BeginMenu("File"))
-            {
-                if(ImGui::MenuItem("Save"))
-                {
-                    Config::Save<ApplicationData>(DEFAULT_SETTINGS_PATH, m_context->GetApplicationData());
-                }
-                if(ImGui::MenuItem("Save as"))
-                {
-                    if (m_fileDialog->SaveAs(L"json", L"JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0"))
-                    {
-                        std::string savePath = m_fileDialog->GetSavePath();
-                        Config::Save<ApplicationData>(savePath, m_context->GetApplicationData());
-                        LOG_INFO("Settings saved to: {}", savePath);
-                    }
-                    else
-                    {
-                        DWORD error = CommDlgExtendedError();
-                        if (error != 0)
-                        {
-                            LOG_ERROR("Error in Save As dialog: {}", error);
-                        }
-                        else
-                        {
-                            LOG_INFO("Save As canceled.");
-                        }
-                    }
-                }
-
-                if (ImGui::MenuItem("Settings"))
-                {
-                    m_isOpenResolutionWindow = true;
-                }
-                if (ImGui::MenuItem("Quit"))
-                {
-                    m_context->GetWindowData().isPressedQuit = true;
-                }
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("Render"))
-            {
-                if (ImGui::MenuItem("Render settings"))
-                {
-                    m_isOpenSettingsWindow = true;
-                }
-                ImGui::EndMenu();
-            }
+            ConstructFileMenu();
+            ConstructEditMenu();
+            ConstructWindowMenu();
+            ConstructHelpMenu();
 
             ImGui::EndMainMenuBar();
         }
     }
 
-    void Editor::BuildSettingsWindow()
+    void Editor::ConstructFileMenu()
     {
-        if (m_isOpenSettingsWindow)
+        if (ImGui::BeginMenu("File"))
         {
-            ImGui::SetNextWindowSize(ImVec2(150, 300), ImGuiCond_Once);
-            if (ImGui::Begin("Render settings", &m_isOpenSettingsWindow))
+            if(ImGui::MenuItem("Save"))
             {
+                OnSave();
+            }
             
-            }
-            ImGui::End();
-        }
-    }
-
-    void Editor::BuildResolutionWindow()
-    {
-        if (m_isOpenResolutionWindow)
-        {
-            ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_Once);
-            if (ImGui::Begin("Resolution Settings", &m_isOpenResolutionWindow))
+            if(ImGui::MenuItem("Save as"))
             {
-                WindowData& windowData = m_context->GetWindowData();
-                ImGui::Text("Select Window Resolution:");
-                const int32 size = static_cast<int32>(windowData.resolutions.size());
-                if (ImGui::Combo("Resolution", &windowData.selectedResolution, windowData.GetResolutions(), size))
-                {
-                    ApplyResolutionChange();
-                }
+                OnSaveAs();
             }
+            
+            if (ImGui::MenuItem("Exit"))
+            {
+                OnExit();
+            }
+
+            ImGui::EndMenu();
+        }
+    }
+
+    void Editor::ConstructEditMenu()
+    {
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo")) {}
+            if (ImGui::MenuItem("Redo")) {}
+            ImGui::EndMenu();
+        }
+    }
+
+    void Editor::ConstructWindowMenu()
+    {
+        if (ImGui::BeginMenu("Window"))
+        {
+            if (ImGui::MenuItem("Window settings"))
+            {
+                m_isEnableWindowSettings = true;
+            }
+            
+            if (ImGui::MenuItem("Animation"))
+            {
+            }
+            ImGui::EndMenu();
+        }
+    }
+
+    void Editor::ConstructHelpMenu()
+    {
+        if (ImGui::BeginMenu("Help"))
+        {
+            if (ImGui::MenuItem("About SGE")) {}
+            ImGui::EndMenu();
+        }
+    }
+
+    void Editor::OnSave()
+    {
+        Config::Save<ApplicationData>(DEFAULT_SETTINGS_PATH, m_context->GetApplicationData());
+    }
+
+    void Editor::OnSaveAs()
+    {
+        if (m_fileDialog->SaveAs(L"json", L"JSON Files (*.json)\0*.json\0All Files (*.*)\0*.*\0\0"))
+        {
+            std::string savePath = m_fileDialog->GetSavePath();
+            Config::Save<ApplicationData>(savePath, m_context->GetApplicationData());
+            LOG_INFO("Settings saved to: {}", savePath);
+        }
+        else
+        {
+            DWORD error = CommDlgExtendedError();
+            if (error != 0)
+            {
+                LOG_ERROR("Error in Save As dialog: {}", error);
+            }
+            else
+            {
+                LOG_INFO("Save As canceled.");
+            }
+        }
+    }
+
+    void Editor::OnExit()
+    {
+        m_context->GetWindowData().isPressedQuit = true;
+    }
+
+    void Editor::ConstructWindowSettings()
+    {
+        if (!m_isEnableWindowSettings)
+        {
+            return;
+        }
+
+        constexpr ImVec2 WINDOW_SIZE(280.0f, 80.0f);
+        ImGui::SetNextWindowSize(WINDOW_SIZE, ImGuiCond_Once);
+
+        if (ImGui::Begin("Window settings", &m_isEnableWindowSettings))
+        {
+            WindowData& windowData = m_context->GetWindowData();
+
+            constexpr float LABEL_WIDTH = 90.0f;
+            ImGui::AlignTextToFramePadding();
+            ImGui::TextUnformatted("Resolution:");
+            ImGui::SameLine(LABEL_WIDTH);
+
+            const int32 resolutionCount = static_cast<int32>(windowData.resolutions.size());
+            if (ImGui::Combo("##Resolution", &windowData.selectedResolution, windowData.GetResolutions(), resolutionCount))
+            {
+                OnResolutionChange();
+            }
+
             ImGui::End();
         }
     }
 
-    void Editor::ApplyResolutionChange()
+    void Editor::OnResolutionChange()
     {
         WindowData& windowData = m_context->GetWindowData();
         const int32 width = windowData.GetWidth();
@@ -242,28 +293,40 @@ namespace SGE
     void Editor::SetupDockspace()
     {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+        constexpr float TRANSPARENT_BG = 0.0f;
+        constexpr ImVec2 NO_PADDING(0.0f, 0.0f);
+        constexpr ImVec2 FULLSIZE_DOCKSPACE(0.0f, 0.0f);
+
         ImGui::SetNextWindowPos(viewport->Pos);
         ImGui::SetNextWindowSize(viewport->Size);
         ImGui::SetNextWindowViewport(viewport->ID);
-        ImGui::SetNextWindowBgAlpha(0.0f);
+        ImGui::SetNextWindowBgAlpha(TRANSPARENT_BG);
 
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoCollapse |
-                                        ImGuiWindowFlags_NoResize |
-                                        ImGuiWindowFlags_NoMove |
-                                        ImGuiWindowFlags_NoBringToFrontOnFocus |
-                                        ImGuiWindowFlags_NoNavFocus;
+        constexpr ImGuiWindowFlags WINDOW_FLAGS = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | 
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("Main DockSpace", nullptr, window_flags);
-        ImGui::PopStyleVar();
-
-        ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
-        ImGui::DockSpace(dockspace_id, ImVec2(0, 0), ImGuiDockNodeFlags_PassthruCentralNode);
-
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, NO_PADDING);
+        
+        if (ImGui::Begin("Main DockSpace", nullptr, WINDOW_FLAGS))
+        {
+            ImGuiID dockspace_id = ImGui::GetID("MainDockSpace");
+            ImGui::DockSpace(dockspace_id, FULLSIZE_DOCKSPACE, ImGuiDockNodeFlags_PassthruCentralNode);
+        }
+        
         ImGui::End();
+        ImGui::PopStyleVar();
     }
 
-    void Editor::BuildDockingExample()
+    void Editor::ConstructEditors()
+    {
+        ConstructSceneObjectsList();
+        ConstructContentBrowser();
+        ConstructPropertiesEditor();
+        ConstructWindowSettings();
+    }
+
+    void Editor::ConstructSceneObjectsList()
     {
         ImGui::Begin("Scene hierarchy");
 
@@ -339,53 +402,10 @@ namespace SGE
             ImGui::EndChild();
         }
         ImGui::End();
+    }
 
-        ImGui::Begin("Content browser");
-        const AssetsData& assetsSettings = m_context->GetAssetsData();
-        ImGui::BeginChild("AssetScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
-
-        const float padding = 20.0f;
-        const ImVec2 iconSize = ImVec2(64, 64);
-        float availableWidth = ImGui::GetContentRegionAvail().x;
-        float xOffset = 0.0f;
-        float yOffset = 0.0f;
-        float textHeight = ImGui::GetTextLineHeightWithSpacing() * 2.0f;
-
-        for (const auto& [type, assetMap] : assetsSettings.assets)
-        {
-            for (const auto& [id, asset] : assetMap)
-            {
-                ImGui::SetCursorPos(ImVec2(xOffset, yOffset));
-
-                ImGui::BeginGroup();
-
-                std::string buttonId = "##" + asset->name;
-
-                ImTextureID iconTexture = m_icons[type];
-
-                if (ImGui::ImageButton(buttonId.c_str(), iconTexture, iconSize))
-                {
-                    std::cout << "Clicked on asset: " << asset->name << std::endl;
-                }
-
-                ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + iconSize.x);
-                ImGui::TextWrapped(asset->name.c_str());
-                ImGui::PopTextWrapPos();
-
-                ImGui::EndGroup();
-
-                xOffset += iconSize.x + padding;
-                if (xOffset + iconSize.x > availableWidth)
-                {
-                    xOffset = 0.0f;
-                    yOffset += iconSize.y + textHeight + padding;
-                }
-            }
-        }
-
-        ImGui::EndChild();
-        ImGui::End();
-
+    void Editor::ConstructPropertiesEditor()
+    {
         ImGui::Begin("Properties");
         if (m_selectedObject)
         {
@@ -396,5 +416,63 @@ namespace SGE
             ImGui::Text("No object selected.");
         }
         ImGui::End();
+    }
+
+    void Editor::ConstructContentBrowser()
+    {
+        constexpr float PADDING = 20.0f;
+        constexpr ImVec2 ICON_SIZE(64.0f, 64.0f);
+        
+        ImGui::Begin("Content Browser");
+        const AssetsData& assetsSettings = m_context->GetAssetsData();
+        ImGui::BeginChild("AssetScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
+
+        float availableWidth = ImGui::GetContentRegionAvail().x;
+        float textHeight = ImGui::GetTextLineHeightWithSpacing() * 2.0f;
+
+        float xOffset = 0.0f;
+        float yOffset = 0.0f;
+
+        for (const auto& [type, assetMap] : assetsSettings.assets)
+        {
+            for (const auto& [id, asset] : assetMap)
+            {
+                ImGui::SetCursorPos(ImVec2(xOffset, yOffset));
+                ImGui::BeginGroup();
+
+                std::string buttonId = "##" + asset->name;
+                ImTextureID iconTexture = m_assetIcons[type];
+
+                if (ImGui::ImageButton(buttonId.c_str(), iconTexture, ICON_SIZE))
+                {
+                    std::cout << "Clicked on asset: " << asset->name << std::endl;
+                }
+
+                ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + ICON_SIZE.x);
+                ImGui::TextWrapped(asset->name.c_str());
+                ImGui::PopTextWrapPos();
+
+                ImGui::EndGroup();
+
+                xOffset += ICON_SIZE.x + PADDING;
+                if (xOffset + ICON_SIZE.x > availableWidth)
+                {
+                    xOffset = 0.0f;
+                    yOffset += ICON_SIZE.y + textHeight + PADDING;
+                }
+            }
+        }
+
+        ImGui::EndChild();
+        ImGui::End();
+    }
+
+    std::string ConvertWcharToUtf8(const wchar_t* wcharStr)
+    {
+        int sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, wcharStr, -1, nullptr, 0, nullptr, nullptr);
+        std::vector<char> utf8Str(sizeNeeded);
+        WideCharToMultiByte(CP_UTF8, 0, wcharStr, -1, utf8Str.data(), sizeNeeded, nullptr, nullptr);
+        
+        return std::string(utf8Str.begin(), utf8Str.end());
     }
 }

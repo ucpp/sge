@@ -23,26 +23,41 @@ namespace SGE
         void SetActive(bool isActive);
 
     private:
+        void InitializeImGuiDX12();
+        void RegisterAssetIcons();
+        void RegisterObjectIcons();
+
+        void BeginNewFrame();
         void SetupDockspace();
-        void BuildDockingExample();
 
-        void BuildMainMenuBar();
-        void BuildSettingsWindow();
-        void BuildResolutionWindow();
+        void ConstructEditors();
 
-        void ApplyResolutionChange();
-
+        void ConstructMenuBar();
+        void ConstructFileMenu();
+        void ConstructEditMenu();
+        void ConstructWindowMenu();
+        void ConstructHelpMenu();
+        void ConstructSceneObjectsList();
+        void ConstructPropertiesEditor();
+        void ConstructContentBrowser();
+        void ConstructWindowSettings();
+    
         uint32 GetTextureIndex(const std::string& name) const;
         ImTextureID GetTexturePtr(const std::string& name) const;
         ImTextureID GetTexturePtr(uint32 index) const;
 
     private:
+        void OnSave();
+        void OnSaveAs();
+        void OnExit();
+        void OnResolutionChange();
+
+    private:
         class RenderContext* m_context = nullptr;
 
-        bool m_isOpenSettingsWindow = false;
-        bool m_isOpenResolutionWindow = false;
+        bool m_isEnableWindowSettings = false;
 
-        std::unordered_map<AssetType, ImTextureID> m_icons;
+        std::unordered_map<AssetType, ImTextureID>  m_assetIcons;
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;
         
         ImTextureID m_invisibleObjectTexure;
@@ -55,6 +70,8 @@ namespace SGE
 
         bool m_isEnable = true;
     };
+
+    std::string ConvertWcharToUtf8(const wchar_t* wcharStr);
 }
 
 #endif // !_SGE_EDITOR_H_
