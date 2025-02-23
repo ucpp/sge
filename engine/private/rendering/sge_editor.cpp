@@ -9,6 +9,8 @@
 #include "core/sge_config.h"
 #include "data/sge_data_structures.h"
 #include "core/sge_scoped_event.h"
+#include "data/sge_scene.h"
+#include "data/sge_animated_model_instance.h"
 
 #include <commdlg.h>
 
@@ -17,10 +19,11 @@ namespace SGE
     static const std::string PathToSaveFile = "resources/configs/editor_layout.ini";
     static const std::string PathToIcons = "resources/editor/";
 
-    void Editor::Initialize(RenderContext* context)
+    void Editor::Initialize(RenderContext* context, Scene* scene)
     {
         Verify(context, "Editor::Initialize failed: context object is null!");
         m_context = context;
+        m_activeScene = scene;
 
         HWND hwnd = m_context->GetWindowHandle();
         Verify(hwnd, "Editor::Initialize failed: HWND is null!");
@@ -206,6 +209,7 @@ namespace SGE
             
             if (ImGui::MenuItem("Animation"))
             {
+                m_isEnableAnimationEditor = true;
             }
             ImGui::EndMenu();
         }
@@ -281,6 +285,25 @@ namespace SGE
         }
     }
 
+    void Editor::ConstructAnimationEditor()
+    {
+        if (!m_isEnableAnimationEditor)
+        {
+            return;
+        }
+
+        ImGui::Begin("Animation");
+        if(m_activeAnimatedModel)
+        {
+
+        }
+        else
+        {
+            ImGui::Text("No animated object selected.");
+        }
+        ImGui::End();
+    }
+
     void Editor::OnResolutionChange()
     {
         WindowData& windowData = m_context->GetWindowData();
@@ -324,6 +347,7 @@ namespace SGE
         ConstructContentBrowser();
         ConstructPropertiesEditor();
         ConstructWindowSettings();
+        ConstructAnimationEditor();
     }
 
     void Editor::ConstructSceneObjectsList()
@@ -385,6 +409,19 @@ namespace SGE
                     {
                         m_selectedObjectIndex = index;
                         m_selectedObject = obj.get();
+                        
+                        if(m_selectedObject->type == ObjectType::AnimatedModel && m_activeScene)
+                        {
+                            AnimatedModelData* animatedModel = dynamic_cast<AnimatedModelData*>(m_selectedObject);
+                            if (animatedModel)
+                            {
+                                m_activeAnimatedModel = m_activeScene->GetAnimModel(animatedModel);
+                            }
+                        }
+                        else
+                        {
+                            m_activeAnimatedModel = nullptr;
+                        }
                     }
                     
                     ImGui::SameLine();

@@ -34,8 +34,8 @@ namespace SGE
         
         m_window->Create();
         m_renderContext->Initialize(m_window.get(), m_appData.get());
-        m_editor->Initialize(m_renderContext.get());
         m_scene->Initialize(m_renderContext.get());
+        m_editor->Initialize(m_renderContext.get(), m_scene.get());
         m_renderer->Initialize(m_renderContext.get());
 
         LOG_INFO("Initialization time: {}", timer.GetElapsedSeconds());

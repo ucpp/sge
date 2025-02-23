@@ -112,6 +112,7 @@ namespace SGE
         InputText("Asset ID:", assetId);
         InputText("Material ID:", materialId);
         ImGui::Separator();
+        
         ImGui::Text("animations etc...");
     }
 

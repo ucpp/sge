@@ -16,7 +16,7 @@ namespace SGE
     class Editor
     {
     public:
-        void Initialize(class RenderContext* context);
+        void Initialize(class RenderContext* context, class Scene* scene);
         void BuildFrame();
         void Render();
         void Shutdown();
@@ -41,6 +41,8 @@ namespace SGE
         void ConstructPropertiesEditor();
         void ConstructContentBrowser();
         void ConstructWindowSettings();
+
+        void ConstructAnimationEditor();
     
         uint32 GetTextureIndex(const std::string& name) const;
         ImTextureID GetTexturePtr(const std::string& name) const;
@@ -54,8 +56,11 @@ namespace SGE
 
     private:
         class RenderContext* m_context = nullptr;
+        class Scene* m_activeScene = nullptr;
+        class AnimatedModelInstance* m_activeAnimatedModel = nullptr;
 
         bool m_isEnableWindowSettings = false;
+        bool m_isEnableAnimationEditor = false;
 
         std::unordered_map<AssetType, ImTextureID>  m_assetIcons;
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;

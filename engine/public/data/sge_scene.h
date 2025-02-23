@@ -20,6 +20,7 @@ namespace SGE
 
         const std::map<const ModelData*, ModelInstance*>& GetModels() const { return m_modelInstances; }
         const std::map<const AnimatedModelData*, AnimatedModelInstance*>& GetAnimModels() const { return m_animatedModelInstances; }
+        AnimatedModelInstance* GetAnimModel(const AnimatedModelData* data) const;
 
         CubemapAssetData GetSkyboxCubeMap() const { return m_skyboxCubemap; }
 

@@ -205,4 +205,17 @@ namespace SGE
             pair.second->Update(view, proj); 
         }
     }
+
+    AnimatedModelInstance* Scene::GetAnimModel(const AnimatedModelData* data) const
+    {
+        if(data)
+        {
+            auto it = m_animatedModelInstances.find(data);
+            if(it != m_animatedModelInstances.end())
+            {
+                return it->second;
+            }
+        }
+        return nullptr;
+    }
 }
