@@ -16,7 +16,7 @@ namespace SGE
     public:
         void Initialize(ModelAsset* asset, class Device* device, class DescriptorHeap* descriptorHeap, uint32 instanceIndex);
         void SetMaterial(Material* material);
-        void Update(const float4x4& viewMatrix, const float4x4& projectionMatrix);
+        void UpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
 
         void SetName(const std::string& name);
@@ -30,8 +30,12 @@ namespace SGE
         const float3& GetRotation() const { return m_rotation; }
         const float3& GetScale() const { return m_scale; }
 
-    private:
+    protected:
+        virtual const std::vector<Mesh>& GetMeshes() const;
+        virtual void OnUpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix);
         float4x4 GetWorldMatrix() const;
+        ConstantBuffer  m_transformBuffer;
+        TransformBuffer m_transformData;
 
     private:
         ModelAsset*     m_asset = nullptr;
@@ -39,7 +43,7 @@ namespace SGE
         DescriptorHeap* m_descriptorHeap = nullptr;
         VertexBuffer    m_vertexBuffer;
         IndexBuffer     m_indexBuffer;
-        ConstantBuffer  m_transformBuffer;
+       
 
         float3 m_position = { 0.0f, 0.0f, 0.0f };
         float3 m_rotation = { 0.0f, 0.0f, 0.0f };

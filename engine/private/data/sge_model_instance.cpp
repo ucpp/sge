@@ -11,12 +11,14 @@ namespace SGE
     void ModelInstance::Initialize(ModelAsset* asset, Device* device, DescriptorHeap* descriptorHeap, uint32 instanceIndex)
     {
         Verify(asset, "ModelInstance::Initialize asset is null.");
+        Verify(descriptorHeap, "ModelInstance::Initialize descriptorHeap is null.");
         
         m_asset = asset;
         m_descriptorHeap = descriptorHeap;
         m_instanceIndex = instanceIndex;
         m_vertexBuffer.Initialize(device, asset->GetVertices());
         m_indexBuffer.Initialize(device, asset->GetIndices());
+        m_transformData = {};
         m_transformBuffer.Initialize(device->GetDevice().Get(), descriptorHeap, sizeof(TransformBuffer), m_instanceIndex);
     }
 
@@ -31,6 +33,11 @@ namespace SGE
         {
             return;
         }
+        
+        if(!m_descriptorHeap)
+        {
+            return;
+        }
 
         commandList->IASetVertexBuffers(0, 1, &m_vertexBuffer.GetView());
         commandList->IASetIndexBuffer(&m_indexBuffer.GetView());
@@ -40,7 +47,7 @@ namespace SGE
         std::string eventName = "Draw " + m_name;
         SCOPED_EVENT_GPU(commandList, eventName.c_str());
 
-        const std::vector<Mesh>& meshes = m_asset->GetMeshes();
+        const std::vector<Mesh>& meshes = GetMeshes();
         for (size_t i = 0; i < meshes.size(); ++i)
         {
             const auto& resourceInfo = meshes[i].GetInfo();
@@ -75,18 +82,33 @@ namespace SGE
         return translationMatrix * rotationMatrix * scaleMatrix;
     }
 
-    void ModelInstance::Update(const float4x4& viewMatrix, const float4x4& projectionMatrix)
+    void ModelInstance::UpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix)
     {
         if(!m_enabled)
         {
             return;
         }
 
-        TransformBuffer transformData = {};
-        transformData.model = GetWorldMatrix();
-        transformData.view = viewMatrix;
-        transformData.projection = projectionMatrix;
+        OnUpdateTransform(viewMatrix, projectionMatrix);
+    }
 
-        m_transformBuffer.Update(&transformData, sizeof(TransformBuffer));
+    void ModelInstance::OnUpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix)
+    {
+        m_transformData.model = GetWorldMatrix();
+        m_transformData.view = viewMatrix;
+        m_transformData.projection = projectionMatrix;
+        m_transformData.isAnimated = false;
+
+        for (size_t i = 0; i < 100; ++i)
+        {
+            m_transformData.boneTransforms[i] = float4x4::Identity;
+        }
+
+        m_transformBuffer.Update(&m_transformData, sizeof(TransformBuffer));
+    }
+
+    const std::vector<Mesh>& ModelInstance::GetMeshes() const
+    {
+        return m_asset->GetMeshes();
     }
 }

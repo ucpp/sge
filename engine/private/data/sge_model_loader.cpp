@@ -120,6 +120,20 @@ namespace SGE
         vertices.reserve(mesh->mNumVertices);
         indices.reserve(mesh->mNumFaces * 3);
 
+        std::vector<std::vector<float>> vertexWeights(mesh->mNumVertices);
+        std::vector<std::vector<int32>> vertexIndices(mesh->mNumVertices);
+
+        for (uint32 i = 0; i < mesh->mNumBones; i++)
+        {
+            aiBone* bone = mesh->mBones[i];
+            for (uint32 j = 0; j < bone->mNumWeights; j++)
+            {
+                aiVertexWeight weight = bone->mWeights[j];
+                vertexWeights[weight.mVertexId].push_back(weight.mWeight);
+                vertexIndices[weight.mVertexId].push_back(i);
+            }
+        }
+
         for (uint32 i = 0; i < mesh->mNumVertices; i++)
         {
             Vertex vertex;
@@ -143,6 +157,22 @@ namespace SGE
             {
                 vertex.tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
                 vertex.bitangent = { mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z };
+            }
+
+            vertex.boneWeights[0] = 0.0f;
+            vertex.boneWeights[1] = 0.0f;
+            vertex.boneWeights[2] = 0.0f;
+            vertex.boneWeights[3] = 0.0f;
+
+            vertex.boneIndices[0] = -1;
+            vertex.boneIndices[1] = -1;
+            vertex.boneIndices[2] = -1;
+            vertex.boneIndices[3] = -1;
+
+            for (size_t j = 0; j < vertexWeights[i].size() && j < 4; j++)
+            {
+                vertex.boneWeights[j] = vertexWeights[i][j];
+                vertex.boneIndices[j] = vertexIndices[i][j];
             }
 
             vertices.push_back(vertex);

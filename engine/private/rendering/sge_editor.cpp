@@ -293,9 +293,50 @@ namespace SGE
         }
 
         ImGui::Begin("Animation");
-        if(m_activeAnimatedModel)
+        if (m_activeAnimatedModel)
         {
+            const std::vector<Animation>& animations = m_activeAnimatedModel->GetAnimations();
 
+            if (ImGui::Button("Select Animation"))
+            {
+                ImGui::OpenPopup("AnimationSelector");
+            }
+
+            if (ImGui::BeginPopup("AnimationSelector"))
+            {
+                for (const auto& animation : animations)
+                {
+                    if (ImGui::Selectable(animation.name.c_str()))
+                    {
+                        m_activeAnimatedModel->SelectAnimation(animation.name);
+                        m_activeAnimatedModel->PlayAnimation();
+                    }
+                }
+                ImGui::EndPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Play"))
+            {
+                m_activeAnimatedModel->PlayAnimation();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Pause"))
+            {
+                m_activeAnimatedModel->StopAnimation();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Stop"))
+            {
+                m_activeAnimatedModel->StopAnimation();
+                m_activeAnimatedModel->ResetAnimationTime();
+            }
+
+            float currentTime = m_activeAnimatedModel->GetCurrentAnimationTime();
+            float duration = m_activeAnimatedModel->GetCurrentAnimationDuration();
+            if (ImGui::SliderFloat("Progress", &currentTime, 0.0f, duration, "%.2f"))
+            {
+                m_activeAnimatedModel->SetCurrentAnimationTime(currentTime);
+            }
         }
         else
         {

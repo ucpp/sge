@@ -372,7 +372,7 @@
                 ],
                 "asset_id": "stormtrooper",
                 "material_id": "stormtrooper_mat",
-                "enabled": true
+                "enabled": false
             },
             {
                 "name": "uv_checker",

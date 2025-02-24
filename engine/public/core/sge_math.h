@@ -91,6 +91,7 @@ namespace SGE
         const float& operator[](size_t index) const noexcept;
 
         static const float3 Zero;
+        static const float3 One;
 
         float length() const noexcept;
         float3 normalized() const noexcept;
@@ -147,15 +148,21 @@ namespace SGE
         float4& operator/=(float scalar) noexcept;
         bool operator==(const float4& other) noexcept;
         bool operator!=(const float4& other) noexcept;
-        float4 operator-() noexcept;
+        float4 operator-() const noexcept;
+        float4 normalized() const noexcept;
 
         static const float4 Zero;
+        static const float4 Identity;
     };
 
     float4 operator+(const float4& lhs, const float4& rhs) noexcept;
     float4 operator-(const float4& lhs, const float4& rhs) noexcept;
     float4 operator*(const float4& vec, float scalar) noexcept;
     float4 operator/(const float4& vec, float scalar) noexcept;
+    
+    float length(const float4& v) noexcept;
+    float dot(const float4& a, const float4& b) noexcept;
+    float4 slerp(const float4& a, const float4& b, float t) noexcept;
 
     // --------------------------------------------------------------------------
     // float2x2
@@ -321,6 +328,7 @@ namespace SGE
     float4x4 CreateTranslationMatrix(const float3& translation) noexcept;
     float4x4 CreateRotationMatrixYawPitchRoll(float yaw, float pitch, float roll) noexcept;
     float4x4 CreateScaleMatrix(const float3& scale) noexcept;
+    float4x4 CreateRotationMatrixFromQuaternion(const float4& quaternion) noexcept;
     float4x4 CreateOrthographicProjectionMatrix(float width, float height, float nearZ, float farZ) noexcept;
 }
 

@@ -56,6 +56,8 @@ namespace SGE
             { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
             { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
             { "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 44, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "BONE_WEIGHTS", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+            { "BONE_INDICES", 0, DXGI_FORMAT_R32G32B32A32_SINT, 0, 72, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
         };
         config.InputLayout = { defaultInputLayout, _countof(defaultInputLayout) };
 
@@ -63,7 +65,7 @@ namespace SGE
         config.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
         config.DepthStencilState.DepthEnable = TRUE;
         config.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-        
+
         return config;
     }
 }

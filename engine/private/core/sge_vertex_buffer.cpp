@@ -25,7 +25,8 @@ namespace SGE
         Verify(m_resource->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)), "Failed to map vertex buffer.");
         memcpy(pVertexDataBegin, vertices.data(), vertexBufferSize);
         m_resource->Unmap(0, nullptr);
-
+        
+        m_view = {};
         m_view.BufferLocation = m_resource->GetGPUVirtualAddress();
         m_view.StrideInBytes = sizeof(Vertex);
         m_view.SizeInBytes = vertexBufferSize;

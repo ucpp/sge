@@ -196,13 +196,13 @@ namespace SGE
         for (const auto& pair : m_modelInstances)
         {
             SyncData(pair.first, pair.second);
-            pair.second->Update(view, proj); 
+            pair.second->UpdateTransform(view, proj); 
         }
 
         for (const auto& pair : m_animatedModelInstances)
         {
             SyncData(pair.first, pair.second);
-            pair.second->Update(view, proj); 
+            pair.second->UpdateTransform(view, proj); 
         }
     }
 

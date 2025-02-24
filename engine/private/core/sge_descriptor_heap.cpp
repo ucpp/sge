@@ -70,7 +70,7 @@ namespace SGE
     
     CD3DX12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUHandle(uint32 index) const
     {
-        if (!m_heap)
+        if (!m_heap.Get())
         {
             LOG_ERROR("DescriptorHeap is not initialized.");
             return {};

@@ -13,6 +13,8 @@ namespace SGE
         float2 texCoords;
         float3 tangent;
         float3 bitangent;
+        float  boneWeights[4];
+        int32  boneIndices[4]; 
     };
     static_assert(alignof(Vertex) == 16, "Vertex structure alignment mismatch");
 
@@ -21,8 +23,12 @@ namespace SGE
         float4x4 model;
         float4x4 view;
         float4x4 projection;
+        float4x4 boneTransforms[100];
+        bool isAnimated;
+        char padding[15];
     };
     static_assert(alignof(TransformBuffer) == 16, "TransformBuffer structure alignment mismatch");
+    static_assert(sizeof(TransformBuffer) == (64 * 103) + 16, "TransformBuffer size mismatch");
 
     struct alignas(16) DirectionalLight
     {

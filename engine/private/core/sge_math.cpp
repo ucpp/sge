@@ -125,6 +125,7 @@ namespace SGE
     // --------------------------------------------------------------------------
 
     const float3 float3::Zero = float3(0.0f, 0.0f, 0.0f);
+    const float3 float3::One  = float3(1.0f, 1.0f, 1.0f);
 
     float3::float3() noexcept : x(0), y(0), z(0) {}
     float3::float3(float x, float y, float z) noexcept : x(x), y(y), z(z) {}
@@ -312,6 +313,7 @@ namespace SGE
     // --------------------------------------------------------------------------
     
     const float4 float4::Zero = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    const float4 float4::Identity = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
     float4::float4() noexcept : x(0), y(0), z(0), w(0) {}
     float4::float4(float x, float y, float z, float w) noexcept : x(x), y(y), z(z), w(w) {}
@@ -357,7 +359,7 @@ namespace SGE
         return !(*this == other);
     }
 
-    float4 float4::operator-() noexcept
+    float4 float4::operator-() const noexcept
     {
         return float4(-x, -y, -z, -w);
     }
@@ -381,6 +383,43 @@ namespace SGE
     {
         return float4(vec.x / scalar, vec.y / scalar, vec.z / scalar, vec.w / scalar);
     }
+
+    float length(const float4& v) noexcept
+    {
+        return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
+    }
+
+    float4 float4::normalized() const noexcept
+    {
+        float len = length(*this);
+        return (len > EPSILON) ? (*this / len) : Identity;
+    }
+
+    float dot(const float4& a, const float4& b) noexcept
+    {
+        return a.x * b.x + a.y * b.y + a.z * b.z + a.w * b.w;
+    }
+
+    float4 slerp(const float4& q1, const float4& q2, float t) noexcept
+    {
+        float dotValue = dot(q1, q2);
+
+        float4 target = q2;
+        if (dotValue < 0.0f)
+        {
+            dotValue = -dotValue;
+            target = -q2;
+        }
+
+        dotValue = std::clamp(dotValue, -1.0f, 1.0f);
+        float theta = std::acos(dotValue) * t;
+
+        float4 relativeQuat = target - q1 * dotValue;
+        relativeQuat = relativeQuat.normalized();
+
+        return q1 * std::cos(theta) + relativeQuat * std::sin(theta);
+    }
+
 
     // --------------------------------------------------------------------------
     // float2x2
@@ -927,6 +966,17 @@ namespace SGE
 
         float4x4 result;
         XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), scaleMatrix);
+        return result;
+    }
+
+    float4x4 CreateRotationMatrixFromQuaternion(const float4& quaternion) noexcept
+    {
+        XMVECTOR quat = XMVectorSet(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+        XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(quat);
+        rotationMatrix = XMMatrixTranspose(rotationMatrix);
+
+        float4x4 result;
+        XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(&result), rotationMatrix);
         return result;
     }
 
