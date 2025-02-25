@@ -59,6 +59,8 @@ namespace SGE
         }
     }
 
+    void ModelInstance::FixedUpdate(float deltaTime){}
+
     void ModelInstance::SetName(const std::string& name)
     {
         m_name = name;

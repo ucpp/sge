@@ -23,7 +23,7 @@ namespace SGE
         float3 scale;
     };
 
-    struct BoneAnimation
+    struct BoneKeyframes
     {
         std::string boneName;
         std::vector<PositionKeyframe> positionKeys;
@@ -37,7 +37,7 @@ namespace SGE
         std::string name;
         float duration;
         float ticksPerSecond;
-        std::vector<BoneAnimation> boneAnimations;
+        std::unordered_map<std::string, BoneKeyframes> boneKeyframes;
     };
 }
 

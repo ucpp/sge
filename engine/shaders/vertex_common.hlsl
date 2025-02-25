@@ -16,32 +16,26 @@ PixelInput TransformVertex(VertexInput input)
 {
     PixelInput output;
 
-    float4 worldPosition;
-    float4x4 boneTransform;
-
-    if (isAnimated)
-    {
-        boneTransform = boneTransforms[input.boneIndices[0]] * input.boneWeights[0];
-        boneTransform += boneTransforms[input.boneIndices[1]] * input.boneWeights[1];
-        boneTransform += boneTransforms[input.boneIndices[2]] * input.boneWeights[2];
-        boneTransform += boneTransforms[input.boneIndices[3]] * input.boneWeights[3];
-
-        worldPosition = mul(float4(input.position, 1.0f), boneTransform);
-    }
-    else
-    {
-        worldPosition = mul(float4(input.position, 1.0f), model);
-    }
-
-    output.worldPosition = worldPosition.xyz;
-    float4 viewPos = mul(worldPosition, view);
-    output.position = mul(viewPos, projection);
-
+    float4 localPosition = float4(input.position, 1.0f);
     float3x3 normalMatrix = (float3x3)model;
+
     if (isAnimated)
     {
+        float4x4 boneTransform =
+            boneTransforms[input.boneIndices[0]] * input.boneWeights[0] +
+            boneTransforms[input.boneIndices[1]] * input.boneWeights[1] +
+            boneTransforms[input.boneIndices[2]] * input.boneWeights[2] +
+            boneTransforms[input.boneIndices[3]] * input.boneWeights[3];
+
+        localPosition = mul(localPosition, boneTransform);
         normalMatrix = (float3x3)boneTransform;
     }
+
+    float4 worldPosition = mul(localPosition, model);
+    output.worldPosition = worldPosition.xyz;
+
+    float4 viewPos = mul(worldPosition, view);
+    output.position = mul(viewPos, projection);
 
     output.normal    = normalize(mul(input.normal, normalMatrix));
     output.tangent   = normalize(mul(input.tangent, normalMatrix));
@@ -51,5 +45,3 @@ PixelInput TransformVertex(VertexInput input)
 
     return output;
 }
-
-

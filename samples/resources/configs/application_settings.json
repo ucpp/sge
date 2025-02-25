@@ -206,9 +206,9 @@
                 "path": "resources/models/cube.gltf"
             },
             {
-                "name": "stormtrooper",
-                "type": 1,
-                "path": "resources/anim/silly_dancing.fbx"
+                "name": "plane",
+                "type": 0,
+                "path": "resources/models/plane.gltf"
             },
             {
                 "name": "cube_plane",
@@ -216,17 +216,22 @@
                 "path": "resources/models/cube_and_plane.gltf"
             },
             {
-                "name": "plane",
-                "type": 0,
-                "path": "resources/models/plane.gltf"
+                "name": "stormtrooper",
+                "type": 1,
+                "path": "resources/anim/silly_dancing.fbx"
             },
             {
-                "name": "backpack",
+                "name": "anim_cat",
+                "type": 1,
+                "path": "resources/anim/cat/scene.gltf"
+            },
+            {
+                "name": "plastic",
                 "type": 2,
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds"
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "stones",
@@ -237,12 +242,12 @@
                 "roughness_texture_path": "resources/stones/roughness.png"
             },
             {
-                "name": "plastic",
+                "name": "backpack",
                 "type": 2,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
             },
             {
                 "name": "uv_checker",
@@ -264,6 +269,14 @@
                 "name": "empty",
                 "type": 2,
                 "albedo_texture_path": "",
+                "metallic_texture_path": "",
+                "normal_texture_path": "",
+                "roughness_texture_path": ""
+            },
+            {
+                "name": "anim_cat",
+                "type": 2,
+                "albedo_texture_path": "resources/anim/cat/diffuse.jpeg",
                 "metallic_texture_path": "",
                 "normal_texture_path": "",
                 "roughness_texture_path": ""
@@ -331,50 +344,6 @@
                 "cubemap_id": "sky_cube"
             },
             {
-                "name": "Backpack",
-                "type": 3,
-                "position": [
-                    "0.0",
-                    "2.97",
-                    "0.0"
-                ],
-                "rotation": [
-                    "0.0",
-                    "270.0",
-                    "0.3"
-                ],
-                "scale": [
-                    "0.5",
-                    "0.5",
-                    "0.5"
-                ],
-                "asset_id": "backpack.obj",
-                "material_id": "backpack",
-                "enabled": true
-            },
-            {
-                "name": "Stormtrooper",
-                "type": 4,
-                "position": [
-                    "-2.61",
-                    "0.0",
-                    "0.0"
-                ],
-                "rotation": [
-                    "0.0",
-                    "0.0",
-                    "0.0"
-                ],
-                "scale": [
-                    "1.0",
-                    "1.0",
-                    "1.0"
-                ],
-                "asset_id": "stormtrooper",
-                "material_id": "stormtrooper_mat",
-                "enabled": false
-            },
-            {
                 "name": "uv_checker",
                 "type": 3,
                 "position": [
@@ -397,7 +366,51 @@
                 "enabled": true
             },
             {
-                "name": "Point Light (1)",
+                "name": "Stormtrooper",
+                "type": 4,
+                "position": [
+                    "-2.61",
+                    "0.0",
+                    "0.0"
+                ],
+                "rotation": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "1.0",
+                    "1.0",
+                    "1.0"
+                ],
+                "asset_id": "stormtrooper",
+                "material_id": "stormtrooper_mat",
+                "enabled": true
+            },
+            {
+                "name": "anim",
+                "type": 4,
+                "position": [
+                    "-2.5",
+                    "0.0",
+                    "0.0"
+                ],
+                "rotation": [
+                    "0.0",
+                    "0.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "1.0",
+                    "1.0",
+                    "1.0"
+                ],
+                "asset_id": "anim_cat",
+                "material_id": "anim_cat",
+                "enabled": false
+            },
+            {
+                "name": "Point Light",
                 "type": 5,
                 "position": [
                     "1.0",
@@ -411,38 +424,6 @@
                 ],
                 "intensity": "0.0",
                 "radius": "3.0"
-            },
-            {
-                "name": "Point Light (2)",
-                "type": 5,
-                "position": [
-                    "-1.15",
-                    "0.05",
-                    "4.87"
-                ],
-                "color": [
-                    "0.779",
-                    "0.149",
-                    "0.149"
-                ],
-                "intensity": "0.0",
-                "radius": "2.0"
-            },
-            {
-                "name": "Point Light (3)",
-                "type": 5,
-                "position": [
-                    "0.04",
-                    "-0.01",
-                    "4.86"
-                ],
-                "color": [
-                    "0.442",
-                    "0.946",
-                    "0.427"
-                ],
-                "intensity": "0.0",
-                "radius": "2.0"
             }
         ]
     }

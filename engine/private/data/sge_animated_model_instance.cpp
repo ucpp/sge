@@ -2,6 +2,27 @@
 
 namespace SGE
 {
+    float4x4 ConvertToLeftHanded(const float4x4& matrix)
+    {
+        float4x4 result = matrix;
+
+        result.m30 = -result.m30;
+        result.m31 = -result.m31;
+        result.m32 = -result.m32;
+
+        result.m20 = -result.m20;
+        result.m21 = -result.m21;
+        result.m22 = -result.m22;
+        result.m23 = -result.m23;
+
+        return result;
+    }
+
+    float4 ConvertToLeftHanded(const float4& quat)
+    {
+        return float4(quat.x, quat.y, -quat.z, quat.w);
+    }
+
     float3 InterpolatePosition(const std::vector<PositionKeyframe>& keys, float time)
     {
         if (keys.empty()) return float3::Zero;
@@ -88,6 +109,38 @@ namespace SGE
         m_isPlaying = false;
     }
 
+    void AnimatedModelInstance::UpdateBoneTransforms(int32 boneIndex, const float4x4& parentTransform, const Animation& currentAnimation, float animationTime)
+    {
+        const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
+        const Bone& bone = skeleton.GetBone(boneIndex);
+
+        auto it = currentAnimation.boneKeyframes.find(bone.name);
+        if (it == currentAnimation.boneKeyframes.end())
+        {
+            m_boneTransforms[boneIndex] = parentTransform; /** bone.offsetMatrix;*/
+            return;
+        }
+
+        const BoneKeyframes& boneKeyframes = it->second;
+
+        float3 position = InterpolatePosition(boneKeyframes.positionKeys, animationTime);
+        float4 rotation = InterpolateRotation(boneKeyframes.rotationKeys, animationTime);
+        float3 scale = InterpolateScale(boneKeyframes.scaleKeys, animationTime);
+
+        float4x4 translationMatrix = CreateTranslationMatrix(position);
+        float4x4 rotationMatrix = CreateRotationMatrixFromQuaternion(rotation);
+        float4x4 scaleMatrix = CreateScaleMatrix(scale);
+
+        float4x4 localTransform = translationMatrix * rotationMatrix * scaleMatrix;
+        float4x4 globalTransform = parentTransform * localTransform;
+        m_boneTransforms[boneIndex] = globalTransform; /* * bone.offsetMatrix; */
+
+        for (int32 childIndex : bone.children)
+        {
+            UpdateBoneTransforms(childIndex, globalTransform, currentAnimation, animationTime);
+        }
+    }
+        
     void AnimatedModelInstance::FixedUpdate(float deltaTime)
     {
         if (!m_isPlaying) return;
@@ -106,22 +159,12 @@ namespace SGE
         }
 
         const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
-        for (const auto& boneAnimation : currentAnimation.boneAnimations)
+        for (int32 i = 0; i < skeleton.GetBoneCount(); ++i)
         {
-            int32 boneIndex = skeleton.GetBoneIndex(boneAnimation.boneName);
-            if (boneIndex == -1) continue;
-
-            float3 position = InterpolatePosition(boneAnimation.positionKeys, m_currentAnimationTime);
-            float4 rotation = InterpolateRotation(boneAnimation.rotationKeys, m_currentAnimationTime);
-            float3 scale = InterpolateScale(boneAnimation.scaleKeys, m_currentAnimationTime);
-
-            float4x4 translationMatrix = CreateTranslationMatrix(position);
-            float4x4 rotationMatrix = CreateRotationMatrixFromQuaternion(rotation);
-            float4x4 scaleMatrix = CreateScaleMatrix(scale);
-
-            float4x4 transform = scaleMatrix * rotationMatrix * translationMatrix;
-
-            m_boneTransforms[boneIndex] = transform * skeleton.GetBoneOffset(boneIndex);
+            if (skeleton.GetBone(i).parentIndex == -1)
+            {
+                UpdateBoneTransforms(i, float4x4::Identity, currentAnimation, m_currentAnimationTime);
+            }
         }
     }
 
@@ -166,18 +209,16 @@ namespace SGE
         m_transformData.projection = projectionMatrix;
         m_transformData.isAnimated = true;
         
-        size_t boneCount = m_boneTransforms.size();
+        size_t boneCount = min(100, m_boneTransforms.size());
         for (size_t i = 0; i < boneCount; ++i)
         {
             m_transformData.boneTransforms[i] = m_boneTransforms[i];
         }
 
-        for (size_t i = m_boneTransforms.size(); i < 100; ++i)
+        for (size_t i = boneCount; i < 100; ++i)
         {
             m_transformData.boneTransforms[i] = float4x4::Identity;
         }
-
-        int32 sizeofTransformBuffer = sizeof(TransformBuffer);
 
         m_transformBuffer.Update(&m_transformData, sizeof(TransformBuffer));
     }

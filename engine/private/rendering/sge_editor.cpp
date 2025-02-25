@@ -336,6 +336,7 @@ namespace SGE
             if (ImGui::SliderFloat("Progress", &currentTime, 0.0f, duration, "%.2f"))
             {
                 m_activeAnimatedModel->SetCurrentAnimationTime(currentTime);
+                m_activeAnimatedModel->FixedUpdate(0.0f);
             }
         }
         else

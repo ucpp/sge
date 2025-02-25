@@ -51,8 +51,10 @@ namespace SGE
         Bone bone;
         bone.name = name;
         bone.index = index;
+        bone.parentIndex = -1;
         bone.offsetMatrix = offsetMatrix;
         bone.transform = float4x4::Identity;
+        bone.children.clear();
 
         m_bones.push_back(bone);
         m_boneNameToIndex[name] = index;
@@ -69,6 +71,15 @@ namespace SGE
     }
 
     const Bone& Skeleton::GetBone(int32 index) const
+    {
+        if (index >= 0 && index < m_bones.size())
+        {
+            return m_bones[index];
+        }
+        throw std::out_of_range("Invalid bone index");
+    }
+
+    Bone& Skeleton::GetBone(int32 index)
     {
         if (index >= 0 && index < m_bones.size())
         {

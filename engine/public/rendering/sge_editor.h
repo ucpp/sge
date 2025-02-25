@@ -60,7 +60,7 @@ namespace SGE
         class AnimatedModelInstance* m_activeAnimatedModel = nullptr;
 
         bool m_isEnableWindowSettings = false;
-        bool m_isEnableAnimationEditor = false;
+        bool m_isEnableAnimationEditor = true;
 
         std::unordered_map<AssetType, ImTextureID>  m_assetIcons;
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;

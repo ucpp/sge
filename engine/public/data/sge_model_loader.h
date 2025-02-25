@@ -29,10 +29,11 @@ namespace SGE
         static Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& modelPath);
 
         static Skeleton ProcessSkeleton(const aiScene* scene);
-        static std::vector<Animation> ProcessAnimations(const aiScene* scene);
+        static std::vector<Animation> ProcessAnimations(const aiScene* scene, const Skeleton& skeleton);
 
         static bool HasAsset(const std::string& assetName);
         static bool HasAnimatedAsset(const std::string& assetName);
+        static aiNode* FindNodeByName(aiNode* node, const std::string& name);
 
     private:
         static std::unordered_map<std::string, std::unique_ptr<ModelAsset>> m_modelAssets;

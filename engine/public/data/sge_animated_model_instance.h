@@ -15,7 +15,7 @@ namespace SGE
         void SelectAnimation(const std::string& animationName);
         void PlayAnimation();
         void StopAnimation();
-        void FixedUpdate(float deltaTime);
+        void FixedUpdate(float deltaTime) override;
 
         void ResetAnimationTime();
         void SetCurrentAnimationTime(float time);
@@ -25,6 +25,7 @@ namespace SGE
 
     protected:
         const std::vector<Mesh>& GetMeshes() const override;
+        void UpdateBoneTransforms(int32 boneIndex, const float4x4& parentTransform, const Animation& currentAnimation, float animationTime);
         void OnUpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix) override;
     
     private:

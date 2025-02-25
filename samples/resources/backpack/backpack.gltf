@@ -19,13 +19,7 @@
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"backpack",
-			"rotation":[
-				0.7071068286895752,
-				0,
-				0,
-				0.7071068286895752
-			]
+			"name":"backpack"
 		}
 	],
 	"materials":[

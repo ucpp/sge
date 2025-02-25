@@ -25,8 +25,14 @@ namespace SGE
     {
         std::string name;
         int32 index;
+        int32 parentIndex;
         float4x4 offsetMatrix;
         float4x4 transform;
+        std::vector<int32> children;
+
+        float3 localPosition;
+        float4 localRotation;
+        float3 localScale;
     };
 
     class Skeleton
@@ -36,7 +42,9 @@ namespace SGE
         int32 GetBoneCount() const { return static_cast<int32>(m_bones.size()); }
         int32 GetBoneIndex(const std::string& name) const;
         const Bone& GetBone(int32 index) const;
+        Bone& GetBone(int32 index);
         const float4x4& GetBoneOffset(int32 index) const;
+        const std::unordered_map<std::string, int32>& GetBoneNameToIndexMap() const { return m_boneNameToIndex; }
 
     private:
         std::vector<Bone> m_bones;

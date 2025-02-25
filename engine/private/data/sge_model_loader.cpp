@@ -4,6 +4,7 @@
 #include "core/sge_descriptor_heap.h"
 #include "data/sge_model_asset.h"
 #include <filesystem>
+#include "core/sge_logger.h"
 
 namespace SGE
 {
@@ -57,7 +58,7 @@ namespace SGE
         ProcessNode(scene->mRootNode, scene, meshes, assetData.path);
 
         Skeleton skeleton = ProcessSkeleton(scene);
-        std::vector<Animation> animations = ProcessAnimations(scene);
+        std::vector<Animation> animations = ProcessAnimations(scene, skeleton);
 
         std::unique_ptr<AnimatedModelAsset> asset = std::make_unique<AnimatedModelAsset>();
         asset->Initialize(meshes, skeleton, animations);
@@ -169,10 +170,31 @@ namespace SGE
             vertex.boneIndices[2] = -1;
             vertex.boneIndices[3] = -1;
 
-            for (size_t j = 0; j < vertexWeights[i].size() && j < 4; j++)
+            std::vector<std::pair<int32, float>> bonesAndWeights;
+            for (size_t j = 0; j < vertexWeights[i].size(); j++)
             {
-                vertex.boneWeights[j] = vertexWeights[i][j];
-                vertex.boneIndices[j] = vertexIndices[i][j];
+                bonesAndWeights.emplace_back(vertexIndices[i][j], vertexWeights[i][j]);
+            }
+
+            std::sort(bonesAndWeights.begin(), bonesAndWeights.end(), [](const std::pair<int32, float>& a, const std::pair<int32, float>& b) 
+            {
+                return a.second > b.second;
+            });
+
+            float weightSum = 0.0f;
+            for (size_t j = 0; j < bonesAndWeights.size() && j < 4; j++)
+            {
+                vertex.boneIndices[j] = bonesAndWeights[j].first;
+                vertex.boneWeights[j] = bonesAndWeights[j].second;
+                weightSum += bonesAndWeights[j].second;
+            }
+
+            if (weightSum > 0.0f)
+            {
+                for (size_t j = 0; j < 4; j++)
+                {
+                    vertex.boneWeights[j] /= weightSum;
+                }
             }
 
             vertices.push_back(vertex);
@@ -190,72 +212,146 @@ namespace SGE
         return Mesh(std::move(vertices), std::move(indices));
     }
 
+    void ProcessBoneHierarchy(aiNode* node, const std::unordered_map<std::string, int32>& boneNameToIndex, Skeleton& skeleton, int32 parentIndex)
+    {
+        std::string boneName = node->mName.C_Str();
+        auto it = boneNameToIndex.find(boneName);
+
+        int32 boneIndex = -1;
+        if (it != boneNameToIndex.end())
+        {
+            boneIndex = it->second;
+            if (skeleton.GetBone(boneIndex).parentIndex != -1)
+            {
+                return;
+            }
+
+            skeleton.GetBone(boneIndex).parentIndex = parentIndex;
+
+            if (parentIndex != -1)
+            {
+                skeleton.GetBone(parentIndex).children.push_back(boneIndex);
+            }
+        }
+
+        for (uint32 i = 0; i < node->mNumChildren; ++i)
+        {
+            int32 nextParentIndex = (boneIndex != -1) ? boneIndex : parentIndex;
+            ProcessBoneHierarchy(node->mChildren[i], boneNameToIndex, skeleton, nextParentIndex);
+        }
+    }
+
+    std::string NormalizeBoneName(const std::string& name)
+    {
+        std::string result = name;
+
+        size_t pos = result.find("_$Assimp");
+        if (pos != std::string::npos)
+        {
+            result = result.substr(0, pos);
+        }
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+
+        return result;
+    }
+
     Skeleton ModelLoader::ProcessSkeleton(const aiScene* scene)
     {
         Skeleton skeleton;
+
         for (uint32 i = 0; i < scene->mNumMeshes; ++i)
         {
             aiMesh* mesh = scene->mMeshes[i];
             for (uint32 j = 0; j < mesh->mNumBones; ++j)
             {
                 aiBone* bone = mesh->mBones[j];
-                std::string boneName = bone->mName.C_Str();
+                std::string rawBoneName = bone->mName.C_Str();
+                std::string boneName = NormalizeBoneName(rawBoneName);
                 float4x4 offsetMatrix = AssimpToFloat4x4(bone->mOffsetMatrix);
-    
+                LOG_INFO("Add bone: {}", boneName);
                 skeleton.AddBone(boneName, j, offsetMatrix);
             }
-        }    
+        }
+
+        const std::unordered_map<std::string, int32>& boneNameToIndex = skeleton.GetBoneNameToIndexMap();
+        ProcessBoneHierarchy(scene->mRootNode, boneNameToIndex, skeleton, -1);
+
         return skeleton;
     }
 
-    std::vector<Animation> ModelLoader::ProcessAnimations(const aiScene* scene)
+    aiNode* ModelLoader::FindNodeByName(aiNode* node, const std::string& name)
+    {
+        if (node->mName.C_Str() == name)
+        {
+            return node;
+        }
+        for (unsigned int i = 0; i < node->mNumChildren; ++i)
+        {
+            aiNode* foundNode = FindNodeByName(node->mChildren[i], name);
+            if (foundNode)
+            {
+                return foundNode;
+            }
+        }
+        return nullptr;
+    }
+
+    std::vector<Animation> ModelLoader::ProcessAnimations(const aiScene* scene, const Skeleton& skeleton)
     {
         std::vector<Animation> animations;
 
-        for (uint32 i = 0; i < scene->mNumAnimations; ++i)
+        if (!scene->HasAnimations())
+        {
+            return animations;
+        }
+
+        aiNode* rootNode = scene->mRootNode;
+
+        for (unsigned int i = 0; i < scene->mNumAnimations; ++i)
         {
             aiAnimation* aiAnim = scene->mAnimations[i];
-
             Animation animation;
+
             animation.name = aiAnim->mName.C_Str();
             animation.duration = static_cast<float>(aiAnim->mDuration);
             animation.ticksPerSecond = static_cast<float>(aiAnim->mTicksPerSecond != 0 ? aiAnim->mTicksPerSecond : 25.0f);
-
-            for (uint32 j = 0; j < aiAnim->mNumChannels; ++j)
+            
+            for (unsigned int j = 0; j < aiAnim->mNumChannels; ++j)
             {
-                aiNodeAnim* aiNodeAnim = aiAnim->mChannels[j];
+                aiNodeAnim* nodeAnim = aiAnim->mChannels[j];
+                std::string rawChannelName = nodeAnim->mNodeName.C_Str();
+                std::string boneName = NormalizeBoneName(rawChannelName);
 
-                BoneAnimation boneAnimation;
-                boneAnimation.boneName = aiNodeAnim->mNodeName.C_Str();
+                LOG_INFO("Read Bone: {}", boneName);
 
-                for (uint32 k = 0; k < aiNodeAnim->mNumPositionKeys; ++k)
+                BoneKeyframes& boneKeyframes = animation.boneKeyframes[boneName];
+
+                for (unsigned int k = 0; k < nodeAnim->mNumPositionKeys; ++k)
                 {
-                    aiVectorKey& aiKey = aiNodeAnim->mPositionKeys[k];
-                    PositionKeyframe keyframe;
-                    keyframe.time = static_cast<float>(aiKey.mTime);
-                    keyframe.position = float3(aiKey.mValue.x, aiKey.mValue.y, aiKey.mValue.z);
-                    boneAnimation.positionKeys.push_back(keyframe);
+                    const aiVectorKey& key = nodeAnim->mPositionKeys[k];
+                    PositionKeyframe positionKeyframe;
+                    positionKeyframe.time = static_cast<float>(key.mTime);
+                    positionKeyframe.position = float3(key.mValue.x, key.mValue.y, key.mValue.z);
+                    boneKeyframes.positionKeys.push_back(positionKeyframe);
                 }
 
-                for (uint32 k = 0; k < aiNodeAnim->mNumRotationKeys; ++k)
+                for (unsigned int k = 0; k < nodeAnim->mNumRotationKeys; ++k)
                 {
-                    aiQuatKey& aiKey = aiNodeAnim->mRotationKeys[k];
-                    RotationKeyframe keyframe;
-                    keyframe.time = static_cast<float>(aiKey.mTime);
-                    keyframe.rotation = float4(aiKey.mValue.x, aiKey.mValue.y, aiKey.mValue.z, aiKey.mValue.w);
-                    boneAnimation.rotationKeys.push_back(keyframe);
+                    const aiQuatKey& key = nodeAnim->mRotationKeys[k];
+                    RotationKeyframe rotationKeyframe;
+                    rotationKeyframe.time = static_cast<float>(key.mTime);
+                    rotationKeyframe.rotation = float4(key.mValue.x, key.mValue.y, key.mValue.z, key.mValue.w);
+                    boneKeyframes.rotationKeys.push_back(rotationKeyframe);
                 }
 
-                for (uint32 k = 0; k < aiNodeAnim->mNumScalingKeys; ++k)
+                for (unsigned int k = 0; k < nodeAnim->mNumScalingKeys; ++k)
                 {
-                    aiVectorKey& aiKey = aiNodeAnim->mScalingKeys[k];
-                    ScaleKeyframe keyframe;
-                    keyframe.time = static_cast<float>(aiKey.mTime);
-                    keyframe.scale = float3(aiKey.mValue.x, aiKey.mValue.y, aiKey.mValue.z);
-                    boneAnimation.scaleKeys.push_back(keyframe);
+                    const aiVectorKey& key = nodeAnim->mScalingKeys[k];
+                    ScaleKeyframe scaleKeyframe;
+                    scaleKeyframe.time = static_cast<float>(key.mTime);
+                    scaleKeyframe.scale = float3(key.mValue.x, key.mValue.y, key.mValue.z);
+                    boneKeyframes.scaleKeys.push_back(scaleKeyframe);
                 }
-
-                animation.boneAnimations.push_back(boneAnimation);
             }
 
             animations.push_back(animation);
@@ -279,10 +375,10 @@ namespace SGE
     float4x4 AssimpToFloat4x4(const aiMatrix4x4& assimpMatrix)
     {
         return float4x4(
-            assimpMatrix.a1, assimpMatrix.b1, assimpMatrix.c1, assimpMatrix.d1,
-            assimpMatrix.a2, assimpMatrix.b2, assimpMatrix.c2, assimpMatrix.d2,
-            assimpMatrix.a3, assimpMatrix.b3, assimpMatrix.c3, assimpMatrix.d3,
-            assimpMatrix.a4, assimpMatrix.b4, assimpMatrix.c4, assimpMatrix.d4
+            assimpMatrix.a1, assimpMatrix.a2, assimpMatrix.a3, assimpMatrix.a4,
+            assimpMatrix.b1, assimpMatrix.b2, assimpMatrix.b3, assimpMatrix.b4,
+            assimpMatrix.c1, assimpMatrix.c2, assimpMatrix.c3, assimpMatrix.c4,
+            assimpMatrix.d1, assimpMatrix.d2, assimpMatrix.d3, assimpMatrix.d4
         );
     }
 }

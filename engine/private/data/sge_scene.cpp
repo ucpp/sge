@@ -202,6 +202,7 @@ namespace SGE
         for (const auto& pair : m_animatedModelInstances)
         {
             SyncData(pair.first, pair.second);
+            pair.second->FixedUpdate(static_cast<float>(deltaTime));
             pair.second->UpdateTransform(view, proj); 
         }
     }
