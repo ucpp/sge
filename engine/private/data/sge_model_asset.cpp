@@ -1,6 +1,7 @@
 #include "data/sge_model_asset.h"
 
 #include "data/sge_mesh.h"
+#include "core/sge_logger.h"
 
 namespace SGE
 {
@@ -95,6 +96,36 @@ namespace SGE
             return m_bones[index].offsetMatrix;
         }
         throw std::out_of_range("Invalid bone index");
+    }
+
+    void Skeleton::PrintBoneHierarchy() const
+    {
+        for (const auto& bone : m_bones)
+        {
+            if (bone.parentIndex == -1)
+            {
+                PrintBoneHierarchyRecursive(bone, 0);
+                //break;
+            }
+        }
+    }
+    
+    void Skeleton::PrintBoneHierarchyRecursive(const Bone& bone, int32 level) const
+    {
+        std::string out;
+        for (int32 i = 0; i < level; ++i)
+        {
+            out += "    ";
+        }
+
+        out += bone.name;
+        LOG_INFO(out);
+
+        for (int32 childIndex : bone.children)
+        {
+            const Bone& childBone = m_bones[childIndex];
+            PrintBoneHierarchyRecursive(childBone, level + 1);
+        }
     }
 
     void AnimatedModelAsset::Initialize(std::vector<Mesh>& meshes, const Skeleton& skeleton, const std::vector<Animation>& animations)

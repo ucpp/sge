@@ -15,11 +15,10 @@
 ✔ Add define for shaders debug folder @done(25-02-08)
 
 [15-21.02.2025 - 9th week]
-[Day 57/1000 - 16/02/2025]
-☐ Animations
-    ☐ Add data class for animated models
-    ☐ Add animated model instance class
-    ☐ Add animation data loading
+✔ Animations @done(25-02-26 22:14)
+    ✔ Add data class for animated models @done(25-02-26 22:14)
+    ✔ Add animated model instance class @done(25-02-26 22:14)
+    ✔ Add animation data loading @done(25-02-26 22:14)
 ✔ Soft Shadows PCF @done(25-02-15)
 ☐ Fix math
 ☐ Add spot lights
@@ -37,8 +36,9 @@
     ☐ Reduce draw calls of editor
 
 [22-28.02.2025 - 10th week]
-☐ Skeletal meshes
-☐ Play animations
+[Day 67/1000 - 26/02/2025]
+✔ Skeletal meshes @done(25-02-26 22:14)
+✔ Play animations @done(25-02-26 22:14)
 ☐ Blend animations
 
 [01-07.03.2025 - 11th week]

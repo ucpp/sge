@@ -1,7 +1,7 @@
 {
     "window_data": {
         "title": "SGE Editor",
-        "selected_resolution": 5,
+        "selected_resolution": 4,
         "fullscreen": false,
         "resolutions": [
             "1000x1000",
@@ -218,12 +218,7 @@
             {
                 "name": "stormtrooper",
                 "type": 1,
-                "path": "resources/anim/silly_dancing.fbx"
-            },
-            {
-                "name": "anim_cat",
-                "type": 1,
-                "path": "resources/anim/cat/scene.gltf"
+                "path": "resources/anim/test.gltf"
             },
             {
                 "name": "plastic",
@@ -269,14 +264,6 @@
                 "name": "empty",
                 "type": 2,
                 "albedo_texture_path": "",
-                "metallic_texture_path": "",
-                "normal_texture_path": "",
-                "roughness_texture_path": ""
-            },
-            {
-                "name": "anim_cat",
-                "type": 2,
-                "albedo_texture_path": "resources/anim/cat/diffuse.jpeg",
                 "metallic_texture_path": "",
                 "normal_texture_path": "",
                 "roughness_texture_path": ""
@@ -375,7 +362,7 @@
                 ],
                 "rotation": [
                     "0.0",
-                    "0.0",
+                    "270.0",
                     "0.0"
                 ],
                 "scale": [
@@ -386,28 +373,6 @@
                 "asset_id": "stormtrooper",
                 "material_id": "stormtrooper_mat",
                 "enabled": true
-            },
-            {
-                "name": "anim",
-                "type": 4,
-                "position": [
-                    "-2.5",
-                    "0.0",
-                    "0.0"
-                ],
-                "rotation": [
-                    "0.0",
-                    "0.0",
-                    "0.0"
-                ],
-                "scale": [
-                    "1.0",
-                    "1.0",
-                    "1.0"
-                ],
-                "asset_id": "anim_cat",
-                "material_id": "anim_cat",
-                "enabled": false
             },
             {
                 "name": "Point Light",

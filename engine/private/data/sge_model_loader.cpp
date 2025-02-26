@@ -58,6 +58,10 @@ namespace SGE
         ProcessNode(scene->mRootNode, scene, meshes, assetData.path);
 
         Skeleton skeleton = ProcessSkeleton(scene);
+        LOG_INFO("-----");
+        LOG_INFO(assetData.name);
+        skeleton.PrintBoneHierarchy();
+        LOG_INFO("-----");
         std::vector<Animation> animations = ProcessAnimations(scene, skeleton);
 
         std::unique_ptr<AnimatedModelAsset> asset = std::make_unique<AnimatedModelAsset>();
@@ -212,9 +216,24 @@ namespace SGE
         return Mesh(std::move(vertices), std::move(indices));
     }
 
+    std::string NormalizeBoneName(const std::string& name)
+    {
+        std::string result = name;
+
+        size_t pos = result.find("_$Assimp");
+        if (pos != std::string::npos)
+        {
+            result = result.substr(0, pos);
+        }
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
+
+        return result;
+    }
+
     void ProcessBoneHierarchy(aiNode* node, const std::unordered_map<std::string, int32>& boneNameToIndex, Skeleton& skeleton, int32 parentIndex)
     {
-        std::string boneName = node->mName.C_Str();
+        std::string rawBoneName = node->mName.C_Str();
+        std::string boneName = NormalizeBoneName(rawBoneName);
         auto it = boneNameToIndex.find(boneName);
 
         int32 boneIndex = -1;
@@ -241,20 +260,6 @@ namespace SGE
         }
     }
 
-    std::string NormalizeBoneName(const std::string& name)
-    {
-        std::string result = name;
-
-        size_t pos = result.find("_$Assimp");
-        if (pos != std::string::npos)
-        {
-            result = result.substr(0, pos);
-        }
-        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
-
-        return result;
-    }
-
     Skeleton ModelLoader::ProcessSkeleton(const aiScene* scene)
     {
         Skeleton skeleton;
@@ -268,32 +273,36 @@ namespace SGE
                 std::string rawBoneName = bone->mName.C_Str();
                 std::string boneName = NormalizeBoneName(rawBoneName);
                 float4x4 offsetMatrix = AssimpToFloat4x4(bone->mOffsetMatrix);
-                LOG_INFO("Add bone: {}", boneName);
+                //LOG_INFO("Add bone: {}", boneName);
                 skeleton.AddBone(boneName, j, offsetMatrix);
             }
         }
 
         const std::unordered_map<std::string, int32>& boneNameToIndex = skeleton.GetBoneNameToIndexMap();
-        ProcessBoneHierarchy(scene->mRootNode, boneNameToIndex, skeleton, -1);
+
+        aiNode* actualRootNode = scene->mRootNode;
+        while (actualRootNode->mNumChildren > 0)
+        {
+            bool hasBoneChildren = false;
+            for (uint32 i = 0; i < actualRootNode->mNumChildren; ++i)
+            {
+                std::string childName = actualRootNode->mChildren[i]->mName.C_Str();
+                if (boneNameToIndex.find(NormalizeBoneName(childName)) != boneNameToIndex.end())
+                {
+                    hasBoneChildren = true;
+                    break;
+                }
+            }
+            if (hasBoneChildren)
+            {
+                break;
+            }
+            actualRootNode = actualRootNode->mChildren[0];
+        }
+
+        ProcessBoneHierarchy(actualRootNode, boneNameToIndex, skeleton, -1);
 
         return skeleton;
-    }
-
-    aiNode* ModelLoader::FindNodeByName(aiNode* node, const std::string& name)
-    {
-        if (node->mName.C_Str() == name)
-        {
-            return node;
-        }
-        for (unsigned int i = 0; i < node->mNumChildren; ++i)
-        {
-            aiNode* foundNode = FindNodeByName(node->mChildren[i], name);
-            if (foundNode)
-            {
-                return foundNode;
-            }
-        }
-        return nullptr;
     }
 
     std::vector<Animation> ModelLoader::ProcessAnimations(const aiScene* scene, const Skeleton& skeleton)
@@ -322,7 +331,7 @@ namespace SGE
                 std::string rawChannelName = nodeAnim->mNodeName.C_Str();
                 std::string boneName = NormalizeBoneName(rawChannelName);
 
-                LOG_INFO("Read Bone: {}", boneName);
+                //LOG_INFO("Read Bone: {}", boneName);
 
                 BoneKeyframes& boneKeyframes = animation.boneKeyframes[boneName];
 

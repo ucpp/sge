@@ -28,7 +28,7 @@ PixelInput TransformVertex(VertexInput input)
             boneTransforms[input.boneIndices[3]] * input.boneWeights[3];
 
         localPosition = mul(localPosition, boneTransform);
-        normalMatrix = (float3x3)boneTransform;
+        normalMatrix = mul((float3x3)boneTransform, normalMatrix);
     }
 
     float4 worldPosition = mul(localPosition, model);

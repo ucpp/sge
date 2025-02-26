@@ -117,7 +117,7 @@ namespace SGE
         auto it = currentAnimation.boneKeyframes.find(bone.name);
         if (it == currentAnimation.boneKeyframes.end())
         {
-            m_boneTransforms[boneIndex] = parentTransform; /** bone.offsetMatrix;*/
+            m_boneTransforms[boneIndex] = parentTransform * bone.offsetMatrix;
             return;
         }
 
@@ -133,7 +133,7 @@ namespace SGE
 
         float4x4 localTransform = translationMatrix * rotationMatrix * scaleMatrix;
         float4x4 globalTransform = parentTransform * localTransform;
-        m_boneTransforms[boneIndex] = globalTransform; /* * bone.offsetMatrix; */
+        m_boneTransforms[boneIndex] = globalTransform * bone.offsetMatrix;
 
         for (int32 childIndex : bone.children)
         {

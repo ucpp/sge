@@ -113,8 +113,9 @@ This project is **actively under development**, and its purpose is to experiment
   
 </details>
  <details>
-  <summary><strong>☐ 15. Load skinned mesh animations</strong>: Import animated models and process on the GPU (in progress).</summary>
+  <summary><strong>✔ 15. Load skinned mesh animations</strong>: Import animated models and process on the GPU.</summary>
 
+  ![Animation](https://github.com/ucpp/sge/blob/master/docs/anim.gif)
   
 </details>
  <details>

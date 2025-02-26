@@ -20,8 +20,22 @@ struct VSOutput
 VSOutput main(VertexInput input)
 {
     VSOutput output;
-    float4 modelPos = mul(float4(input.position, 1.0f), model);
-    float4 viewPos = mul(modelPos, lightView);
+
+    float4 localPosition = float4(input.position, 1.0f);
+
+    if (isAnimated)
+    {
+        float4x4 boneTransform =
+            boneTransforms[input.boneIndices[0]] * input.boneWeights[0] +
+            boneTransforms[input.boneIndices[1]] * input.boneWeights[1] +
+            boneTransforms[input.boneIndices[2]] * input.boneWeights[2] +
+            boneTransforms[input.boneIndices[3]] * input.boneWeights[3];
+
+        localPosition = mul(localPosition, boneTransform);
+    }
+
+    float4 worldPosition = mul(localPosition, model);
+    float4 viewPos = mul(worldPosition, lightView);
     output.position = mul(viewPos, lightProj);
 
     return output;

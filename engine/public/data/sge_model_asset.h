@@ -29,10 +29,6 @@ namespace SGE
         float4x4 offsetMatrix;
         float4x4 transform;
         std::vector<int32> children;
-
-        float3 localPosition;
-        float4 localRotation;
-        float3 localScale;
     };
 
     class Skeleton
@@ -45,6 +41,10 @@ namespace SGE
         Bone& GetBone(int32 index);
         const float4x4& GetBoneOffset(int32 index) const;
         const std::unordered_map<std::string, int32>& GetBoneNameToIndexMap() const { return m_boneNameToIndex; }
+        void PrintBoneHierarchy() const;
+    
+    private:
+        void PrintBoneHierarchyRecursive(const Bone& bone, int32 level) const;
 
     private:
         std::vector<Bone> m_bones;
