@@ -206,14 +206,14 @@
                 "path": "resources/models/cube.gltf"
             },
             {
-                "name": "plane",
-                "type": 0,
-                "path": "resources/models/plane.gltf"
-            },
-            {
                 "name": "cube_plane",
                 "type": 0,
                 "path": "resources/models/cube_and_plane.gltf"
+            },
+            {
+                "name": "plane",
+                "type": 0,
+                "path": "resources/models/plane.gltf"
             },
             {
                 "name": "stormtrooper",
@@ -221,12 +221,25 @@
                 "path": "resources/anim/test.gltf"
             },
             {
-                "name": "plastic",
+                "name": "human",
+                "type": 1,
+                "path": "resources/anim/human.gltf"
+            },
+            {
+                "name": "human_mat",
                 "type": 2,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
+                "albedo_texture_path": "resources/anim/Ch43_1001_Diffuse.png",
+                "metallic_texture_path": "resources/anim/Ch43_1001_Specular.png",
+                "normal_texture_path": "resources/anim/Ch43_1001_Normal.png",
+                "roughness_texture_path": "resources/anim/Ch43_1001_Glossiness.png"
+            },
+            {
+                "name": "backpack",
+                "type": 2,
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
             },
             {
                 "name": "stones",
@@ -237,12 +250,12 @@
                 "roughness_texture_path": "resources/stones/roughness.png"
             },
             {
-                "name": "backpack",
+                "name": "plastic",
                 "type": 2,
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds"
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "uv_checker",
@@ -290,13 +303,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "-0.15",
-                    "5.092",
-                    "-11.689"
+                    "1.56",
+                    "5.858",
+                    "-14.263"
                 ],
                 "rotation": [
-                    "-16.3",
-                    "0.3",
+                    "-16.2",
+                    "-1.6",
                     "0.0"
                 ],
                 "scale": [
@@ -372,6 +385,28 @@
                 ],
                 "asset_id": "stormtrooper",
                 "material_id": "stormtrooper_mat",
+                "enabled": true
+            },
+            {
+                "name": "Human",
+                "type": 4,
+                "position": [
+                    "2.61",
+                    "0.0",
+                    "0.0"
+                ],
+                "rotation": [
+                    "0.0",
+                    "270.0",
+                    "0.0"
+                ],
+                "scale": [
+                    "0.02",
+                    "0.02",
+                    "0.02"
+                ],
+                "asset_id": "human",
+                "material_id": "human_mat",
                 "enabled": true
             },
             {

@@ -29,6 +29,7 @@ namespace SGE
         float4x4 offsetMatrix;
         float4x4 transform;
         std::vector<int32> children;
+        int32 layer = 0;
     };
 
     class Skeleton
@@ -42,6 +43,7 @@ namespace SGE
         const float4x4& GetBoneOffset(int32 index) const;
         const std::unordered_map<std::string, int32>& GetBoneNameToIndexMap() const { return m_boneNameToIndex; }
         void PrintBoneHierarchy() const;
+        const std::vector<Bone>& Skeleton::GetBones() const { return m_bones; }
     
     private:
         void PrintBoneHierarchyRecursive(const Bone& bone, int32 level) const;
@@ -57,6 +59,7 @@ namespace SGE
         void Initialize(std::vector<Mesh>& meshes, const Skeleton& skeleton, const std::vector<Animation>& animations);
 
         const Skeleton& GetSkeleton() const { return m_skeleton; }
+        Skeleton& GetSkeleton() { return m_skeleton; }
         const std::vector<Animation>& GetAnimations() const { return m_animations; }
 
     private:

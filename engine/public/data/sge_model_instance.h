@@ -18,7 +18,7 @@ namespace SGE
         void SetMaterial(Material* material);
         void UpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix);
         void Render(ID3D12GraphicsCommandList* commandList) const;
-        virtual void FixedUpdate(float deltaTime);
+        virtual void FixedUpdate(float deltaTime, bool forceUpdate = false);
 
         void SetName(const std::string& name);
         void SetActive(bool isEnabled);

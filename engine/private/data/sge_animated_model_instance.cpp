@@ -92,6 +92,7 @@ namespace SGE
         {
             m_currentAnimationName = animationName;
             m_currentAnimationTime = 0.0f;
+            m_ticksPerSecond = it->ticksPerSecond;
         }
         else
         {
@@ -141,9 +142,9 @@ namespace SGE
         }
     }
         
-    void AnimatedModelInstance::FixedUpdate(float deltaTime)
+    void AnimatedModelInstance::FixedUpdate(float deltaTime, bool forceUpdate)
     {
-        if (!m_isPlaying) return;
+        if (!m_isPlaying && !forceUpdate) return;
 
         const auto& animations = m_animatedAsset->GetAnimations();
         auto it = std::find_if(animations.begin(), animations.end(), [this](const Animation& anim) { return anim.name == m_currentAnimationName; });
@@ -197,9 +198,29 @@ namespace SGE
         return 0.0f;
     }
 
+    std::string AnimatedModelInstance::GetCurrentAnimationName() const
+    {
+        return m_currentAnimationName;
+    }
+
+    float AnimatedModelInstance::GetTicksPerSecond() const
+    {
+        return m_ticksPerSecond;
+    }
+
     const std::vector<Animation>& AnimatedModelInstance::GetAnimations() const
     {
         return m_animatedAsset->GetAnimations();
+    }
+
+    Skeleton& AnimatedModelInstance::GetSkeleton() const
+    {
+        if (!m_animatedAsset)
+        {
+            throw std::runtime_error("AnimatedModelInstance has no associated AnimatedModelAsset.");
+        }
+        
+        return m_animatedAsset->GetSkeleton();
     }
 
     void AnimatedModelInstance::OnUpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix)

@@ -10,6 +10,7 @@
 #include "core/sge_descriptor_heap.h"
 #include "core/sge_file_dialog.h"
 #include "data/sge_data_structures.h"
+#include "data/sge_model_asset.h"
 
 namespace SGE
 {
@@ -48,6 +49,8 @@ namespace SGE
         ImTextureID GetTexturePtr(const std::string& name) const;
         ImTextureID GetTexturePtr(uint32 index) const;
 
+        void DisplayBoneHierarchy(const Bone& bone, int level, Skeleton& skeleton);
+
     private:
         void OnSave();
         void OnSaveAs();
@@ -60,18 +63,24 @@ namespace SGE
         class AnimatedModelInstance* m_activeAnimatedModel = nullptr;
 
         bool m_isEnableWindowSettings = false;
-        bool m_isEnableAnimationEditor = true;
 
         std::unordered_map<AssetType, ImTextureID>  m_assetIcons;
         std::unordered_map<ObjectType, ImTextureID> m_objectIcons;
         
         ImTextureID m_invisibleObjectTexure;
         ImTextureID m_visibleObjectTexure;
+        ImTextureID m_playButtonTexure;
+        ImTextureID m_pauseButtonTexure;
+        ImTextureID m_stopButtonTexure;
+        ImTextureID m_boneTexure;
 
         std::unique_ptr<FileDialog> m_fileDialog;
 
         ObjectDataBase* m_selectedObject = nullptr; 
-        uint32 m_selectedObjectIndex = -1;
+        int32 m_selectedObjectIndex = -1;
+        int32 m_selectedAnimationIndex = -1;
+        std::vector<std::string> m_animationNames;
+        std::vector<bool> m_selectedBones;
 
         bool m_isEnable = true;
     };

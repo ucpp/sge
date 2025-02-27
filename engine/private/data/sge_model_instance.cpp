@@ -59,7 +59,7 @@ namespace SGE
         }
     }
 
-    void ModelInstance::FixedUpdate(float deltaTime){}
+    void ModelInstance::FixedUpdate(float deltaTime, bool forceUpdate){}
 
     void ModelInstance::SetName(const std::string& name)
     {

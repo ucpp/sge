@@ -111,9 +111,6 @@ namespace SGE
         TransformData::DrawEditor();
         InputText("Asset ID:", assetId);
         InputText("Material ID:", materialId);
-        ImGui::Separator();
-        
-        ImGui::Text("animations etc...");
     }
 
     void PointLightData::DrawEditor()

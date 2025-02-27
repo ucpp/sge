@@ -15,13 +15,16 @@ namespace SGE
         void SelectAnimation(const std::string& animationName);
         void PlayAnimation();
         void StopAnimation();
-        void FixedUpdate(float deltaTime) override;
+        void FixedUpdate(float deltaTime, bool forceUpdate = false) override;
 
         void ResetAnimationTime();
         void SetCurrentAnimationTime(float time);
         float GetCurrentAnimationTime() const;
         float GetCurrentAnimationDuration() const;
+        float GetTicksPerSecond() const;
+        std::string GetCurrentAnimationName() const;
         const std::vector<Animation>& GetAnimations() const;
+        Skeleton& GetSkeleton() const;
 
     protected:
         const std::vector<Mesh>& GetMeshes() const override;
@@ -32,6 +35,7 @@ namespace SGE
         AnimatedModelAsset* m_animatedAsset = nullptr;
         bool m_isPlaying = false;
         float m_currentAnimationTime = 0.0f;
+        float m_ticksPerSecond = 25.0f;
         std::string m_currentAnimationName;
         std::vector<float4x4> m_boneTransforms;
     };

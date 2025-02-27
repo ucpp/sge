@@ -78,6 +78,10 @@ namespace SGE
 
         m_visibleObjectTexure   = GetTexturePtr("visible_16.png");
         m_invisibleObjectTexure = GetTexturePtr("invisible_16.png");
+        m_playButtonTexure      = GetTexturePtr("play_16.png");
+        m_pauseButtonTexure     = GetTexturePtr("pause_16.png");
+        m_stopButtonTexure      = GetTexturePtr("stop_16.png");
+        m_boneTexure            = GetTexturePtr("bone.png");
     }
 
     uint32 Editor::GetTextureIndex(const std::string& name) const
@@ -209,7 +213,6 @@ namespace SGE
             
             if (ImGui::MenuItem("Animation"))
             {
-                m_isEnableAnimationEditor = true;
             }
             ImGui::EndMenu();
         }
@@ -285,65 +288,155 @@ namespace SGE
         }
     }
 
-    void Editor::ConstructAnimationEditor()
+    void Editor::DisplayBoneHierarchy(const Bone& bone, int level, Skeleton& skeleton)
     {
-        if (!m_isEnableAnimationEditor)
+        std::string label(level * 1, ' ');
+        label += bone.name + " (" + std::to_string(bone.layer) + ")";
+
+        if (bone.index >= m_selectedBones.size()) 
         {
-            return;
+            m_selectedBones.resize(bone.index + 1, false);
         }
 
-        ImGui::Begin("Animation");
+        bool value = m_selectedBones[bone.index];
+        if (ImGui::Checkbox(label.c_str(), &value)) 
+        {
+            m_selectedBones[bone.index] = value;
+        }
+
+        for (int32 childIndex : bone.children)
+        {
+            const Bone& childBone = skeleton.GetBone(childIndex);
+            DisplayBoneHierarchy(childBone, level + 1, skeleton);
+        }
+    }
+
+    void Editor::ConstructAnimationEditor()
+    {
         if (m_activeAnimatedModel)
         {
+            ImGui::Separator();
+            ImGui::Text("Animation:");
+            ImGui::Separator();
             const std::vector<Animation>& animations = m_activeAnimatedModel->GetAnimations();
 
-            if (ImGui::Button("Select Animation"))
+            if (m_animationNames.empty() && !animations.empty())
             {
-                ImGui::OpenPopup("AnimationSelector");
-            }
-
-            if (ImGui::BeginPopup("AnimationSelector"))
-            {
+                m_animationNames.clear();
                 for (const auto& animation : animations)
                 {
-                    if (ImGui::Selectable(animation.name.c_str()))
+                    m_animationNames.push_back(animation.name);
+                }
+                m_selectedAnimationIndex = 0;
+                m_activeAnimatedModel->SelectAnimation(m_animationNames[m_selectedAnimationIndex]);
+            }
+
+            float availableWidth = ImGui::GetContentRegionAvail().x;
+            ImGui::SetNextItemWidth(availableWidth);
+            if (ImGui::BeginCombo("##AnimationSelector", m_animationNames[m_selectedAnimationIndex].c_str()))
+            {
+                for (int i = 0; i < m_animationNames.size(); ++i)
+                {
+                    bool isSelected = (m_selectedAnimationIndex == i);
+                    if (ImGui::Selectable(m_animationNames[i].c_str(), isSelected))
                     {
-                        m_activeAnimatedModel->SelectAnimation(animation.name);
+                        m_selectedAnimationIndex = i;
+                        m_activeAnimatedModel->SelectAnimation(m_animationNames[i]);
                         m_activeAnimatedModel->PlayAnimation();
                     }
+                    if (isSelected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
                 }
-                ImGui::EndPopup();
+                ImGui::EndCombo();
             }
-            ImGui::SameLine();
-            if (ImGui::Button("Play"))
+
+            float ticksPerSecond = m_activeAnimatedModel->GetTicksPerSecond();
+            float currentTime = m_activeAnimatedModel->GetCurrentAnimationTime();
+            float duration = m_activeAnimatedModel->GetCurrentAnimationDuration();
+            ImGui::Text("Time (sec): %.2f / %.2f", currentTime / ticksPerSecond, duration / ticksPerSecond);
+
+            ImVec2 buttonSize(16, 16);
+            if (ImGui::ImageButton("##Play", (ImTextureID)m_playButtonTexure, buttonSize))
             {
                 m_activeAnimatedModel->PlayAnimation();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Pause"))
+            if (ImGui::ImageButton("##Pause", (ImTextureID)m_pauseButtonTexure, buttonSize))
             {
                 m_activeAnimatedModel->StopAnimation();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Stop"))
+            if (ImGui::ImageButton("##Stop", (ImTextureID)m_stopButtonTexure, buttonSize))
             {
                 m_activeAnimatedModel->StopAnimation();
                 m_activeAnimatedModel->ResetAnimationTime();
             }
 
-            float currentTime = m_activeAnimatedModel->GetCurrentAnimationTime();
-            float duration = m_activeAnimatedModel->GetCurrentAnimationDuration();
-            if (ImGui::SliderFloat("Progress", &currentTime, 0.0f, duration, "%.2f"))
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 5.0f)); 
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.4f, 0.8f, 1.0f, 1.0f));
+            ImGui::SetNextItemWidth(availableWidth - 96);
+            ImGui::SameLine();
+            if (ImGui::SliderFloat("##Progress", &currentTime, 0.0f, duration, ""))
             {
                 m_activeAnimatedModel->SetCurrentAnimationTime(currentTime);
-                m_activeAnimatedModel->FixedUpdate(0.0f);
+                m_activeAnimatedModel->FixedUpdate(0.0f, true);
+            }
+            ImGui::PopStyleColor(2);
+            ImGui::PopStyleVar();
+            ImGui::Separator();
+
+            Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
+            static const char* layers[] = { "Layer 1", "Layer 2", "Layer 3" };
+            static int currentLayer = 0;
+            ImGui::SetNextItemWidth(availableWidth * 0.5f);
+            ImGui::Combo("##LayerSelector", &currentLayer, layers, IM_ARRAYSIZE(layers));
+            ImGui::SameLine();
+            if (ImGui::Button("Apply Layer", ImVec2(availableWidth * 0.5f - 8.0f, 0)))
+            {
+                for (int i = 0; i < skeleton.GetBoneCount(); ++i)
+                {
+                    if (m_selectedBones[i])
+                    {
+                        Bone& bone = skeleton.GetBone(i);
+                        bone.layer = currentLayer + 1;
+                    }
+                }
+            }
+            
+            if (m_selectedBones.empty())
+            {
+                m_selectedBones.resize(skeleton.GetBoneCount(), false);
+            }
+
+            if (ImGui::TreeNode("Bone Hierarchy"))
+            {
+                ImGui::Unindent();
+                for (const auto& bone : skeleton.GetBones())
+                {
+                    if (bone.parentIndex == -1)
+                    {
+                        DisplayBoneHierarchy(bone, 0, skeleton);
+                    }
+                }
+                ImGui::Indent();
+    
+                ImGui::TreePop();
             }
         }
         else
         {
-            ImGui::Text("No animated object selected.");
+            if (!m_animationNames.empty())
+            {
+                m_animationNames.clear();
+            }
+            if(!m_selectedBones.empty())
+            {
+                m_selectedBones.clear();
+            }
         }
-        ImGui::End();
     }
 
     void Editor::OnResolutionChange()
@@ -389,7 +482,6 @@ namespace SGE
         ConstructContentBrowser();
         ConstructPropertiesEditor();
         ConstructWindowSettings();
-        ConstructAnimationEditor();
     }
 
     void Editor::ConstructSceneObjectsList()
@@ -489,6 +581,7 @@ namespace SGE
         if (m_selectedObject)
         {
             m_selectedObject->DrawEditor();
+            ConstructAnimationEditor();
         }
         else
         {
