@@ -219,12 +219,18 @@ namespace SGE
     std::string NormalizeBoneName(const std::string& name)
     {
         std::string result = name;
-
         size_t pos = result.find("_$Assimp");
         if (pos != std::string::npos)
         {
             result = result.substr(0, pos);
         }
+
+        pos = result.find(':');
+        if (pos != std::string::npos)
+        {
+            result = result.substr(pos + 1);
+        }
+
         std::transform(result.begin(), result.end(), result.begin(), ::tolower);
 
         return result;
