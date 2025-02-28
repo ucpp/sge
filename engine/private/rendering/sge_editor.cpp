@@ -315,6 +315,24 @@ namespace SGE
     {
         if (m_activeAnimatedModel)
         {
+            if (m_selectedObject)
+            {
+                auto* animatedModelData = dynamic_cast<AnimatedModelData*>(m_selectedObject);
+                if (animatedModelData)
+                {
+                    Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
+                    for (int i = 0; i < skeleton.GetBoneCount(); ++i)
+                    {
+                        Bone& bone = skeleton.GetBone(i);
+                        const std::string& boneName = bone.name;
+                        if (animatedModelData->boneLayers.find(boneName) != animatedModelData->boneLayers.end())
+                        {
+                            bone.layer = animatedModelData->boneLayers[boneName];
+                        }
+                    }
+                }
+            }
+
             ImGui::Separator();
             ImGui::Text("Animation:");
             ImGui::Separator();
@@ -389,19 +407,29 @@ namespace SGE
             ImGui::Separator();
 
             Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
-            static const char* layers[] = { "Layer 1", "Layer 2", "Layer 3" };
+            static const char* layers[] = { "Layer 0", "Layer 1", "Layer 2" };
             static int currentLayer = 0;
             ImGui::SetNextItemWidth(availableWidth * 0.5f);
             ImGui::Combo("##LayerSelector", &currentLayer, layers, IM_ARRAYSIZE(layers));
             ImGui::SameLine();
+
             if (ImGui::Button("Apply Layer", ImVec2(availableWidth * 0.5f - 8.0f, 0)))
             {
-                for (int i = 0; i < skeleton.GetBoneCount(); ++i)
+                if (m_selectedObject)
                 {
-                    if (m_selectedBones[i])
+                    auto* animatedModelData = dynamic_cast<AnimatedModelData*>(m_selectedObject);
+                    if (animatedModelData)
                     {
-                        Bone& bone = skeleton.GetBone(i);
-                        bone.layer = currentLayer + 1;
+                        Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
+                        for (int i = 0; i < skeleton.GetBoneCount(); ++i)
+                        {
+                            if (m_selectedBones[i])
+                            {
+                                Bone& bone = skeleton.GetBone(i);
+                                bone.layer = currentLayer;
+                                animatedModelData->boneLayers[bone.name] = bone.layer;
+                            }
+                        }
                     }
                 }
             }

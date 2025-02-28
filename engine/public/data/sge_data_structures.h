@@ -173,6 +173,10 @@ namespace SGE
     {
     public:
         void DrawEditor() override;
+        void ToJson(njson& data) override;
+        void FromJson(const njson& data) override;
+
+        std::unordered_map<std::string, int> boneLayers;
     };
 
     class PointLightData : public ObjectDataBase

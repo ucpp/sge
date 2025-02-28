@@ -105,6 +105,32 @@ namespace SGE
         data.at("enabled").get_to(enabled);
     }
 
+    void AnimatedModelData::ToJson(njson& data)
+    {
+        ModelData::ToJson(data);
+        
+        njson boneLayersJson;
+        for (const auto& [boneName, layer] : boneLayers)
+        {
+            boneLayersJson[boneName] = layer;
+        }
+        data["bone_layers"] = boneLayersJson;
+    }
+
+    void AnimatedModelData::FromJson(const njson& data)
+    {
+        ModelData::FromJson(data);
+
+        if (data.contains("bone_layers"))
+        {
+            boneLayers.clear();
+            for (const auto& [boneName, layer] : data["bone_layers"].items())
+            {
+                boneLayers[boneName] = layer;
+            }
+        }
+    }
+
     void AnimatedModelData::DrawEditor()
     {
         Checkbox("Enabled:", enabled);

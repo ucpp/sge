@@ -206,14 +206,14 @@
                 "path": "resources/models/cube.gltf"
             },
             {
-                "name": "cube_plane",
-                "type": 0,
-                "path": "resources/models/cube_and_plane.gltf"
-            },
-            {
                 "name": "plane",
                 "type": 0,
                 "path": "resources/models/plane.gltf"
+            },
+            {
+                "name": "cube_plane",
+                "type": 0,
+                "path": "resources/models/cube_and_plane.gltf"
             },
             {
                 "name": "stormtrooper",
@@ -226,20 +226,12 @@
                 "path": "resources/anim/human.gltf"
             },
             {
-                "name": "human_mat",
+                "name": "plastic",
                 "type": 2,
-                "albedo_texture_path": "resources/anim/Ch43_1001_Diffuse.png",
-                "metallic_texture_path": "resources/anim/Ch43_1001_Specular.png",
-                "normal_texture_path": "resources/anim/Ch43_1001_Normal.png",
-                "roughness_texture_path": "resources/anim/Ch43_1001_Glossiness.png"
-            },
-            {
-                "name": "backpack",
-                "type": 2,
-                "albedo_texture_path": "resources/backpack/diffuse.dds",
-                "metallic_texture_path": "resources/backpack/specular.dds",
-                "normal_texture_path": "resources/backpack/normal.dds",
-                "roughness_texture_path": "resources/backpack/roughness.dds"
+                "albedo_texture_path": "resources/plastic/albedo.png",
+                "metallic_texture_path": "",
+                "normal_texture_path": "resources/plastic/normal.png",
+                "roughness_texture_path": "resources/plastic/roughness.png"
             },
             {
                 "name": "stones",
@@ -250,12 +242,20 @@
                 "roughness_texture_path": "resources/stones/roughness.png"
             },
             {
-                "name": "plastic",
+                "name": "backpack",
                 "type": 2,
-                "albedo_texture_path": "resources/plastic/albedo.png",
-                "metallic_texture_path": "",
-                "normal_texture_path": "resources/plastic/normal.png",
-                "roughness_texture_path": "resources/plastic/roughness.png"
+                "albedo_texture_path": "resources/backpack/diffuse.dds",
+                "metallic_texture_path": "resources/backpack/specular.dds",
+                "normal_texture_path": "resources/backpack/normal.dds",
+                "roughness_texture_path": "resources/backpack/roughness.dds"
+            },
+            {
+                "name": "human_mat",
+                "type": 2,
+                "albedo_texture_path": "resources/anim/Ch43_1001_Diffuse.png",
+                "metallic_texture_path": "resources/anim/Ch43_1001_Specular.png",
+                "normal_texture_path": "resources/anim/Ch43_1001_Normal.png",
+                "roughness_texture_path": "resources/anim/Ch43_1001_Glossiness.png"
             },
             {
                 "name": "uv_checker",
@@ -385,7 +385,8 @@
                 ],
                 "asset_id": "stormtrooper",
                 "material_id": "stormtrooper_mat",
-                "enabled": true
+                "enabled": true,
+                "bone_layers": null
             },
             {
                 "name": "Human",
@@ -407,7 +408,10 @@
                 ],
                 "asset_id": "human",
                 "material_id": "human_mat",
-                "enabled": true
+                "enabled": true,
+                "bone_layers": {
+                    "hips": 0
+                }
             },
             {
                 "name": "Point Light",
