@@ -39,6 +39,15 @@ namespace SGE
         float ticksPerSecond;
         std::unordered_map<std::string, BoneKeyframes> boneKeyframes;
     };
+
+    struct LayerAnimation
+    {
+        std::string animationName;
+        float weight = 0.5f;
+        float currentTime = 0.0f;
+        bool isPlaying = false;
+        float ticksPerSecond = 25.0f;
+    };
 }
 
 #endif // !_SGE_ANIMATION_H_

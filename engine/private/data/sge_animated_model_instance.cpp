@@ -80,19 +80,19 @@ namespace SGE
         ModelInstance::Initialize(asset, device, descriptorHeap, instanceIndex);
 
         const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
+        m_finalBoneTransforms.resize(skeleton.GetBoneCount(), float4x4::Identity);
         m_boneTransforms.resize(skeleton.GetBoneCount(), float4x4::Identity);
     }
 
-    void AnimatedModelInstance::SelectAnimation(const std::string& animationName)
+    void AnimatedModelInstance::SelectAnimationForLayer(const std::string& animationName, int layer)
     {
         const auto& animations = m_animatedAsset->GetAnimations();
         auto it = std::find_if(animations.begin(), animations.end(), [&animationName](const Animation& anim) { return anim.name == animationName; });
 
         if (it != animations.end())
         {
-            m_currentAnimationName = animationName;
-            m_currentAnimationTime = 0.0f;
-            m_ticksPerSecond = it->ticksPerSecond;
+            m_layerAnimations[layer] = { animationName, 1.0f, 0.0f, false };
+            m_layerAnimations[layer].ticksPerSecond = it->ticksPerSecond;
         }
         else
         {
@@ -100,17 +100,92 @@ namespace SGE
         }
     }
 
-    void AnimatedModelInstance::PlayAnimation()
+    void AnimatedModelInstance::PlayAnimationForLayer(int layer)
     {
-        m_isPlaying = true;
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            m_layerAnimations[layer].isPlaying = true;
+        }
     }
 
-    void AnimatedModelInstance::StopAnimation()
+    void AnimatedModelInstance::StopAnimationForLayer(int layer)
     {
-        m_isPlaying = false;
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            m_layerAnimations[layer].isPlaying = false;
+        }
     }
 
-    void AnimatedModelInstance::UpdateBoneTransforms(int32 boneIndex, const float4x4& parentTransform, const Animation& currentAnimation, float animationTime)
+    void AnimatedModelInstance::SetAnimationWeightForLayer(int layer, float weight)
+    {
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            m_layerAnimations[layer].weight = weight;
+        }
+    }
+
+    void AnimatedModelInstance::ResetAnimationTimeForLayer(int layer)
+    {
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            m_layerAnimations[layer].currentTime = 0.0f;
+        }
+    }
+
+    void AnimatedModelInstance::SetCurrentAnimationTimeForLayer(int layer, float time)
+    {
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            m_layerAnimations[layer].currentTime = time;
+        }
+    }
+
+    float AnimatedModelInstance::GetCurrentAnimationTimeForLayer(int layer) const
+    {
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            return m_layerAnimations.at(layer).currentTime;
+        }
+        return 0.0f;
+    }
+
+    float AnimatedModelInstance::GetCurrentAnimationDurationForLayer(int layer) const
+    {
+        const auto& animations = m_animatedAsset->GetAnimations();
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            const std::string& animationName = m_layerAnimations.at(layer).animationName;
+            auto it = std::find_if(animations.begin(), animations.end(), [&animationName](const Animation& anim) {
+                return anim.name == animationName;
+            });
+
+            if (it != animations.end())
+            {
+                return it->duration;
+            }
+        }
+        return 0.0f;
+    }
+
+    float AnimatedModelInstance::GetTicksPerSecondForLayer(int layer) const
+    {
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            return m_layerAnimations.at(layer).ticksPerSecond;
+        }
+        return 0.0f;
+    }
+
+    std::string AnimatedModelInstance::GetCurrentAnimationNameForLayer(int layer) const
+    {
+        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
+        {
+            return m_layerAnimations.at(layer).animationName;
+        }
+        return "";
+    }
+
+    void AnimatedModelInstance::UpdateBoneTransformsForLayer(int32 boneIndex, const float4x4& parentTransform, const Animation& currentAnimation, float animationTime, int layer)
     {
         const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
         const Bone& bone = skeleton.GetBone(boneIndex);
@@ -138,74 +213,59 @@ namespace SGE
 
         for (int32 childIndex : bone.children)
         {
-            UpdateBoneTransforms(childIndex, globalTransform, currentAnimation, animationTime);
+            UpdateBoneTransformsForLayer(childIndex, globalTransform, currentAnimation, animationTime, layer);
         }
     }
-        
-    void AnimatedModelInstance::FixedUpdate(float deltaTime, bool forceUpdate)
+
+    void AnimatedModelInstance::BlendBoneTransforms()
     {
-        if (!m_isPlaying && !forceUpdate) return;
+        std::fill(m_finalBoneTransforms.begin(), m_finalBoneTransforms.end(), float4x4::Identity);
 
-        const auto& animations = m_animatedAsset->GetAnimations();
-        auto it = std::find_if(animations.begin(), animations.end(), [this](const Animation& anim) { return anim.name == m_currentAnimationName; });
-
-        if (it == animations.end()) return;
-
-        const Animation& currentAnimation = *it;
-        m_currentAnimationTime += deltaTime * currentAnimation.ticksPerSecond;
-
-        if (m_currentAnimationTime > currentAnimation.duration)
+        for (auto& layerAnim : m_layerAnimations)
         {
-            m_currentAnimationTime = fmod(m_currentAnimationTime, currentAnimation.duration);
-        }
+            int layer = layerAnim.first;
+            float weight = layerAnim.second.weight;
 
-        const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
-        for (int32 i = 0; i < skeleton.GetBoneCount(); ++i)
-        {
-            if (skeleton.GetBone(i).parentIndex == -1)
+            for (size_t i = 0; i < m_boneTransforms.size(); ++i)
             {
-                UpdateBoneTransforms(i, float4x4::Identity, currentAnimation, m_currentAnimationTime);
+                if (m_animatedAsset->GetSkeleton().GetBone(static_cast<uint32>(i)).layer == layer)
+                {
+                    m_finalBoneTransforms[i] = m_finalBoneTransforms[i] * (1.0f - weight) + m_boneTransforms[i] * weight;
+                }
             }
         }
     }
 
-    void AnimatedModelInstance::ResetAnimationTime()
+    void AnimatedModelInstance::FixedUpdate(float deltaTime, bool forceUpdate)
     {
-        m_currentAnimationTime = 0.0f;
-    }
-
-    void AnimatedModelInstance::SetCurrentAnimationTime(float time)
-    {
-        m_currentAnimationTime = time;
-    }
-
-    float AnimatedModelInstance::GetCurrentAnimationTime() const
-    {
-        return m_currentAnimationTime;
-    }
-
-    float AnimatedModelInstance::GetCurrentAnimationDuration() const
-    {
-        const auto& animations = m_animatedAsset->GetAnimations();
-        auto it = std::find_if(animations.begin(), animations.end(), [this](const Animation& anim) {
-            return anim.name == m_currentAnimationName;
-        });
-
-        if (it != animations.end())
+        for (auto& layerAnim : m_layerAnimations)
         {
-            return it->duration;
+            if (!layerAnim.second.isPlaying && !forceUpdate) continue;
+
+            const auto& animations = m_animatedAsset->GetAnimations();
+            auto it = std::find_if(animations.begin(), animations.end(), [&layerAnim](const Animation& anim) { return anim.name == layerAnim.second.animationName; });
+
+            if (it == animations.end()) continue;
+
+            const Animation& currentAnimation = *it;
+            layerAnim.second.currentTime += deltaTime * currentAnimation.ticksPerSecond;
+
+            if (layerAnim.second.currentTime > currentAnimation.duration)
+            {
+                layerAnim.second.currentTime = fmod(layerAnim.second.currentTime, currentAnimation.duration);
+            }
+
+            const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
+            for (int32 i = 0; i < skeleton.GetBoneCount(); ++i)
+            {
+                if (skeleton.GetBone(i).parentIndex == -1)
+                {
+                    UpdateBoneTransformsForLayer(i, float4x4::Identity, currentAnimation, layerAnim.second.currentTime, layerAnim.first);
+                }
+            }
         }
-        return 0.0f;
-    }
 
-    std::string AnimatedModelInstance::GetCurrentAnimationName() const
-    {
-        return m_currentAnimationName;
-    }
-
-    float AnimatedModelInstance::GetTicksPerSecond() const
-    {
-        return m_ticksPerSecond;
+        BlendBoneTransforms();
     }
 
     const std::vector<Animation>& AnimatedModelInstance::GetAnimations() const

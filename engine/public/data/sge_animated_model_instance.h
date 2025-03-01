@@ -12,31 +12,33 @@ namespace SGE
     public:
         void Initialize(AnimatedModelAsset* asset, class Device* device, class DescriptorHeap* descriptorHeap, uint32 instanceIndex);
 
-        void SelectAnimation(const std::string& animationName);
-        void PlayAnimation();
-        void StopAnimation();
+        void SelectAnimationForLayer(const std::string& animationName, int layer);
+        void PlayAnimationForLayer(int layer);
+        void StopAnimationForLayer(int layer);
+        void SetAnimationWeightForLayer(int layer, float weight);
+        void ResetAnimationTimeForLayer(int layer);
+        void SetCurrentAnimationTimeForLayer(int layer, float time);
+        float GetCurrentAnimationTimeForLayer(int layer) const;
+        float GetCurrentAnimationDurationForLayer(int layer) const;
+        float GetTicksPerSecondForLayer(int layer) const;
+        std::string GetCurrentAnimationNameForLayer(int layer) const;
+
         void FixedUpdate(float deltaTime, bool forceUpdate = false) override;
 
-        void ResetAnimationTime();
-        void SetCurrentAnimationTime(float time);
-        float GetCurrentAnimationTime() const;
-        float GetCurrentAnimationDuration() const;
-        float GetTicksPerSecond() const;
-        std::string GetCurrentAnimationName() const;
         const std::vector<Animation>& GetAnimations() const;
         Skeleton& GetSkeleton() const;
 
     protected:
         const std::vector<Mesh>& GetMeshes() const override;
-        void UpdateBoneTransforms(int32 boneIndex, const float4x4& parentTransform, const Animation& currentAnimation, float animationTime);
         void OnUpdateTransform(const float4x4& viewMatrix, const float4x4& projectionMatrix) override;
-    
+
     private:
+        void UpdateBoneTransformsForLayer(int32 boneIndex, const float4x4& parentTransform, const Animation& currentAnimation, float animationTime, int layer);
+        void BlendBoneTransforms();
+
         AnimatedModelAsset* m_animatedAsset = nullptr;
-        bool m_isPlaying = false;
-        float m_currentAnimationTime = 0.0f;
-        float m_ticksPerSecond = 25.0f;
-        std::string m_currentAnimationName;
+        std::unordered_map<int, LayerAnimation> m_layerAnimations;
+        std::vector<float4x4> m_finalBoneTransforms;
         std::vector<float4x4> m_boneTransforms;
     };
 }
