@@ -80,8 +80,13 @@ namespace SGE
         ModelInstance::Initialize(asset, device, descriptorHeap, instanceIndex);
 
         const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
-        m_finalBoneTransforms.resize(skeleton.GetBoneCount(), float4x4::Identity);
-        m_boneTransforms.resize(skeleton.GetBoneCount(), float4x4::Identity);
+        size_t boneCount = skeleton.GetBoneCount();
+
+        m_finalBoneTransforms.resize(boneCount, float4x4::Identity);
+        for (int32 i = 0; i < 3; ++i)
+        {
+            m_layerBoneTransforms[i].resize(boneCount, float4x4::Identity);
+        }
     }
 
     void AnimatedModelInstance::SelectAnimationForLayer(const std::string& animationName, int layer)
@@ -91,8 +96,7 @@ namespace SGE
 
         if (it != animations.end())
         {
-            m_layerAnimations[layer] = { animationName, 1.0f, 0.0f, false };
-            m_layerAnimations[layer].ticksPerSecond = it->ticksPerSecond;
+            m_layerAnimations[layer] = { animationName, 0.0f, false, it->ticksPerSecond };
         }
         else
         {
@@ -113,14 +117,6 @@ namespace SGE
         if (m_layerAnimations.find(layer) != m_layerAnimations.end())
         {
             m_layerAnimations[layer].isPlaying = false;
-        }
-    }
-
-    void AnimatedModelInstance::SetAnimationWeightForLayer(int layer, float weight)
-    {
-        if (m_layerAnimations.find(layer) != m_layerAnimations.end())
-        {
-            m_layerAnimations[layer].weight = weight;
         }
     }
 
@@ -193,7 +189,7 @@ namespace SGE
         auto it = currentAnimation.boneKeyframes.find(bone.name);
         if (it == currentAnimation.boneKeyframes.end())
         {
-            m_boneTransforms[boneIndex] = parentTransform * bone.offsetMatrix;
+            m_layerBoneTransforms[layer][boneIndex] = parentTransform * bone.offsetMatrix;
             return;
         }
 
@@ -209,7 +205,7 @@ namespace SGE
 
         float4x4 localTransform = translationMatrix * rotationMatrix * scaleMatrix;
         float4x4 globalTransform = parentTransform * localTransform;
-        m_boneTransforms[boneIndex] = globalTransform * bone.offsetMatrix;
+        m_layerBoneTransforms[layer][boneIndex] = globalTransform * bone.offsetMatrix;
 
         for (int32 childIndex : bone.children)
         {
@@ -221,17 +217,17 @@ namespace SGE
     {
         std::fill(m_finalBoneTransforms.begin(), m_finalBoneTransforms.end(), float4x4::Identity);
 
+        const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
+
         for (auto& layerAnim : m_layerAnimations)
         {
             int layer = layerAnim.first;
-            float weight = layerAnim.second.weight;
-
-            for (size_t i = 0; i < m_boneTransforms.size(); ++i)
+            const auto& boneTransforms = m_layerBoneTransforms[layer];
+            for (size_t i = 0; i < boneTransforms.size(); ++i)
             {
-                if (m_animatedAsset->GetSkeleton().GetBone(static_cast<uint32>(i)).layer == layer)
-                {
-                    m_finalBoneTransforms[i] = m_finalBoneTransforms[i] * (1.0f - weight) + m_boneTransforms[i] * weight;
-                }
+                const Bone& bone = skeleton.GetBone(static_cast<uint32>(i));
+                float boneWeight = bone.weights[layer];
+                m_finalBoneTransforms[i] = m_finalBoneTransforms[i] * (1.0f - boneWeight) + boneTransforms[i] * boneWeight;
             }
         }
     }
@@ -290,10 +286,10 @@ namespace SGE
         m_transformData.projection = projectionMatrix;
         m_transformData.isAnimated = true;
         
-        size_t boneCount = min(100, m_boneTransforms.size());
+        size_t boneCount = min(100, m_finalBoneTransforms.size());
         for (size_t i = 0; i < boneCount; ++i)
         {
-            m_transformData.boneTransforms[i] = m_boneTransforms[i];
+            m_transformData.boneTransforms[i] = m_finalBoneTransforms[i];
         }
 
         for (size_t i = boneCount; i < 100; ++i)
@@ -307,5 +303,28 @@ namespace SGE
     const std::vector<Mesh>& AnimatedModelInstance::GetMeshes() const
     {
         return m_animatedAsset->GetMeshes();
+    }
+
+    void AnimatedModelInstance::ResetToTPose()
+    {
+        for (auto& layerAnim : m_layerAnimations)
+        {
+            layerAnim.second.isPlaying = false;
+            layerAnim.second.currentTime = 0.0f;
+        }
+
+        const Skeleton& skeleton = m_animatedAsset->GetSkeleton();
+        for (int32 i = 0; i < skeleton.GetBoneCount(); ++i)
+        {
+            const Bone& bone = skeleton.GetBone(i);
+            m_finalBoneTransforms[i] = float4x4::Identity;
+
+            for (int layer = 0; layer < 3; ++layer)
+            {
+                m_layerBoneTransforms[layer][i] = m_finalBoneTransforms[i];
+            }
+        }
+
+        BlendBoneTransforms();
     }
 }

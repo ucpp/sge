@@ -43,7 +43,6 @@ namespace SGE
     struct LayerAnimation
     {
         std::string animationName;
-        float weight = 0.5f;
         float currentTime = 0.0f;
         bool isPlaying = false;
         float ticksPerSecond = 25.0f;

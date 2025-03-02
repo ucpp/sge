@@ -303,13 +303,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "1.56",
-                    "5.858",
-                    "-14.263"
+                    "2.29",
+                    "3.746",
+                    "-15.135"
                 ],
                 "rotation": [
-                    "-16.2",
-                    "-1.6",
+                    "-9.9",
+                    "3.6",
                     "0.0"
                 ],
                 "scale": [
@@ -361,32 +361,9 @@
                     "1.0",
                     "1.0"
                 ],
-                "asset_id": "cube_plane",
+                "asset_id": "plane",
                 "material_id": "uv_checker",
                 "enabled": true
-            },
-            {
-                "name": "Stormtrooper",
-                "type": 4,
-                "position": [
-                    "-2.61",
-                    "0.0",
-                    "0.0"
-                ],
-                "rotation": [
-                    "0.0",
-                    "270.0",
-                    "0.0"
-                ],
-                "scale": [
-                    "1.0",
-                    "1.0",
-                    "1.0"
-                ],
-                "asset_id": "stormtrooper",
-                "material_id": "stormtrooper_mat",
-                "enabled": true,
-                "bone_layers": null
             },
             {
                 "name": "Human",
@@ -410,7 +387,331 @@
                 "material_id": "human_mat",
                 "enabled": true,
                 "bone_layers": {
-                    "hips": 0
+                    "rightleg": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "hips": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "righthandindex1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandthumb2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandindex2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "spine1": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "headtop_end": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "lefthandring3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandthumb4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "spine": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "righthandpinky3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "leftfoot": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "neck": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "lefthandring1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "spine2": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "lefthandindex1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "head": [
+                        "0.2",
+                        "0.8",
+                        "0.0"
+                    ],
+                    "leftshoulder": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandindex4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandring2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "leftarm": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "leftforearm": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthand": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandpinky4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefttoebase": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "lefthandthumb1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandindex2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandring4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandthumb3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandthumb4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandring1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandindex3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "leftleg": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "lefthandindex4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "rightfoot": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "lefthandmiddle1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandpinky2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandmiddle2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandpinky1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandmiddle3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandmiddle4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandring2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "rightforearm": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandring4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandthumb3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandpinky1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandpinky2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandpinky3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "lefthandpinky4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "rightshoulder": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandindex3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "rightarm": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandmiddle2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthand": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandthumb1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandthumb2": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandmiddle1": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "rightupleg": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "righthandmiddle3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandmiddle4": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "righthandring3": [
+                        "0.0",
+                        "1.0",
+                        "0.0"
+                    ],
+                    "leftupleg": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "lefttoe_end": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "righttoebase": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ],
+                    "righttoe_end": [
+                        "0.8",
+                        "0.2",
+                        "0.0"
+                    ]
                 }
             },
             {

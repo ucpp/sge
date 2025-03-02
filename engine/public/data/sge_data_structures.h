@@ -176,7 +176,7 @@ namespace SGE
         void ToJson(njson& data) override;
         void FromJson(const njson& data) override;
 
-        std::unordered_map<std::string, int> boneLayers;
+        std::unordered_map<std::string, std::array<float, 3>> boneLayers;
     };
 
     class PointLightData : public ObjectDataBase

@@ -15,13 +15,13 @@ namespace SGE
         void SelectAnimationForLayer(const std::string& animationName, int layer);
         void PlayAnimationForLayer(int layer);
         void StopAnimationForLayer(int layer);
-        void SetAnimationWeightForLayer(int layer, float weight);
         void ResetAnimationTimeForLayer(int layer);
         void SetCurrentAnimationTimeForLayer(int layer, float time);
         float GetCurrentAnimationTimeForLayer(int layer) const;
         float GetCurrentAnimationDurationForLayer(int layer) const;
         float GetTicksPerSecondForLayer(int layer) const;
         std::string GetCurrentAnimationNameForLayer(int layer) const;
+        void ResetToTPose();
 
         void FixedUpdate(float deltaTime, bool forceUpdate = false) override;
 
@@ -39,7 +39,7 @@ namespace SGE
         AnimatedModelAsset* m_animatedAsset = nullptr;
         std::unordered_map<int, LayerAnimation> m_layerAnimations;
         std::vector<float4x4> m_finalBoneTransforms;
-        std::vector<float4x4> m_boneTransforms;
+        std::unordered_map<int, std::vector<float4x4>> m_layerBoneTransforms; 
     };
 }
 

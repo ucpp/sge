@@ -110,9 +110,14 @@ namespace SGE
         ModelData::ToJson(data);
         
         njson boneLayersJson;
-        for (const auto& [boneName, layer] : boneLayers)
+        for (const auto& [boneName, weights] : boneLayers)
         {
-            boneLayersJson[boneName] = layer;
+            njson weightsJson;
+            for (size_t i = 0; i < 3; ++i)
+            {
+                weightsJson.push_back(float1(weights[i]));
+            }
+            boneLayersJson[boneName] = weightsJson;
         }
         data["bone_layers"] = boneLayersJson;
     }
@@ -124,9 +129,14 @@ namespace SGE
         if (data.contains("bone_layers"))
         {
             boneLayers.clear();
-            for (const auto& [boneName, layer] : data["bone_layers"].items())
+            for (const auto& [boneName, weightsJson] : data["bone_layers"].items())
             {
-                boneLayers[boneName] = layer;
+                std::array<float, 3> weights;
+                for (size_t i = 0; i < 3; ++i)
+                {
+                    weights[i] = weightsJson[i].get<float1>().value;
+                }
+                boneLayers[boneName] = weights;
             }
         }
     }

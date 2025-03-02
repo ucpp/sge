@@ -119,12 +119,11 @@ This project is **actively under development**, and its purpose is to experiment
   
 </details>
  <details>
-  <summary><strong>☐ 16. Animation blending</strong>: Combine multiple animations (e.g., running and shooting) (in progress).</summary>
+  <summary><strong>☐ 16. Animation blending</strong>: Combine multiple animations (e.g., running and shooting).</summary>
 
+  ![Blending](https://github.com/ucpp/sge/blob/master/docs/blend_anim.gif)
   
 </details>
-  
----
   
 **17. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
 **18. SSLR**: Add screen-space local reflections.    

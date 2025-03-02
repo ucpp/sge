@@ -49,7 +49,8 @@ namespace SGE
         ImTextureID GetTexturePtr(const std::string& name) const;
         ImTextureID GetTexturePtr(uint32 index) const;
 
-        void DisplayBoneHierarchy(const Bone& bone, int level, Skeleton& skeleton);
+        void DisplayBoneHierarchy(Bone& bone, int level, Skeleton& skeleton);
+        void ApplyWeightToChildren(Bone& bone, Skeleton& skeleton, float weight);
 
     private:
         void OnSave();
@@ -79,8 +80,10 @@ namespace SGE
         ObjectDataBase* m_selectedObject = nullptr; 
         int32 m_selectedObjectIndex = -1;
         int32 m_selectedAnimationIndex = -1;
+        int32 m_currentLayer = 0;
+        bool m_applyWeightToChildren = false;
+        bool m_initedWeights = false;
         std::vector<std::string> m_animationNames;
-        std::vector<bool> m_selectedBones;
 
         bool m_isEnable = true;
     };

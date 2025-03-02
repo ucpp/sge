@@ -285,26 +285,40 @@ namespace SGE
         }
     }
 
-    void Editor::DisplayBoneHierarchy(const Bone& bone, int level, Skeleton& skeleton)
+    void Editor::DisplayBoneHierarchy(Bone& bone, int level, Skeleton& skeleton)
     {
         std::string label(level * 1, ' ');
-        label += bone.name + " (" + std::to_string(bone.layer) + ")";
+        label += bone.name;
+        float& weight = bone.weights[m_currentLayer];
 
-        if (bone.index >= m_selectedBones.size()) 
+        ImGui::PushID(bone.index);
+        ImGui::SetNextItemWidth(70.0f);
+        if (ImGui::SliderFloat("##Weight", &weight, 0.0f, 1.0f, "%.1f"))
         {
-            m_selectedBones.resize(bone.index + 1, false);
+            if (m_applyWeightToChildren)
+            {
+                ApplyWeightToChildren(bone, skeleton, weight);
+            }
         }
-
-        bool value = m_selectedBones[bone.index];
-        if (ImGui::Checkbox(label.c_str(), &value)) 
-        {
-            m_selectedBones[bone.index] = value;
-        }
+        ImGui::SameLine();
+        ImGui::Text("%s", label.c_str());
+        ImGui::PopID();
 
         for (int32 childIndex : bone.children)
         {
-            const Bone& childBone = skeleton.GetBone(childIndex);
+            Bone& childBone = skeleton.GetBone(childIndex);
             DisplayBoneHierarchy(childBone, level + 1, skeleton);
+        }
+    }
+
+    void Editor::ApplyWeightToChildren(Bone& bone, Skeleton& skeleton, float weight)
+    {
+        bone.weights[m_currentLayer] = weight;
+
+        for (int32 childIndex : bone.children)
+        {
+            Bone& childBone = skeleton.GetBone(childIndex);
+            ApplyWeightToChildren(childBone, skeleton, weight);
         }
     }
 
@@ -322,11 +336,12 @@ namespace SGE
                     {
                         Bone& bone = skeleton.GetBone(i);
                         const std::string& boneName = bone.name;
-                        if (animatedModelData->boneLayers.find(boneName) != animatedModelData->boneLayers.end())
+                        if (animatedModelData->boneLayers.find(boneName) != animatedModelData->boneLayers.end() && !m_initedWeights)
                         {
-                            bone.layer = animatedModelData->boneLayers[boneName];
+                            bone.weights = animatedModelData->boneLayers[boneName];
                         }
                     }
+                    m_initedWeights = true;
                 }
             }
 
@@ -349,11 +364,10 @@ namespace SGE
             float availableWidth = ImGui::GetContentRegionAvail().x;
 
             static const char* layers[] = { "Layer 0", "Layer 1", "Layer 2" };
-            static int currentLayer = 0;
             static float blendWeight = 0.5f;
 
             ImGui::SetNextItemWidth(availableWidth * 0.5f);
-            ImGui::Combo("##LayerSelector", &currentLayer, layers, IM_ARRAYSIZE(layers));
+            ImGui::Combo("##LayerSelector", &m_currentLayer, layers, IM_ARRAYSIZE(layers));
             ImGui::SameLine();
 
             if (ImGui::Button("Apply Layer", ImVec2(availableWidth * 0.5f - 8.0f, 0)))
@@ -366,12 +380,8 @@ namespace SGE
                         Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
                         for (int i = 0; i < skeleton.GetBoneCount(); ++i)
                         {
-                            if (m_selectedBones[i])
-                            {
-                                Bone& bone = skeleton.GetBone(i);
-                                bone.layer = currentLayer;
-                                animatedModelData->boneLayers[bone.name] = bone.layer;
-                            }
+                            Bone& bone = skeleton.GetBone(i);
+                            animatedModelData->boneLayers[bone.name] = bone.weights;
                         }
                     }
                 }
@@ -397,34 +407,32 @@ namespace SGE
             }
 
             ImGui::SetNextItemWidth(availableWidth);
-            ImGui::SliderFloat("##BlendWeight", &blendWeight, 0.0f, 1.0f, "Weight: %.2f");
             if (ImGui::Button("Add Animation to Layer"))
             {
-                m_activeAnimatedModel->SelectAnimationForLayer(m_animationNames[m_selectedAnimationIndex], currentLayer);
-                m_activeAnimatedModel->SetAnimationWeightForLayer(currentLayer, blendWeight);
-                m_activeAnimatedModel->PlayAnimationForLayer(currentLayer);
+                m_activeAnimatedModel->SelectAnimationForLayer(m_animationNames[m_selectedAnimationIndex], m_currentLayer);
+                m_activeAnimatedModel->PlayAnimationForLayer(m_currentLayer);
             }
 
-            float ticksPerSecond = m_activeAnimatedModel->GetTicksPerSecondForLayer(currentLayer);
-            float currentTime = m_activeAnimatedModel->GetCurrentAnimationTimeForLayer(currentLayer);
-            float duration = m_activeAnimatedModel->GetCurrentAnimationDurationForLayer(currentLayer);
+            float ticksPerSecond = m_activeAnimatedModel->GetTicksPerSecondForLayer(m_currentLayer);
+            float currentTime = m_activeAnimatedModel->GetCurrentAnimationTimeForLayer(m_currentLayer);
+            float duration = m_activeAnimatedModel->GetCurrentAnimationDurationForLayer(m_currentLayer);
             ImGui::Text("Time (sec): %.2f / %.2f", currentTime / ticksPerSecond, duration / ticksPerSecond);
 
             ImVec2 buttonSize(16, 16);
             if (ImGui::ImageButton("##Play", (ImTextureID)m_playButtonTexure, buttonSize))
             {
-                m_activeAnimatedModel->PlayAnimationForLayer(currentLayer);
+                m_activeAnimatedModel->PlayAnimationForLayer(m_currentLayer);
             }
             ImGui::SameLine();
             if (ImGui::ImageButton("##Pause", (ImTextureID)m_pauseButtonTexure, buttonSize))
             {
-                m_activeAnimatedModel->StopAnimationForLayer(currentLayer);
+                m_activeAnimatedModel->StopAnimationForLayer(m_currentLayer);
             }
             ImGui::SameLine();
             if (ImGui::ImageButton("##Stop", (ImTextureID)m_stopButtonTexure, buttonSize))
             {
-                m_activeAnimatedModel->StopAnimationForLayer(currentLayer);
-                m_activeAnimatedModel->ResetAnimationTimeForLayer(currentLayer);
+                m_activeAnimatedModel->StopAnimationForLayer(m_currentLayer);
+                m_activeAnimatedModel->ResetAnimationTimeForLayer(m_currentLayer);
             }
 
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 5.0f));
@@ -434,22 +442,23 @@ namespace SGE
             ImGui::SameLine();
             if (ImGui::SliderFloat("##Progress", &currentTime, 0.0f, duration, ""))
             {
-                m_activeAnimatedModel->SetCurrentAnimationTimeForLayer(currentLayer, currentTime);
+                m_activeAnimatedModel->SetCurrentAnimationTimeForLayer(m_currentLayer, currentTime);
                 m_activeAnimatedModel->FixedUpdate(0.0f, true);
             }
             ImGui::PopStyleColor(2);
             ImGui::PopStyleVar();
             ImGui::Separator();
 
-            if (m_selectedBones.empty())
+            if (ImGui::Button("Go to T-Pose", ImVec2(availableWidth, 0)))
             {
-                m_selectedBones.resize(m_activeAnimatedModel->GetSkeleton().GetBoneCount(), false);
+                m_activeAnimatedModel->ResetToTPose();
             }
 
             if (ImGui::TreeNode("Bone Hierarchy"))
             {
                 ImGui::Unindent();
-                for (const auto& bone : m_activeAnimatedModel->GetSkeleton().GetBones())
+                ImGui::Checkbox("Apply weight to children", &m_applyWeightToChildren);
+                for (auto& bone : m_activeAnimatedModel->GetSkeleton().GetBones())
                 {
                     if (bone.parentIndex == -1)
                     {
@@ -465,10 +474,6 @@ namespace SGE
             if (!m_animationNames.empty())
             {
                 m_animationNames.clear();
-            }
-            if (!m_selectedBones.empty())
-            {
-                m_selectedBones.clear();
             }
         }
     }
@@ -576,19 +581,24 @@ namespace SGE
                     if (ImGui::Selectable(objName, isSelected))
                     {
                         m_selectedObjectIndex = index;
-                        m_selectedObject = obj.get();
-                        
-                        if(m_selectedObject->type == ObjectType::AnimatedModel && m_activeScene)
+                        if(m_selectedObject != obj.get())
                         {
-                            AnimatedModelData* animatedModel = dynamic_cast<AnimatedModelData*>(m_selectedObject);
-                            if (animatedModel)
+                            m_selectedObject = obj.get();
+                            
+                            if(m_selectedObject->type == ObjectType::AnimatedModel && m_activeScene)
                             {
-                                m_activeAnimatedModel = m_activeScene->GetAnimModel(animatedModel);
+                                AnimatedModelData* animatedModel = dynamic_cast<AnimatedModelData*>(m_selectedObject);
+                                if (animatedModel)
+                                {
+                                    m_activeAnimatedModel = m_activeScene->GetAnimModel(animatedModel);
+                                    m_initedWeights = false;
+                                }
                             }
-                        }
-                        else
-                        {
-                            m_activeAnimatedModel = nullptr;
+                            else
+                            {
+                                m_activeAnimatedModel = nullptr;
+                            }
+                            m_animationNames.clear();
                         }
                     }
                     
