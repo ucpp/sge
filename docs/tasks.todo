@@ -20,30 +20,30 @@
     ✔ Add animated model instance class @done(25-02-26 22:14)
     ✔ Add animation data loading @done(25-02-26 22:14)
 ✔ Soft Shadows PCF @done(25-02-15)
-☐ Fix math
-☐ Add spot lights
-☐ Add auto expouse
 ✔ Add SSAO for Forward rendering @done(25-02-18 20:43)
+✔ Reduce code duplication in lighting shaders @done(25-02-16 21:02)
+
+[22-28.02.2025 - 10th week]
+✔ Skeletal meshes @done(25-02-26 22:14)
+✔ Play animations @done(25-02-26 22:14)
+
+[01-07.03.2025 - 11th week]
+[Day 71/1000 - 03/03/2025]
+✔ Blend animations @done(25-03-02 19:04)
 ☐ Reflections
     ☐ Dynamic environment reflections via render to cube map
     ☐ SSLR
+
+[08-14.03.2025 - 12th week]
+☐ Particle system
+☐ Particle editor
+☐ Refactoring and optimization
+☐ Fix math
+☐ Add spot lights
+☐ Add auto expouse
 ☐ Refactor 
     ☐ Make customizable root signature
     ☐ Refactor render passes
-    ✔ Reduce code duplication in lighting shaders @done(25-02-16 21:02)
 ☐ Optimizations
     ☐ Add mesh combining
     ☐ Reduce draw calls of editor
-
-[22-28.02.2025 - 10th week]
-[Day 67/1000 - 26/02/2025]
-✔ Skeletal meshes @done(25-02-26 22:14)
-✔ Play animations @done(25-02-26 22:14)
-☐ Blend animations
-
-[01-07.03.2025 - 11th week]
-☐ Particle system
-☐ Particle editor
-
-[08-14.03.2025 - 12th week]
-☐ Refactoring and optimization
