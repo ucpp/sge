@@ -15,7 +15,6 @@ This project is **actively under development**, and its purpose is to experiment
 > **Please note**: This project is **not intended for production use** or for creating finished products.  
 
 ## Roadmap  
----
 <details>
   <summary><strong>✔ 1. Initialize D3D12 context</strong>: Set up the DirectX 12 framework.</summary>
  
@@ -119,18 +118,25 @@ This project is **actively under development**, and its purpose is to experiment
   
 </details>
  <details>
-  <summary><strong>☐ 16. Animation blending</strong>: Combine multiple animations (e.g., running and shooting).</summary>
+  <summary><strong>✔ 16. Animation blending</strong>: Combine multiple animations (e.g., running and shooting).</summary>
 
   ![Blending](https://github.com/ucpp/sge/blob/master/docs/blend_anim.gif)
   
 </details>
-  
-**17. Dynamic environment reflections**: Render cube maps for dynamic reflections.  
-**18. SSLR**: Add screen-space local reflections.    
-**19. Particle system**: Create a system that supports 10,000+ particles.  
+</details>
+ <details>
+  <summary><strong>☐ 17. Dynamic environment reflections</strong>: Render cube maps for dynamic reflections (in progress).</summary>
+   
+</details>
+</details>
+ <details>
+  <summary><strong>☐ 18. SSLR</strong>: Add screen-space local reflections (in progress).</summary>
+   
+</details> 
   
 --- 
   
+**19. Particle system**: Create a system that supports 10,000+ particles.  
 **20. Transparency**: Implement transparency rendering with proper sorting and blending techniques.  
 **21. TAA/FXAA**: Add temporal anti-aliasing (TAA) and fast approximate anti-aliasing (FXAA) as post-process options.
 
