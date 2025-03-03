@@ -44,6 +44,8 @@ namespace SGE
         void ConstructWindowSettings();
 
         void ConstructAnimationEditor();
+
+        void SetGrayStyle();
     
         uint32 GetTextureIndex(const std::string& name) const;
         ImTextureID GetTexturePtr(const std::string& name) const;

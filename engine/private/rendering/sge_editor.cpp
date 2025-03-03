@@ -35,6 +35,7 @@ namespace SGE
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         io.IniFilename = PathToSaveFile.c_str();
+        SetGrayStyle();
 
         ImGui_ImplWin32_EnableDpiAwareness();
         ImGui_ImplWin32_Init(hwnd);
@@ -42,6 +43,83 @@ namespace SGE
         InitializeImGuiDX12();
         RegisterAssetIcons();
         RegisterObjectIcons();
+    }
+
+    void Editor::SetGrayStyle()
+    {
+        ImGuiStyle& style = ImGui::GetStyle();
+
+        const ImVec4 lightGray       = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
+        const ImVec4 darkGray        = ImVec4(0.15f, 0.15f, 0.15f, 1.00f);
+        const ImVec4 mediumGray      = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
+        const ImVec4 lighterGray     = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
+        const ImVec4 darkerGray      = ImVec4(0.10f, 0.10f, 0.10f, 1.00f); 
+        const ImVec4 blueGray        = ImVec4(0.45f, 0.55f, 0.70f, 1.00f);
+        const ImVec4 blueGrayHovered = ImVec4(0.50f, 0.60f, 0.75f, 1.00f);
+
+        style.Colors[ImGuiCol_Text]                 = lightGray;
+        style.Colors[ImGuiCol_WindowBg]             = darkGray;
+        style.Colors[ImGuiCol_Border]               = mediumGray;
+        style.Colors[ImGuiCol_FrameBg]              = mediumGray;
+        style.Colors[ImGuiCol_FrameBgHovered]       = lighterGray;
+        style.Colors[ImGuiCol_FrameBgActive]        = lighterGray;
+        style.Colors[ImGuiCol_Header]               = mediumGray;
+        style.Colors[ImGuiCol_HeaderHovered]        = mediumGray;
+        style.Colors[ImGuiCol_HeaderActive]         = mediumGray;
+        style.Colors[ImGuiCol_Button]               = mediumGray;
+        style.Colors[ImGuiCol_ButtonHovered]        = blueGray;
+        style.Colors[ImGuiCol_ButtonActive]         = blueGrayHovered;
+        style.Colors[ImGuiCol_SliderGrab]           = blueGray;
+        style.Colors[ImGuiCol_SliderGrabActive]     = blueGrayHovered;
+        style.Colors[ImGuiCol_TitleBg]              = darkerGray;
+        style.Colors[ImGuiCol_TitleBgActive]        = darkGray;
+        style.Colors[ImGuiCol_TitleBgCollapsed]     = darkerGray;
+        style.Colors[ImGuiCol_ScrollbarBg]          = darkerGray;
+        style.Colors[ImGuiCol_ScrollbarGrab]        = mediumGray;
+        style.Colors[ImGuiCol_ScrollbarGrabHovered] = blueGray;
+        style.Colors[ImGuiCol_ScrollbarGrabActive]  = blueGrayHovered;
+        style.Colors[ImGuiCol_Separator]            = mediumGray;
+        style.Colors[ImGuiCol_SeparatorHovered]     = blueGray;
+        style.Colors[ImGuiCol_SeparatorActive]      = blueGrayHovered;
+        style.Colors[ImGuiCol_Tab]                  = mediumGray;
+        style.Colors[ImGuiCol_TabHovered]           = blueGray;
+        style.Colors[ImGuiCol_TabActive]            = blueGrayHovered;
+        style.Colors[ImGuiCol_TabUnfocused]         = darkerGray;
+        style.Colors[ImGuiCol_TabUnfocusedActive]   = darkGray;
+        style.Colors[ImGuiCol_TabSelectedOverline]  = blueGray;
+        style.Colors[ImGuiCol_DockingPreview]       = blueGray;
+        style.Colors[ImGuiCol_DockingEmptyBg]       = darkerGray;
+        style.Colors[ImGuiCol_CheckMark]            = blueGray;
+        style.Colors[ImGuiCol_FrameBg]              = mediumGray;
+        style.Colors[ImGuiCol_FrameBgHovered]       = lighterGray;
+        style.Colors[ImGuiCol_FrameBgActive]        = lighterGray;
+
+        style.WindowRounding = 2.0f;
+        style.FrameRounding = 2.0f;
+        style.ScrollbarRounding = 2.0f;
+        style.GrabRounding = 2.0f;
+
+        style.WindowPadding = ImVec2(8, 8);
+        style.FramePadding = ImVec2(4, 2);
+        style.ItemSpacing = ImVec2(8, 4);
+        style.ItemInnerSpacing = ImVec2(4, 4);
+
+        style.WindowBorderSize = 1.0f;
+        style.FrameBorderSize = 0.0f;
+        style.ScrollbarSize = 12.0f;
+        style.GrabMinSize = 10.0f;
+
+        ImGuiIO& io = ImGui::GetIO();
+        io.Fonts->Clear();
+
+        ImFontConfig config;
+        config.GlyphOffset.y = -1.0f;
+        config.FontDataOwnedByAtlas = false;
+        config.OversampleH = 3;
+        config.PixelSnapH = true;
+        config.RasterizerMultiply = 1.5f;
+        io.Fonts->AddFontFromFileTTF((PathToIcons + "JetBrainsMono-Light.ttf").c_str(), 15.0f, &config);
+        io.Fonts->Build();
     }
 
     void Editor::InitializeImGuiDX12()
@@ -292,7 +370,7 @@ namespace SGE
         float& weight = bone.weights[m_currentLayer];
 
         ImGui::PushID(bone.index);
-        ImGui::SetNextItemWidth(70.0f);
+        ImGui::SetNextItemWidth(50.0f);
         if (ImGui::SliderFloat("##Weight", &weight, 0.0f, 1.0f, "%.1f"))
         {
             if (m_applyWeightToChildren)
@@ -346,7 +424,7 @@ namespace SGE
             }
 
             ImGui::Separator();
-            ImGui::Text("Animation Layers:");
+            ImGui::Text("Animations:");
             ImGui::Separator();
 
             const std::vector<Animation>& animations = m_activeAnimatedModel->GetAnimations();
@@ -366,29 +444,10 @@ namespace SGE
             static const char* layers[] = { "Layer 0", "Layer 1", "Layer 2" };
             static float blendWeight = 0.5f;
 
-            ImGui::SetNextItemWidth(availableWidth * 0.5f);
+            ImGui::SetNextItemWidth(availableWidth * 0.5f - 4.0f);
             ImGui::Combo("##LayerSelector", &m_currentLayer, layers, IM_ARRAYSIZE(layers));
             ImGui::SameLine();
-
-            if (ImGui::Button("Apply Layer", ImVec2(availableWidth * 0.5f - 8.0f, 0)))
-            {
-                if (m_selectedObject)
-                {
-                    auto* animatedModelData = dynamic_cast<AnimatedModelData*>(m_selectedObject);
-                    if (animatedModelData)
-                    {
-                        Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
-                        for (int i = 0; i < skeleton.GetBoneCount(); ++i)
-                        {
-                            Bone& bone = skeleton.GetBone(i);
-                            animatedModelData->boneLayers[bone.name] = bone.weights;
-                        }
-                    }
-                }
-            }
-
-            ImGui::Text("Add Animation to Layer:");
-            ImGui::SetNextItemWidth(availableWidth);
+            ImGui::SetNextItemWidth(availableWidth * 0.5f - 4.0f);
             if (ImGui::BeginCombo("##AnimationSelector", m_animationNames[m_selectedAnimationIndex].c_str()))
             {
                 for (int i = 0; i < m_animationNames.size(); ++i)
@@ -407,12 +466,6 @@ namespace SGE
             }
 
             ImGui::SetNextItemWidth(availableWidth);
-            if (ImGui::Button("Add Animation to Layer"))
-            {
-                m_activeAnimatedModel->SelectAnimationForLayer(m_animationNames[m_selectedAnimationIndex], m_currentLayer);
-                m_activeAnimatedModel->PlayAnimationForLayer(m_currentLayer);
-            }
-
             float ticksPerSecond = m_activeAnimatedModel->GetTicksPerSecondForLayer(m_currentLayer);
             float currentTime = m_activeAnimatedModel->GetCurrentAnimationTimeForLayer(m_currentLayer);
             float duration = m_activeAnimatedModel->GetCurrentAnimationDurationForLayer(m_currentLayer);
@@ -421,6 +474,7 @@ namespace SGE
             ImVec2 buttonSize(16, 16);
             if (ImGui::ImageButton("##Play", (ImTextureID)m_playButtonTexure, buttonSize))
             {
+                m_activeAnimatedModel->SelectAnimationForLayer(m_animationNames[m_selectedAnimationIndex], m_currentLayer);
                 m_activeAnimatedModel->PlayAnimationForLayer(m_currentLayer);
             }
             ImGui::SameLine();
@@ -435,9 +489,6 @@ namespace SGE
                 m_activeAnimatedModel->ResetAnimationTimeForLayer(m_currentLayer);
             }
 
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 5.0f));
-            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.2f, 0.2f, 0.2f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_SliderGrab, ImVec4(0.4f, 0.8f, 1.0f, 1.0f));
             ImGui::SetNextItemWidth(availableWidth - 96);
             ImGui::SameLine();
             if (ImGui::SliderFloat("##Progress", &currentTime, 0.0f, duration, ""))
@@ -445,11 +496,27 @@ namespace SGE
                 m_activeAnimatedModel->SetCurrentAnimationTimeForLayer(m_currentLayer, currentTime);
                 m_activeAnimatedModel->FixedUpdate(0.0f, true);
             }
-            ImGui::PopStyleColor(2);
-            ImGui::PopStyleVar();
+
             ImGui::Separator();
 
-            if (ImGui::Button("Go to T-Pose", ImVec2(availableWidth, 0)))
+            if (ImGui::Button("Apply weights", ImVec2(availableWidth * 0.5f - 4.0f, 0)))
+            {
+                if (m_selectedObject)
+                {
+                    auto* animatedModelData = dynamic_cast<AnimatedModelData*>(m_selectedObject);
+                    if (animatedModelData)
+                    {
+                        Skeleton& skeleton = m_activeAnimatedModel->GetSkeleton();
+                        for (int i = 0; i < skeleton.GetBoneCount(); ++i)
+                        {
+                            Bone& bone = skeleton.GetBone(i);
+                            animatedModelData->boneLayers[bone.name] = bone.weights;
+                        }
+                    }
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Go to T-Pose", ImVec2(availableWidth * 0.5f - 4.0f, 0)))
             {
                 m_activeAnimatedModel->ResetToTPose();
             }
@@ -636,49 +703,66 @@ namespace SGE
 
     void Editor::ConstructContentBrowser()
     {
-        constexpr float PADDING = 20.0f;
-        constexpr ImVec2 ICON_SIZE(64.0f, 64.0f);
-        
+        constexpr float PADDING = 8.0f;
+        constexpr ImVec2 ITEM_SIZE(80.0f, 100.0f);
+        constexpr float ICON_SIZE = 50.0f;
+        constexpr float TEXT_HEIGHT = 16.0f;
+    
         ImGui::Begin("Content Browser");
         const AssetsData& assetsSettings = m_context->GetAssetsData();
         ImGui::BeginChild("AssetScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_AlwaysVerticalScrollbar);
-
+    
         float availableWidth = ImGui::GetContentRegionAvail().x;
-        float textHeight = ImGui::GetTextLineHeightWithSpacing() * 2.0f;
-
+        int itemsPerRow = max(static_cast<int>(availableWidth / (ITEM_SIZE.x + PADDING)), 1);
+    
         float xOffset = 0.0f;
         float yOffset = 0.0f;
-
+    
         for (const auto& [type, assetMap] : assetsSettings.assets)
         {
             for (const auto& [id, asset] : assetMap)
             {
                 ImGui::SetCursorPos(ImVec2(xOffset, yOffset));
                 ImGui::BeginGroup();
-
-                std::string buttonId = "##" + asset->name;
+    
+                ImGui::BeginChildFrame(ImGui::GetID(asset->name.c_str()), ITEM_SIZE);
+    
                 ImTextureID iconTexture = m_assetIcons[type];
-
-                if (ImGui::ImageButton(buttonId.c_str(), iconTexture, ICON_SIZE))
+                float iconXOffset = (ITEM_SIZE.x - ICON_SIZE) * 0.5f;
+                ImGui::SetCursorPos(ImVec2(iconXOffset, PADDING));
+                ImGui::Image(iconTexture, ImVec2(ICON_SIZE, ICON_SIZE));
+    
+                ImGui::SetCursorPos(ImVec2(4.0f, ITEM_SIZE.y - TEXT_HEIGHT - 12.0f));
+                ImGui::PushStyleColor(ImGuiCol_Separator, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+                ImGui::Separator();
+                ImGui::PopStyleColor();
+    
+                ImGui::SetCursorPos(ImVec2(0.0f, ITEM_SIZE.y - TEXT_HEIGHT - 4.0f));
+                std::string truncatedText = asset->name;
+                ImVec2 textSize = ImGui::CalcTextSize(truncatedText.c_str());
+    
+                if (textSize.x > ITEM_SIZE.x - 8.0f)
                 {
-                    std::cout << "Clicked on asset: " << asset->name << std::endl;
+                    truncatedText = asset->name.substr(0, static_cast<size_t>((ITEM_SIZE.x - 8.0f) / (textSize.x / asset->name.length())));
+                    textSize = ImGui::CalcTextSize(truncatedText.c_str());
                 }
-
-                ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + ICON_SIZE.x);
-                ImGui::TextWrapped(asset->name.c_str());
-                ImGui::PopTextWrapPos();
-
+    
+                float textXOffset = (ITEM_SIZE.x - textSize.x) * 0.5f;
+                ImGui::SetCursorPosX(textXOffset);
+                ImGui::Text("%s", truncatedText.c_str());
+    
+                ImGui::EndChildFrame();
                 ImGui::EndGroup();
-
-                xOffset += ICON_SIZE.x + PADDING;
-                if (xOffset + ICON_SIZE.x > availableWidth)
+    
+                xOffset += ITEM_SIZE.x + PADDING;
+                if (xOffset + ITEM_SIZE.x > availableWidth)
                 {
                     xOffset = 0.0f;
-                    yOffset += ICON_SIZE.y + textHeight + PADDING;
+                    yOffset += ITEM_SIZE.y + PADDING;
                 }
             }
         }
-
+    
         ImGui::EndChild();
         ImGui::End();
     }

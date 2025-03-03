@@ -169,7 +169,7 @@ namespace SGE
         {
             return m_layerAnimations.at(layer).ticksPerSecond;
         }
-        return 0.0f;
+        return 25.0f;
     }
 
     std::string AnimatedModelInstance::GetCurrentAnimationNameForLayer(int layer) const
