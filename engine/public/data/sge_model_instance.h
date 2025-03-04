@@ -26,6 +26,7 @@ namespace SGE
         void SetPosition(const float3& position) { m_position = position; }
         void SetRotation(const float3& rotation) { m_rotation = rotation; }
         void SetScale(const float3& scale) { m_scale = scale; }
+        void SetTiling(const float2& tilingUV) { m_tilingUV = tilingUV; }
 
         const float3& GetPosition() const { return m_position; }
         const float3& GetRotation() const { return m_rotation; }
@@ -49,6 +50,7 @@ namespace SGE
         float3 m_position = { 0.0f, 0.0f, 0.0f };
         float3 m_rotation = { 0.0f, 0.0f, 0.0f };
         float3 m_scale    = { 1.0f, 1.0f, 1.0f };
+        float2 m_tilingUV = { 1.0f, 1.0f };
 
         uint32 m_instanceIndex = 0;
         bool m_enabled = true;

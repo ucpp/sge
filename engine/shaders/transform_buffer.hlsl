@@ -5,5 +5,5 @@ cbuffer TransformBuffer : register(b1)
     matrix projection;
     matrix boneTransforms[100];
     bool isAnimated;
-    float3 padding;
+    float2 tilingUV;
 }

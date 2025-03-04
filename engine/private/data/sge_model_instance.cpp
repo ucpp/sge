@@ -100,6 +100,7 @@ namespace SGE
         m_transformData.view = viewMatrix;
         m_transformData.projection = projectionMatrix;
         m_transformData.isAnimated = false;
+        m_transformData.tilingUV = m_tilingUV;
 
         for (size_t i = 0; i < 100; ++i)
         {

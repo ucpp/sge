@@ -67,6 +67,7 @@ namespace SGE
         model->SetRotation(data->transform.rotation);
         model->SetScale(data->transform.scale);
         model->SetActive(data->enabled);
+        model->SetTiling(data->tilingUV);
     }
 
     void SyncData(const PointLightData* data, PointLight* pointLight)

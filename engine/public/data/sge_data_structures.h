@@ -25,7 +25,7 @@ namespace SGE
         float4x4 projection;
         float4x4 boneTransforms[100];
         bool isAnimated;
-        char padding[15];
+        float2 tilingUV = { 1.0f, 1.0f };
     };
     static_assert(alignof(TransformBuffer) == 16, "TransformBuffer structure alignment mismatch");
     static_assert(sizeof(TransformBuffer) == (64 * 103) + 16, "TransformBuffer size mismatch");
@@ -167,6 +167,7 @@ namespace SGE
     public:
         std::string assetId;
         std::string materialId;
+        float2 tilingUV;
     };
 
     class AnimatedModelData : public ModelData 

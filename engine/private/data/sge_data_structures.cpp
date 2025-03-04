@@ -87,6 +87,11 @@ namespace SGE
         TransformData::DrawEditor();
         InputText("Asset ID:", assetId);
         InputText("Material ID:", materialId);
+
+        if (ImGui::CollapsingHeader("Tiling UV"))
+        {
+            ImGui::DragFloat2("Tiling UV", tilingUV.data(), 0.1f, 0.0f, 10.0f);
+        }
     }
 
     void ModelData::ToJson(njson& data)
@@ -95,6 +100,11 @@ namespace SGE
         data["asset_id"] = assetId;
         data["material_id"] = materialId;
         data["enabled"] = enabled;
+
+        njson tilingUVJson;
+        tilingUVJson["x"] = float1(tilingUV.x);
+        tilingUVJson["y"] = float1(tilingUV.y);
+        data["tiling_uv"] = tilingUVJson;
     }
 
     void ModelData::FromJson(const njson& data)
@@ -103,6 +113,15 @@ namespace SGE
         data.at("asset_id").get_to(assetId);
         data.at("material_id").get_to(materialId);
         data.at("enabled").get_to(enabled);
+
+        if (data.contains("tiling_uv"))
+        {
+            tilingUV = { data["tiling_uv"]["x"].get<float1>().value,  data["tiling_uv"]["y"].get<float1>().value };
+        }
+        else
+        {
+            tilingUV = float2(float1(1.0f), float1(1.0f));
+        }
     }
 
     void AnimatedModelData::ToJson(njson& data)

@@ -17,7 +17,7 @@ float4 main(PixelInput input) : SV_Target
 {
     float4 color = g_final.Sample(sampleWrap, input.texCoords);
     float depth = g_Depth.Sample(sampleWrap, input.texCoords);
-    const float epsilon = 0.001;
+    const float epsilon = 0.0001;
     clip(1.0 - depth - epsilon);
     return color;
 }

@@ -27,7 +27,7 @@ float2 WorldToScreenUV(float3 worldPosition)
 
 float4 main(PixelInput input) : SV_TARGET
 {
-    float2 uv = float2(input.texCoords.x, 1.0f - input.texCoords.y);
+    float2 uv = float2(input.texCoords.x, 1.0f - input.texCoords.y) * tilingUV;
 
     float3 albedo = diffuseMap.Sample(sampleWrap, uv).rgb;
     float  metallic = metallicMap.Sample(sampleWrap, uv).r;

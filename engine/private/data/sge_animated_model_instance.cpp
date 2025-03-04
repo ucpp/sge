@@ -285,6 +285,7 @@ namespace SGE
         m_transformData.view = viewMatrix;
         m_transformData.projection = projectionMatrix;
         m_transformData.isAnimated = true;
+        m_transformData.tilingUV = { 1.0f, 1.0f };
         
         size_t boneCount = min(100, m_finalBoneTransforms.size());
         for (size_t i = 0; i < boneCount; ++i)
