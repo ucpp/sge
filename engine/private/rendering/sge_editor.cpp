@@ -109,17 +109,23 @@ namespace SGE
         style.ScrollbarSize = 12.0f;
         style.GrabMinSize = 10.0f;
 
+        
         ImGuiIO& io = ImGui::GetIO();
-        io.Fonts->Clear();
 
         ImFontConfig config;
-        config.GlyphOffset.y = -1.0f;
         config.FontDataOwnedByAtlas = false;
-        config.OversampleH = 3;
+        config.GlyphOffset.y = -2.0f;
+        config.FontBuilderFlags = ImGuiFreeTypeBuilderFlags_Bitmap | ImGuiFreeTypeBuilderFlags_MonoHinting;
         config.PixelSnapH = true;
-        config.RasterizerMultiply = 1.5f;
-        io.Fonts->AddFontFromFileTTF((PathToIcons + "JetBrainsMono-Light.ttf").c_str(), 15.0f, &config);
+
+        io.Fonts->ClearFonts();
+        ImFont* font = io.Fonts->AddFontFromFileTTF((PathToIcons + "DejaVuSansMono.ttf").c_str(), 13.0f, &config);
         io.Fonts->Build();
+
+        if (font)
+        {
+            io.FontDefault = font;
+        }
     }
 
     void Editor::InitializeImGuiDX12()

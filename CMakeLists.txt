@@ -23,6 +23,8 @@ option(BUILD_SAMPLES "Build samples" ON)
 add_subdirectory(${EXTERNALS_PATH}/imgui)
 add_subdirectory(${EXTERNALS_PATH}/assimp)
 add_subdirectory(${EXTERNALS_PATH}/directx_tex)
+add_subdirectory(${EXTERNALS_PATH}/freetype)
+
 
 add_subdirectory(engine)
 

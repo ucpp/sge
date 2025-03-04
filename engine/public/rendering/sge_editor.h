@@ -2,8 +2,8 @@
 #define _SGE_EDITOR_H_
 
 #include "pch.h"
-
 #include "imgui.h"
+#include "imgui_freetype.h"
 #include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 #include "imgui_internal.h"
