@@ -65,12 +65,12 @@ namespace SGE
     void RootSignature::CreateWrapSampler()
     {
         CD3DX12_STATIC_SAMPLER_DESC staticSampler = {};
-        staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+        staticSampler.Filter = D3D12_FILTER_ANISOTROPIC;
         staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
         staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
         staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
         staticSampler.MipLODBias = 0;
-        staticSampler.MaxAnisotropy = 1;
+        staticSampler.MaxAnisotropy = 16;
         staticSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
         staticSampler.BorderColor = D3D12_STATIC_BORDER_COLOR_TRANSPARENT_BLACK;
         staticSampler.MinLOD = 0.0f;

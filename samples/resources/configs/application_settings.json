@@ -260,7 +260,7 @@
             {
                 "name": "uv_checker",
                 "type": 2,
-                "albedo_texture_path": "resources/models/uv_checker.png",
+                "albedo_texture_path": "resources/models/uv_checker_gray.dds",
                 "metallic_texture_path": "",
                 "normal_texture_path": "",
                 "roughness_texture_path": ""
@@ -303,13 +303,13 @@
                 "name": "Main Camera",
                 "type": 0,
                 "position": [
-                    "0.245",
-                    "4.306",
-                    "-11.36"
+                    "0.49",
+                    "3.907",
+                    "-14.711"
                 ],
                 "rotation": [
-                    "-14.3",
-                    "0.4",
+                    "-11.3",
+                    "-0.0",
                     "0.0"
                 ],
                 "scale": [
@@ -357,16 +357,16 @@
                     "0.0"
                 ],
                 "scale": [
+                    "20.0",
                     "1.0",
-                    "1.0",
-                    "1.0"
+                    "20.0"
                 ],
                 "asset_id": "plane",
                 "material_id": "uv_checker",
                 "enabled": true,
                 "tiling_uv": {
-                    "x": "1.0",
-                    "y": "1.0"
+                    "x": "4.0",
+                    "y": "4.0"
                 }
             },
             {
@@ -430,14 +430,14 @@
                         "1.0",
                         "0.0"
                     ],
-                    "headtop_end": [
-                        "0.2",
-                        "0.8",
-                        "0.0"
-                    ],
                     "lefthandring3": [
                         "0.0",
                         "1.0",
+                        "0.0"
+                    ],
+                    "headtop_end": [
+                        "0.2",
+                        "0.8",
                         "0.0"
                     ],
                     "leftfoot": [
