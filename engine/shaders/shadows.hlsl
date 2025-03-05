@@ -10,8 +10,12 @@ float CalculateShadowPCF(Texture2D<float> shadowMap, SamplerState samplerState, 
         for (int y = -1; y <= 1; ++y)
         {
             float2 offset = float2(x, y) * texelSize;
-            float shadowMapDepth = shadowMap.Sample(samplerState, shadowCoord.xy + offset);
-            shadow += shadowCoord.z - bias > shadowMapDepth ? 1.0 : 0.0;
+            float2 sampleCoord = shadowCoord.xy + offset;
+
+            float inBounds = step(0.0, sampleCoord.x) * step(sampleCoord.x, 1.0) * step(0.0, sampleCoord.y) * step(sampleCoord.y, 1.0);
+
+            float shadowMapDepth = shadowMap.Sample(samplerState, sampleCoord);
+            shadow += inBounds * (shadowCoord.z - bias > shadowMapDepth ? 1.0 : 0.0);
         }
     }
 
@@ -25,6 +29,10 @@ float CalculateShadow(Texture2D<float> shadowMap, SamplerState samplerState, flo
     shadowCoord.y = -shadowCoord.y;
     shadowCoord.xy = shadowCoord.xy * 0.5 + 0.5;
 
-    float bias = 0.014;
-    return CalculateShadowPCF(shadowMap, samplerState, shadowCoord.xyz, bias);
+    float inBounds = step(0.0, shadowCoord.x) * step(shadowCoord.x, 1.0) *
+                     step(0.0, shadowCoord.y) * step(shadowCoord.y, 1.0) *
+                     step(0.0, shadowCoord.z) * step(shadowCoord.z, 1.0);
+
+    float bias = 0.005;
+    return inBounds * CalculateShadowPCF(shadowMap, samplerState, shadowCoord.xyz, bias);
 }
