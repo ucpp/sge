@@ -34,8 +34,11 @@ namespace SGE
             .SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
             .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT, false)
             .SetSampleCount(1)
-            .SetShaders("/vs_skybox.hlsl", "/ps_skybox.hlsl")
             .SetRasterizerState(D3D12_FILL_MODE_SOLID, D3D12_CULL_MODE_NONE)
-            .SetDepthFunc(D3D12_COMPARISON_FUNC_LESS_EQUAL); 
+            .SetDepthFunc(D3D12_COMPARISON_FUNC_LESS_EQUAL)
+            .SetVertexShaderPath(m_passData.vertexShaderName)
+            .SetPixelShaderPath(m_passData.pixelShaderName)
+            .SetComputeShaderPath(m_passData.computeShaderName)
+            .SetGeometryShaderPath(m_passData.geometryShaderName); 
     }
 }

@@ -29,6 +29,6 @@ namespace SGE
 
     PipelineConfig BrightnessExtractionPass::GetPipelineConfig() const
     {
-        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, "/ps_brightness_extraction_pass.hlsl");
+        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, m_passData);
     }
 }

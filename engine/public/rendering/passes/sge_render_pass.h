@@ -5,6 +5,7 @@
 #include "rendering/sge_pipeline_state.h"
 #include "rendering/sge_render_target_texture.h"
 #include "core/sge_scoped_event.h"
+#include "data/sge_data_structures.h"
 
 namespace SGE
 {
@@ -12,8 +13,8 @@ namespace SGE
     {
     public:
         virtual ~RenderPass() = default;
-        void Initialize(class RenderContext* context, const std::string& passName = "RednderPass");
-        void Render(class Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output);
+        void Initialize(class RenderContext* context, const RenderPassData& passData, const std::string& passName = "RednderPass");
+        void Render(class Scene* scene);
         void Shutdown();
 
         void Reload() { m_reloadRequested = true; }
@@ -25,7 +26,7 @@ namespace SGE
         virtual void OnShutdown() {}
         
         virtual PipelineConfig GetPipelineConfig() const = 0;
-        static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const std::string& pixelShaderPath);
+        static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const RenderPassData& passData);
 
         void SetTargetState(const std::vector<std::string>& names, D3D12_RESOURCE_STATES state);
         void SetTargetState(const std::string& name, D3D12_RESOURCE_STATES state);
@@ -41,6 +42,7 @@ namespace SGE
     protected:
         class RenderContext* m_context = nullptr;
         std::unique_ptr<PipelineState> m_pipelineState;
+        RenderPassData m_passData;
 
     private:
         bool m_reloadRequested = false;

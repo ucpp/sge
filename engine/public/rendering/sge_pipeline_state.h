@@ -18,8 +18,11 @@ namespace SGE
         D3D12_DEPTH_STENCIL_DESC DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 
         uint32 SampleCount = 1;
+
         std::string VertexShaderPath;
         std::string PixelShaderPath;
+        std::string ComputeShaderPath;
+        std::string GeometryShaderPath;
 
         PipelineConfig& SetRenderTargetFormat(DXGI_FORMAT format)
         {
@@ -58,11 +61,40 @@ namespace SGE
             SampleCount = count;
             return *this;
         }
-    
-        PipelineConfig& SetShaders(const std::string& vsPath, const std::string& psPath)
+
+        PipelineConfig& SetVertexShaderPath(const std::string& path)
         {
-            VertexShaderPath = std::string(SHADERS_DIRECTORY) + vsPath;
-            PixelShaderPath = std::string(SHADERS_DIRECTORY) + psPath;
+            if(!path.empty())
+            {
+                VertexShaderPath = std::string(SHADERS_DIRECTORY) + path;
+            }
+            return *this;
+        }
+
+        PipelineConfig& SetPixelShaderPath(const std::string& path)
+        {
+            if(!path.empty())
+            {
+                PixelShaderPath = std::string(SHADERS_DIRECTORY) + path;
+            }
+            return *this;
+        }
+
+        PipelineConfig& SetComputeShaderPath(const std::string& path)
+        {
+            if(!path.empty())
+            {
+                ComputeShaderPath = std::string(SHADERS_DIRECTORY) + path;
+            }
+            return *this;
+        }
+
+        PipelineConfig& SetGeometryShaderPath(const std::string& path)
+        {
+            if(!path.empty())
+            {
+                GeometryShaderPath = std::string(SHADERS_DIRECTORY) + path;
+            }
             return *this;
         }
     };
@@ -77,6 +109,10 @@ namespace SGE
         static PipelineConfig CreateDefaultConfig();
 
     private:
+        void InitializeShader(const std::string& shaderPath, ShaderType type, bool reload, D3D12_SHADER_BYTECODE& shaderBytecode);
+        void InitializeGraphicsPipeline(ID3D12Device* device, const PipelineConfig& config);
+        void InitializeComputePipeline(ID3D12Device* device, const PipelineConfig& config);
+
         ComPtr<ID3D12PipelineState> m_pipelineState;
         RootSignature m_rootSignature;
     };

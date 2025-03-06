@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include <unordered_set>
+#include <optional>
 
 namespace SGE
 {
@@ -338,6 +339,11 @@ namespace SGE
         std::string name;
         std::vector<std::string> input;
         std::vector<std::string> output;
+
+        std::string vertexShaderName;
+        std::string pixelShaderName;
+        std::string computeShaderName;
+        std::string geometryShaderName;
     };
 
     class RenderData
@@ -361,6 +367,8 @@ namespace SGE
     
         uint32 GetForwardOutputsCount() const;
         uint32 GetDeferredOutputsCount() const;
+
+        std::optional<RenderPassData> FindRenderPassDataByName(const std::string& name) const;
     
     private:
         void BuildForwardOutputsCache() const;

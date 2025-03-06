@@ -20,7 +20,11 @@ namespace SGE
         const std::unordered_set<std::string> passes = data.GetAllPassNames();
         for (const auto& name : passes)
         {
-            InitializeRenderPass(name, context);
+            auto passData = data.FindRenderPassDataByName(name);
+            if(passData)
+            {
+                InitializeRenderPass(name, *passData, context);
+            }
         }
 
         const std::unordered_set<std::string> rtts = data.GetAllOutputs();
@@ -34,13 +38,13 @@ namespace SGE
         m_context->WaitForPreviousFrame();
     }
 
-    void Renderer::InitializeRenderPass(const std::string& name, RenderContext* context)
+    void Renderer::InitializeRenderPass(const std::string& name, const RenderPassData& passData, RenderContext* context)
     {
         auto& factory = RenderPassFactory::Get();
         if (m_renderPasses.find(name) == m_renderPasses.end())
         {
             m_renderPasses[name] = factory.Create(name);
-            m_renderPasses[name]->Initialize(context, name + " pass");
+            m_renderPasses[name]->Initialize(context, passData, name + " pass");
         }
     }
 
@@ -91,9 +95,7 @@ namespace SGE
         {
             if (m_renderPasses.find(passData.name) != m_renderPasses.end())
             {
-                const std::vector<std::string>& input = passData.input;
-                const std::vector<std::string>& output = passData.output;
-                m_renderPasses[passData.name]->Render(scene, input, output);
+                m_renderPasses[passData.name]->Render(scene);
             }
         }
     }

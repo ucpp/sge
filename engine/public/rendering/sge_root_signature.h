@@ -8,7 +8,7 @@ namespace SGE
     class RootSignature
     {
     public:
-        void Initialize(ID3D12Device* device, ID3DBlob* vertexShaderBlob, ID3DBlob* pixelShaderBlob);
+        void Initialize(ID3D12Device* device);
         ID3D12RootSignature* GetSignature() const { return m_rootSignature.Get(); }
 
     private:

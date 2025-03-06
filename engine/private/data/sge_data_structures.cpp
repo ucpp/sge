@@ -577,6 +577,23 @@ namespace SGE
         return static_cast<uint32>(GetDeferredOutputs().size());
     }
 
+    std::optional<RenderPassData> RenderData::FindRenderPassDataByName(const std::string& name) const
+    {
+        auto itForward = std::find_if(forwardPasses.begin(), forwardPasses.end(), [&name](const RenderPassData& pass) { return pass.name == name; });
+        if (itForward != forwardPasses.end())
+        {
+            return *itForward;
+        }
+
+        auto itDeferred = std::find_if(deferredPasses.begin(), deferredPasses.end(),[&name](const RenderPassData& pass) { return pass.name == name; });
+        if (itDeferred != deferredPasses.end())
+        {
+            return *itDeferred;
+        }
+
+        return std::nullopt;
+    }
+
     std::string roundToString(float1 value, int32 precision) noexcept
     {
         std::ostringstream stream;
@@ -790,11 +807,32 @@ namespace SGE
 
     void to_json(njson& data, const RenderPassData& pass)
     {
-        data = njson{
+        data = njson
+        {
             {"name", pass.name},
             {"input", pass.input},
             {"output", pass.output}
         };
+
+        if (!pass.vertexShaderName.empty())
+        {
+            data["vertex_shader_name"] = pass.vertexShaderName;
+        }
+        
+        if (!pass.pixelShaderName.empty())
+        {
+            data["pixel_shader_name"] = pass.pixelShaderName;
+        }
+        
+        if (!pass.computeShaderName.empty())
+        {
+            data["compute_shader_name"] = pass.computeShaderName;
+        }
+        
+        if (!pass.geometryShaderName.empty())
+        {
+            data["geometry_shader_name"] = pass.geometryShaderName;
+        }
     }
 
     void from_json(const njson& data, RenderPassData& pass)
@@ -802,5 +840,25 @@ namespace SGE
         data.at("name").get_to(pass.name);
         data.at("input").get_to(pass.input);
         data.at("output").get_to(pass.output);
+
+        if (data.contains("vertex_shader_name"))
+        {
+            data.at("vertex_shader_name").get_to(pass.vertexShaderName);
+        }
+
+        if (data.contains("pixel_shader_name"))
+        {
+            data.at("pixel_shader_name").get_to(pass.pixelShaderName);
+        }
+
+        if (data.contains("compute_shader_name"))
+        {
+            data.at("compute_shader_name").get_to(pass.computeShaderName);
+        }
+
+        if (data.contains("geometry_shader_name"))
+        {
+            data.at("geometry_shader_name").get_to(pass.geometryShaderName);
+        }
     }
 }

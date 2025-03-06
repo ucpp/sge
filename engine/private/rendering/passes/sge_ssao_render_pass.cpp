@@ -24,6 +24,6 @@ namespace SGE
 
     PipelineConfig SSAORenderPass::GetPipelineConfig() const
     {
-        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, "/ps_ssao_pass.hlsl");
+        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, m_passData);
     }
 }

@@ -20,7 +20,7 @@ namespace SGE
         void ReloadShaders();
 
     private:
-        void InitializeRenderPass(const std::string& name, RenderContext* context);
+        void InitializeRenderPass(const std::string& name, const RenderPassData& passData, RenderContext* context);
         void RenderPasses(const std::vector<RenderPassData>& passes, Scene* scene);
 
         class RenderContext* m_context = nullptr;

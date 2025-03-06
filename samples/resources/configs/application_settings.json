@@ -23,24 +23,32 @@
             {
                 "name": "skybox",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_skybox.hlsl",
+                "pixel_shader_name": "ps_skybox.hlsl"
             },
             {
                 "name": "shadow_map",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_shadow_map_pass.hlsl",
+                "pixel_shader_name": "ps_empty.hlsl"
             },
             {
                 "name": "depth_prepass",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_forward_pass.hlsl",
+                "pixel_shader_name": "ps_empty.hlsl"
             },
             {
                 "name": "ssao",
                 "input": [],
                 "output": [
                     "ssao_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_ssao_pass.hlsl"
             },
             {
                 "name": "blur",
@@ -49,7 +57,9 @@
                 ],
                 "output": [
                     "blur_ssao_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_blur_pass.hlsl"
             },
             {
                 "name": "forward",
@@ -58,7 +68,9 @@
                 ],
                 "output": [
                     "lighting_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_geometry_pass.hlsl",
+                "pixel_shader_name": "ps_forward_pass.hlsl"
             },
             {
                 "name": "brightness_extraction",
@@ -67,7 +79,9 @@
                 ],
                 "output": [
                     "brightness_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_brightness_extraction_pass.hlsl"
             },
             {
                 "name": "blur",
@@ -76,7 +90,9 @@
                 ],
                 "output": [
                     "blur_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_blur_pass.hlsl"
             },
             {
                 "name": "bloom_combine",
@@ -86,7 +102,9 @@
                 ],
                 "output": [
                     "bloom_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_bloom_combine_pass.hlsl"
             },
             {
                 "name": "tonemapping",
@@ -95,24 +113,32 @@
                 ],
                 "output": [
                     "tonemapping_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_tonemapping_pass.hlsl"
             },
             {
                 "name": "final",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_final_pass.hlsl"
             }
         ],
         "deferred_render_passes": [
             {
                 "name": "skybox",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_skybox.hlsl",
+                "pixel_shader_name": "ps_skybox.hlsl"
             },
             {
                 "name": "shadow_map",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_shadow_map_pass.hlsl",
+                "pixel_shader_name": "ps_empty.hlsl"
             },
             {
                 "name": "geometry",
@@ -120,14 +146,18 @@
                 "output": [
                     "albedo_metallic_target",
                     "normal_roughness_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_geometry_pass.hlsl",
+                "pixel_shader_name": "ps_geometry_pass.hlsl"
             },
             {
                 "name": "ssao",
                 "input": [],
                 "output": [
                     "ssao_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_ssao_pass.hlsl"
             },
             {
                 "name": "blur",
@@ -136,7 +166,9 @@
                 ],
                 "output": [
                     "blur_ssao_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_blur_pass.hlsl"
             },
             {
                 "name": "lighting",
@@ -147,7 +179,9 @@
                 ],
                 "output": [
                     "lighting_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_lighting_pass.hlsl"
             },
             {
                 "name": "brightness_extraction",
@@ -156,7 +190,9 @@
                 ],
                 "output": [
                     "brightness_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_brightness_extraction_pass.hlsl"
             },
             {
                 "name": "blur",
@@ -165,7 +201,9 @@
                 ],
                 "output": [
                     "blur_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_blur_pass.hlsl"
             },
             {
                 "name": "bloom_combine",
@@ -175,7 +213,9 @@
                 ],
                 "output": [
                     "bloom_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_bloom_combine_pass.hlsl"
             },
             {
                 "name": "tonemapping",
@@ -184,12 +224,16 @@
                 ],
                 "output": [
                     "tonemapping_target"
-                ]
+                ],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_tonemapping_pass.hlsl"
             },
             {
                 "name": "final",
                 "input": [],
-                "output": []
+                "output": [],
+                "vertex_shader_name": "vs_fullscreen_quad.hlsl",
+                "pixel_shader_name": "ps_final_pass.hlsl"
             }
         ]
     },

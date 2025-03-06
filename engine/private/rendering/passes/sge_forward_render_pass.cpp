@@ -46,6 +46,9 @@ namespace SGE
             .SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
             .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT)
             .SetSampleCount(1)
-            .SetShaders("/vs_geometry_pass.hlsl", "/ps_forward_pass.hlsl");
+            .SetVertexShaderPath(m_passData.vertexShaderName)
+            .SetPixelShaderPath(m_passData.pixelShaderName)
+            .SetComputeShaderPath(m_passData.computeShaderName)
+            .SetGeometryShaderPath(m_passData.geometryShaderName);
     }
 }

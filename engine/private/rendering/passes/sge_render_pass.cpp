@@ -6,11 +6,12 @@
 
 namespace SGE
 {
-    void RenderPass::Initialize(RenderContext* context, const std::string& passName)
+    void RenderPass::Initialize(RenderContext* context, const RenderPassData& passData, const std::string& passName)
     {
         Verify(context, "RenderPass::Initialize: Provided render context is null.");
-        m_context = context;
-        m_name = passName;
+        m_context  = context;
+        m_name     = passName;
+        m_passData = passData;
 
         OnInitialize(context);
 
@@ -21,17 +22,17 @@ namespace SGE
         }
     }
 
-    void RenderPass::Render(Scene* scene, const std::vector<std::string>& input, const std::vector<std::string>& output)
+    void RenderPass::Render(Scene* scene)
     {
         if (m_reloadRequested)
         {
-            Initialize(m_context);
+            Initialize(m_context, m_passData);
             m_reloadRequested = false;
         }
 
         SCOPED_EVENT_GPU(m_context->GetCommandList().Get(), m_name.c_str());
 
-        OnRender(scene, input, output);
+        OnRender(scene, m_passData.input, m_passData.output);
         OnDraw(scene);
     }
 
@@ -44,13 +45,16 @@ namespace SGE
         OnShutdown();
     }
 
-    PipelineConfig RenderPass::CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const std::string& pixelShaderPath)
+    PipelineConfig RenderPass::CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const RenderPassData& passData)
     {
         return PipelineState::CreateDefaultConfig()
             .SetRenderTargetFormat(renderTargetFormat)
             .SetDepthStencilFormat(DXGI_FORMAT_UNKNOWN, false)
             .SetSampleCount(1)
-            .SetShaders("/vs_fullscreen_quad.hlsl", pixelShaderPath);
+            .SetVertexShaderPath(passData.vertexShaderName)
+            .SetPixelShaderPath(passData.pixelShaderName)
+            .SetComputeShaderPath(passData.computeShaderName)
+            .SetGeometryShaderPath(passData.geometryShaderName);
     }
 
     void RenderPass::SetTargetState(const std::vector<std::string>& names, D3D12_RESOURCE_STATES state)

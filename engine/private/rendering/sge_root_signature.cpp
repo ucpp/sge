@@ -3,7 +3,7 @@
 
 namespace SGE
 {
-    void RootSignature::Initialize(ID3D12Device* device, ID3DBlob* vertexShaderBlob, ID3DBlob* pixelShaderBlob)
+    void RootSignature::Initialize(ID3D12Device* device)
     {
         CreateRootSignature(device);
     }

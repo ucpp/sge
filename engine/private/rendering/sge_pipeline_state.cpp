@@ -7,27 +7,46 @@
 namespace SGE
 {
     void PipelineState::Initialize(ID3D12Device* device, const PipelineConfig& config, bool reload)
-    {       
+    {
         if (reload)
         {
             m_pipelineState.Reset();
         }
 
-        const Shader& vertexShader = ShaderManager::GetShader(config.VertexShaderPath, ShaderType::Vertex, reload);
-        const Shader& pixelShader = ShaderManager::GetShader(config.PixelShaderPath, ShaderType::Pixel, reload);
-        m_rootSignature.Initialize(device, vertexShader.GetBlob(), pixelShader.GetBlob());
+        m_rootSignature.Initialize(device);
+        if (!config.ComputeShaderPath.empty())
+        {
+            InitializeComputePipeline(device, config);
+        }
+        else
+        {
+            InitializeGraphicsPipeline(device, config);
+        }
+    }
 
+    void PipelineState::InitializeShader(const std::string& shaderPath, ShaderType type, bool reload, D3D12_SHADER_BYTECODE& shaderBytecode)
+    {
+        if (!shaderPath.empty())
+        {
+            const Shader& shader = ShaderManager::GetShader(shaderPath, type, reload);
+            shaderBytecode = shader.GetShaderBytecode();
+        }
+    }
+
+    void PipelineState::InitializeGraphicsPipeline(ID3D12Device* device, const PipelineConfig& config)
+    {
         D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
         desc.InputLayout = config.InputLayout;
         desc.pRootSignature = m_rootSignature.GetSignature();
-        desc.VS = vertexShader.GetShaderBytecode();
-        desc.PS = pixelShader.GetShaderBytecode();
+
+        InitializeShader(config.VertexShaderPath, ShaderType::Vertex, false, desc.VS);
+        InitializeShader(config.PixelShaderPath, ShaderType::Pixel, false, desc.PS);
+        InitializeShader(config.GeometryShaderPath, ShaderType::Geometry, false, desc.GS);
 
         desc.RasterizerState = config.RasterizerState;
         desc.BlendState = config.BlendState;
         desc.DepthStencilState = config.DepthStencilState;
         desc.SampleMask = UINT_MAX;
-
         desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
         desc.NumRenderTargets = static_cast<uint32>(config.RenderTargetFormats.size());
 
@@ -42,6 +61,17 @@ namespace SGE
 
         HRESULT hr = device->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&m_pipelineState));
         Verify(hr, "Failed to create graphics pipeline state.");
+    }
+
+    void PipelineState::InitializeComputePipeline(ID3D12Device* device, const PipelineConfig& config)
+    {
+        D3D12_COMPUTE_PIPELINE_STATE_DESC desc = {};
+        desc.pRootSignature = m_rootSignature.GetSignature();
+
+        InitializeShader(config.ComputeShaderPath, ShaderType::Compute, false, desc.CS);
+
+        HRESULT hr = device->CreateComputePipelineState(&desc, IID_PPV_ARGS(&m_pipelineState));
+        Verify(hr, "Failed to create compute pipeline state.");
     }
 
     PipelineConfig PipelineState::CreateDefaultConfig()
