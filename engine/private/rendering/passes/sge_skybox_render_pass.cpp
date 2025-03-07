@@ -35,10 +35,6 @@ namespace SGE
             .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT, false)
             .SetSampleCount(1)
             .SetRasterizerState(D3D12_FILL_MODE_SOLID, D3D12_CULL_MODE_NONE)
-            .SetDepthFunc(D3D12_COMPARISON_FUNC_LESS_EQUAL)
-            .SetVertexShaderPath(m_passData.vertexShaderName)
-            .SetPixelShaderPath(m_passData.pixelShaderName)
-            .SetComputeShaderPath(m_passData.computeShaderName)
-            .SetGeometryShaderPath(m_passData.geometryShaderName); 
+            .SetDepthFunc(D3D12_COMPARISON_FUNC_LESS_EQUAL); 
     }
 }

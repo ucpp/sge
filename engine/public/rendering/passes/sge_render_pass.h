@@ -26,7 +26,7 @@ namespace SGE
         virtual void OnShutdown() {}
         
         virtual PipelineConfig GetPipelineConfig() const = 0;
-        static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const RenderPassData& passData);
+        static PipelineConfig CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat);
 
         void SetTargetState(const std::vector<std::string>& names, D3D12_RESOURCE_STATES state);
         void SetTargetState(const std::string& name, D3D12_RESOURCE_STATES state);

@@ -45,10 +45,6 @@ namespace SGE
         return PipelineState::CreateDefaultConfig()
             .SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM)
             .SetDepthStencilFormat(DXGI_FORMAT_D32_FLOAT)
-            .SetSampleCount(1)
-            .SetVertexShaderPath(m_passData.vertexShaderName)
-            .SetPixelShaderPath(m_passData.pixelShaderName)
-            .SetComputeShaderPath(m_passData.computeShaderName)
-            .SetGeometryShaderPath(m_passData.geometryShaderName);
+            .SetSampleCount(1);
     }
 }

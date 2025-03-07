@@ -29,6 +29,6 @@ namespace SGE
 
     PipelineConfig ToneMappingRenderPass::GetPipelineConfig() const
     {
-        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM, m_passData);
+        return CreateFullscreenQuadPipelineConfig(DXGI_FORMAT_R8G8B8A8_UNORM);
     }
 }

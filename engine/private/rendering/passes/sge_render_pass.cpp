@@ -17,8 +17,14 @@ namespace SGE
 
         if (!m_pipelineState || m_reloadRequested)
         {
+            const PipelineConfig config = GetPipelineConfig()
+                .SetVertexShaderPath(passData.vertexShaderName)
+                .SetPixelShaderPath(passData.pixelShaderName)
+                .SetComputeShaderPath(passData.computeShaderName)
+                .SetGeometryShaderPath(passData.geometryShaderName);
+
             m_pipelineState = std::make_unique<PipelineState>();
-            m_pipelineState->Initialize(m_context->GetD12Device().Get(), GetPipelineConfig(), m_reloadRequested);
+            m_pipelineState->Initialize(m_context->GetD12Device().Get(), config, m_reloadRequested);
         }
     }
 
@@ -45,16 +51,12 @@ namespace SGE
         OnShutdown();
     }
 
-    PipelineConfig RenderPass::CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat, const RenderPassData& passData)
+    PipelineConfig RenderPass::CreateFullscreenQuadPipelineConfig(DXGI_FORMAT renderTargetFormat)
     {
         return PipelineState::CreateDefaultConfig()
             .SetRenderTargetFormat(renderTargetFormat)
             .SetDepthStencilFormat(DXGI_FORMAT_UNKNOWN, false)
-            .SetSampleCount(1)
-            .SetVertexShaderPath(passData.vertexShaderName)
-            .SetPixelShaderPath(passData.pixelShaderName)
-            .SetComputeShaderPath(passData.computeShaderName)
-            .SetGeometryShaderPath(passData.geometryShaderName);
+            .SetSampleCount(1);
     }
 
     void RenderPass::SetTargetState(const std::vector<std::string>& names, D3D12_RESOURCE_STATES state)
