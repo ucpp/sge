@@ -14,6 +14,8 @@
 #include "rendering/passes/sge_skybox_render_pass.h"
 #include "rendering/passes/sge_shadow_map_pass.h"
 #include "rendering/passes/sge_depth_pre_pass.h"
+#include "rendering/passes/sge_reflection_cubemap_pass.h"
+#include "rendering/passes/sge_ssr_render_pass.h"
 
 namespace SGE
 {   
@@ -51,5 +53,7 @@ namespace SGE
         factory.Register("skybox", []() { return std::make_unique<SkyboxRenderPass>(); });
         factory.Register("shadow_map", []() { return std::make_unique<ShadowMapRenderPass>(); });
         factory.Register("depth_prepass", []() { return std::make_unique<DepthPreRenderPass>(); });
+        factory.Register("reflection_cubemap", []() { return std::make_unique<ReflectionCubemapPass>(); });
+        factory.Register("ssr", []() { return std::make_unique<SSRRenderPass>(); });
     }
 }
