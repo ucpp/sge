@@ -28,13 +28,13 @@
 ✔ Play animations @done(25-02-26 22:14)
 
 [01-07.03.2025 - 11th week]
-[Day 71/1000 - 03/03/2025]
 ✔ Blend animations @done(25-03-02 19:04)
+
+[08-14.03.2025 - 12th week]
+[Day 78/1000 - 10/03/2025]
 ☐ Reflections
     ☐ Dynamic environment reflections via render to cube map
     ☐ SSLR
-
-[08-14.03.2025 - 12th week]
 ☐ Particle system
 ☐ Particle editor
 ☐ Refactoring and optimization
@@ -47,3 +47,9 @@
 ☐ Optimizations
     ☐ Add mesh combining
     ☐ Reduce draw calls of editor
+
+Ideas for a separate project:
+    ☐ Make assets a separate downloadable archive with a script for downloading and extracting, and store them in a separate repository.
+    ☐ Use submodules for external dependencies or prebuilt libraries.
+    ☐ Focus on minimizing code duplication and making it more compact.
+    ☐ Reduce coupling between external dependencies and project code.
